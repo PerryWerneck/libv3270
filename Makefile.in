@@ -24,55 +24,82 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
-MODULE_NAME=v3270
+#---[ Library configuration ]------------------------------------------------------------
 
-SOURCES=marshal.c widget.c oia.c iocallback.c keyboard.c draw.c mouse.c selection.c \
-		accessible.c security.c macros.c hostselect.c properties.c charset.c
+LIBNAME=libv@LIB3270_NAME@
 
-#---[ Configuration values ]-------------------------------------------------------------
+SOURCES= \
+	$(wildcard src/v3270/*.c) \
+	$(wildcard src/v3270ft/*.c) \
+	$(wildcard src/dialogs/*.c)
 
-PACKAGE_NAME=@PACKAGE_NAME@
-PACKAGE_VERSION=@PACKAGE_VERSION@
-PACKAGE_TARNAME=@PACKAGE_TARNAME@
+TEST_SOURCES= \
+	$(wildcard testprogram/*.c)
+
+#---[ Tools ]----------------------------------------------------------------------------
+
+CC=@CC@
+HOST_CC=@HOST_CC@
+LD=@CC@
+LN_S=@LN_S@
+MKDIR=@MKDIR_P@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+XGETTEXT=@XGETTEXT@
+MSGCAT=@MSGCAT@
+WINDRES=@WINDRES@
+AR=@AR@
+VALGRIND=@VALGRIND@
+
+#---[ Paths ]----------------------------------------------------------------------------
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
 sbindir=@sbindir@
 libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+localedir=@localedir@
+docdir=@docdir@
+sysconfdir=@sysconfdir@
 
 BASEDIR=@BASEDIR@
-SRCDIR=$(BASEDIR)/.src/$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)/src/pw3270/$(MODULE_NAME)
-POTDIR=$(BASEDIR)/.pot/$(PACKAGE_TARNAME)/$(MODULE_NAME)
 
-OBJDIR=.obj
+POTDIR=$(BASEDIR)/.pot
+
+OBJDIR=$(BASEDIR)/.obj/$(LIBNAME)
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
-MKDIR=@MKDIR_P@
-CC=@CC@
-LD=@CC@
-AR=@AR@
-GENMARSHAL=@GENMARSHAL@
-XGETTEXT=@XGETTEXT@
-MSGCAT=@MSGCAT@
-INSTALL=@INSTALL@
-INSTALL_DATA=@INSTALL_DATA@
-
-CFLAGS=@CFLAGS@ \
-	@LIB3270_CFLAGS@ \
-	@PW3270_CFLAGS@ \
-	-Wno-deprecated-declarations \
-	@GTK_CFLAGS@
-
-LIBS=@LIBS@ @GTK_LIBS@ @LIB3270_LIBS@
+BINDIR=$(BASEDIR)/.bin
+BINDBG=$(BINDIR)/Debug
+BINRLS=$(BINDIR)/Release
 
 #---[ Rules ]----------------------------------------------------------------------------
 
 DEPENDS= \
-	$(BASEDIR)/src/include/*.h \
-	@LIB3270_INCLUDEPATH@/*.h \
-	$(BASEDIR)/src/include/v3270/*.h
+	Makefile \
+	src/include/*.h \
+	src/include/v3270/*.h \
+	src/v3270/*.h \
+	src/v3270ft/*.h
+
+CFLAGS= \
+	@CFLAGS@ \
+	-g \
+	-I../include
+	-DBUILD_DATE=`date +%Y%m%d` \
+	@LIBSSL_CFLAGS@
+
+LIBS= \
+	@LIBS@ \
+	@LIBSSL_LIBS@ \
+	@LIBICONV@ \
+	@INTL_LIBS@
+
+#---[ Debug Rules ]----------------------------------------------------------------------
 
 $(OBJDBG)/%.o: \
 	%.c \
@@ -80,10 +107,20 @@ $(OBJDBG)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CC) $(CFLAGS) \
-				@DBG_CFLAGS@ \
-				-DBUILD_DATE=`date +"0x%Y%m%d"`\
-				-o $@ -c $<
+	@$(CC) \
+		$(CFLAGS) \
+		-Wall -Wextra -fstack-check \
+		-DDEBUG=1 \
+		-o $@ -c $<
+
+$(OBJDBG)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Release Rules ]--------------------------------------------------------------------
 
 $(OBJRLS)/%.o: \
 	%.c \
@@ -91,97 +128,231 @@ $(OBJRLS)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(CC) $(CFLAGS) \
-				@RLS_CFLAGS@ \
-				-DBUILD_DATE=`date +"0x%Y%m%d"` \
-				-o $@ -c $<
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-o $@ -c $<
 
-$(POTDIR)/%.pot: %.c
+$(OBJRLS)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Misc Rules ]-----------------------------------------------------------------------
+
+$(POTDIR)/$(LIBNAME)/%.pot: \
+	%.c
 
 	@echo $(notdir $@) ...
 	@$(MKDIR) `dirname $@`
 	@$(XGETTEXT) \
-		--default-domain=$(PACKAGE) \
 		--language=C \
 		--keyword=_ \
 		--keyword=N_ \
 		--keyword=MSG_:2 \
 		--output=$@ \
 		$<
-
 	@touch $@
 
-marshal.h: \
-	genmarshal
+$(POTDIR)/$(LIBNAME)/%.pot: \
+	%.rc
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
-	@$(GENMARSHAL) --prefix=$(MODULE_NAME) --header genmarshal > $@
-
-marshal.c: \
-	marshal.h
-
-	@echo $< ...
-	@$(MKDIR) `dirname $@`
-	@glib-genmarshal --prefix=$(MODULE_NAME) --body genmarshal > $@
+	@touch $@
 
 #---[ Release Targets ]------------------------------------------------------------------
 
-Release: \
-	$(BASEDIR)/.obj/Release/$(MODULE_NAME).a
+all: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/static/$(LIBNAME).a \
+	$(POTDIR)/$(LIBNAME).pot
 
-$(BASEDIR)/.obj/Release/$(MODULE_NAME).a: \
+
+Release: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/static/$(LIBNAME).a
+
+$(BINRLS)/$(LIBNAME)@DLLEXT@: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@echo $< ...
+	@rm -f $@
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$@
+
+$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	@rm -f $@
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$@
+
+$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
+		$(LIBS)
+
+$(BINRLS)/static/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@echo $@ ...
 	@$(MKDIR) `dirname $@`
 	@$(AR) rcs $@ $^
 
-pot: \
-	$(BASEDIR)/.pot/$(PACKAGE_TARNAME)/$(MODULE_NAME).pot
 
-$(BASEDIR)/.pot/$(PACKAGE_TARNAME)/$(MODULE_NAME).pot: \
-	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(SRC).pot)
+#---[ Install Targets ]------------------------------------------------------------------
+
+install: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/static/$(LIBNAME).a
+
+	# Install library
+	@mkdir -p $(DESTDIR)$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)
+
+
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
+	# Install static library
+	@$(INSTALL_DATA) \
+		$(BINRLS)/static/$(LIBNAME).a \
+		$(DESTDIR)$(libdir)
+
+	# Install SDK
+
+	@mkdir -p $(DESTDIR)$(includedir)/$(LIBNAME)
+
+	@$(INSTALL_DATA) \
+		../include/$(LIBNAME)/*.h \
+		$(DESTDIR)$(includedir)/$(LIBNAME)		
+
+	@$(INSTALL_DATA) \
+		../include/$(LIBNAME).h \
+		$(DESTDIR)$(includedir)/$(LIBNAME).h
+
+	# Install PKG-CONFIG files
+	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+	@$(INSTALL_DATA) \
+		$(LIBNAME).pc \
+		$(DESTDIR)$(libdir)/pkgconfig/$(LIBNAME).pc
+
+
+#---[ Misc Targets ]---------------------------------------------------------------------
+
+$(POTDIR)/$(LIBNAME).pot: \
+	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
 
 	@rm -f $@
 	@mkdir -p `dirname $@`
 	@$(MSGCAT) --sort-output $^ > $@
 
-$(SRCDIR): \
-	clean
-
-	@$(MKDIR) $@
-	@$(INSTALL_DATA) *.c *.h *.in *.xbm *.cbp genmarshal $@
+locale: \
+	$(POTDIR)/$(LIBNAME).pot
 
 
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BASEDIR)/.obj/Debug/$(MODULE_NAME).a
+	$(BINDBG)/$(LIBNAME)@EXEEXT@
 
-$(BASEDIR)/.obj/Debug/$(MODULE_NAME).a: \
+$(BINDBG)/$(LIBNAME)@EXEEXT@: \
+	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(BINDBG)/$(LIBNAME)@DLLEXT@
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	@$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+
+run: \
+	$(BINDBG)/$(LIBNAME)@EXEEXT@
+
+ifeq ($(VALGRIND),no)
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/$(LIBNAME)@EXEEXT@
+
+else
+	@touch valgrind.suppression
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(VALGRIND) --leak-check=full --track-origins=yes --gen-suppressions=all --suppressions=valgrind.suppression \
+			$(BINDBG)/$(LIBNAME)@EXEEXT@
+endif
+
+
+$(BINDBG)/$(LIBNAME)@DLLEXT@: \
+	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@echo $< ...
+	@rm -f $@
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$@
+
+$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
+	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	@rm -f $@
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$@
+
+$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
 
-	@echo $@ ...
 	@$(MKDIR) `dirname $@`
-	@$(AR) rcs $@ $^
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
+		$(LIBS)
 
-#---[ Clean Targets]---------------------------------------------------------------------
-
-cleanDebug:
-
-	@rm -fr	$(BASEDIR)/.obj/Debug/$(MODULE_NAME).a \
-			$(OBJDBG)
-
-cleanRelease:
-
-	@rm -fr	$(BASEDIR)/.obj/Release/$(MODULE_NAME).a \
-			$(OBJRLS)
-
-	@rm -fr $(POTDIR)
+#---[ Clean Targets ]--------------------------------------------------------------------
 
 clean: \
 	cleanDebug \
 	cleanRelease
 
-	
+	@rm -fr $(BASEDIR)/.tmp/$(LIBNAME)
+	@rm -fr $(POTDIR)/$(LIBNAME)
+
+cleanDebug:
+
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
+
+cleanRelease:
+
+	@rm -fr $(OBJRLS)
+	@rm -fr $(BINRLS)
+	@rm -fr $(POTDIR)
+	@rm -f lib$(LIBNAME).pot
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+
