@@ -324,8 +324,6 @@ static void v3270_accessible_get_character_extents(	AtkText      *text,
 		*y -= y_window;
 	}
 
-//	trace("%s: offset=%d x=%d y=%d %s",__FUNCTION__,offset,*x,*y,coords == ATK_XY_WINDOW ? "ATK_XY_WINDOW" : "");
-
 }
 
 static gchar * v3270_accessible_get_text_at_offset(AtkText *atk_text, gint offset, AtkTextBoundary boundary_type, gint *start_offset, gint *end_offset)
@@ -443,8 +441,6 @@ static gchar * v3270_accessible_get_text(AtkText *atk_text, gint start_pos, gint
 
 		lib3270_free(text);
 
-//		trace("%s:\n%s\n",__FUNCTION__,utftext);
-
 	}
 
 	return utftext;
@@ -455,8 +451,6 @@ static gboolean v3270_set_caret_offset(AtkText *text, gint offset)
 	GtkWidget *widget = gtk_accessible_get_widget (GTK_ACCESSIBLE (text));
 	if (widget == NULL)
 	return FALSE;
-
-	trace("%s - offset=%d",__FUNCTION__,offset);
 
 	lib3270_set_cursor_address(GTK_V3270(widget)->host,offset);
 
@@ -482,8 +476,6 @@ static gint v3270_accessible_get_n_selections (AtkText *text)
 	if(!widget)
 		return 0;
 
-//	trace("%s: n_selections=%d",__FUNCTION__,v3270_get_selection_bounds(widget, NULL, NULL) ? 1 : 0);
-
 	return v3270_get_selection_bounds(widget, NULL, NULL) ? 1 : 0;
 }
 
@@ -491,17 +483,14 @@ static gchar * v3270_accessible_get_selection(AtkText *atk_text, gint selection_
 {
 	GtkWidget *widget = gtk_accessible_get_widget(GTK_ACCESSIBLE (atk_text));
 
-//	trace("%s: selection_num=%d",__FUNCTION__,selection_num);
 	if (widget == NULL ||selection_num != 0)
 		return NULL;
 
 	if(v3270_get_selection_bounds(widget, start_pos, end_pos))
 	{
-//		trace("%s: TRUE",__FUNCTION__);
 		return v3270_get_region(widget, *start_pos, *end_pos, FALSE);
 	}
 
-//	trace("%s: FALSE",__FUNCTION__);
 	return NULL;
 }
 
@@ -556,8 +545,6 @@ static AtkAttributeSet * v3270_accessible_get_default_attributes (AtkText *text)
 	if(!widget)
 		return NULL;
 
-	trace("%s is incomplete ***********************",__FUNCTION__);
-
 	// http://developer.gnome.org/atk/stable/AtkText.html#AtkTextAttribute
 
 	// The direction of the text, if set. Values are "none", "ltr" or "rtl"
@@ -587,8 +574,6 @@ static AtkAttributeSet * v3270_accessible_get_run_attributes(AtkText *text, gint
 	H3270			* host;
 	AtkAttributeSet	* attributes	= NULL;
 	int				  start, end;
-
-	trace("%s is incomplete ***********************",__FUNCTION__);
 
 	g_return_val_if_fail((widget && GTK_IS_V3270(widget)),NULL);
 
@@ -635,24 +620,6 @@ static AtkAttributeSet * v3270_accessible_get_run_attributes(AtkText *text, gint
 
   return attributes;
 }
-
-/*
-static gchar * v3270_accessible_get_text_after_offset(AtkText *text, gint offset, AtkTextBoundary boundary_type, gint *start_offset, gint *end_offset)
-{
-	// http://developer.gnome.org/atk/stable/AtkText.html#atk-text-get-text-after-offset
-	trace("WARNING: %s is incomplete",__FUNCTION__);
-
-}
-*/
-
-/*
-static gchar * v3270_accessible_get_text_before_offset(AtkText *text,gint offset,AtkTextBoundary boundary_type,gint *start_offset,gint *end_offset)
-{
-	// http://developer.gnome.org/atk/stable/AtkText.html#atk-text-get-text-before-offset
-	trace("WARNING: %s is incomplete",__FUNCTION__);
-
-}
-*/
 
 static void atk_text_interface_init(AtkTextIface *iface)
 {
@@ -867,13 +834,10 @@ void v3270_acessible_set_state(GtkAccessible *obj, LIB3270_MESSAGE id)
 
 	bits = GTK_V3270_ACCESSIBLE(obj)->state ^ state;
 
-//	trace("State change from %04x to %04x (bits=%04x)",GTK_V3270_ACCESSIBLE(obj)->state,state, bits );
-
 	for(f=0;f<G_N_ELEMENTS(table);f++)
 	{
 		if(bits & table[f].flag)
 		{
-//			trace("State %s is %s",table[f].dbg,(state & table[f].flag) ? "Yes" : "No");
 			atk_object_notify_state_change(ATK_OBJECT(obj),table[f].atkstate,(state & table[f].flag) ? TRUE : FALSE);
 		}
 	}

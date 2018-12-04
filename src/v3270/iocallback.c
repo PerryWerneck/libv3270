@@ -134,7 +134,6 @@ static void * static_AddTimeOut(H3270 *session, unsigned long interval, void (*c
 	t->call		= call;
 	t->session	= session;
 
-	trace("Adding timeout with %ld ms",interval);
 	g_timeout_add_full(G_PRIORITY_DEFAULT, (guint) interval, (GSourceFunc) do_timer, t, g_free);
 
 	return t;
@@ -253,10 +252,8 @@ struct bgParameter
 
 gpointer BgCall(struct bgParameter *p)
 {
-//	trace("%s starts",__FUNCTION__);
 	p->rc = p->callback(p->session, p->parm);
 	p->running = FALSE;
-//	trace("%s ends",__FUNCTION__);
 	return 0;
 }
 
@@ -313,5 +310,4 @@ void v3270_register_io_handlers(v3270Class *cls)
 		g_error("%s",_( "Can't set lib3270 I/O handlers" ) );
 	}
 
-	trace("%s: I/O handlers OK",__FUNCTION__);
 }

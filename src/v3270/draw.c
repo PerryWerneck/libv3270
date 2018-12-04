@@ -470,8 +470,6 @@ void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned sho
 	rect.width      = terminal->font.width;
 	rect.height     = terminal->font.spacing;
 
-//	trace("%s: c=%c attr=%04x addr=%d pos=%d,%d x=%d y=%d w=%d h=%d",__FUNCTION__,chr,(int) attr,addr,(addr / cols),(addr % cols),rect.x,rect.y,rect.width,rect.height);
-
 	cr = cairo_create(terminal->surface);
 	cairo_set_scaled_font(cr,terminal->font.scaled);
 	v3270_draw_element(cr, chr, attr, terminal->host, &terminal->font, &rect,terminal->color);

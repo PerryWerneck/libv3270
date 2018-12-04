@@ -187,8 +187,6 @@ void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *t
 	if(!GTK_IS_WINDOW(toplevel))
 		toplevel = NULL;
 
-	trace("%s: widget=%p toplevel=%p",__FUNCTION__,widget,toplevel);
-
 	if(type == LIB3270_NOTIFY_CRITICAL)
 	{
 		msgtype	= GTK_MESSAGE_ERROR;
@@ -218,7 +216,6 @@ void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *t
 	gtk_dialog_run(GTK_DIALOG (dialog));
 	gtk_widget_destroy(dialog);
 
-	trace("%s ends",__FUNCTION__);
 }
 
 gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, gboolean keyboard_tooltip, GtkTooltip *tooltip)
@@ -657,8 +654,6 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value
 {
 	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
 
-	trace("Toggle %s is %s",name,value ? "ON" : "OFF");
-
 	switch(ix)
 	{
 	case LIB3270_TOGGLE_CURSOR_POS:
@@ -771,8 +766,6 @@ static void update_connect(H3270 *session, unsigned char connected)
 #endif // DEBUG
 	v3270 *widget = GTK_V3270(lib3270_get_user_data(session));
 
-	trace("%s - %s %s",__FUNCTION__,lib3270_get_url(session,dbg,sizeof(dbg)),connected ? "Connected" : "Disconnected");
-
 	if(connected)
 	{
 		widget->cursor.show |= 2;
@@ -797,7 +790,6 @@ static void update_connect(H3270 *session, unsigned char connected)
 
 static void update_screen_size(H3270 *session,unsigned short rows, unsigned short cols)
 {
-//	trace("Widget %p changes to %dx%d",session->widget,cols,rows);
 	v3270_reload(GTK_WIDGET(lib3270_get_user_data(session)));
 	gtk_widget_queue_draw(GTK_WIDGET(lib3270_get_user_data(session)));
 }
@@ -816,10 +808,6 @@ static void changed(H3270 *session, int offset, int len)
 {
 	GtkWidget 		* widget	= lib3270_get_user_data(session);
 	GtkAccessible	* obj		= GTK_V3270(widget)->accessible;
-
-#ifdef WIN32
-	trace("%s: offset=%d len=%d accessible=%p",__FUNCTION__,offset,len,obj);
-#endif
 
 	if(obj)
 	{
@@ -860,15 +848,7 @@ static void changed(H3270 *session, int offset, int len)
 	gtk_widget_queue_draw(widget);
 #endif // WIN32
 
-#ifdef WIN32
-	trace("%s: emit signal",__FUNCTION__);
-#endif
-
 	g_signal_emit(GTK_WIDGET(widget),v3270_widget_signal[SIGNAL_CHANGED], 0, (guint) offset, (guint) len);
-
-#ifdef WIN32
-	trace("%s: ends",__FUNCTION__);
-#endif
 }
 
 static void set_selection(H3270 *session, unsigned char status)
@@ -913,8 +893,6 @@ static int emit_print_signal(H3270 *session)
 
 static gboolean activity_tick(v3270 *widget)
 {
-//	trace("idle=%d (%d) timeout=%d",(int) (time(0) - widget->activity.timestamp),(int) (((time(0) - widget->activity.timestamp)/60),widget->activity.disconnect));
-
 	if(widget->activity.disconnect && lib3270_is_connected(widget->host) && ((time(0) - widget->activity.timestamp)/60) >= widget->activity.disconnect)
 		lib3270_disconnect(widget->host);
 
@@ -1013,7 +991,6 @@ static void v3270_init(v3270 *widget)
 	// Enable drawing
 	widget->drawing	= 1;
 
-	trace("%s",__FUNCTION__);
 }
 
 GtkWidget * v3270_new(void)
@@ -1033,8 +1010,6 @@ static void v3270_destroy(GtkObject *widget)
 #endif
 {
 	v3270 * terminal = GTK_V3270(widget);
-
-	trace("%s %p",__FUNCTION__,widget);
 
 	if(terminal->accessible)
 	{
@@ -1255,7 +1230,6 @@ static void v3270_size_allocate(GtkWidget * widget, GtkAllocation * allocation)
 	g_return_if_fail(GTK_IS_V3270(widget));
 	g_return_if_fail(allocation != NULL);
 
-//	trace("Widget size changes to %dx%d",allocation->width,allocation->height);
 #if GTK_CHECK_VERSION(2,18,0)
 	gtk_widget_set_allocation(widget, allocation);
 #else
@@ -1362,8 +1336,6 @@ void v3270_set_colors(GtkWidget *widget, const gchar *colors)
 
 	}
 
-	trace("Widget %p colors:\n%s\n",widget,colors);
-
 	v3270_set_color_table(GTK_V3270(widget)->color,colors);
 	g_signal_emit(widget,v3270_widget_signal[SIGNAL_UPDATE_CONFIG], 0, "colors", colors);
 	v3270_reload(widget);
@@ -1416,8 +1388,6 @@ void v3270_set_color_table(GdkRGBA *table, const gchar *colors)
  	gchar	**clr;
  	guint	  cnt;
  	int		  f;
-
-	trace("colors=[%s]",colors);
 
 	if(strchr(colors,':'))
 		clr = g_strsplit(colors,":",V3270_COLOR_COUNT+1);
@@ -1494,8 +1464,6 @@ void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 	terminal->font.family = g_strdup(name);
 	terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
 
-	trace("%s: %s (%p)",__FUNCTION__,terminal->font.family,terminal->font.family);
-
 	g_signal_emit(widget,v3270_widget_signal[SIGNAL_UPDATE_CONFIG], 0, "font-family", name);
 
 	v3270_reload(widget);
@@ -1568,7 +1536,6 @@ static void v3270_activate(GtkWidget *widget)
 {
 	v3270 * terminal = GTK_V3270(widget);
 
-	trace("%s: %p",__FUNCTION__,terminal);
 	terminal->activity.timestamp = time(0);
 
 	if(lib3270_connected(terminal->host))
@@ -1587,8 +1554,6 @@ const GtkWidgetClass * v3270_get_parent_class(void)
 static AtkObject * v3270_get_accessible(GtkWidget * widget)
 {
 	v3270 * terminal = GTK_V3270(widget);
-
-//	trace("%s acc=%p",__FUNCTION__,terminal->accessible);
 
 	if(!terminal->accessible)
 	{
@@ -1660,7 +1625,6 @@ void v3270_set_scaled_fonts(GtkWidget *widget, gboolean on)
 
 	GTK_V3270(widget)->scaled_fonts = on ? 1 : 0;
 
-	trace("Sfonts is %s",GTK_V3270(widget)->scaled_fonts ? "YES" : "NO");
 }
 
 void v3270_set_session_name(GtkWidget *widget, const gchar *name)

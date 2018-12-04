@@ -143,8 +143,6 @@
 	{
 		int pfcode = (event->keyval - GDK_F1) + ((state & GDK_SHIFT_MASK) ? 13 : 1);
 
-		trace("PF%02d",pfcode);
-
 		if(pfcode > 0 && pfcode < 25)
 		{
 			lib3270_pfkey(widget->host,pfcode);
@@ -156,7 +154,6 @@
 	{
 		if(keycode[f].keyval == event->keyval && state == keycode[f].state)
 		{
-			trace("%s: id=%d action=%p",__FUNCTION__,f,keycode[f].action);
 			if(keycode[f].action)
 				gtk_action_activate(keycode[f].action);
 			else if(keycode[f].exec)

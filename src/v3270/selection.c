@@ -52,14 +52,11 @@
 
 static void clipboard_clear(GtkClipboard *clipboard, GObject *obj)
 {
-	trace("%s widget=%p",__FUNCTION__,obj);
 }
 
 static void clipboard_get(GtkClipboard *clipboard, GtkSelectionData *selection, guint target, GObject *obj)
 {
 	v3270 * widget = GTK_V3270(obj);
-
-	trace("%s: widget=%p target=\"%s\"",__FUNCTION__,obj,targets[target].target);
 
 	switch(target)
 	{
@@ -504,8 +501,6 @@ void v3270_paste_string(GtkWidget *widget, const gchar *text, const gchar *encod
 	}
 
 	next = lib3270_paste(session,(unsigned char *) buffer) ? TRUE : FALSE;
-
-	trace("Pastenext is %s",next ? "On" : "Off");
 
 	g_free(buffer);
 

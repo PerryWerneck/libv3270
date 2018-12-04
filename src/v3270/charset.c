@@ -324,8 +324,6 @@
 
  static void element_start(GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, struct parse *info, GError **error)
  {
-	trace("%s(%s)",__FUNCTION__,element_name);
-
  	if(!g_ascii_strcasecmp(element_name,"pw3270-remap"))
 	{
 		const gchar *host		= NULL;
@@ -408,8 +406,6 @@
 		info->map[info->len].iso 	= getChar(iso,error);
 		info->map[info->len].scope	= getRemapScope(scope,error);
 
-		trace("%u: ebc=%04x iso=%04x %c",(unsigned int) info->len,info->map[info->len].ebc,info->map[info->len].iso,info->map[info->len].iso);
-
  		info->len++;
 
  	}
@@ -418,9 +414,7 @@
 
  static void element_end(GMarkupParseContext *context, const gchar *element_name, struct parse *info, GError **error)
  {
-	// trace("%s(%s)",__FUNCTION__,element_name);
  }
-
 
  LIB3270_EXPORT	void v3270_remap_from_xml(GtkWidget *widget, const gchar *path)
  {
@@ -489,11 +483,6 @@
 		if(hSession)
 		{
 			unsigned int i;
-
-			trace("cgcsgid = %lx",cfg.cgcsgid);
-			trace("display = %s",cfg.display);
-			trace("host = %s",cfg.host);
-			trace("length = %u",(unsigned int) cfg.len);
 
 			lib3270_reset_charset(hSession, cfg.host, cfg.display, cfg.cgcsgid);
 

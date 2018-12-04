@@ -461,8 +461,6 @@ static void draw_status_message(cairo_t *cr, LIB3270_MESSAGE id, v3270FontInfo *
 
 	memcpy(&rect,r,sizeof(GdkRectangle));
 
-//	trace("%s: id=%d",__FUNCTION__,id);
-
 	if(id >= 0 && id < G_N_ELEMENTS(message))
 	{
 		msg = message[id].msg;
@@ -821,8 +819,6 @@ struct timer_info
 
 static void release_timer(struct timer_info *info)
 {
-	trace("%s: info=%p",__FUNCTION__,info);
-
 	info->terminal->timer = NULL;
 
 	if(info->terminal->surface)
@@ -866,8 +862,6 @@ void v3270_draw_shift_status(v3270 *terminal)
 
 	cr = set_update_region(terminal,&r,V3270_OIA_SHIFT);
 	cairo_translate(cr, r->x, r->y+1);
-
-	trace("%s: %s",__FUNCTION__,(terminal->keyflags & KEY_FLAG_SHIFT) ? "Yes" : "No");
 
 	if(r->width > 2 && r->height > 7 && (terminal->keyflags & KEY_FLAG_SHIFT))
 	{
@@ -1037,7 +1031,6 @@ void v3270_start_timer(GtkWidget *widget)
 
 	if(terminal->timer)
 	{
-		trace("Timer %p starts again",terminal->timer);
 		g_source_ref(terminal->timer);
 		return;
 	}
@@ -1054,15 +1047,11 @@ void v3270_start_timer(GtkWidget *widget)
 	g_source_attach(terminal->timer,NULL);
 	g_source_unref(terminal->timer);
 
-	trace("Timer %p starts",terminal->timer);
-
 }
 
 void v3270_stop_timer(GtkWidget *widget)
 {
 	v3270 *terminal = GTK_V3270(widget);
-
-	trace("Timer %p stops",terminal->timer);
 
 	if(terminal->timer)
 	{

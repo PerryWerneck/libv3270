@@ -81,7 +81,6 @@ static void single_click(v3270 *widget, int baddr)
 
 	default:
 		// Move selected area
-		trace("%s: default action",__FUNCTION__);
 		widget->selection.baddr = baddr;
 		widget->moving = 1;
 	}
@@ -110,10 +109,6 @@ static void button_1_press(GtkWidget *widget, GdkEventType type, int baddr)
 			lib3270_ring_bell(GTK_V3270(widget)->host);
 		break;
 
-#ifdef DEBUG
-	default:
-		trace("Unexpected button 1 type %d",type);
-#endif
 	}
 
 	#pragma GCC diagnostic pop
@@ -175,14 +170,11 @@ gboolean v3270_button_press_event(GtkWidget *widget, GdkEventButton *event)
 				v3270_emit_popup(GTK_V3270(widget),baddr,event);
 			break;
 
-		default:
-			trace("%s button=%d type=%d",__FUNCTION__,event->button,event->type);
 		}
 	}
 	else if(event->button == 1 && event->type == GDK_BUTTON_PRESS)
 	{
 		GTK_V3270(widget)->selected_field = get_field_from_event(GTK_V3270(widget),event);
-		trace("%s field=%d",__FUNCTION__,GTK_V3270(widget)->selected_field);
 	}
 
 	return FALSE;
@@ -201,15 +193,11 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 		{
 			gboolean handled = FALSE;
 
-			trace("%s field %d was clicked event=%p",__FUNCTION__,GTK_V3270(widget)->selected_field,event);
-
 			g_signal_emit(widget,	v3270_widget_signal[SIGNAL_FIELD], 0,
 									lib3270_connected(GTK_V3270(widget)->host) ? TRUE : FALSE,
 									GTK_V3270(widget)->selected_field,
 									event,
 									&handled);
-
-			trace("Handled: %s",handled ? "Yes": "No");
 
 			if(!handled)
 				gdk_beep();
@@ -220,8 +208,6 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 
 		break;
 
-	default:
-		trace("%s button=%d type=%d",__FUNCTION__,event->button,event->type);
 	}
 
 	return FALSE;
@@ -334,8 +320,6 @@ gboolean v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 	}
 
 	lib3270_trace_event(hSession,"\n");
-
-	trace("Scroll: %d Action: %p",event->direction,action_scroll[event->direction]);
 
 	if(action_scroll[event->direction])
 		gtk_action_activate(action_scroll[event->direction]);
