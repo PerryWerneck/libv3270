@@ -52,7 +52,7 @@ Provides:	libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
 Conflicts:	otherproviders(libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
 
 BuildRequires:  pkgconfig(openssl)
-BuildRequires:	pkgconfig(lib3270) = %{version}
+BuildRequires:	pkgconfig(lib3270) >= 5.2
 BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
