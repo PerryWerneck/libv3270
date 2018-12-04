@@ -51,6 +51,7 @@ MSGCAT=@MSGCAT@
 WINDRES=@WINDRES@
 AR=@AR@
 VALGRIND=@VALGRIND@
+GENMARSHAL=@GENMARSHAL@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -84,20 +85,24 @@ DEPENDS= \
 	src/include/*.h \
 	src/include/v3270/*.h \
 	src/v3270/*.h \
-	src/v3270ft/*.h
+	src/v3270ft/*.h \
+	src/v3270/marshal.h \
+	src/v3270ft/marshal.h
 
 CFLAGS= \
 	@CFLAGS@ \
 	-g \
-	-I../include
+	-Isrc/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
-	@LIBSSL_CFLAGS@
+	@GTK_CFLAGS@ \
+	@GLIB_CFLAGS@
 
 LIBS= \
 	@LIBS@ \
-	@LIBSSL_LIBS@ \
-	@LIBICONV@ \
-	@INTL_LIBS@
+	@GTK_LIBS@ \
+	@GLIB_LIBS@ \
+	@INTL_LIBS@ \
+	-l3270
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
@@ -107,6 +112,7 @@ $(OBJDBG)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
+
 	@$(CC) \
 		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
@@ -163,6 +169,55 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	@$(MKDIR) `dirname $@`
 	@touch $@
 
+#---[ Marshal Targets ]------------------------------------------------------------------
+
+src/v3270/marshal.h: \
+	src/v3270/marshal
+
+	@echo $@ ...
+	@$(MKDIR) `dirname $@`
+
+	@$(GENMARSHAL) --prefix=v3270 --header $< > $@
+
+$(OBJDIR)/marshal/v3270.c: \
+	src/v3270/marshal
+
+	@echo $@ ...
+	@$(MKDIR) `dirname $@`
+
+	@$(GENMARSHAL) --prefix=v3270 --body $< > $@
+
+
+src/v3270ft/marshal.h: \
+	src/v3270ft/marshal
+
+	@echo $@ ...
+	@$(MKDIR) `dirname $@`
+
+	@$(GENMARSHAL) --prefix=v3270ft --header $< > $@
+
+$(OBJDIR)/marshal/v3270ft.c: \
+	src/v3270ft/marshal
+
+	@echo $@ ...
+	@$(MKDIR) `dirname $@`
+
+	@$(GENMARSHAL) --prefix=v3270ft --body $< > $@
+
+$(OBJDIR)/marshal/%.o: \
+	$(OBJDIR)/marshal/%.c \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+
+	@$(CC) \
+		$(CFLAGS) \
+		-Wall -Wextra -fstack-check \
+		-DDEBUG=1 \
+		-o $@ -c $<
+
+
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
@@ -193,7 +248,9 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
 		$@
 
 $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
-	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
+	$(OBJDIR)/marshal/v3270.o \
+	$(OBJDIR)/marshal/v3270ft.o
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
@@ -202,6 +259,8 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
+		$(OBJDIR)/marshal/v3270.o \
+		$(OBJDIR)/marshal/v3270ft.o \
 		$(LIBS)
 
 $(BINRLS)/static/$(LIBNAME).a: \
@@ -319,7 +378,9 @@ $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
 		$@
 
 $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
-	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(OBJDIR)/marshal/v3270.o \
+	$(OBJDIR)/marshal/v3270ft.o
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
@@ -328,6 +389,8 @@ $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
+		$(OBJDIR)/marshal/v3270.o \
+		$(OBJDIR)/marshal/v3270ft.o \
 		$(LIBS)
 
 #---[ Clean Targets ]--------------------------------------------------------------------
@@ -338,17 +401,24 @@ clean: \
 
 	@rm -fr $(BASEDIR)/.tmp/$(LIBNAME)
 	@rm -fr $(POTDIR)/$(LIBNAME)
+	@rm -fr src/include/marshal
 
 cleanDebug:
 
 	@rm -fr $(OBJDBG)
 	@rm -fr $(BINDBG)
+	@rm -fr $(OBJDIR)/marshal
+	@rm -f src/v3270/marshal.h
+	@rm -f src/v3270ft/marshal.h
 
 cleanRelease:
 
 	@rm -fr $(OBJRLS)
 	@rm -fr $(BINRLS)
 	@rm -fr $(POTDIR)
+	@rm -fr $(OBJDIR)/marshal
+	@rm -f src/v3270/marshal.h
+	@rm -f src/v3270ft/marshal.h
 	@rm -f lib$(LIBNAME).pot
 
 clean: \

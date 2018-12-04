@@ -178,9 +178,7 @@ AC_PATH_TOOL([MSGINIT], [msginit], [no])
 AC_PATH_TOOL([MSGMERGE], [msgmerge], [no])
 AC_PATH_TOOL([MSGFMT], [msgfmt], [no])
 AC_PATH_TOOL([VALGRIND], [valgrind], [no])
-AC_PATH_TOOL([SVG2PNG],[rsvg-convert],[no])
-AC_PATH_TOOL([CONVERT], [convert], [no])
-AC_PATH_TOOL([OPTIPNG],[optipng],[no])
+AC_PATH_TOOL([GENMARSHAL], [glib-genmarshal], [glib-genmarshal])
 
 AC_CHECK_HEADER(libintl.h, [
 	AC_DEFINE(HAVE_LIBINTL, 1)
@@ -203,18 +201,20 @@ dnl ---------------------------------------------------------------------------
 dnl Check for GTK
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [GTK], [gtk+-3.0 gmodule-2.0], AC_DEFINE(HAVE_GTK), AC_MSG_ERROR([GTK not present.] )
+PKG_CHECK_MODULES( [GTK], [gtk+-3.0 gmodule-2.0], AC_DEFINE(HAVE_GTK), AC_MSG_ERROR([GTK not present.]))
 
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_VERSION)
 AC_SUBST(GTK_MODVERSION,`$PKG_CONFIG --modversion gtk+-$GTK_VERSION`)
 
+
+
 dnl ---------------------------------------------------------------------------
 dnl Check for GLIB
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [GLIB], [glib-2.0], AC_DEFINE(HAVE_GLIB), AC_MSG_ERROR([GLIB not present.] )
+PKG_CHECK_MODULES( [GLIB], [glib-2.0], AC_DEFINE(HAVE_GLIB), AC_MSG_ERROR([GLIB not present.] ))
 AC_SUBST(GLIB_LIBS)
 AC_SUBST(GLIB_CFLAGS)
 
