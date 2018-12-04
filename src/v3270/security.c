@@ -27,7 +27,15 @@
  *
  */
 
+ #include <config.h>
+
+ #define ENABLE_NLS
+ #define GETTEXT_PACKAGE PACKAGE_NAME
+
  #include <gtk/gtk.h>
+ #include <libintl.h>
+ #include <glib/gi18n.h>
+
  #include "private.h"
 
  #if defined(HAVE_LIBSSL)

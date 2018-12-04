@@ -29,6 +29,15 @@
  *
  */
 
+ #include <config.h>
+
+ #define ENABLE_NLS
+ #define GETTEXT_PACKAGE PACKAGE_NAME
+
+ #include <gtk/gtk.h>
+ #include <libintl.h>
+ #include <glib/gi18n.h>
+
 #if defined(_WIN32) /*[*/
 	#include <windows.h>
 #elif defined(__APPLE__)

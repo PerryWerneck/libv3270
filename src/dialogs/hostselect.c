@@ -27,9 +27,8 @@
  *
  */
 
- #include "hostselect.h"
- #include <lib3270/log.h>
- #include <v3270.h>
+ #include "private.h"
+ #include <hostselect.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 

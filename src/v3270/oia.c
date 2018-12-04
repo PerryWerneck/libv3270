@@ -27,17 +27,25 @@
  *
  */
 
-#ifdef WIN32
+ #include <config.h>
+
+ #define ENABLE_NLS
+ #define GETTEXT_PACKAGE PACKAGE_NAME
+
+ #include <gtk/gtk.h>
+ #include <libintl.h>
+ #include <glib/gi18n.h>
+
+ #ifdef WIN32
 	#include <winsock2.h>
 	#include <windows.h>
 	#include <ws2tcpip.h>
-#endif // WIN32
+ #endif // WIN32
 
  #include <lib3270.h>
  #include <lib3270/session.h>
  #include <lib3270/log.h>
  #include <config.h>
- #include <gtk/gtk.h>
  #include <string.h>
  #include <errno.h>
  #include <ctype.h>

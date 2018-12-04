@@ -27,8 +27,8 @@
  *
  */
 
- #include <v3270.h>
  #include "private.h"
+ #include <v3270.h>
  #include <lib3270/charset.h>
  #include <lib3270/log.h>
  #include <lib3270/X11keysym.h>
