@@ -303,11 +303,11 @@ install: \
 	@mkdir -p $(DESTDIR)$(includedir)/$(LIBNAME)
 
 	@$(INSTALL_DATA) \
-		../include/$(LIBNAME)/*.h \
+		src/include/v3270/*.h \
 		$(DESTDIR)$(includedir)/$(LIBNAME)		
 
 	@$(INSTALL_DATA) \
-		../include/$(LIBNAME).h \
+		src/include/v3270.h \
 		$(DESTDIR)$(includedir)/$(LIBNAME).h
 
 	# Install PKG-CONFIG files
@@ -341,7 +341,7 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
-	$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+	$(LD) -o $@ $^ -Wl,-rpath,$(BINDBG) $(LDFLAGS) $(LIBS)
 
 
 run: \

@@ -374,6 +374,7 @@ dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
 AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(libv3270.pc)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.
