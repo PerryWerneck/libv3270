@@ -50,34 +50,34 @@
 	typedef struct _v3270ftClass	v3270ftClass;
 
 
-	GtkWidget			* v3270ft_new(void);
-	GType      			  v3270ft_get_type(void);
-	void				  v3270ft_set_options(GtkWidget *widget, LIB3270_FT_OPTION opt);
-	LIB3270_FT_OPTION	  v3270ft_get_options(GtkWidget *widget);
-	void 				  v3270ft_reset(GtkWidget *widget);
-	gboolean			  v3270ft_is_valid(GtkWidget *widget);
-	guint				  v3270ft_get_length(GtkWidget *widget);
-	void				  v3270ft_select_first(GtkWidget *widget);
-	void				  v3270ft_select_last(GtkWidget *widget);
-	void				  v3270ft_select_previous(GtkWidget *widget);
-	void				  v3270ft_select_next(GtkWidget *widget);
-	void				  v3270ft_remove_selected(GtkWidget *widget);
-	void				  v3270ft_remove_all(GtkWidget *widget);
-	void				  v3270ft_save(GtkWidget *widget,const gchar *filename);
-	void				  v3270ft_load(GtkWidget *widget,const gchar *filename);
+	LIB3270_EXPORT GtkWidget			* v3270ft_new(void);
+	LIB3270_EXPORT GType      			  v3270ft_get_type(void);
+	LIB3270_EXPORT void					  v3270ft_set_options(GtkWidget *widget, LIB3270_FT_OPTION opt);
+	LIB3270_EXPORT LIB3270_FT_OPTION	  v3270ft_get_options(GtkWidget *widget);
+	LIB3270_EXPORT void 				  v3270ft_reset(GtkWidget *widget);
+	LIB3270_EXPORT gboolean				  v3270ft_is_valid(GtkWidget *widget);
+	LIB3270_EXPORT guint				  v3270ft_get_length(GtkWidget *widget);
+	LIB3270_EXPORT void					  v3270ft_select_first(GtkWidget *widget);
+	LIB3270_EXPORT void					  v3270ft_select_last(GtkWidget *widget);
+	LIB3270_EXPORT void					  v3270ft_select_previous(GtkWidget *widget);
+	LIB3270_EXPORT void					  v3270ft_select_next(GtkWidget *widget);
+	LIB3270_EXPORT void					  v3270ft_remove_selected(GtkWidget *widget);
+	LIB3270_EXPORT void					  v3270ft_remove_all(GtkWidget *widget);
+	LIB3270_EXPORT void					  v3270ft_save(GtkWidget *widget,const gchar *filename);
+	LIB3270_EXPORT void					  v3270ft_load(GtkWidget *widget,const gchar *filename);
 
-	gboolean			  v3270ft_has_selected(GtkWidget *widget);
-	gboolean			  v3270ft_has_next(GtkWidget *widget);
+	LIB3270_EXPORT gboolean				  v3270ft_has_selected(GtkWidget *widget);
+	LIB3270_EXPORT gboolean				  v3270ft_has_next(GtkWidget *widget);
 
-	const gchar 		* v3270ft_get_local_filename(GtkWidget *widget);
-	const gchar 		* v3270ft_get_remote_filename(GtkWidget *widget);
+	LIB3270_EXPORT const gchar 			* v3270ft_get_local_filename(GtkWidget *widget);
+	LIB3270_EXPORT const gchar 			* v3270ft_get_remote_filename(GtkWidget *widget);
 
-	void				  v3270ft_append_file(GtkWidget *widget, const gchar *filename, gboolean text);
-	guint				  v3270ft_append_selection(GtkWidget *widget, GtkSelectionData *data);
+	LIB3270_EXPORT void					  v3270ft_append_file(GtkWidget *widget, const gchar *filename, gboolean text);
+	LIB3270_EXPORT guint				  v3270ft_append_selection(GtkWidget *widget, GtkSelectionData *data);
 
-	gchar				* v3270ft_select_file(v3270ft *dialog, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, const gchar *filter, ... ) G_GNUC_NULL_TERMINATED;
+	LIB3270_EXPORT gchar				* v3270ft_select_file(v3270ft *dialog, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, const gchar *filter, ... ) G_GNUC_NULL_TERMINATED;
 
-	gint				  v3270ft_transfer(GtkWidget *dialog, H3270 *session);
+	LIB3270_EXPORT gint					  v3270ft_transfer(GtkWidget *dialog, H3270 *session);
 
 	G_END_DECLS
 

@@ -3,6 +3,7 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="3270 terminal widget for gtk" />
+		<Option makefile_is_custom="1" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -40,27 +41,28 @@
 			<Add option="`pkg-config --libs gtk+-3.0 lib3270`" />
 			<Add option="-fPIC" />
 		</Linker>
-		<ExtraCommands>
-			<Add before="/usr/bin/glib-genmarshal --prefix=v3270 --header src/v3270/v3270.marshal &gt; src/v3270/marshal.h" />
-			<Add before="/usr/bin/glib-genmarshal --prefix=v3270ft --header src/v3270ft/v3270ft.marshal &gt; src/v3270ft/marshal.h" />
-		</ExtraCommands>
 		<Unit filename="src/dialogs/hostselect.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/hostselect.h" />
 		<Unit filename="src/include/accessible.h" />
+		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/hostselect.h" />
+		<Unit filename="src/include/v3270.h" />
+		<Unit filename="src/include/v3270/filetransfer.h" />
+		<Unit filename="src/include/v3270/ftprogress.h" />
+		<Unit filename="src/testprogram/testprogram.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/v3270/accessible.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/v3270/accessible.h" />
 		<Unit filename="src/v3270/charset.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/v3270/draw.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/v3270/hostselect.h" />
 		<Unit filename="src/v3270/iocallback.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -27,7 +27,6 @@
  *
  */
 
-#include <gtk/gtk.h>
 #include <config.h>
 
 #define ENABLE_NLS
@@ -36,9 +35,8 @@
 #include <libintl.h>
 #include <glib/gi18n.h>
 
-#ifndef V3270_H_INCLUDED
-	#include <v3270.h>
-#endif
+#include <gtk/gtk.h>
+#include <v3270.h>
 
 G_BEGIN_DECLS
 

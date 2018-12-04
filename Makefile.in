@@ -34,7 +34,7 @@ SOURCES= \
 	$(wildcard src/dialogs/*.c)
 
 TEST_SOURCES= \
-	$(wildcard testprogram/*.c)
+	$(wildcard src/testprogram/*.c)
 
 #---[ Tools ]----------------------------------------------------------------------------
 
@@ -341,7 +341,8 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
-	@$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+	$(LD) -o $@ $^ $(LDFLAGS) $(LIBS)
+
 
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@
