@@ -264,6 +264,7 @@ $(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
 		$(OBJDIR)/marshal/v3270.o \
 		$(OBJDIR)/marshal/v3270ft.o \
+		-L$(BINRLS) \
 		$(LIBS)
 
 $(BINRLS)/static/$(LIBNAME).a: \
@@ -344,8 +345,14 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
-	$(LD) -o $@ $^ -Wl,-rpath,$(BINDBG) $(LDFLAGS) $(LIBS)
-
+	@$(LD) \
+		-o $@ \
+		$^ \
+		-L$(BINDBG) \
+		-Wl,-rpath,$(BINDBG) \
+		$(LDFLAGS) \
+		$(LIBS) \
+		-lv@LIB3270_NAME@
 
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@
@@ -391,6 +398,7 @@ $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	@$(LD) \
 		-shared -Wl,-soname,$(@F) \
 		-o $@ \
+		-L$(BINDBG) \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
 		$(OBJDIR)/marshal/v3270.o \
