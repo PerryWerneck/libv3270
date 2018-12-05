@@ -64,7 +64,7 @@ BuildRequires:  m4
 
 %description
 
-TN3270 GTK Virtual terminal Widget originally designed as part of the pw3270 application.
+Originally designed as part of the pw3270 application this library provides a TN3270 virtual terminal widget for GTK 3.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 

@@ -1,6 +1,6 @@
-pw3270 is a modern, GTK-based, completely free tn3270 emulator. 
+3270 Virtual Terminal for GTK.
 
-Created originally for Banco do Brasil, it's now an official Brazilian Government Public Software project, and is used worldwide. 
+Originally designed as part of the pw3270 application this library provides a TN3270 virtual terminal widget for GTK 3.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
