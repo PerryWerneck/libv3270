@@ -371,10 +371,11 @@ if test "$app_cv_inet_ntop" == "yes"; then
 fi
 
 dnl ---------------------------------------------------------------------------
-dnl Output config
+dnl Directory config
 dnl ---------------------------------------------------------------------------
 
-AC_SUBST(BASEDIR,$ac_pwd)
+AC_ARG_WITH([work-dir], [AS_HELP_STRING([--with-work-dir], [Setup work path])], [ app_cv_workdir="$withval" ],[ app_cv_workdir="$ac_pwd" ])
+AC_SUBST(BASEDIR,$app_cv_workdir)
 
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
