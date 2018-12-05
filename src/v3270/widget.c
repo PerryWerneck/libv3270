@@ -55,7 +55,7 @@
 
  #include <v3270.h>
  #include "private.h"
- #include "accessible.h"
+ #include <v3270/accessible.h>
  #include "marshal.h"
 
 #if GTK_CHECK_VERSION(3,0,0)

@@ -56,7 +56,7 @@
 
  #include <v3270.h>
  #include "private.h"
- #include "accessible.h"
+ #include <v3270/accessible.h>
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 

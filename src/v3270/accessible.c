@@ -40,7 +40,7 @@
  #include <lib3270/log.h>
  #include <v3270.h>
  #include "private.h"
- #include "accessible.h"
+ #include <v3270/accessible.h>
 
  #ifdef GDK_WINDOWING_X11
 	#include <gdk/gdkx.h>
