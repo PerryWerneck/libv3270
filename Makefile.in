@@ -95,7 +95,7 @@ CFLAGS= \
 	-g \
 	-Isrc/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
-	@LIB3270_CFLAGS@
+	@LIB3270_CFLAGS@ \
 	@GTK_CFLAGS@ \
 	@GLIB_CFLAGS@
 
