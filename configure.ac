@@ -206,9 +206,7 @@ PKG_CHECK_MODULES( [GTK], [gtk+-3.0 gmodule-2.0], AC_DEFINE(HAVE_GTK), AC_MSG_ER
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_VERSION)
-AC_SUBST(GTK_MODVERSION,`$PKG_CONFIG --modversion gtk+-$GTK_VERSION`)
-
-
+AC_SUBST(GTK_MODVERSION,`$PKG_CONFIG --modversion gtk+-3.0`)
 
 dnl ---------------------------------------------------------------------------
 dnl Check for GLIB
