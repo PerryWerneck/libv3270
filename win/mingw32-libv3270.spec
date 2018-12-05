@@ -50,6 +50,7 @@ Conflicts:	otherproviders(mingw32-libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gettext-tools
+BuildRequires:  pkgconfig(glib-2.0)
 
 BuildRequires:	mingw32-cross-binutils
 BuildRequires:	mingw32-cross-gcc
@@ -63,7 +64,7 @@ BuildRequires:	mingw32(pkg:gtk+-win32-3.0)
 BuildRequires:	mingw32(lib:iconv)
 BuildRequires:	mingw32(lib:intl)
 
-BuildRequires:	mingw32(lib:3270)
+BuildRequires:	mingw32(pkg:lib3270) >= 5.2
 
 %description
 
