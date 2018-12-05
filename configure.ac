@@ -85,7 +85,7 @@ case "$host" in
 		app_win32_revision=$(date +%y.%m.%d.%H)
 		AC_SUBST(WIN32_VERSION,$app_win32_revision)
 
-		AC_CONFIG_FILES(src/lib3270/windows/resources.rc)
+		AC_CONFIG_FILES(src/v3270/windows/resources.rc)
 		;;
 
  	s390x-*)

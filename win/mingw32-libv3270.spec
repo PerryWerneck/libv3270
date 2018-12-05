@@ -58,7 +58,10 @@ BuildRequires:	mingw32-cross-pkg-config
 BuildRequires:	mingw32-filesystem
 BuildRequires:	mingw32-libopenssl-devel
 BuildRequires:	mingw32-zlib-devel
+
 BuildRequires:	mingw32(pkg:gtk+-win32-3.0)
+BuildRequires:	mingw32(lib:iconv)
+BuildRequires:	mingw32(lib:intl)
 
 BuildRequires:	mingw32(lib:3270)
 

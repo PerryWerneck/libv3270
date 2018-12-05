@@ -59,9 +59,11 @@ BuildRequires:	mingw64-filesystem
 BuildRequires:	mingw64-libopenssl-devel
 BuildRequires:	mingw64-zlib-devel
 
-BuildRequires:	mingw64(lib:3270)
-
 BuildRequires:	mingw64(pkg:gtk+-win32-3.0)
+BuildRequires:	mingw64(lib:iconv)
+BuildRequires:	mingw64(lib:intl)
+
+BuildRequires:	mingw64(lib:3270)
 
 %description
 

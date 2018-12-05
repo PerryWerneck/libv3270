@@ -30,6 +30,7 @@ LIBNAME=libv@LIB3270_NAME@
 
 SOURCES= \
 	$(wildcard src/v3270/*.c) \
+	$(wildcard src/v3270/@OSNAME@/*.rc) \
 	$(wildcard src/v3270ft/*.c) \
 	$(wildcard src/dialogs/*.c)
 
