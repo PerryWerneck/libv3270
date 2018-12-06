@@ -45,7 +45,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/private.h" />
-		<Unit filename="src/include/accessible.h" />
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/hostselect.h" />
 		<Unit filename="src/include/v3270.h" />

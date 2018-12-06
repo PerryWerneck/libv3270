@@ -69,7 +69,7 @@ sysconfdir=@sysconfdir@
 
 BASEDIR=@BASEDIR@
 
-POTDIR=$(BASEDIR)/$(LIBNAME)/.pot
+POTDIR=$(BASEDIR)/.pot
 
 OBJDIR=$(BASEDIR)/.obj/$(LIBNAME)
 OBJDBG=$(OBJDIR)/Debug
