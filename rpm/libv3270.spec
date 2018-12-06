@@ -52,8 +52,8 @@ Provides:	libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
 Conflicts:	otherproviders(libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
 
 BuildRequires:  pkgconfig(openssl)
-BuildRequires:	pkgconfig(lib3270) >= 5.2
 BuildRequires:  pkgconfig(gtk+-3.0)
+BuildRequires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils
@@ -76,6 +76,7 @@ Summary:	3270 Virtual Terminal for GTK development files
 Group:		Development/Libraries/C and C++
 
 Requires:	%{name} = %{version}
+Requires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
 
 Provides:	libv3270-devel = %{version}
 Conflicts:	otherproviders(libv3270-devel)
@@ -118,10 +119,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 
 %{_libdir}/libv3270.so
-%{_libdir}/pkgconfig/libv3270.pc
+%{_libdir}/pkgconfig/v3270.pc
 
-%{_includedir}/libv3270.h
-%{_includedir}/libv3270
+%{_includedir}/v3270.h
+%{_includedir}/v3270
 
 %{_libdir}/libv3270.a
 
