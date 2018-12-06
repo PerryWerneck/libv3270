@@ -10,7 +10,7 @@ sdk_version=@LIB3270_SDK_VERSION@
 Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
-Libs: -L\@libdir@ -lv3270
-Libs.private: -l3270
+Libs: -L\@libdir@ -lv@LIB3270_NAME@
+Libs.private: -l@LIB3270_NAME@
 Cflags: -I@includedir@
 

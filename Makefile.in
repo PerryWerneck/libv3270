@@ -304,21 +304,21 @@ install: \
 
 	# Install SDK
 
-	@mkdir -p $(DESTDIR)$(includedir)/$(LIBNAME)
+	@mkdir -p $(DESTDIR)$(includedir)/v3270
 
 	@$(INSTALL_DATA) \
 		src/include/v3270/*.h \
-		$(DESTDIR)$(includedir)/$(LIBNAME)		
+		$(DESTDIR)$(includedir)/v3270
 
 	@$(INSTALL_DATA) \
 		src/include/v3270.h \
-		$(DESTDIR)$(includedir)/$(LIBNAME).h
+		$(DESTDIR)$(includedir)/v3270.h
 
 	# Install PKG-CONFIG files
 	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
 	@$(INSTALL_DATA) \
-		$(LIBNAME).pc \
-		$(DESTDIR)$(libdir)/pkgconfig/$(LIBNAME).pc
+		libv3270.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/v3270.pc
 
 
 #---[ Misc Targets ]---------------------------------------------------------------------
