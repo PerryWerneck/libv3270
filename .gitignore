@@ -49,3 +49,4 @@ scripts
 vgcore.*
 doxygen/doxyfile
 glade/v3270.xml
+*test.glade*
