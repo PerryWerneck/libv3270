@@ -39,6 +39,7 @@
  #include <lib3270/actions.h>
  #include <lib3270/log.h>
  #include <lib3270/macros.h>
+ #include <stdlib.h>
  #include <errno.h>
  #include <v3270.h>
  #include "private.h"
@@ -62,7 +63,7 @@
 		break;
 
 	case PROP_AUTO_DISCONNECT:
-		v3270_set_auto_disconnect(GTK_WIDGET(object),g_value_get_int(value));
+		v3270_set_auto_disconnect(GTK_WIDGET(object),g_value_get_uint(value));
 		break;
 
 	case PROP_URL:
@@ -93,7 +94,7 @@
 		break;
 
 	case PROP_AUTO_DISCONNECT:
-		g_value_set_int(value,v3270_get_auto_disconnect(GTK_WIDGET(object)));
+		g_value_set_uint(value,v3270_get_auto_disconnect(GTK_WIDGET(object)));
 		break;
 
 	case PROP_LUNAME:
@@ -153,28 +154,35 @@
 					"model",
 					"model",
 					"The model of 3270 display to be emulated",
-					FALSE,G_PARAM_READABLE|G_PARAM_WRITABLE);
+					NULL,
+					G_PARAM_READABLE|G_PARAM_WRITABLE);
+
 	g_object_class_install_property(gobject_class,PROP_MODEL,v3270_properties[PROP_MODEL]);
 
 	v3270_properties[PROP_LUNAME] = g_param_spec_string(
 					"luname",
 					"luname",
 					"The logical Unit (LU) name",
-					FALSE,G_PARAM_READABLE|G_PARAM_WRITABLE);
+					NULL,
+					G_PARAM_READABLE|G_PARAM_WRITABLE);
 	g_object_class_install_property(gobject_class,PROP_LUNAME,v3270_properties[PROP_LUNAME]);
 
-	v3270_properties[PROP_AUTO_DISCONNECT] = g_param_spec_string(
+	v3270_properties[PROP_AUTO_DISCONNECT] = g_param_spec_uint(
 					"auto_disconnect",
 					"auto_disconnect",
 					"Minutes to disconnect when idle",
-					FALSE,G_PARAM_READABLE|G_PARAM_WRITABLE);
+					0,			// Minimo
+					3600,		// Máximo
+					0,			// Default
+					G_PARAM_READABLE|G_PARAM_WRITABLE);
 	g_object_class_install_property(gobject_class,PROP_AUTO_DISCONNECT,v3270_properties[PROP_AUTO_DISCONNECT]);
 
 	v3270_properties[PROP_URL] = g_param_spec_string(
 					"url",
 					"url",
 					"Host URL",
-					FALSE,G_PARAM_READABLE|G_PARAM_WRITABLE);
+					getenv("LIB3270_DEFAULT_HOST"),
+					G_PARAM_READABLE|G_PARAM_WRITABLE);
 	g_object_class_install_property(gobject_class,PROP_AUTO_DISCONNECT,v3270_properties[PROP_URL]);
 
 	// Toggle properties
