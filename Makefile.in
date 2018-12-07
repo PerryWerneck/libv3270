@@ -336,7 +336,7 @@ install-glade:
 	@mkdir -p $(DESTDIR)$(datarootdir)/glade/pixmaps/hicolor/22x22/actions
 
 	@$(INSTALL_DATA) \
-		glade/v3270.xml
+		glade/v3270.xml \
 		$(DESTDIR)$(datarootdir)/glade/catalogs/v3270.xml
 
 	@$(INSTALL_DATA) \
