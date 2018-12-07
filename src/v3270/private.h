@@ -215,6 +215,7 @@ G_BEGIN_DECLS
 	PROP_MODEL,
 	PROP_LUNAME,
 	PROP_AUTO_DISCONNECT,
+	PROP_URL,
 
 	/* Toggles - always the last one, the real values are PROP_TOGGLE+LIB3270_TOGGLE */
 	PROP_TOGGLE

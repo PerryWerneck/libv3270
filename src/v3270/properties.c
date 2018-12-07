@@ -63,6 +63,10 @@
 		v3270_set_auto_disconnect(GTK_WIDGET(object),g_value_get_int(value));
 		break;
 
+	case PROP_URL:
+		v3270_set_url(GTK_WIDGET(object),g_value_get_string(value));
+		break;
+
 	default:
 		if(prop_id < (PROP_TOGGLE + LIB3270_TOGGLE_COUNT))
 		{
@@ -98,6 +102,14 @@
 
 	case PROP_SELECTION:
 		g_value_set_boolean(value,lib3270_has_selection(window->host) ? TRUE : FALSE );
+		break;
+
+	case PROP_URL:
+		{
+			char buffer[1024];
+			memset(buffer,0,sizeof(buffer));
+			g_value_set_string(value,lib3270_get_url(window->host, buffer, sizeof(buffer)));
+		}
 		break;
 
 	default:
@@ -145,13 +157,19 @@
 					FALSE,G_PARAM_READABLE|G_PARAM_WRITABLE);
 	g_object_class_install_property(gobject_class,PROP_LUNAME,v3270_properties[PROP_LUNAME]);
 
-
 	v3270_properties[PROP_AUTO_DISCONNECT] = g_param_spec_string(
 					"auto_disconnect",
 					"auto_disconnect",
 					"Minutes to disconnect when idle",
 					FALSE,G_PARAM_READABLE|G_PARAM_WRITABLE);
 	g_object_class_install_property(gobject_class,PROP_AUTO_DISCONNECT,v3270_properties[PROP_AUTO_DISCONNECT]);
+
+	v3270_properties[PROP_URL] = g_param_spec_string(
+					"url",
+					"url",
+					"Host URL",
+					FALSE,G_PARAM_READABLE|G_PARAM_WRITABLE);
+	g_object_class_install_property(gobject_class,PROP_AUTO_DISCONNECT,v3270_properties[PROP_URL]);
 
 	// Toggle properties
 	int f;

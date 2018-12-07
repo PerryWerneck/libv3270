@@ -61,7 +61,7 @@ BuildRequires:  coreutils
 BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
-BuildRequires:	libgladeui
+BuildRequires:	libgladeui-2-6
 
 %description
 
@@ -96,7 +96,7 @@ Summary:	Glade catalog for the TN3270 terminal emulator library
 Group:		Development/Libraries/C and C++
 
 Requires:	libv3270-devel = %{version}
-Requires:	libgladeui
+Requires:	glade
 
 %description -n glade-catalog-v3270
 

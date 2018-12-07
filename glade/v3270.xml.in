@@ -4,6 +4,7 @@
     <glade-widget-class title="v3270 Terminal" name="v3270" generic-name="TN3270 Terminal">
       <properties>
         <property id="online"/>
+        <property id="url"/>
         <property id="selection"/>
         <property id="model"/>
         <property id="luname"/>
