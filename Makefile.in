@@ -53,6 +53,8 @@ WINDRES=@WINDRES@
 AR=@AR@
 VALGRIND=@VALGRIND@
 GENMARSHAL=@GENMARSHAL@
+CONVERT=@CONVERT@
+OPTIPNG=@OPTIPNG@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -172,6 +174,7 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	@$(MKDIR) `dirname $@`
 	@touch $@
 
+
 #---[ Marshal Targets ]------------------------------------------------------------------
 
 src/v3270/marshal.h: \
@@ -228,6 +231,11 @@ all: \
 	$(BINRLS)/static/$(LIBNAME).a \
 	$(POTDIR)/$(LIBNAME).pot
 
+x: \
+	$(BINDIR)/icons/16x16/logo.png \
+	$(BINDIR)/icons/22x22/logo.png
+
+
 
 Release: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
@@ -279,7 +287,8 @@ $(BINRLS)/static/$(LIBNAME).a: \
 
 install: \
 	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-	$(BINRLS)/static/$(LIBNAME).a
+	$(BINRLS)/static/$(LIBNAME).a \
+	install-glade
 
 	# Install library
 	@mkdir -p $(DESTDIR)$(libdir)
@@ -320,6 +329,23 @@ install: \
 		libv3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/v3270.pc
 
+install-glade:
+
+	@mkdir -p $(DESTDIR)$(datarootdir)/glade/catalogs
+	@mkdir -p $(DESTDIR)$(datarootdir)/glade/pixmaps/hicolor/16x16/actions
+	@mkdir -p $(DESTDIR)$(datarootdir)/glade/pixmaps/hicolor/22x22/actions
+
+	@$(INSTALL_DATA) \
+		glade/v3270.xml
+		$(DESTDIR)$(datarootdir)/glade/catalogs/v3270.xml
+
+	@$(INSTALL_DATA) \
+		branding/icon-16x16.png \
+		$(DESTDIR)$(datarootdir)/glade/pixmaps/hicolor/16x16/actions/widget-v3270-terminal.png
+
+	@$(INSTALL_DATA) \
+		branding/icon-22x22.png \
+		$(DESTDIR)$(datarootdir)/glade/pixmaps/hicolor/22x22/actions/widget-v3270-terminal.png
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
@@ -355,6 +381,12 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 		-lv@LIB3270_NAME@
 
 run: \
+	$(BINDBG)/$(LIBNAME)@EXEEXT@
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/$(LIBNAME)@EXEEXT@
+
+mem-check: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@
 
 ifeq ($(VALGRIND),no)

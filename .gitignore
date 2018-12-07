@@ -49,4 +49,4 @@ makeruntime.sh
 scripts
 vgcore.*
 doxygen/doxyfile
-
+glade/v3270.xml

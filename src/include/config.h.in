@@ -35,8 +35,6 @@
 	#undef PACKAGE_VERSION
 	#undef PACKAGE_RELEASE
 
-	#undef HAVE_GNUC_VISIBILITY
-
 	#undef HAVE_GNOME
 	#undef HAVE_GTKMAC
 

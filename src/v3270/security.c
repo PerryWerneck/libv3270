@@ -294,7 +294,7 @@
 	return NULL;
  }
 
- LIB3270_EXPORT const gchar	* v3270_get_ssl_status_icon(GtkWidget *widget)
+ const gchar	* v3270_get_ssl_status_icon(GtkWidget *widget)
  {
  	g_return_val_if_fail(GTK_IS_V3270(widget),"");
 
@@ -315,7 +315,7 @@
 
  }
 
- LIB3270_EXPORT const gchar	* v3270_get_ssl_status_text(GtkWidget *widget)
+ const gchar	* v3270_get_ssl_status_text(GtkWidget *widget)
  {
  	g_return_val_if_fail(GTK_IS_V3270(widget),"");
 
@@ -333,7 +333,7 @@
 	return v3270_get_hostname(widget);
  }
 
- LIB3270_EXPORT const gchar	* v3270_get_ssl_status_message(GtkWidget *widget)
+ const gchar * v3270_get_ssl_status_message(GtkWidget *widget)
  {
  	g_return_val_if_fail(GTK_IS_V3270(widget),"");
 

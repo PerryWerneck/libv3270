@@ -233,9 +233,9 @@ G_BEGIN_DECLS
 
 const GtkWidgetClass	* v3270_get_parent_class(void);
 
-gboolean	  v3270_draw(GtkWidget * widget, cairo_t * cr);
-void 		  v3270_draw_oia(cairo_t *cr, H3270 *host, int row, int cols, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect);
-void		  v3270_update_mouse_pointer(GtkWidget *widget);
+G_GNUC_INTERNAL gboolean	  v3270_draw(GtkWidget * widget, cairo_t * cr);
+G_GNUC_INTERNAL void 		  v3270_draw_oia(cairo_t *cr, H3270 *host, int row, int cols, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect);
+G_GNUC_INTERNAL void		  v3270_update_mouse_pointer(GtkWidget *widget);
 
 #if ! GTK_CHECK_VERSION(2,18,0)
 	G_GNUC_INTERNAL void gtk_widget_get_allocation(GtkWidget *widget,GtkAllocation *allocation);
@@ -259,36 +259,36 @@ void		  v3270_update_mouse_pointer(GtkWidget *widget);
 gboolean	  v3270_expose(GtkWidget * widget, GdkEventExpose *event);
 #endif // GTK 3
 
-void		  v3270_draw_shift_status(v3270 *terminal);
-void		  v3270_draw_alt_status(v3270 *terminal);
-void		  v3270_draw_ins_status(v3270 *terminal);
+G_GNUC_INTERNAL void		  v3270_draw_shift_status(v3270 *terminal);
+G_GNUC_INTERNAL void		  v3270_draw_alt_status(v3270 *terminal);
+G_GNUC_INTERNAL void		  v3270_draw_ins_status(v3270 *terminal);
 
-void		  v3270_clear_clipboard(v3270 *terminal);
+G_GNUC_INTERNAL void		  v3270_clear_clipboard(v3270 *terminal);
 
-void		  v3270_update_cursor_surface(v3270 *widget,unsigned char chr,unsigned short attr);
+G_GNUC_INTERNAL void		  v3270_update_cursor_surface(v3270 *widget,unsigned char chr,unsigned short attr);
 
-void		  v3270_register_io_handlers(v3270Class *cls);
+G_GNUC_INTERNAL void		  v3270_register_io_handlers(v3270Class *cls);
 
-void 		  v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *font, GdkRectangle *rect, GdkRGBA *fg, GdkRGBA *bg);
-void		  v3270_draw_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo *font, const char *str);
-void		  v3270_draw_text_at(cairo_t *cr, int x, int y, v3270FontInfo *font, const char *str);
+G_GNUC_INTERNAL void 		  v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *font, GdkRectangle *rect, GdkRGBA *fg, GdkRGBA *bg);
+G_GNUC_INTERNAL void		  v3270_draw_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo *font, const char *str);
+G_GNUC_INTERNAL void		  v3270_draw_text_at(cairo_t *cr, int x, int y, v3270FontInfo *font, const char *str);
 
-void		  v3270_start_timer(GtkWidget *terminal);
-void		  v3270_stop_timer(GtkWidget *terminal);
+G_GNUC_INTERNAL void		  v3270_start_timer(GtkWidget *terminal);
+G_GNUC_INTERNAL void		  v3270_stop_timer(GtkWidget *terminal);
 
-void		  v3270_draw_connection(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, const GdkRectangle *rect);
-void		  v3270_draw_ssl_status(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect);
+G_GNUC_INTERNAL void		  v3270_draw_connection(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, const GdkRectangle *rect);
+G_GNUC_INTERNAL void		  v3270_draw_ssl_status(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect);
 
-void		  v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor);
+G_GNUC_INTERNAL void		  v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor);
 
-void		  v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int height);
+G_GNUC_INTERNAL void		  v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int height);
 
-void		  v3270_update_cursor_rect(v3270 *widget, GdkRectangle *rect, unsigned char chr, unsigned short attr);
+G_GNUC_INTERNAL void		  v3270_update_cursor_rect(v3270 *widget, GdkRectangle *rect, unsigned char chr, unsigned short attr);
 
-void		  v3270_update_message(v3270 *widget, LIB3270_MESSAGE id);
-void		  v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col, unsigned char c, unsigned short attr);
-void		  v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on);
-void		  v3270_update_ssl(H3270 *session, LIB3270_SSL_STATE state);
+G_GNUC_INTERNAL void		  v3270_update_message(v3270 *widget, LIB3270_MESSAGE id);
+G_GNUC_INTERNAL void		  v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col, unsigned char c, unsigned short attr);
+G_GNUC_INTERNAL void		  v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on);
+G_GNUC_INTERNAL void		  v3270_update_ssl(H3270 *session, LIB3270_SSL_STATE state);
 
 G_GNUC_INTERNAL void v3270_update_luname(GtkWidget *widget,const gchar *name);
 G_GNUC_INTERNAL void v3270_init_properties(GObjectClass * gobject_class);
@@ -298,15 +298,15 @@ G_GNUC_INTERNAL void v3270_disable_updates(GtkWidget *widget);
 G_GNUC_INTERNAL void v3270_enable_updates(GtkWidget *widget);
 
 // Keyboard & Mouse
-gboolean	  v3270_key_press_event(GtkWidget *widget, GdkEventKey *event);
-gboolean	  v3270_key_release_event(GtkWidget *widget, GdkEventKey *event);
-void 	 	  v3270_key_commit(GtkIMContext *imcontext, gchar *str, v3270 *widget);
-gboolean	  v3270_button_press_event(GtkWidget *widget, GdkEventButton *event);
-gboolean	  v3270_button_release_event(GtkWidget *widget, GdkEventButton*event);
-gboolean	  v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event);
-void		  v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event);
-gint 		  v3270_get_offset_at_point(v3270 *widget, gint x, gint y);
-gboolean	  v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event);
+G_GNUC_INTERNAL gboolean	  v3270_key_press_event(GtkWidget *widget, GdkEventKey *event);
+G_GNUC_INTERNAL gboolean	  v3270_key_release_event(GtkWidget *widget, GdkEventKey *event);
+G_GNUC_INTERNAL void 	 	  v3270_key_commit(GtkIMContext *imcontext, gchar *str, v3270 *widget);
+G_GNUC_INTERNAL gboolean	  v3270_button_press_event(GtkWidget *widget, GdkEventButton *event);
+G_GNUC_INTERNAL gboolean	  v3270_button_release_event(GtkWidget *widget, GdkEventButton*event);
+G_GNUC_INTERNAL gboolean	  v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event);
+G_GNUC_INTERNAL void		  v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event);
+G_GNUC_INTERNAL gint 		  v3270_get_offset_at_point(v3270 *widget, gint x, gint y);
+G_GNUC_INTERNAL gboolean	  v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event);
 
 G_GNUC_INTERNAL const struct v3270_ssl_status_msg * v3270_get_ssl_status_msg(GtkWidget *widget);
 

@@ -59,8 +59,8 @@
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
- LIB3270_EXPORT void	  v3270_host_select_set_session(V3270HostSelectWidget *widget, GtkWidget *session);
- LIB3270_EXPORT int		  v3270_host_select_apply(V3270HostSelectWidget *widget);
+ void	  v3270_host_select_set_session(V3270HostSelectWidget *widget, GtkWidget *session);
+ int	  v3270_host_select_apply(V3270HostSelectWidget *widget);
 
  G_END_DECLS
 

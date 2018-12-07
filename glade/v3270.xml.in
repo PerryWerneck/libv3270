@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glade-catalog version="0.50.2" supports="gtkbuilder" name="v3270-@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@" library="v3270" domain="v3270-@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@" depends="gtk+" book="v3270">
+  <glade-widget-classes>
+    <glade-widget-class title="v3270 Terminal" name="v3270" generic-name="TN3270 Terminal">
+      <properties>
+        <property id="online"/>
+        <property id="selection"/>
+        <property id="model"/>
+        <property id="luname"/>
+        <property id="auto_disconnect"/>       
+        <property id="monocase"/>
+        <property id="cursorblink"/>
+        <property id="showtiming"/>
+        <property id="cursorpos"/>
+        <property id="dstrace"/>
+        <property id="linewrap"/>
+        <property id="blankfill"/>
+        <property id="screentrace"/>
+        <property id="eventtrace"/>
+        <property id="marginedpaste"/>
+        <property id="rectselect"/>
+        <property id="crosshair"/>
+        <property id="fullscreen"/>
+        <property id="reconnect"/>
+        <property id="insert"/>
+        <property id="smartpaste"/>
+        <property id="bold"/>
+        <property id="keepselected"/>
+        <property id="underline"/>
+        <property id="autoconnect"/>
+        <property id="kpalternative"/>
+        <property id="beep"/>
+        <property id="fieldattr"/>
+        <property id="altscreen"/>
+        <property id="keepalive"/>
+        <property id="nettrace"/>        
+      </properties>
+    </glade-widget-class>
+  </glade-widget-classes>
+
+  <glade-widget-group title="@PACKAGE_DESCRIPTION@" name="v3270-terminal">
+    <glade-widget-class-ref name="v3270"/>
+  </glade-widget-group>
+
+</glade-catalog>

@@ -61,6 +61,7 @@ BuildRequires:  coreutils
 BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
+BuildRequires:	libgladeui
 
 %description
 
@@ -88,6 +89,26 @@ Conflicts:	otherproviders(libv3270-devel)
 Originally designed as part of the pw3270 application.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
+
+%package -n glade-catalog-v3270
+
+Summary:	Glade catalog for the TN3270 terminal emulator library
+Group:		Development/Libraries/C and C++
+
+Requires:	libv3270-devel = %{version}
+Requires:	libgladeui
+
+%description -n glade-catalog-v3270
+
+3270 Virtual Terminal for GTK development files.
+
+Originally designed as part of the pw3270 application.
+
+This package provides a catalog for Glade, to allow the use of V3270
+widgets in Glade.
+
+See more details at https://softwarepublico.gov.br/social/pw3270/
+
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
@@ -125,6 +146,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/v3270
 
 %{_libdir}/libv3270.a
+
+%files -n glade-catalog-v3270
+%defattr(-,root,root)
+/usr/share/glade/catalogs/v3270.xml
+/usr/share/glade/pixmaps/hicolor/16x16/actions/widget-v3270-terminal.png
+/usr/share/glade/pixmaps/hicolor/22x22/actions/widget-v3270-terminal.png
 
 %pre
 /sbin/ldconfig

@@ -376,7 +376,7 @@ void v3270_host_select_set_session(V3270HostSelectWidget *widget, GtkWidget *ses
 	widget->options = opt;
 }
 
-LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
+void v3270_select_host(GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
@@ -426,7 +426,7 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 
 }
 
-LIB3270_EXPORT int v3270_host_select_apply(V3270HostSelectWidget *widget)
+int v3270_host_select_apply(V3270HostSelectWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270HostSelectWidget(widget),0);
 

@@ -94,14 +94,7 @@ static void activate(GtkApplication* app, gpointer user_data) {
 	// Setup terminal
 	GKeyFile 	* conf		= g_key_file_new();
 
-	g_key_file_load_from_dirs(conf,"pw3270.conf",(const gchar **) search, &filename,G_KEY_FILE_NONE,NULL);
-	g_message("Configuration from %s",filename);
-
-	// v3270_set_from_keyfile(terminal,conf);
-
-	g_key_file_unref(conf);
-
-	v3270_connect(terminal);
+	// v3270_connect(terminal);
 
 	g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);
 

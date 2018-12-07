@@ -164,13 +164,13 @@
 	debug("%s",__FUNCTION__);
  }
 
- LIB3270_EXPORT	void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)
+ void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)
  {
 	g_return_if_fail(GTK_IS_V3270(widget));
  	GTK_V3270(widget)->activity.disconnect = minutes;
  }
 
- LIB3270_EXPORT guint v3270_get_auto_disconnect(GtkWidget *widget)
+ guint v3270_get_auto_disconnect(GtkWidget *widget)
  {
 	g_return_val_if_fail(GTK_IS_V3270(widget),0);
  	return GTK_V3270(widget)->activity.disconnect;
