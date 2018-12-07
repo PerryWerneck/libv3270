@@ -934,8 +934,10 @@ static int popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title,
 	return 0;
  }
 
-static void v3270_init(v3270 *widget)
-{
+ const gchar * v3270_default_font = "monospace";
+
+ static void v3270_init(v3270 *widget)
+ {
 	struct lib3270_session_callbacks *cbk;
 
 	widget->host = lib3270_session_new("");
@@ -998,6 +1000,10 @@ static void v3270_init(v3270 *widget)
 
 	// Enable drawing
 	widget->drawing	= 1;
+
+	// Set defaults
+	widget->font.family = g_strdup(v3270_default_font);
+	v3270_set_color_table(widget->color,v3270_default_colors);
 
 }
 
@@ -1302,46 +1308,50 @@ static void v3270_send_configure(v3270 * terminal)
 	gdk_event_free(event);
 }
 
+const gchar * v3270_default_colors =
+		"#000000,"			// V3270_COLOR_BACKGROUND
+		"#7890F0,"			// V3270_COLOR_BLUE
+		"#FF0000,"			// V3270_COLOR_RED
+		"#FF00FF,"			// V3270_COLOR_PINK
+		"#00FF00,"			// V3270_COLOR_GREEN
+		"#00FFFF,"			// V3270_COLOR_TURQUOISE
+		"#FFFF00,"			// V3270_COLOR_YELLOW
+		"#FFFFFF,"			// V3270_COLOR_WHITE
+		"#000000,"			// V3270_COLOR_BLACK
+		"#000080,"			// V3270_COLOR_DARK_BLUE
+		"#FFA200,"			// V3270_COLOR_ORANGE
+		"#800080,"			// V3270_COLOR_PURPLE
+		"#008000,"			// V3270_COLOR_DARK_GREEN
+		"#008080,"			// V3270_COLOR_DARK_TURQUOISE
+		"#A0A000,"			// V3270_COLOR_MUSTARD
+		"#C0C0C0,"			// V3270_COLOR_GRAY
+
+		"#00FF00,"			// V3270_COLOR_FIELD_DEFAULT
+		"#FF0000,"			// V3270_COLOR_FIELD_INTENSIFIED
+		"#00FFFF,"			// V3270_COLOR_FIELD_PROTECTED
+		"#FFFFFF,"			// V3270_COLOR_FIELD_PROTECTED_INTENSIFIED
+
+		"#404040,"			// V3270_COLOR_SELECTED_BG
+		"#FFFFFF,"			// V3270_COLOR_SELECTED_FG,
+
+		"#00FF00," 			// V3270_COLOR_CROSS_HAIR
+
+		"#000000,"	 		// V3270_COLOR_OIA_BACKGROUND
+		"#00FF00,"			// V3270_COLOR_OIA
+		"#7890F0,"			// V3270_COLOR_OIA_SEPARATOR
+		"#FFFFFF,"			// V3270_COLOR_OIA_STATUS_OK
+		"#FFFF00,"			// V3270_COLOR_OIA_STATUS_WARNING
+		"#FF0000";			// V3270_COLOR_OIA_STATUS_INVALID
+
+
+
 void v3270_set_colors(GtkWidget *widget, const gchar *colors)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
 	if(!colors)
 	{
-		colors =	"#000000,"			// V3270_COLOR_BACKGROUND
-					"#7890F0,"			// V3270_COLOR_BLUE
-					"#FF0000,"			// V3270_COLOR_RED
-					"#FF00FF,"			// V3270_COLOR_PINK
-					"#00FF00,"			// V3270_COLOR_GREEN
-					"#00FFFF,"			// V3270_COLOR_TURQUOISE
-					"#FFFF00,"			// V3270_COLOR_YELLOW
-					"#FFFFFF,"			// V3270_COLOR_WHITE
-					"#000000,"			// V3270_COLOR_BLACK
-					"#000080,"			// V3270_COLOR_DARK_BLUE
-					"#FFA200,"			// V3270_COLOR_ORANGE
-					"#800080,"			// V3270_COLOR_PURPLE
-					"#008000,"			// V3270_COLOR_DARK_GREEN
-					"#008080,"			// V3270_COLOR_DARK_TURQUOISE
-					"#A0A000,"			// V3270_COLOR_MUSTARD
-					"#C0C0C0,"			// V3270_COLOR_GRAY
-
-					"#00FF00,"			// V3270_COLOR_FIELD_DEFAULT
-					"#FF0000,"			// V3270_COLOR_FIELD_INTENSIFIED
-					"#00FFFF,"			// V3270_COLOR_FIELD_PROTECTED
-					"#FFFFFF,"			// V3270_COLOR_FIELD_PROTECTED_INTENSIFIED
-
-					"#404040,"			// V3270_COLOR_SELECTED_BG
-					"#FFFFFF,"			// V3270_COLOR_SELECTED_FG,
-
-					"#00FF00," 			// V3270_COLOR_CROSS_HAIR
-
-					"#000000,"	 		// V3270_COLOR_OIA_BACKGROUND
-					"#00FF00,"			// V3270_COLOR_OIA
-					"#7890F0,"			// V3270_COLOR_OIA_SEPARATOR
-					"#FFFFFF,"			// V3270_COLOR_OIA_STATUS_OK
-					"#FFFF00,"			// V3270_COLOR_OIA_STATUS_WARNING
-					"#FF0000";			// V3270_COLOR_OIA_STATUS_INVALID
-
+		colors = v3270_default_colors;
 	}
 
 	v3270_set_color_table(GTK_V3270(widget)->color,colors);
@@ -1457,25 +1467,23 @@ void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 
 	if(!name)
 	{
-		// TODO (perry#3#): Get default font family from currrent style
-		name = "courier new";
+		name = v3270_default_font;
 	}
 
-	if(terminal->font.family)
+	if(g_ascii_strcasecmp(terminal->font.family,name))
 	{
-		if(!g_ascii_strcasecmp(terminal->font.family,name))
-			return;
+		// Font has changed, update it
 		g_free(terminal->font.family);
-		terminal->font.family = NULL;
+
+		terminal->font.family = g_strdup(name);
+		terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
+
+		g_signal_emit(widget,v3270_widget_signal[SIGNAL_UPDATE_CONFIG], 0, "font-family", name);
+
+		v3270_reload(widget);
+		gtk_widget_queue_draw(widget);
+
 	}
-
-	terminal->font.family = g_strdup(name);
-	terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
-
-	g_signal_emit(widget,v3270_widget_signal[SIGNAL_UPDATE_CONFIG], 0, "font-family", name);
-
-	v3270_reload(widget);
-	gtk_widget_queue_draw(widget);
 
 
 }

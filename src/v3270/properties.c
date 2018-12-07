@@ -51,6 +51,8 @@
 
  static void v3270_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
  {
+ 	debug("%s(%u)",__FUNCTION__,prop_id);
+
 	v3270  *window = GTK_V3270(object);
 
 	switch (prop_id)
@@ -80,6 +82,8 @@
 
  static void v3270_get_property(GObject *object,guint prop_id, GValue *value, GParamSpec *pspec)
  {
+ 	debug("%s(%u)",__FUNCTION__,prop_id);
+
 	v3270  *window = GTK_V3270(object);
 
 	switch (prop_id)
@@ -124,6 +128,8 @@
 
  void v3270_init_properties(GObjectClass * gobject_class)
  {
+ 	debug("%s",__FUNCTION__);
+
  	memset(v3270_properties,0,sizeof(v3270_properties));
 
 	gobject_class->set_property = v3270_set_property;

@@ -174,7 +174,7 @@
  void		  	  v3270_reload(GtkWidget * widget);
 
  void			  v3270_set_font_family(GtkWidget *widget, const gchar *name);
- const gchar		* v3270_get_font_family(GtkWidget *widget);
+ const gchar	* v3270_get_font_family(GtkWidget *widget);
 
  H3270			* v3270_get_session(GtkWidget *widget);
  gboolean		  v3270_is_connected(GtkWidget *widget);

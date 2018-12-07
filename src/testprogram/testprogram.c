@@ -91,10 +91,11 @@ static void activate(GtkApplication* app, gpointer user_data) {
 	GtkWidget	* terminal	= v3270_new();
 	gchar 		* filename	= NULL;
 
-	// Setup terminal
-	GKeyFile 	* conf		= g_key_file_new();
-
-	// v3270_connect(terminal);
+	const gchar *url = getenv("LIB3270_DEFAULT_HOST");
+	if(url) {
+		v3270_set_url(terminal,url);
+		v3270_connect(terminal);
+	}
 
 	g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);
 
