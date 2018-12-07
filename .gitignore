@@ -15,7 +15,6 @@
 *.tar
 *.bz2
 *.cache
-*.png
 *.zip
 *.ico
 *.pot
