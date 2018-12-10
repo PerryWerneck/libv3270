@@ -78,6 +78,7 @@ static gboolean popup_menu(GtkWidget *widget, gboolean selected, gboolean online
 
 static void activate(GtkApplication* app, gpointer user_data) {
 
+	/*
 	const gchar * search[]	= {
 
 		g_get_user_config_dir(),
@@ -86,6 +87,7 @@ static void activate(GtkApplication* app, gpointer user_data) {
  		NULL
 
 	};
+	*/
 
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();
@@ -95,12 +97,14 @@ static void activate(GtkApplication* app, gpointer user_data) {
 	if(url) {
 		v3270_set_url(terminal,url);
 		v3270_connect(terminal);
+		gtk_window_set_title(GTK_WINDOW(window), url);
+	} else {
+		gtk_window_set_title(GTK_WINDOW(window), "Window");
 	}
 
 	g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);
 
 	// Setup and show window
-	gtk_window_set_title(GTK_WINDOW(window), "Window");
 	gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
 	gtk_container_add(GTK_CONTAINER(window),terminal);
