@@ -286,9 +286,13 @@ $(BINRLS)/static/$(LIBNAME).a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
-	$(BINRLS)/static/$(LIBNAME).a \
-	install-glade
+	install-shared \
+	install-static \
+	install-glade \
+	install-dev
+
+install-shared: \
+	$(BINRLS)/$(LIBNAME)@DLLEXT@
 
 	# Install library
 	@mkdir -p $(DESTDIR)$(libdir)
@@ -302,14 +306,21 @@ install: \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
 
-	@$(LN_S) \
-		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
+install-static: \
+	$(BINRLS)/static/$(LIBNAME).a
 
 	# Install static library
 	@$(INSTALL_DATA) \
 		$(BINRLS)/static/$(LIBNAME).a \
 		$(DESTDIR)$(libdir)
+
+install-dev: \
+	install-shared
+
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 	# Install SDK
 
