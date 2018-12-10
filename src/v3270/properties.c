@@ -70,6 +70,10 @@
 		v3270_set_url(GTK_WIDGET(object),g_value_get_string(value));
 		break;
 
+	case PROP_SESSION_NAME:
+		v3270_set_session_name(GTK_WIDGET(object),g_value_get_string(value));
+		break;
+
 	default:
 		if(prop_id < (PROP_TOGGLE + LIB3270_TOGGLE_COUNT))
 		{
@@ -115,6 +119,10 @@
 			memset(buffer,0,sizeof(buffer));
 			g_value_set_string(value,lib3270_get_url(window->host, buffer, sizeof(buffer)));
 		}
+		break;
+
+	case PROP_SESSION_NAME:
+		g_value_set_string(value,v3270_get_session_name(GTK_WIDGET(object)));
 		break;
 
 	default:
@@ -184,6 +192,14 @@
 					NULL,
 					G_PARAM_READABLE|G_PARAM_WRITABLE);
 	g_object_class_install_property(gobject_class,PROP_AUTO_DISCONNECT,v3270_properties[PROP_URL]);
+
+	v3270_properties[PROP_SESSION_NAME] = g_param_spec_string(
+					"session_name",
+					"session_name",
+					"The TN3270 Session Name",
+					g_get_application_name(),
+					G_PARAM_READABLE|G_PARAM_WRITABLE);
+	g_object_class_install_property(gobject_class,PROP_SESSION_NAME,v3270_properties[PROP_SESSION_NAME]);
 
 	// Toggle properties
 	int f;

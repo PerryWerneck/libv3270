@@ -95,11 +95,15 @@ static void activate(GtkApplication* app, gpointer user_data) {
 
 	const gchar *url = getenv("LIB3270_DEFAULT_HOST");
 	if(url) {
+
 		v3270_set_url(terminal,url);
 		v3270_connect(terminal);
-		gtk_window_set_title(GTK_WINDOW(window), url);
+		gchar * title = g_strdup_printf("%s - %s", v3270_get_session_name(terminal), url);
+		gtk_window_set_title(GTK_WINDOW(window), title);
+		g_free(title);
+
 	} else {
-		gtk_window_set_title(GTK_WINDOW(window), "Window");
+		gtk_window_set_title(GTK_WINDOW(window), v3270_get_session_name(terminal));
 	}
 
 	g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);

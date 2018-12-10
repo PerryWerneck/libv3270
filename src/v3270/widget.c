@@ -1629,8 +1629,14 @@ const gchar	* v3270_get_luname(GtkWidget *widget)
 
 const gchar	* v3270_get_session_name(GtkWidget *widget)
 {
-	if(!GTK_IS_V3270(widget) || GTK_V3270(widget)->session_name == NULL)
+#ifdef DEBUG
+	v3270 * terminal = GTK_V3270(widget);
+	debug("Session name: [%s] Application name: [%s]",terminal->session_name, g_get_application_name());
+#endif // DEBUG
+
+	if(!(GTK_IS_V3270(widget) && GTK_V3270(widget)->session_name))
 		return g_get_application_name();
+
 	return GTK_V3270(widget)->session_name;
 }
 
