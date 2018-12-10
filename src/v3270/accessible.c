@@ -554,6 +554,10 @@ static AtkAttributeSet * v3270_accessible_get_default_attributes (AtkText *text)
 }
 
 /**
+ * v3270_accessible_get_run_attributes:
+ *
+ * @widget:	V3270 widget.
+ *
  * Creates an AtkAttributeSet which consists of the attributes explicitly
  * set at the position offset in the text. start_offset and end_offset are set
  * to the start and end of the range around offset where the attributes are invariant.

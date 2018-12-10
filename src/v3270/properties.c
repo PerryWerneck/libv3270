@@ -181,7 +181,7 @@
 					"url",
 					"url",
 					"Host URL",
-					getenv("LIB3270_DEFAULT_HOST"),
+					NULL,
 					G_PARAM_READABLE|G_PARAM_WRITABLE);
 	g_object_class_install_property(gobject_class,PROP_AUTO_DISCONNECT,v3270_properties[PROP_URL]);
 
