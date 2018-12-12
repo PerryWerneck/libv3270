@@ -37,6 +37,7 @@ gnome-icon-theme
 hicolor-icon-theme
 gdk-pixbuf-loader-rsvg
 gdk-pixbuf-query-loaders
+lib3270-5_2-devel
 EOF
 
 # Instala apicativos e temas necessários
