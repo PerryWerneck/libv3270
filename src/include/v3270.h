@@ -236,7 +236,7 @@
  void			  v3270_set_session_options(GtkWidget *widget, LIB3270_OPTION options);
  int			  v3270_set_session_color_type(GtkWidget *widget, unsigned short colortype);
  int			  v3270_set_host_type(GtkWidget *widget, const char *name);
- const gchar	* v3270_set_url(GtkWidget *widget, const gchar *uri);
+ void			  v3270_set_url(GtkWidget *widget, const gchar *uri);
  const gchar	* v3270_get_hostname(GtkWidget *widget);
  const char		* v3270_get_luname(GtkWidget *widget);
  GtkWidget		* v3270_get_default_widget(void);

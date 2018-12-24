@@ -1605,14 +1605,12 @@ gboolean v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix)
  *
  * Set the default URL for the tn3270e host.
  *
- * Returns: The lib3270 processed string as an internal constant.
- *
  * Since: 5.0
  **/
-const gchar * v3270_set_url(GtkWidget *widget, const gchar *uri)
+const void v3270_set_url(GtkWidget *widget, const gchar *uri)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
-	return lib3270_set_url(GTK_V3270(widget)->host,uri);
+	lib3270_set_url(GTK_V3270(widget)->host,uri);
 }
 
 const gchar * v3270_get_hostname(GtkWidget *widget)
