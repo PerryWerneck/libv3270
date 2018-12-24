@@ -114,11 +114,7 @@
 		break;
 
 	case PROP_URL:
-		{
-			char buffer[1024];
-			memset(buffer,0,sizeof(buffer));
-			g_value_set_string(value,lib3270_get_url(window->host, buffer, sizeof(buffer)));
-		}
+		g_value_set_string(value,lib3270_get_url(window->host));
 		break;
 
 	case PROP_SESSION_NAME:
