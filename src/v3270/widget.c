@@ -718,13 +718,10 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value
 		break;
 
 	}
-#if GTK_CHECK_VERSION(2,26,0)
-	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties[PROP_TOGGLE+ix]);
-#else
-	g_object_notify(G_OBJECT(widget),name);
-#endif // GTK_CHECK_VERSION
 
+	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.toggle[ix]);
 	g_signal_emit(widget, v3270_widget_signal[SIGNAL_TOGGLE_CHANGED], 0, (guint) ix, (gboolean) (value != 0), (gchar *) name);
+
 }
 
 static void update_message(H3270 *session, LIB3270_MESSAGE id)
@@ -785,11 +782,7 @@ static void update_connect(H3270 *session, unsigned char connected)
 		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_DISCONNECTED], 0);
 	}
 
-#if GTK_CHECK_VERSION(2,26,0)
-	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties[PROP_ONLINE]);
-#else
-	g_object_notify(G_OBJECT(widget),"online");
-#endif // GTK_CHECK_VERSION
+	// g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties[PROP_ONLINE]);
 
 	widget->activity.timestamp = time(0);
 
@@ -804,11 +797,7 @@ static void update_screen_size(H3270 *session,unsigned short rows, unsigned shor
 
 static void update_model(H3270 *session, const char *name, int model, int rows, int cols)
 {
-#if GTK_CHECK_VERSION(2,26,0)
-	g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), v3270_properties[PROP_MODEL]);
-#else
-	g_object_notify(G_OBJECT(lib3270_get_user_data(session)),"model");
-#endif // GTK_CHECK_VERSION
+//	g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), v3270_properties[PROP_MODEL]);
 	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)),v3270_widget_signal[SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
 }
 
@@ -863,13 +852,9 @@ static void set_selection(H3270 *session, unsigned char status)
 {
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
 
-#if GTK_CHECK_VERSION(2,26,0)
-	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties[PROP_SELECTION]);
-#else
-	g_object_notify(G_OBJECT(widget),"selection");
-#endif // GTK_CHECK_VERSION
-
+//	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties[PROP_SELECTION]);
 	g_signal_emit(widget,v3270_widget_signal[SIGNAL_SELECTING], 0, status ? TRUE : FALSE);
+
 }
 
 static void update_selection(H3270 *session, int start, int end)

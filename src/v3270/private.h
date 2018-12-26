@@ -201,15 +201,15 @@ G_BEGIN_DECLS
 
 /*--[ Properties ]-----------------------------------------------------------------------------------*/
 
+ /*
  enum
  {
 	PROP_0,
 
-	/* Construct */
+	// Construct
 	PROP_TYPE,
 
-
-	/* Widget properties */
+	// Widget properties
 	PROP_ONLINE,
 	PROP_SELECTION,
 	PROP_MODEL,
@@ -218,20 +218,36 @@ G_BEGIN_DECLS
 	PROP_URL,
 	PROP_SESSION_NAME,
 
-	/* Toggles - always the last one, the real values are PROP_TOGGLE+LIB3270_TOGGLE */
+	// Toggles - always the last one, the real values are PROP_TOGGLE+LIB3270_TOGGLE
 	PROP_TOGGLE
  };
 
  #define PROP_LAST (PROP_TOGGLE+LIB3270_TOGGLE_COUNT)
-
+ */
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
  G_GNUC_INTERNAL guint			  v3270_widget_signal[LAST_SIGNAL];
  G_GNUC_INTERNAL GdkCursor		* v3270_cursor[LIB3270_POINTER_COUNT];
- G_GNUC_INTERNAL GParamSpec		* v3270_properties[PROP_LAST];
+//  G_GNUC_INTERNAL GParamSpec		* v3270_properties[PROP_LAST];
  G_GNUC_INTERNAL const gchar	* v3270_default_colors;
  G_GNUC_INTERNAL const gchar	* v3270_default_font;
+
+ G_GNUC_INTERNAL struct _v3270_properties
+ {
+    size_t		  count;	// Number of properties.
+    GParamSpec	**toggle;	// Toggle properties.
+
+    struct
+    {
+    	guint toggle;
+    	guint boolean;
+    	guint integer;
+    	guint str;
+    } type;
+
+ } v3270_properties;
+
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 

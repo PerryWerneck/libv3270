@@ -34,27 +34,73 @@
 #endif // WIN32
 
  #include <gtk/gtk.h>
+ #include <limits.h>
  #include <lib3270.h>
  #include <lib3270/session.h>
  #include <lib3270/actions.h>
  #include <lib3270/log.h>
- #include <lib3270/macros.h>
+ #include <lib3270/properties.h>
  #include <stdlib.h>
  #include <errno.h>
  #include <v3270.h>
  #include "private.h"
 
+ #define PROP_BEGIN 2
+
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
-  GParamSpec * v3270_properties[PROP_LAST]		= { 0 };
+//  GParamSpec * v3270_properties[PROP_LAST]		= { 0 };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  static void v3270_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
  {
- 	debug("%s(%u)",__FUNCTION__,prop_id);
-
 	v3270  *window = GTK_V3270(object);
+
+ 	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
+
+ 	if(prop_id < v3270_properties.type.toggle)
+	{
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+	}
+ 	else if(prop_id >= v3270_properties.type.str)
+	{
+		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - v3270_properties.type.str));
+		debug("%s.%s.%s=%s",__FUNCTION__,"string",prop->name,g_value_get_string(value));
+
+		if(prop->set)
+			prop->set(window->host,g_value_get_string(value));
+
+	}
+	else if(prop_id >= v3270_properties.type.integer)
+	{
+		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - v3270_properties.type.integer));
+		debug("%s.%s.%s",__FUNCTION__,"integer",prop->name);
+
+		if(prop->set)
+			prop->set(window->host,g_value_get_int(value));
+
+	}
+	else if(prop_id >= v3270_properties.type.boolean)
+	{
+		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - v3270_properties.type.boolean));
+		debug("%s.%s.%s",__FUNCTION__,"boolean",prop->name);
+
+		if(prop->set)
+			prop->set(window->host,g_value_get_boolean(value) ? 1 : 0);
+
+	}
+ 	else if(prop_id >= v3270_properties.type.toggle)
+	{
+		debug("%s.%s",__FUNCTION__,"toggle");
+
+	}
+	else
+	{
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+	}
+
+ 	/*
 
 	switch (prop_id)
 	{
@@ -82,13 +128,54 @@
 		}
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 	}
+	*/
 
  }
 
  static void v3270_get_property(GObject *object,guint prop_id, GValue *value, GParamSpec *pspec)
  {
- 	debug("%s(%u)",__FUNCTION__,prop_id);
+	v3270  *window = GTK_V3270(object);
 
+ 	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
+
+ 	if(prop_id < v3270_properties.type.toggle)
+	{
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+	}
+ 	else if(prop_id >= v3270_properties.type.str)
+	{
+		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - v3270_properties.type.str));
+		debug("%s.%s.%s",__FUNCTION__,"string",prop->name);
+
+		if(prop->get)
+			g_value_set_string(value,prop->get(window->host));
+
+	}
+	else if(prop_id >= v3270_properties.type.integer)
+	{
+		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - v3270_properties.type.integer));
+		debug("%s.%s.%s",__FUNCTION__,"integer",prop->name);
+
+
+	}
+	else if(prop_id >= v3270_properties.type.boolean)
+	{
+		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - v3270_properties.type.boolean));
+		debug("%s.%s.%s",__FUNCTION__,"boolean",prop->name);
+
+
+	}
+ 	else if(prop_id >= v3270_properties.type.toggle)
+	{
+		debug("%s.%s",__FUNCTION__,"toggle");
+
+	}
+	else
+	{
+		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+	}
+
+ 	/*
 	v3270  *window = GTK_V3270(object);
 
 	switch (prop_id)
@@ -129,17 +216,96 @@
 		}
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 	}
+	*/
  }
 
  void v3270_init_properties(GObjectClass * gobject_class)
  {
+ 	size_t		  ix;
+ 	GParamSpec	* spec;
+
  	debug("%s",__FUNCTION__);
 
- 	memset(v3270_properties,0,sizeof(v3270_properties));
+ 	memset(&v3270_properties,0,sizeof(v3270_properties));
+ 	v3270_properties.count = LIB3270_TOGGLE_COUNT;
+	v3270_properties.type.toggle = PROP_BEGIN;
 
 	gobject_class->set_property = v3270_set_property;
 	gobject_class->get_property = v3270_get_property;
 
+	// Get property tables
+	const LIB3270_INT_PROPERTY		* bool_props	= lib3270_get_boolean_properties_list();
+	const LIB3270_INT_PROPERTY		* int_props		= lib3270_get_int_properties_list();
+	const LIB3270_STRING_PROPERTY	* str_props		= lib3270_get_string_properties_list();
+
+	v3270_properties.type.boolean = v3270_properties.count + PROP_BEGIN;
+	for(ix = 0; bool_props[ix].name; ix++)
+	{
+		v3270_properties.count++;
+	}
+
+	v3270_properties.type.integer = v3270_properties.count + PROP_BEGIN;
+	for(ix = 0; int_props[ix].name; ix++)
+	{
+		v3270_properties.count++;
+	}
+
+	v3270_properties.type.str = v3270_properties.count + PROP_BEGIN;
+	for(ix = 0; str_props[ix].name; ix++)
+	{
+		v3270_properties.count++;
+	}
+
+	debug("Creating %u properties", (unsigned int) v3270_properties.count);
+
+	// Creating toggle properties.
+	for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)
+	{
+		debug("Property %u=%s (Toggle)",(unsigned int) v3270_properties.type.toggle + ix, lib3270_get_toggle_name(ix));
+		spec = g_param_spec_boolean(lib3270_get_toggle_name(ix),lib3270_get_toggle_name(ix),lib3270_get_toggle_description(ix),FALSE,G_PARAM_WRITABLE|G_PARAM_READABLE);
+		g_object_class_install_property(gobject_class, v3270_properties.type.toggle + ix, spec);
+	}
+
+
+	// Creating boolean properties.
+	for(ix = 0; bool_props[ix].name; ix++)
+	{
+		debug("Property %u=%s (Boolean)",(unsigned int) v3270_properties.type.boolean + ix, bool_props[ix].name);
+		spec = g_param_spec_boolean(bool_props[ix].name, bool_props[ix].name, bool_props[ix].description, FALSE,(bool_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE)));
+		g_object_class_install_property(gobject_class, v3270_properties.type.boolean + ix, spec);
+
+	}
+
+	// Creating integer properties.
+	for(ix = 0; int_props[ix].name; ix++)
+	{
+		debug("Property %u=%s (Integer)",(unsigned int) v3270_properties.type.integer + ix, int_props[ix].name);
+
+		spec = g_param_spec_int(
+			int_props[ix].name,
+			int_props[ix].name,
+			int_props[ix].description,
+			0,			// Minimo
+			INT_MAX,	// Máximo
+			0,			// Default
+			(int_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
+		);
+
+		g_object_class_install_property(gobject_class, v3270_properties.type.integer + ix, spec);
+
+	}
+
+	// Creating string properties.
+	for(ix = 0; str_props[ix].name; ix++)
+	{
+		debug("Property %u=%s (String)",(unsigned int) v3270_properties.type.str + ix, str_props[ix].name);
+		spec = g_param_spec_string(str_props[ix].name, str_props[ix].name, str_props[ix].description, FALSE,(str_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE)));
+		g_object_class_install_property(gobject_class, v3270_properties.type.str + ix, spec);
+
+	}
+
+
+	/*
 	v3270_properties[PROP_ONLINE] = g_param_spec_boolean(
 					"online",
 					"online",
@@ -206,6 +372,7 @@
 		g_object_class_install_property(gobject_class,PROP_TOGGLE+f,v3270_properties[PROP_TOGGLE+f]);
 	}
 	debug("%s",__FUNCTION__);
+	*/
  }
 
  void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)

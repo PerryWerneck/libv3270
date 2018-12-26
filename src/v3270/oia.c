@@ -711,11 +711,7 @@ void v3270_update_luname(GtkWidget *widget,const gchar *name)
 		v3270_queue_draw_area(GTK_WIDGET(terminal),rect->x,rect->y,rect->width,rect->height);
 	}
 
-#if GTK_CHECK_VERSION(2,26,0)
-	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties[PROP_LUNAME]);
-#else
-	g_object_notify(G_OBJECT(widget),"luname");
-#endif // GTK_CHECK_VERSION
+//	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties[PROP_LUNAME]);
 
 }
 

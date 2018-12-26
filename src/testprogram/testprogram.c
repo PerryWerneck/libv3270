@@ -92,12 +92,21 @@ static void activate(GtkApplication* app, gpointer user_data) {
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();
 	gchar 		* filename	= NULL;
+	GValue 		  val		= G_VALUE_INIT;
 
 	const gchar *url = getenv("LIB3270_DEFAULT_HOST");
 	if(url) {
 
+		/*
 		v3270_set_url(terminal,url);
 		v3270_connect(terminal);
+		*/
+
+		g_value_init (&val, G_TYPE_STRING);
+		g_value_set_string(&val,url);
+		g_object_set_property(G_OBJECT(terminal), "url", &val);
+		g_value_unset(&val);
+
 		gchar * title = g_strdup_printf("%s - %s", v3270_get_session_name(terminal), url);
 		gtk_window_set_title(GTK_WINDOW(window), title);
 		g_free(title);
@@ -105,6 +114,11 @@ static void activate(GtkApplication* app, gpointer user_data) {
 	} else {
 		gtk_window_set_title(GTK_WINDOW(window), v3270_get_session_name(terminal));
 	}
+
+	g_value_init(&val, G_TYPE_STRING);
+	g_object_get_property(G_OBJECT(terminal),"url",&val);
+	g_message("URL=%s",g_value_get_string(&val));
+	g_value_unset(&val);
 
 	g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);
 
