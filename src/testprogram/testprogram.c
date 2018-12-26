@@ -120,6 +120,21 @@ static void activate(GtkApplication* app, gpointer user_data) {
 	g_message("URL=%s",g_value_get_string(&val));
 	g_value_unset(&val);
 
+	g_value_init(&val, G_TYPE_BOOLEAN);
+	g_object_get_property(G_OBJECT(terminal),"tso",&val);
+	g_message("TSO=%s",g_value_get_boolean(&val) ? "Yes" : "No");
+	g_value_unset(&val);
+
+	g_value_init(&val, G_TYPE_BOOLEAN);
+	g_object_get_property(G_OBJECT(terminal),"monocase",&val);
+	g_message("monocase=%s",g_value_get_boolean(&val) ? "Yes" : "No");
+	g_value_unset(&val);
+
+	g_value_init(&val, G_TYPE_INT);
+	g_object_get_property(G_OBJECT(terminal),"width",&val);
+	g_message("width=%d",(int) g_value_get_int(&val));
+	g_value_unset(&val);
+
 	g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);
 
 	// Setup and show window

@@ -47,10 +47,6 @@
 
  #define PROP_BEGIN 2
 
-/*--[ Globals ]--------------------------------------------------------------------------------------*/
-
-//  GParamSpec * v3270_properties[PROP_LAST]		= { 0 };
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  static void v3270_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
@@ -59,11 +55,7 @@
 
  	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
 
- 	if(prop_id < v3270_properties.type.toggle)
-	{
-		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-	}
- 	else if(prop_id >= v3270_properties.type.str)
+ 	if(prop_id >= v3270_properties.type.str)
 	{
 		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - v3270_properties.type.str));
 		debug("%s.%s.%s=%s",__FUNCTION__,"string",prop->name,g_value_get_string(value));
@@ -93,42 +85,13 @@
  	else if(prop_id >= v3270_properties.type.toggle)
 	{
 		debug("%s.%s",__FUNCTION__,"toggle");
+		lib3270_set_toggle(window->host,prop_id - v3270_properties.type.toggle, (int) g_value_get_boolean (value));
 
 	}
 	else
 	{
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 	}
-
- 	/*
-
-	switch (prop_id)
-	{
-	case PROP_MODEL:
-		lib3270_set_model(window->host,g_value_get_string(value));
-		break;
-
-	case PROP_AUTO_DISCONNECT:
-		v3270_set_auto_disconnect(GTK_WIDGET(object),g_value_get_uint(value));
-		break;
-
-	case PROP_URL:
-		v3270_set_url(GTK_WIDGET(object),g_value_get_string(value));
-		break;
-
-	case PROP_SESSION_NAME:
-		v3270_set_session_name(GTK_WIDGET(object),g_value_get_string(value));
-		break;
-
-	default:
-		if(prop_id < (PROP_TOGGLE + LIB3270_TOGGLE_COUNT))
-		{
-			lib3270_set_toggle(window->host,prop_id - PROP_TOGGLE, (int) g_value_get_boolean (value));
-			return;
-		}
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-	}
-	*/
 
  }
 
@@ -138,11 +101,7 @@
 
  	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
 
- 	if(prop_id < v3270_properties.type.toggle)
-	{
-		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-	}
- 	else if(prop_id >= v3270_properties.type.str)
+ 	if(prop_id >= v3270_properties.type.str)
 	{
 		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - v3270_properties.type.str));
 		debug("%s.%s.%s",__FUNCTION__,"string",prop->name);
@@ -156,6 +115,8 @@
 		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - v3270_properties.type.integer));
 		debug("%s.%s.%s",__FUNCTION__,"integer",prop->name);
 
+		if(prop->get)
+			g_value_set_int(value,prop->get(window->host));
 
 	}
 	else if(prop_id >= v3270_properties.type.boolean)
@@ -163,11 +124,14 @@
 		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - v3270_properties.type.boolean));
 		debug("%s.%s.%s",__FUNCTION__,"boolean",prop->name);
 
+		if(prop->get)
+			g_value_set_boolean(value,prop->get(window->host) != 0 ? TRUE : FALSE);
 
 	}
  	else if(prop_id >= v3270_properties.type.toggle)
 	{
-		debug("%s.%s",__FUNCTION__,"toggle");
+		debug("%s.%s.%s",__FUNCTION__,"toggle",lib3270_get_toggle_name(prop_id - v3270_properties.type.toggle));
+		g_value_set_boolean(value,lib3270_get_toggle(window->host,prop_id - v3270_properties.type.toggle) ? TRUE : FALSE );
 
 	}
 	else
@@ -175,48 +139,6 @@
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 	}
 
- 	/*
-	v3270  *window = GTK_V3270(object);
-
-	switch (prop_id)
-	{
-	case PROP_MODEL:
-		g_value_set_string(value,lib3270_get_model(window->host));
-		break;
-
-	case PROP_AUTO_DISCONNECT:
-		g_value_set_uint(value,v3270_get_auto_disconnect(GTK_WIDGET(object)));
-		break;
-
-	case PROP_LUNAME:
-		g_value_set_string(value,lib3270_get_luname(window->host));
-		break;
-
-	case PROP_ONLINE:
-		g_value_set_boolean(value,lib3270_is_connected(window->host) ? TRUE : FALSE );
-		break;
-
-	case PROP_SELECTION:
-		g_value_set_boolean(value,lib3270_has_selection(window->host) ? TRUE : FALSE );
-		break;
-
-	case PROP_URL:
-		g_value_set_string(value,lib3270_get_url(window->host));
-		break;
-
-	case PROP_SESSION_NAME:
-		g_value_set_string(value,v3270_get_session_name(GTK_WIDGET(object)));
-		break;
-
-	default:
-		if(prop_id < (PROP_TOGGLE + LIB3270_TOGGLE_COUNT))
-		{
-			g_value_set_boolean(value,lib3270_get_toggle(window->host,prop_id - PROP_TOGGLE) ? TRUE : FALSE );
-			return;
-		}
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-	}
-	*/
  }
 
  void v3270_init_properties(GObjectClass * gobject_class)
