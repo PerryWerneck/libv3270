@@ -141,6 +141,36 @@
 
  }
 
+ void v3270_install_property(GObjectClass *oclass, guint property_id, GParamSpec *pspec)
+ {
+ 	static const struct
+ 	{
+ 		const char	*name;
+ 		GParamSpec	**prop;
+ 	} properties[] = {
+ 		{ "connected",		&v3270_properties.online	},
+ 		{ "luname",			&v3270_properties.luname	},
+ 		{ "model",			&v3270_properties.model		},
+ 		{ "has-selection",	&v3270_properties.selection	}
+ 	};
+
+ 	size_t ix;
+
+ 	debug("Property %s=%u",g_param_spec_get_name(pspec),(unsigned int) property_id);
+	g_object_class_install_property(oclass, property_id, pspec);
+
+	for(ix = 0; ix < G_N_ELEMENTS(properties); ix++)
+	{
+		if(!g_ascii_strcasecmp(properties[ix].name,g_param_spec_get_name(pspec)))
+		{
+			debug("Property \"%s\" is special",g_param_spec_get_name(pspec));
+			*properties[ix].prop = pspec;
+			break;
+		}
+	}
+
+ }
+
  void v3270_init_properties(GObjectClass * gobject_class)
  {
  	size_t		  ix;
@@ -185,7 +215,7 @@
 	{
 		debug("Property %u=%s (Toggle)",(unsigned int) v3270_properties.type.toggle + ix, lib3270_get_toggle_name(ix));
 		spec = g_param_spec_boolean(lib3270_get_toggle_name(ix),lib3270_get_toggle_name(ix),lib3270_get_toggle_description(ix),FALSE,G_PARAM_WRITABLE|G_PARAM_READABLE);
-		g_object_class_install_property(gobject_class, v3270_properties.type.toggle + ix, spec);
+		v3270_install_property(gobject_class, v3270_properties.type.toggle + ix, spec);
 	}
 
 
@@ -194,7 +224,7 @@
 	{
 		debug("Property %u=%s (Boolean)",(unsigned int) v3270_properties.type.boolean + ix, bool_props[ix].name);
 		spec = g_param_spec_boolean(bool_props[ix].name, bool_props[ix].name, bool_props[ix].description, FALSE,(bool_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE)));
-		g_object_class_install_property(gobject_class, v3270_properties.type.boolean + ix, spec);
+		v3270_install_property(gobject_class, v3270_properties.type.boolean + ix, spec);
 
 	}
 
@@ -213,7 +243,7 @@
 			(int_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 		);
 
-		g_object_class_install_property(gobject_class, v3270_properties.type.integer + ix, spec);
+		v3270_install_property(gobject_class, v3270_properties.type.integer + ix, spec);
 
 	}
 
@@ -222,79 +252,10 @@
 	{
 		debug("Property %u=%s (String)",(unsigned int) v3270_properties.type.str + ix, str_props[ix].name);
 		spec = g_param_spec_string(str_props[ix].name, str_props[ix].name, str_props[ix].description, FALSE,(str_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE)));
-		g_object_class_install_property(gobject_class, v3270_properties.type.str + ix, spec);
+		v3270_install_property(gobject_class, v3270_properties.type.str + ix, spec);
 
 	}
 
-
-	/*
-	v3270_properties[PROP_ONLINE] = g_param_spec_boolean(
-					"online",
-					"online",
-					"True if is online",
-					FALSE,G_PARAM_READABLE);
-	g_object_class_install_property(gobject_class,PROP_ONLINE,v3270_properties[PROP_ONLINE]);
-
-	v3270_properties[PROP_SELECTION] = g_param_spec_boolean(
-					"selection",
-					"selection",
-					"True on selected area",
-					FALSE,G_PARAM_READABLE);
-	g_object_class_install_property(gobject_class,PROP_SELECTION,v3270_properties[PROP_SELECTION]);
-
-	v3270_properties[PROP_MODEL] = g_param_spec_string(
-					"model",
-					"model",
-					"The model of 3270 display to be emulated",
-					NULL,
-					G_PARAM_READABLE|G_PARAM_WRITABLE);
-
-	g_object_class_install_property(gobject_class,PROP_MODEL,v3270_properties[PROP_MODEL]);
-
-	v3270_properties[PROP_LUNAME] = g_param_spec_string(
-					"luname",
-					"luname",
-					"The logical Unit (LU) name",
-					NULL,
-					G_PARAM_READABLE|G_PARAM_WRITABLE);
-	g_object_class_install_property(gobject_class,PROP_LUNAME,v3270_properties[PROP_LUNAME]);
-
-	v3270_properties[PROP_AUTO_DISCONNECT] = g_param_spec_uint(
-					"auto_disconnect",
-					"auto_disconnect",
-					"Minutes to disconnect when idle",
-					0,			// Minimo
-					3600,		// Máximo
-					0,			// Default
-					G_PARAM_READABLE|G_PARAM_WRITABLE);
-	g_object_class_install_property(gobject_class,PROP_AUTO_DISCONNECT,v3270_properties[PROP_AUTO_DISCONNECT]);
-
-	v3270_properties[PROP_URL] = g_param_spec_string(
-					"url",
-					"url",
-					"Host URL",
-					NULL,
-					G_PARAM_READABLE|G_PARAM_WRITABLE);
-	g_object_class_install_property(gobject_class,PROP_AUTO_DISCONNECT,v3270_properties[PROP_URL]);
-
-	v3270_properties[PROP_SESSION_NAME] = g_param_spec_string(
-					"session_name",
-					"session_name",
-					"The TN3270 Session Name",
-					g_get_application_name(),
-					G_PARAM_READABLE|G_PARAM_WRITABLE);
-	g_object_class_install_property(gobject_class,PROP_SESSION_NAME,v3270_properties[PROP_SESSION_NAME]);
-
-	// Toggle properties
-	int f;
-
-	for(f=0;f<LIB3270_TOGGLE_COUNT;f++)
-	{
-		v3270_properties[PROP_TOGGLE+f] = g_param_spec_boolean(lib3270_get_toggle_name(f),lib3270_get_toggle_name(f),lib3270_get_toggle_description(f),FALSE,G_PARAM_WRITABLE|G_PARAM_READABLE);
-		g_object_class_install_property(gobject_class,PROP_TOGGLE+f,v3270_properties[PROP_TOGGLE+f]);
-	}
-	debug("%s",__FUNCTION__);
-	*/
  }
 
  void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)

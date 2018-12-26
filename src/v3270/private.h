@@ -246,6 +246,11 @@ G_BEGIN_DECLS
     	guint str;
     } type;
 
+    GParamSpec * online;
+    GParamSpec * luname;
+    GParamSpec * model;
+    GParamSpec * selection;
+
  } v3270_properties;
 
 

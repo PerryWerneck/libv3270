@@ -782,7 +782,8 @@ static void update_connect(H3270 *session, unsigned char connected)
 		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_DISCONNECTED], 0);
 	}
 
-	// g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties[PROP_ONLINE]);
+	if(v3270_properties.online)
+		g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.online);
 
 	widget->activity.timestamp = time(0);
 
@@ -797,7 +798,9 @@ static void update_screen_size(H3270 *session,unsigned short rows, unsigned shor
 
 static void update_model(H3270 *session, const char *name, int model, int rows, int cols)
 {
-//	g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), v3270_properties[PROP_MODEL]);
+	if(v3270_properties.model)
+		g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), v3270_properties.model);
+
 	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)),v3270_widget_signal[SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
 }
 
@@ -852,7 +855,9 @@ static void set_selection(H3270 *session, unsigned char status)
 {
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
 
-//	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties[PROP_SELECTION]);
+	if(v3270_properties.selection)
+		g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.selection);
+
 	g_signal_emit(widget,v3270_widget_signal[SIGNAL_SELECTING], 0, status ? TRUE : FALSE);
 
 }
