@@ -96,7 +96,7 @@ gchar * v3270_get_text(GtkWidget *widget, int offset, int len)
 
 	terminal = GTK_V3270(widget);
 
-	str = lib3270_get_text(terminal->host, offset, len, '\n');
+	str = lib3270_get_string_at_address(terminal->host, offset, len, '\n');
 
 	if(!str)
 		return NULL;
