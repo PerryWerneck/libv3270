@@ -133,7 +133,7 @@ static void transfer_failed(GtkWidget *progress, const gchar *primary, const gch
 
 }
 
-gint v3270ft_transfer(GtkWidget *dialog, H3270 *session) {
+LIB3270_EXPORT gint v3270ft_transfer(GtkWidget *dialog, H3270 *session) {
 
 	GtkWidget 	* progress	= v3270ftprogress_new();
 	gint		  rc		= GTK_RESPONSE_NONE;

@@ -228,7 +228,7 @@ static void validate_item(struct v3270ft_entry *entry, GError *error) {
 	v3270ft_update_state(entry);
 }
 
-void v3270ft_load(GtkWidget *widget,const gchar *filename) {
+LIB3270_EXPORT void v3270ft_load(GtkWidget *widget,const gchar *filename) {
 
 	static const GMarkupParser parser = {
 		(void (*)(GMarkupParseContext *, const gchar *, const gchar **, const gchar **, gpointer, GError **)) element_start,

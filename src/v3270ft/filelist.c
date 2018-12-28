@@ -32,40 +32,39 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-guint v3270ft_get_length(GtkWidget *widget) {
+LIB3270_EXPORT guint v3270ft_get_length(GtkWidget *widget) {
 	return g_list_length(GTK_V3270FT(widget)->files);
 }
 
-
-void v3270ft_select_first(GtkWidget *widget) {
+LIB3270_EXPORT void v3270ft_select_first(GtkWidget *widget) {
 
 	v3270ft	* dialog = GTK_V3270FT(widget);
 	v3270ft_set_active(dialog,g_list_first(dialog->files));
 
 }
 
-void v3270ft_select_last(GtkWidget *widget) {
+LIB3270_EXPORT void v3270ft_select_last(GtkWidget *widget) {
 
 	v3270ft	* dialog = GTK_V3270FT(widget);
 	v3270ft_set_active(dialog,g_list_last(dialog->files));
 
 }
 
-void v3270ft_select_previous(GtkWidget *widget) {
+LIB3270_EXPORT void v3270ft_select_previous(GtkWidget *widget) {
 
 	v3270ft	* dialog = GTK_V3270FT(widget);
 	v3270ft_set_active(dialog,g_list_previous(dialog->active));
 
 }
 
-void v3270ft_select_next(GtkWidget *widget) {
+LIB3270_EXPORT void v3270ft_select_next(GtkWidget *widget) {
 
 	v3270ft	* dialog = GTK_V3270FT(widget);
 	v3270ft_set_active(dialog,g_list_next(dialog->active));
 
 }
 
-void v3270ft_remove_selected(GtkWidget *widget) {
+LIB3270_EXPORT void v3270ft_remove_selected(GtkWidget *widget) {
 
 	v3270ft	* dialog = GTK_V3270FT(widget);
 

@@ -193,11 +193,11 @@
 	V3270_SELECT_MAX
  } V3270_SELECT_FORMAT;
 
- void              v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut);
- void              v3270_copy_append(GtkWidget *widget);
- gchar   		* v3270_get_selected(GtkWidget *widget, gboolean cut);
+ void             v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut);
+ void             v3270_copy_append(GtkWidget *widget);
+ gchar			* v3270_get_selected(GtkWidget *widget, gboolean cut);
  gchar		    * v3270_get_copy(GtkWidget *widget);
- void              v3270_set_copy(GtkWidget *widget, const gchar *text);
+ void             v3270_set_copy(GtkWidget *widget, const gchar *text);
 
  int			  v3270_run_script(GtkWidget *widget, const gchar *script);
 

@@ -997,7 +997,7 @@ static int popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title,
 
 }
 
-GtkWidget * v3270_new(void)
+LIB3270_EXPORT GtkWidget * v3270_new(void)
 {
 	return g_object_new(GTK_TYPE_V3270, NULL);
 }
@@ -1447,7 +1447,7 @@ void v3270_set_color_table(GdkRGBA *table, const gchar *colors)
 
 }
 
-void v3270_set_font_family(GtkWidget *widget, const gchar *name)
+LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 {
 	v3270 * terminal;
 
@@ -1478,13 +1478,13 @@ void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 
 }
 
-const gchar	* v3270_get_font_family(GtkWidget *widget)
+LIB3270_EXPORT const gchar	* v3270_get_font_family(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 	return GTK_V3270(widget)->font.family;
 }
 
-void v3270_disconnect(GtkWidget *widget)
+LIB3270_EXPORT void v3270_disconnect(GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 	v3270_disable_updates(widget);
@@ -1497,14 +1497,14 @@ void v3270_disconnect(GtkWidget *widget)
 	debug("%s",__FUNCTION__);
 }
 
-H3270 * v3270_get_session(GtkWidget *widget)
+LIB3270_EXPORT H3270 * v3270_get_session(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
 	return GTK_V3270(widget)->host;
 }
 
-int v3270_connect(GtkWidget *widget)
+LIB3270_EXPORT int v3270_connect(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
 
@@ -1577,7 +1577,7 @@ GtkIMContext * v3270_get_im_context(GtkWidget *widget)
 	return GTK_V3270(widget)->input_method;
 }
 
-gboolean v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix)
+LIB3270_EXPORT gboolean v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
 
@@ -1588,7 +1588,7 @@ gboolean v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix)
 }
 
 /**
- * v3270_set_host:
+ * v3270_set_url:
  *
  * @widget:	V3270 widget.
  * @uri:	a valid tn3270 URL.
@@ -1597,25 +1597,25 @@ gboolean v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix)
  *
  * Since: 5.0
  **/
-const void v3270_set_url(GtkWidget *widget, const gchar *uri)
+LIB3270_EXPORT void v3270_set_url(GtkWidget *widget, const gchar *uri)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 	lib3270_set_url(GTK_V3270(widget)->host,uri);
 }
 
-const gchar * v3270_get_hostname(GtkWidget *widget)
+LIB3270_EXPORT const gchar * v3270_get_hostname(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),"");
 	return lib3270_get_hostname(GTK_V3270(widget)->host);
 }
 
-const gchar	* v3270_get_luname(GtkWidget *widget)
+LIB3270_EXPORT const gchar	* v3270_get_luname(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),"");
 	return lib3270_get_luname(GTK_V3270(widget)->host);
 }
 
-const gchar	* v3270_get_session_name(GtkWidget *widget)
+LIB3270_EXPORT const gchar	* v3270_get_session_name(GtkWidget *widget)
 {
 #ifdef DEBUG
 	v3270 * terminal = GTK_V3270(widget);
@@ -1636,7 +1636,7 @@ void v3270_set_scaled_fonts(GtkWidget *widget, gboolean on)
 
 }
 
-void v3270_set_session_name(GtkWidget *widget, const gchar *name)
+LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 	g_return_if_fail(name != NULL);
@@ -1647,37 +1647,37 @@ void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 	GTK_V3270(widget)->session_name = g_strdup(name);
 }
 
-void v3270_set_session_options(GtkWidget *widget, LIB3270_OPTION options)
+LIB3270_EXPORT void v3270_set_session_options(GtkWidget *widget, LIB3270_OPTION options)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 	lib3270_set_options(GTK_V3270(widget)->host,options);
 }
 
-int v3270_set_session_color_type(GtkWidget *widget, unsigned short colortype)
+LIB3270_EXPORT int v3270_set_session_color_type(GtkWidget *widget, unsigned short colortype)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),EFAULT);
 	return lib3270_set_color_type(GTK_V3270(widget)->host,colortype);
 }
 
-int v3270_set_host_type(GtkWidget *widget, const char *name)
+LIB3270_EXPORT int v3270_set_host_type(GtkWidget *widget, const char *name)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),EFAULT);
 	return lib3270_set_host_type(GTK_V3270(widget)->host,name);
 }
 
-unsigned short v3270_get_session_color_type(GtkWidget *widget)
+LIB3270_EXPORT unsigned short v3270_get_session_color_type(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),-1);
 	return lib3270_get_color_type(GTK_V3270(widget)->host);
 }
 
-gboolean v3270_is_connected(GtkWidget *widget)
+LIB3270_EXPORT gboolean v3270_is_connected(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
 	return lib3270_connected(GTK_V3270(widget)->host) ? TRUE : FALSE;
 }
 
-int v3270_set_host_charset(GtkWidget *widget, const gchar *name)
+LIB3270_EXPORT int v3270_set_host_charset(GtkWidget *widget, const gchar *name)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
 	return lib3270_set_host_charset(GTK_V3270(widget)->host,name);

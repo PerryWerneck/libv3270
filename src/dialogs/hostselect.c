@@ -298,7 +298,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	gtk_container_add(GTK_CONTAINER(widget),GTK_WIDGET(grid));
 }
 
-GtkWidget * v3270_host_select_new(GtkWidget *widget)
+LIB3270_EXPORT GtkWidget * v3270_host_select_new(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
@@ -309,7 +309,7 @@ GtkWidget * v3270_host_select_new(GtkWidget *widget)
 	return GTK_WIDGET(selector);
 }
 
-void v3270_host_select_set_session(V3270HostSelectWidget *widget, GtkWidget *session)
+LIB3270_EXPORT void v3270_host_select_set_session(V3270HostSelectWidget *widget, GtkWidget *session)
 {
 	g_return_if_fail(GTK_IS_V3270(session));
 	g_return_if_fail(GTK_IS_V3270HostSelectWidget(widget));
@@ -376,7 +376,7 @@ void v3270_host_select_set_session(V3270HostSelectWidget *widget, GtkWidget *ses
 	widget->options = opt;
 }
 
-void v3270_select_host(GtkWidget *widget)
+LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 

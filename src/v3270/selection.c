@@ -214,7 +214,7 @@ static const char * update_selected_text(GtkWidget *widget, gboolean cut)
  * @return NULL if error, otherwise the selected buffer contents (release with g_free).
  *
  */
-gchar * v3270_get_selected(GtkWidget *widget, gboolean cut)
+LIB3270_EXPORT gchar * v3270_get_selected(GtkWidget *widget, gboolean cut)
 {
     const char *text;
 
@@ -228,7 +228,7 @@ gchar * v3270_get_selected(GtkWidget *widget, gboolean cut)
     return NULL;
 }
 
-gchar * v3270_get_copy(GtkWidget *widget)
+LIB3270_EXPORT gchar * v3270_get_copy(GtkWidget *widget)
 {
     const char *text;
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
@@ -244,7 +244,7 @@ gchar * v3270_get_copy(GtkWidget *widget)
     return NULL;
 }
 
-void v3270_set_copy(GtkWidget *widget, const gchar *text)
+LIB3270_EXPORT void v3270_set_copy(GtkWidget *widget, const gchar *text)
 {
 	v3270	* terminal;
 	gchar   * isotext;
@@ -335,7 +335,7 @@ void v3270_copy_append(GtkWidget *widget)
 
 }
 
-void v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut)
+LIB3270_EXPORT void v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 	GTK_V3270(widget)->table = (mode == V3270_SELECT_TABLE ? 1 : 0);
@@ -345,7 +345,7 @@ void v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut)
 
 #ifdef _WIN32
 
-void v3270_paste(GtkWidget *widget)
+LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 {
 	HGLOBAL hglb;
 

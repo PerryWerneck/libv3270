@@ -367,7 +367,7 @@ cairo_surface_t *gdk_window_create_similar_surface(GdkWindow *window, cairo_cont
 }
 #endif // GTK_CHECK_VERSION(2, 22, 0)
 
-void v3270_reload(GtkWidget *widget)
+LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 {
 	v3270 * terminal = GTK_V3270(widget);
 

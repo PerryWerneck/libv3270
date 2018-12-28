@@ -44,7 +44,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-void v3270ft_remove_all(GtkWidget *widget) {
+LIB3270_EXPORT void v3270ft_remove_all(GtkWidget *widget) {
 
 	v3270ft *dialog = GTK_V3270FT(widget);
 
@@ -688,13 +688,13 @@ static void v3270ft_init(v3270ft *dialog) {
 }
 
 /**
- * v3270ft_dialog_new:
+ * v3270ft_new:
  *
  * Creates a new #v3270ft.
  *
  * Returns: a new #v3270ft.
  */
-GtkWidget * v3270ft_new(void) {
+LIB3270_EXPORT GtkWidget * v3270ft_new(void) {
 	return GTK_WIDGET(g_object_new(GTK_TYPE_V3270FT, "use-header-bar", (gint) 1, NULL));
 }
 

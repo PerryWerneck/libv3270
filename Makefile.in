@@ -313,7 +313,7 @@ install-static: \
 	# Install static library
 	@$(INSTALL_DATA) \
 		$(BINRLS)/static/$(LIBNAME).a \
-		$(DESTDIR)$(libdir)
+		$(DESTDIR)$(libdir)/$(LIBNAME)-static.a
 
 install-dev: \
 	install-shared
