@@ -287,7 +287,6 @@ $(BINRLS)/static/$(LIBNAME).a: \
 
 install: \
 	install-shared \
-	install-static \
 	install-glade \
 	install-dev
 
@@ -338,7 +337,7 @@ install-dev: \
 	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
 	@$(INSTALL_DATA) \
 		libv3270.pc \
-		$(DESTDIR)$(libdir)/pkgconfig/v3270.pc
+		$(DESTDIR)$(libdir)/pkgconfig/libv3270.pc
 
 install-glade:
 
