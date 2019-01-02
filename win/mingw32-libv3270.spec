@@ -47,6 +47,9 @@ BuildRoot:	/var/tmp/%{name}-%{version}
 Provides:	mingw32-libv3270
 Conflicts:	otherproviders(mingw32-libv3270)
 
+Provides:		mingw32(lib:v3270)
+Provides:		mingw32(lib:v3270-%{_libvrs})
+
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gettext-tools

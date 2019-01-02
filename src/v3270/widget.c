@@ -1599,7 +1599,7 @@ LIB3270_EXPORT gboolean v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix)
  **/
 LIB3270_EXPORT void v3270_set_url(GtkWidget *widget, const gchar *uri)
 {
-	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+	g_return_if_fail(GTK_IS_V3270(widget));
 	lib3270_set_url(GTK_V3270(widget)->host,uri);
 }
 
