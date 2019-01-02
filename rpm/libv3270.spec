@@ -140,12 +140,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 
 %{_libdir}/libv3270.so
-%{_libdir}/pkgconfig/v3270.pc
+%{_libdir}/pkgconfig/*.pc
 
 %{_includedir}/v3270.h
 %{_includedir}/v3270
 
-%{_libdir}/libv3270.a
+%{_libdir}/*.a
 
 %files -n glade-catalog-v3270
 %defattr(-,root,root)
