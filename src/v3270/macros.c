@@ -35,6 +35,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+/*
  static int v3270_macro_copy(GtkWidget *widget, int argc, const char **argv)
  {
 	v3270_copy(widget, V3270_SELECT_TEXT, FALSE);
@@ -124,4 +125,6 @@
 
 	return 0;
 }
+
+*/
 

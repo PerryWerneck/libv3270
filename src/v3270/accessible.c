@@ -94,7 +94,7 @@ static void v3270_accessible_focus_event(AtkObject *obj,  gboolean focus_in)
 	atk_object_notify_state_change(focus_obj, ATK_STATE_FOCUSED, focus_in);
 }
 
-static AtkAttributeSet * v3270_accessible_get_attributes (AtkObject *obj)
+static AtkAttributeSet * v3270_accessible_get_attributes (G_GNUC_UNUSED AtkObject *obj)
 {
   AtkAttributeSet	* attributes;
   AtkAttribute		* toolkit		= g_new(AtkAttribute, 1);
@@ -107,7 +107,7 @@ static AtkAttributeSet * v3270_accessible_get_attributes (AtkObject *obj)
   return attributes;
 }
 
-static void v3270_accessible_initialize (AtkObject *obj, gpointer data)
+static void v3270_accessible_initialize (AtkObject *obj, G_GNUC_UNUSED gpointer data)
 {
 	obj->role = ATK_ROLE_TEXT;
 }
@@ -131,12 +131,12 @@ static void v3270_accessible_class_init(v3270AccessibleClass *klass)
 */
 }
 
-static gint v3270_accessible_get_n_actions(AtkAction *action)
+static gint v3270_accessible_get_n_actions(G_GNUC_UNUSED AtkAction *action)
 {
   return 1;
 }
 
-static const gchar* v3270_accessible_action_get_name (AtkAction *action, gint i)
+static const gchar* v3270_accessible_action_get_name (G_GNUC_UNUSED AtkAction *action, gint i)
 {
   if (i != 0)
     return NULL;
@@ -326,7 +326,7 @@ static void v3270_accessible_get_character_extents(	AtkText      *text,
 
 }
 
-static gchar * v3270_accessible_get_text_at_offset(AtkText *atk_text, gint offset, AtkTextBoundary boundary_type, gint *start_offset, gint *end_offset)
+static gchar * v3270_accessible_get_text_at_offset(AtkText *atk_text, gint offset, AtkTextBoundary boundary_type, G_GNUC_UNUSED gint *start_offset, G_GNUC_UNUSED gint *end_offset)
 {
 	GtkWidget	* widget = gtk_accessible_get_widget(GTK_ACCESSIBLE (atk_text));
 	H3270		* host;
@@ -744,7 +744,7 @@ static gboolean v3270_accessible_grab_focus(AtkComponent *component)
 	return TRUE;
 }
 
-static AtkLayer v3270_accessible_get_layer (AtkComponent *component)
+static AtkLayer v3270_accessible_get_layer (G_GNUC_UNUSED AtkComponent *component)
 {
 	return ATK_LAYER_WIDGET;
 }
@@ -838,7 +838,7 @@ void v3270_acessible_set_state(GtkAccessible *obj, LIB3270_MESSAGE id)
 
 	bits = GTK_V3270_ACCESSIBLE(obj)->state ^ state;
 
-	for(f=0;f<G_N_ELEMENTS(table);f++)
+	for(f=0;f< (int) G_N_ELEMENTS(table);f++)
 	{
 		if(bits & table[f].flag)
 		{

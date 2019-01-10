@@ -137,7 +137,7 @@ static gint draw_spinner(cairo_t *cr, GdkRectangle *r, GdkRGBA *color, gint step
 }
 #endif // HAVE_LIBM
 
-static void setup_cursor_position(GdkRectangle *rect, v3270FontInfo *metrics, cairo_t *cr, H3270 *host, int cols, GdkRGBA *color)
+static void setup_cursor_position(GdkRectangle *rect, v3270FontInfo *metrics, cairo_t *cr, H3270 *host, int cols, G_GNUC_UNUSED GdkRGBA *color)
 {
 	rect->width = metrics->width * 8;
 	rect->x -= rect->width;
@@ -149,7 +149,7 @@ static void setup_cursor_position(GdkRectangle *rect, v3270FontInfo *metrics, ca
 	}
 }
 
-static void setup_ticking_position(GdkRectangle *rect, v3270FontInfo *metrics, cairo_t *cr, H3270 *host, int cols, GdkRGBA *color)
+static void setup_ticking_position(GdkRectangle *rect, G_GNUC_UNUSED v3270FontInfo *metrics, cairo_t *cr, G_GNUC_UNUSED H3270 *host, G_GNUC_UNUSED int cols, G_GNUC_UNUSED GdkRGBA *color)
 {
 	char buffer[7];
 	cairo_text_extents_t extents;
@@ -164,14 +164,14 @@ static void setup_ticking_position(GdkRectangle *rect, v3270FontInfo *metrics, c
 	rect->x -= rect->width;
 }
 
-static void setup_spinner_position(GdkRectangle *rect, v3270FontInfo *metrics, cairo_t *cr, H3270 *host, int cols, GdkRGBA *color)
+static void setup_spinner_position(GdkRectangle *rect, G_GNUC_UNUSED v3270FontInfo *metrics, G_GNUC_UNUSED cairo_t *cr, G_GNUC_UNUSED H3270 *host, G_GNUC_UNUSED int cols, G_GNUC_UNUSED GdkRGBA *color)
 {
 	rect->width = rect->height;
 	rect->x -= rect->width;
 //	draw_spinner(cr,rect,color,0);
 }
 
-static void setup_luname_position(GdkRectangle *rect, v3270FontInfo *font, cairo_t *cr, H3270 *host, int cols, GdkRGBA *color)
+static void setup_luname_position(GdkRectangle *rect, v3270FontInfo *font, cairo_t *cr, H3270 *host, G_GNUC_UNUSED int cols, GdkRGBA *color)
 {
 	const char *luname = lib3270_get_luname(host);
 
@@ -201,19 +201,21 @@ static void setup_luname_position(GdkRectangle *rect, v3270FontInfo *font, cairo
 
 }
 
-static void setup_single_char_right(GdkRectangle *rect, v3270FontInfo *metrics, cairo_t *cr, H3270 *host, int cols, GdkRGBA *color)
+static void setup_single_char_right(GdkRectangle *rect, G_GNUC_UNUSED v3270FontInfo *metrics, G_GNUC_UNUSED cairo_t *cr, G_GNUC_UNUSED H3270 *host, G_GNUC_UNUSED int cols, G_GNUC_UNUSED GdkRGBA *color)
 {
 	rect->x -= rect->width;
 
+	/*
 #ifdef DEBUG
 	cairo_set_source_rgb(cr,0.1,0.1,0.1);
 	cairo_rectangle(cr, rect->x, rect->y, rect->width, rect->height);
 	cairo_fill(cr);
 #endif
+*/
 
 }
 
-static void setup_insert_position(GdkRectangle *rect, v3270FontInfo *metrics, cairo_t *cr, H3270 *host, int cols, GdkRGBA *color)
+static void setup_insert_position(GdkRectangle *rect, G_GNUC_UNUSED  v3270FontInfo *metrics, cairo_t *cr, G_GNUC_UNUSED H3270 *host, G_GNUC_UNUSED int cols, G_GNUC_UNUSED GdkRGBA *color)
 {
 	if(rect->width > rect->height)
 	{
@@ -237,7 +239,7 @@ static void setup_insert_position(GdkRectangle *rect, v3270FontInfo *metrics, ca
 
 
 
-static void setup_double_char_position(GdkRectangle *rect, v3270FontInfo *metrics, cairo_t *cr, H3270 *host, int cols, GdkRGBA *color)
+static void setup_double_char_position(GdkRectangle *rect, G_GNUC_UNUSED v3270FontInfo *metrics, cairo_t *cr, G_GNUC_UNUSED H3270 *host, G_GNUC_UNUSED int cols, G_GNUC_UNUSED GdkRGBA *color)
 {
 	rect->width <<= 1;
 	rect->x -= rect->width;
@@ -339,7 +341,7 @@ static void draw_xbm(cairo_t *cr, GdkRectangle *rect, int width, int height, uns
 	cairo_restore(cr);
 }
 
-void v3270_draw_ssl_status(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect)
+void v3270_draw_ssl_status(cairo_t *cr, H3270 *host, G_GNUC_UNUSED v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect)
 {
 #ifdef DEBUG
 	cairo_set_source_rgb(cr,0.1,0.1,0.1);
@@ -587,7 +589,7 @@ void v3270_draw_oia(cairo_t *cr, H3270 *host, int row, int cols, v3270FontInfo *
 	cairo_rectangle(cr, metrics->left, row, cols*metrics->width, metrics->spacing);
 	cairo_fill(cr);
 
-	for(f=0;f<G_N_ELEMENTS(right);f++)
+	for(f=0;f< (int) G_N_ELEMENTS(right);f++)
 	{
 		GdkRectangle *r = rect+right[f].id;
 
@@ -843,7 +845,7 @@ static void release_timer(struct timer_info *info)
 		gdk_cairo_set_source_rgba(cr,info->terminal->color+V3270_COLOR_OIA_BACKGROUND);
 #endif
 
-		for(f=0;f<G_N_ELEMENTS(id);f++)
+		for(f=0;f< (int) G_N_ELEMENTS(id);f++)
 		{
 			GdkRectangle *rect = info->terminal->oia_rect + id[f];
 			cairo_rectangle(cr, rect->x, rect->y, rect->width, rect->height);
@@ -1071,7 +1073,7 @@ void v3270_stop_timer(GtkWidget *widget)
 
 }
 
-void v3270_update_ssl(H3270 *session, LIB3270_SSL_STATE state)
+void v3270_update_ssl(H3270 *session, G_GNUC_UNUSED LIB3270_SSL_STATE state)
 {
 	v3270 			* terminal = GTK_V3270(lib3270_get_user_data(session));
 	cairo_t			* cr;

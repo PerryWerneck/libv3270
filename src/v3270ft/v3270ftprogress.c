@@ -401,7 +401,7 @@ static GtkWidget * create_label(int id, GtkWidget *entry) {
 	return widget;
 }
 
-static void cancel_clicked(GtkButton *button,v3270ftprogress *dialog) {
+static void cancel_clicked(G_GNUC_UNUSED GtkButton *button,v3270ftprogress *dialog) {
 
 	debug("%s",__FUNCTION__);
 
@@ -697,7 +697,7 @@ static void ft_complete(H3270 *hSession, unsigned long length,double kbytes_sec,
 
 }
 
-static void ft_message(H3270 *hSession, const char *text, void *widget){
+static void ft_message(G_GNUC_UNUSED H3270 *hSession, const char *text, void *widget){
 
 	debug("%s(%s,%p)",__FUNCTION__,text,widget);
 
@@ -706,19 +706,19 @@ static void ft_message(H3270 *hSession, const char *text, void *widget){
 	}
 }
 
-static void ft_update(H3270 *hSession, unsigned long current, unsigned long total, double kbytes_sec, void *widget) {
+static void ft_update(G_GNUC_UNUSED H3270 *hSession, unsigned long current, unsigned long total, double kbytes_sec, void *widget) {
 
 	if(widget) {
 		v3270ftprogress_update(GTK_WIDGET(widget), current, total, kbytes_sec);
 	}
 }
 
-static void ft_running(H3270 *hSession, int is_cut, void *widget) {
+static void ft_running(G_GNUC_UNUSED H3270 *hSession, G_GNUC_UNUSED int is_cut, void *widget) {
 	debug("%s",__FUNCTION__);
 	GTK_V3270FTPROGRESS(widget)->timeout = time(NULL)+10;
 }
 
-static void ft_aborting(H3270 *hSession, void *widget) {
+static void ft_aborting(G_GNUC_UNUSED H3270 *hSession, void *widget) {
 
 	if(widget) {
 		v3270ftprogress_set_header(GTK_WIDGET(widget),_("Aborting transfer"));
@@ -726,7 +726,7 @@ static void ft_aborting(H3270 *hSession, void *widget) {
 
 }
 
-static void ft_state_changed(H3270 *hSession, LIB3270_FT_STATE state, const char *text, void *widget) {
+static void ft_state_changed(G_GNUC_UNUSED H3270 *hSession, G_GNUC_UNUSED LIB3270_FT_STATE state, const char *text, void *widget) {
 
 	if(widget) {
 		v3270ftprogress_set_header(GTK_WIDGET(widget),gettext(text));

@@ -279,7 +279,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- G_GNUC_INTERNAL const struct v3270_ssl_status_msg * v3270_get_ssl_status_msg(GtkWidget *widget)
+ G_GNUC_INTERNAL const struct v3270_ssl_status_msg * v3270_get_ssl_status_msg(G_GNUC_UNUSED GtkWidget *widget)
  {
 #ifdef HAVE_LIBSSL
 	int 	f;

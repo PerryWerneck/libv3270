@@ -199,7 +199,7 @@
  gchar		    * v3270_get_copy(GtkWidget *widget);
  void             v3270_set_copy(GtkWidget *widget, const gchar *text);
 
- int			  v3270_run_script(GtkWidget *widget, const gchar *script);
+// int			  v3270_run_script(GtkWidget *widget, const gchar *script);
 
  gchar			* v3270_get_text(GtkWidget *widget,int offset, int len);
  gchar			* v3270_get_region(GtkWidget *widget, gint start_pos, gint end_pos, gboolean all);

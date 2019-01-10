@@ -123,7 +123,7 @@ static void	* static_AddSource(H3270 *session, int fd, LIB3270_IO_FLAG flag, voi
 	return src;
 }
 
-static void static_RemoveSource(H3270 *session, void *id)
+static void static_RemoveSource(G_GNUC_UNUSED H3270 *session, void *id)
 {
 	if(id)
 		g_source_destroy((GSource *) id);
@@ -148,12 +148,12 @@ static void * static_AddTimeOut(H3270 *session, unsigned long interval, void (*c
 	return t;
 }
 
-static void static_RemoveTimeOut(H3270 *session, void * timer)
+static void static_RemoveTimeOut(G_GNUC_UNUSED H3270 *session, void * timer)
 {
 	((TIMER *) timer)->remove++;
 }
 
-static gboolean IO_prepare(GSource *source, gint *timeout)
+static gboolean IO_prepare(G_GNUC_UNUSED GSource *source, G_GNUC_UNUSED gint *timeout)
 {
 	/*
  	 * Called before all the file descriptors are polled.
@@ -221,7 +221,7 @@ static gboolean IO_check(GSource *source)
 	return FALSE;
 }
 
-static gboolean IO_dispatch(GSource *source, GSourceFunc callback, gpointer user_data)
+static gboolean IO_dispatch(GSource *source, G_GNUC_UNUSED GSourceFunc callback, G_GNUC_UNUSED gpointer user_data)
 {
 	/*
 	 * Called to dispatch the event source,
@@ -239,12 +239,12 @@ static gboolean IO_dispatch(GSource *source, GSourceFunc callback, gpointer user
 	return TRUE;
 }
 
-static void IO_finalize(GSource *source)
+static void IO_finalize(G_GNUC_UNUSED GSource *source)
 {
 
 }
 
-static gboolean IO_closure(gpointer data)
+static gboolean IO_closure(G_GNUC_UNUSED gpointer data)
 {
 	return 0;
 }
@@ -266,7 +266,7 @@ gpointer BgCall(struct bgParameter *p)
 	return 0;
 }
 
-static int static_Sleep(H3270 *hSession, int seconds)
+static int static_Sleep(G_GNUC_UNUSED H3270 *hSession, int seconds)
 {
 	time_t end = time(0) + seconds;
 
@@ -276,7 +276,7 @@ static int static_Sleep(H3270 *hSession, int seconds)
 	return 0;
 }
 
-static int static_RunPendingEvents(H3270 *hSession, int wait)
+static int static_RunPendingEvents(G_GNUC_UNUSED H3270 *hSession, int wait)
 {
 	int rc = 0;
 	while(gtk_events_pending())
@@ -291,12 +291,12 @@ static int static_RunPendingEvents(H3270 *hSession, int wait)
 	return rc;
 }
 
-static void beep(H3270 *session)
+static void beep(G_GNUC_UNUSED H3270 *session)
 {
-	gdk_beep();
+	gdk_display_beep(gdk_display_get_default());
 }
 
-void v3270_register_io_handlers(v3270Class *cls)
+void v3270_register_io_handlers(G_GNUC_UNUSED v3270Class *cls)
 {
 	static const struct lib3270_callbacks hdl =
 	{

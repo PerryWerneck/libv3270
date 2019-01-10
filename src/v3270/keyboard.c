@@ -150,7 +150,7 @@
 		}
 	}
 
-	for(f=0; f < G_N_ELEMENTS(keycode);f++)
+	for(f=0; f < (int) G_N_ELEMENTS(keycode);f++)
 	{
 		if(keycode[f].keyval == event->keyval && state == keycode[f].state)
 		{
@@ -178,7 +178,7 @@
 
 	gtk_accelerator_parse(key_name,&keyval,&state);
 
-	for(f=0; f < G_N_ELEMENTS(keycode);f++)
+	for(f=0; f < (int) G_N_ELEMENTS(keycode);f++)
 	{
 		if(keycode[f].keyval == keyval && keycode[f].state == state)
 		{
@@ -257,7 +257,7 @@
 
  }
 
- void v3270_key_commit(GtkIMContext *imcontext, gchar *str, v3270 *widget)
+ void v3270_key_commit(G_GNUC_UNUSED GtkIMContext *imcontext, gchar *str, v3270 *widget)
  {
 	gchar *utf = g_convert((char *) str, -1, lib3270_get_display_charset(widget->host), "UTF-8", NULL, NULL, NULL);
 

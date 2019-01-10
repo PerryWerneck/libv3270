@@ -132,7 +132,7 @@ void v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event)
 	if(handled)
 		return;
 
-	gdk_beep();
+	gdk_display_beep(gdk_display_get_default());
 }
 
 static V3270_OIA_FIELD get_field_from_event(v3270 *widget, GdkEventButton *event)
@@ -200,7 +200,7 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 									&handled);
 
 			if(!handled)
-				gdk_beep();
+				gdk_display_beep(gdk_display_get_default());
 
 		}
 

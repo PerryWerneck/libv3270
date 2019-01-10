@@ -129,11 +129,11 @@ static void v3270_cursor_draw(v3270 *widget)
 }
 
 
-static void v3270_toggle_changed(v3270 *widget,LIB3270_TOGGLE toggle_id, gboolean toggle_state,const gchar *toggle_name)
+static void v3270_toggle_changed(G_GNUC_UNUSED v3270 *widget, G_GNUC_UNUSED LIB3270_TOGGLE toggle_id, G_GNUC_UNUSED gboolean toggle_state, G_GNUC_UNUSED const gchar *toggle_name)
 {
 }
 
-static void loghandler(H3270 *session, const char *module, int rc, const char *fmt, va_list args)
+static void loghandler(G_GNUC_UNUSED H3270 *session, const char *module, int rc, const char *fmt, va_list args)
 {
 	g_logv(module,rc ? G_LOG_LEVEL_WARNING : G_LOG_LEVEL_MESSAGE, fmt, args);
 }
@@ -226,7 +226,7 @@ void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *t
 
 }
 
-gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, gboolean keyboard_tooltip, GtkTooltip *tooltip)
+gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, G_GNUC_UNUSED gboolean keyboard_tooltip, GtkTooltip *tooltip)
 {
 	if(y >= GTK_V3270(widget)->oia_rect->y)
 	{
@@ -638,7 +638,7 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int heig
 	terminal->font.left = (width >> 1) - ((size) >> 1);
 
 	terminal->font.spacing = height / (rows+2);
-	if(terminal->font.spacing < hFont)
+	if((int) terminal->font.spacing < hFont)
 		terminal->font.spacing = hFont;
 
 	size = CONTENTS_HEIGHT(terminal);
@@ -658,7 +658,7 @@ static void set_timer(H3270 *session, unsigned char on)
 
 }
 
-static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value, LIB3270_TOGGLE_TYPE reason, const char *name)
+static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value, G_GNUC_UNUSED LIB3270_TOGGLE_TYPE reason, const char *name)
 {
 	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
 
@@ -766,9 +766,6 @@ static void ctlr_done(H3270 *session)
 
 static void update_connect(H3270 *session, unsigned char connected)
 {
-#ifdef DEBUG
-	char dbg[1024];
-#endif // DEBUG
 	v3270 *widget = GTK_V3270(lib3270_get_user_data(session));
 
 	if(connected)
@@ -790,13 +787,13 @@ static void update_connect(H3270 *session, unsigned char connected)
 	gtk_widget_queue_draw(GTK_WIDGET(widget));
 }
 
-static void update_screen_size(H3270 *session,unsigned short rows, unsigned short cols)
+static void update_screen_size(H3270 *session, G_GNUC_UNUSED unsigned short rows, G_GNUC_UNUSED unsigned short cols)
 {
 	v3270_reload(GTK_WIDGET(lib3270_get_user_data(session)));
 	gtk_widget_queue_draw(GTK_WIDGET(lib3270_get_user_data(session)));
 }
 
-static void update_model(H3270 *session, const char *name, int model, int rows, int cols)
+static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNUSED int rows, G_GNUC_UNUSED int cols)
 {
 	if(v3270_properties.model)
 		g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), v3270_properties.model);
@@ -862,7 +859,7 @@ static void set_selection(H3270 *session, unsigned char status)
 
 }
 
-static void update_selection(H3270 *session, int start, int end)
+static void update_selection(H3270 *session, G_GNUC_UNUSED int start, G_GNUC_UNUSED int end)
 {
 	// Selected region changed
 	GtkWidget		* widget	= GTK_WIDGET(lib3270_get_user_data(session));
@@ -902,8 +899,8 @@ static void release_activity_timer(v3270 *widget)
 	widget->activity.timer = NULL;
 }
 
-static int popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
- {
+static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
+{
  	GtkWidget *terminal = (GtkWidget *) lib3270_get_user_data(session);
 
  	if(terminal && GTK_IS_V3270(terminal)) {
@@ -921,7 +918,6 @@ static int popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title,
 
  	}
 
-	return 0;
  }
 
  const gchar * v3270_default_font = "monospace";
@@ -1395,7 +1391,7 @@ void v3270_set_color_table(GdkRGBA *table, const gchar *colors)
 {
  	gchar	**clr;
  	guint	  cnt;
- 	int		  f;
+ 	guint	  f;
 
 	if(strchr(colors,':'))
 		clr = g_strsplit(colors,":",V3270_COLOR_COUNT+1);

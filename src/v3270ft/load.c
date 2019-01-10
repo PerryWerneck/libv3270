@@ -51,7 +51,7 @@ static LIB3270_FT_OPTION getFlagByName(const gchar *option, const char *optval) 
 
 		if(!g_ascii_strcasecmp(key,ft_option[f].name)) {
 			rc = ft_option[f].opt;
-			debug("%s=%08lx",key,(unsigned int) rc);
+			// debug("%s=%08lx",key,(unsigned int) rc);
 			break;
 		}
 
@@ -62,7 +62,7 @@ static LIB3270_FT_OPTION getFlagByName(const gchar *option, const char *optval) 
 	return rc;
 }
 
-static void entry_start(GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, struct v3270ft_entry *info, GError **error) {
+static void entry_start(G_GNUC_UNUSED GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, struct v3270ft_entry *info, GError **error) {
 
 	int f;
 
@@ -208,7 +208,7 @@ static void element_start(GMarkupParseContext *context, const gchar *element_nam
 
 }
 
-static void element_end(GMarkupParseContext *context, const gchar *element_name, void *info, GError **error) {
+static void element_end(GMarkupParseContext *context, const gchar *element_name, G_GNUC_UNUSED void *info,G_GNUC_UNUSED  GError **error) {
 
 	if(!(g_ascii_strcasecmp(element_name,"entry") && g_ascii_strcasecmp(element_name,"file"))) {
 
@@ -224,7 +224,7 @@ static void element_end(GMarkupParseContext *context, const gchar *element_name,
 
 }
 
-static void validate_item(struct v3270ft_entry *entry, GError *error) {
+static void validate_item(struct v3270ft_entry *entry, G_GNUC_UNUSED GError *error) {
 	v3270ft_update_state(entry);
 }
 

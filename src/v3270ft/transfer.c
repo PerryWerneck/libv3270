@@ -36,13 +36,13 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static gboolean transfer_mapped(GtkWidget *widget, GdkEvent *event, v3270ft *ft) {
+static gboolean transfer_mapped(GtkWidget *widget, G_GNUC_UNUSED GdkEvent *event, v3270ft *ft) {
 	v3270ftprogress_set_transfer(widget,ft->active->data);
 	v3270ftprogress_start_transfer(widget);
 	return TRUE;
 }
 
-static void transfer_complete(GtkWidget *progress, const gchar *primary, const gchar *secondary, v3270ft *ft) {
+static void transfer_complete(GtkWidget *progress, G_GNUC_UNUSED const gchar *primary, G_GNUC_UNUSED const gchar *secondary, v3270ft *ft) {
 
 	debug("%s",__FUNCTION__);
 

@@ -50,11 +50,11 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void clipboard_clear(GtkClipboard *clipboard, GObject *obj)
+static void clipboard_clear(G_GNUC_UNUSED GtkClipboard *clipboard, G_GNUC_UNUSED  GObject *obj)
 {
 }
 
-static void clipboard_get(GtkClipboard *clipboard, GtkSelectionData *selection, guint target, GObject *obj)
+static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionData *selection, guint target, GObject *obj)
 {
 	v3270 * widget = GTK_V3270(obj);
 
@@ -372,7 +372,7 @@ LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 
 #else
 
-static void text_received(GtkClipboard *clipboard, const gchar *text, GtkWidget *widget)
+static void text_received(G_GNUC_UNUSED  GtkClipboard *clipboard, const gchar *text, GtkWidget *widget)
 {
 	v3270_paste_string(widget,text,"UTF-8");
 }
@@ -401,7 +401,7 @@ void v3270_paste_string(GtkWidget *widget, const gchar *text, const gchar *encod
     if(!buffer)
     {
     	/* Conversion failed, update special chars and try again */
-    	int f;
+    	size_t f;
 
     	static const struct _xlat
     	{
@@ -460,7 +460,7 @@ void v3270_paste_string(GtkWidget *widget, const gchar *text, const gchar *encod
 																GTK_DIALOG_DESTROY_WITH_PARENT,
 																GTK_MESSAGE_ERROR,
 																GTK_BUTTONS_OK,
-																_(  "Can't convert line %d from %s to %s" ),f+1, encoding, charset);
+																_(  "Can't convert line %lu from %s to %s" ),(unsigned long) (f+1), encoding, charset);
 
 					gtk_window_set_title(GTK_WINDOW(dialog), _( "Charset error" ) );
 					gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s\n%s",error->message, ln[f]);

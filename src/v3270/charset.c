@@ -310,7 +310,7 @@
 
  	if(!error)
 	{
-		for(i=0;i < G_N_ELEMENTS(text);i++)
+		for(i=0;i < (int) G_N_ELEMENTS(text);i++)
 		{
 			if(!g_ascii_strcasecmp(str,text[i]))
 				return (lib3270_remap_scope) i;
@@ -322,7 +322,7 @@
 	return BOTH;
  }
 
- static void element_start(GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, struct parse *info, GError **error)
+ static void element_start(G_GNUC_UNUSED GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, struct parse *info, GError **error)
  {
  	if(!g_ascii_strcasecmp(element_name,"pw3270-remap"))
 	{
@@ -412,7 +412,7 @@
  }
 
 
- static void element_end(GMarkupParseContext *context, const gchar *element_name, struct parse *info, GError **error)
+ static void element_end(G_GNUC_UNUSED GMarkupParseContext *context, G_GNUC_UNUSED const gchar *element_name, G_GNUC_UNUSED struct parse *info, G_GNUC_UNUSED GError **error)
  {
  }
 

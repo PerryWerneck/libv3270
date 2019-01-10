@@ -35,7 +35,7 @@
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-static gboolean popup_menu(GtkWidget *widget, gboolean selected, gboolean online, GdkEventButton *event, gpointer user_data) {
+static gboolean popup_menu(GtkWidget *widget, G_GNUC_UNUSED gboolean selected, gboolean online, G_GNUC_UNUSED GdkEventButton *event, G_GNUC_UNUSED gpointer user_data) {
 
 	if(!online)
 		return FALSE;
@@ -76,7 +76,7 @@ static gboolean popup_menu(GtkWidget *widget, gboolean selected, gboolean online
 
 }
 
-static void activate(GtkApplication* app, gpointer user_data) {
+static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	/*
 	const gchar * search[]	= {
@@ -91,7 +91,7 @@ static void activate(GtkApplication* app, gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();
-	gchar 		* filename	= NULL;
+//	gchar 		* filename	= NULL;
 	GValue 		  val		= G_VALUE_INIT;
 
 	const gchar *url = getenv("LIB3270_DEFAULT_HOST");

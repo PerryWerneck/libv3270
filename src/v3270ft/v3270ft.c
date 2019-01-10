@@ -138,32 +138,32 @@ static void remote_file_changed(GtkEntry *widget, v3270ft *dialog) {
 
 }
 
-static void start_transfer(GtkButton *button, v3270ft *dialog) {
+static void start_transfer(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 	gtk_dialog_response(GTK_DIALOG(dialog),GTK_RESPONSE_APPLY);
 }
 
-static void select_first(GtkButton *button, v3270ft *dialog) {
+static void select_first(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 	v3270ft_select_first(GTK_WIDGET(dialog));
 }
 
-static void select_last(GtkButton *button, v3270ft *dialog) {
+static void select_last(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 	v3270ft_select_last(GTK_WIDGET(dialog));
 }
 
-static void select_previous(GtkButton *button, v3270ft *dialog) {
+static void select_previous(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 	v3270ft_select_previous(GTK_WIDGET(dialog));
 }
 
-static void select_next(GtkButton *button, v3270ft *dialog) {
+static void select_next(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 	v3270ft_select_next(GTK_WIDGET(dialog));
 }
 
-static void insert_file(GtkButton *button, v3270ft *dialog) {
+static void insert_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 	dialog->files = g_list_append(dialog->files,v3270ft_create_entry());
 	v3270ft_select_last(GTK_WIDGET(dialog));
 }
 
-static void remove_file(GtkButton *button, v3270ft *dialog) {
+static void remove_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 
 	GList *next = dialog->active->next;
 
@@ -186,7 +186,7 @@ static void remove_file(GtkButton *button, v3270ft *dialog) {
 
 }
 
-static void load_file(GtkButton *button, v3270ft *dialog) {
+static void load_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 
 	gchar * filename = v3270ft_select_file(
 								dialog,
@@ -205,7 +205,7 @@ static void load_file(GtkButton *button, v3270ft *dialog) {
 
 }
 
-static void save_file(GtkButton *button, v3270ft *dialog) {
+static void save_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 
 	gchar * filename = v3270ft_select_file(
 								dialog,
@@ -223,7 +223,7 @@ static void save_file(GtkButton *button, v3270ft *dialog) {
 
 }
 
-static void option_toggled(GtkToggleButton *togglebutton, v3270ft *ft) {
+static void option_toggled(G_GNUC_UNUSED GtkToggleButton *togglebutton, v3270ft *ft) {
 
 	struct v3270ft_entry * entry = v3270ft_get_selected(ft);
 
@@ -273,7 +273,7 @@ static void spin_changed(GtkWidget *button, v3270ft *ft) {
 
 }
 
-static gboolean spin_format(GtkSpinButton *spin, gpointer data) {
+static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
 
 	GtkAdjustment	* adjustment = gtk_spin_button_get_adjustment (spin);
 	int				  value = (int)gtk_adjustment_get_value(adjustment);
@@ -292,7 +292,7 @@ static gboolean spin_format(GtkSpinButton *spin, gpointer data) {
 #ifdef WIN32
 static void select_local_file(GtkButton *button, v3270ft *dialog) {
 #else
-static void icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent *event, v3270ft *dialog) {
+static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, v3270ft *dialog) {
 #endif // WIN32
 
 	gchar *filename = v3270ft_select_file(
@@ -322,7 +322,7 @@ static void icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent 
 
 }
 
-static void drag_data_received(GtkWidget *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData *data, guint info, guint time) {
+static void drag_data_received(GtkWidget *widget, GdkDragContext *context, G_GNUC_UNUSED gint x, G_GNUC_UNUSED gint y, GtkSelectionData *data, G_GNUC_UNUSED guint info, guint time) {
 
 	gtk_drag_finish(context, v3270ft_append_selection(widget, data) > 0, FALSE, time);
 
@@ -479,7 +479,7 @@ static void v3270ft_init(v3270ft *dialog) {
 #if HAVE_GTK_HEADER_BAR
 	widget = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
 
-	for(f=0;f<G_N_ELEMENTS(action);f++) {
+	for(f=0;f< (int) G_N_ELEMENTS(action);f++) {
 
 		GtkWidget *button = gtk_button_new_from_icon_name(action[f].name,GTK_ICON_SIZE_BUTTON);
 
@@ -589,7 +589,7 @@ static void v3270ft_init(v3270ft *dialog) {
 	gtk_entry_set_max_length(dialog->remote,PATH_MAX);
 	gtk_grid_attach(grid,GTK_WIDGET(dialog->remote),1,2,1,1);
 
-	for(f=0;f<G_N_ELEMENTS(label);f++) {
+	for(f=0;f< (int) G_N_ELEMENTS(label);f++) {
 		GtkWidget * widget = gtk_label_new_with_mnemonic(gettext(label[f]));
         gtk_widget_set_halign(widget,GTK_ALIGN_START);
         gtk_widget_set_valign(widget,GTK_ALIGN_CENTER);

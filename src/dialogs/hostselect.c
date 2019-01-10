@@ -89,7 +89,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void V3270HostSelectWidget_class_init(V3270HostSelectWidgetClass *klass)
+static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidgetClass *klass)
 {
 #if GTK_CHECK_VERSION(3,0,0)
 #else
@@ -201,7 +201,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->combo[1]), renderer, TRUE);
 		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->combo[1]), renderer, "text", 0, NULL);
 
-		for(f=0;f<G_N_ELEMENTS(colortable);f++)
+		for(f=0;f< (int) G_N_ELEMENTS(colortable);f++)
 		{
 			GtkTreeIter iter;
 			gtk_list_store_append((GtkListStore *) model,&iter);
@@ -246,7 +246,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		gtk_grid_set_column_spacing(opt,5);
 		gtk_grid_set_row_spacing(opt,5);
 
-		for(f=0;f<G_N_ELEMENTS(comboLabel);f++)
+		for(f=0;f< (int) G_N_ELEMENTS(comboLabel);f++)
 		{
 			GtkWidget *label = gtk_label_new_with_mnemonic(gettext(comboLabel[f]));
 			gtk_misc_set_alignment(GTK_MISC(label),0,0.5);
@@ -336,7 +336,7 @@ LIB3270_EXPORT void v3270_host_select_set_session(V3270HostSelectWidget *widget,
 
 				gtk_tree_model_get_value(model,&iter,1,&value);
 
-				if(g_value_get_int(&value) == (opt&LIB3270_OPTION_HOST_TYPE))
+				if(g_value_get_int(&value) == (int) (opt&LIB3270_OPTION_HOST_TYPE))
 				{
 					gtk_combo_box_set_active_iter(widget->combo[0],&iter);
 					break;
