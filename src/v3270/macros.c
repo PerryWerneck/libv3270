@@ -30,8 +30,8 @@
  *
  */
 
- #include "private.h"
- #include <lib3270/macros.h>
+// #include "private.h"
+// #include <lib3270/macros.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
