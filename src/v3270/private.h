@@ -315,25 +315,31 @@ G_GNUC_INTERNAL void		  v3270_update_cursor(H3270 *session, unsigned short row, 
 G_GNUC_INTERNAL void		  v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on);
 G_GNUC_INTERNAL void		  v3270_update_ssl(H3270 *session, LIB3270_SSL_STATE state);
 
-G_GNUC_INTERNAL void v3270_update_luname(GtkWidget *widget,const gchar *name);
-G_GNUC_INTERNAL void v3270_init_properties(GObjectClass * gobject_class);
-G_GNUC_INTERNAL	void v3270_queue_draw_area(GtkWidget *widget, gint x, gint y, gint width, gint height);
+G_GNUC_INTERNAL void			v3270_update_luname(GtkWidget *widget,const gchar *name);
+G_GNUC_INTERNAL void			v3270_init_properties(GObjectClass * gobject_class);
+G_GNUC_INTERNAL	void			v3270_queue_draw_area(GtkWidget *widget, gint x, gint y, gint width, gint height);
 
-G_GNUC_INTERNAL void v3270_disable_updates(GtkWidget *widget);
-G_GNUC_INTERNAL void v3270_enable_updates(GtkWidget *widget);
+G_GNUC_INTERNAL void			v3270_disable_updates(GtkWidget *widget);
+G_GNUC_INTERNAL void			v3270_enable_updates(GtkWidget *widget);
 
 // Keyboard & Mouse
-G_GNUC_INTERNAL gboolean	  v3270_key_press_event(GtkWidget *widget, GdkEventKey *event);
-G_GNUC_INTERNAL gboolean	  v3270_key_release_event(GtkWidget *widget, GdkEventKey *event);
-G_GNUC_INTERNAL void 	 	  v3270_key_commit(GtkIMContext *imcontext, gchar *str, v3270 *widget);
-G_GNUC_INTERNAL gboolean	  v3270_button_press_event(GtkWidget *widget, GdkEventButton *event);
-G_GNUC_INTERNAL gboolean	  v3270_button_release_event(GtkWidget *widget, GdkEventButton*event);
-G_GNUC_INTERNAL gboolean	  v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event);
-G_GNUC_INTERNAL void		  v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event);
-G_GNUC_INTERNAL gint 		  v3270_get_offset_at_point(v3270 *widget, gint x, gint y);
-G_GNUC_INTERNAL gboolean	  v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event);
+G_GNUC_INTERNAL gboolean		v3270_key_press_event(GtkWidget *widget, GdkEventKey *event);
+G_GNUC_INTERNAL gboolean		v3270_key_release_event(GtkWidget *widget, GdkEventKey *event);
+G_GNUC_INTERNAL void			v3270_key_commit(GtkIMContext *imcontext, gchar *str, v3270 *widget);
+G_GNUC_INTERNAL gboolean		v3270_button_press_event(GtkWidget *widget, GdkEventButton *event);
+G_GNUC_INTERNAL gboolean		v3270_button_release_event(GtkWidget *widget, GdkEventButton*event);
+G_GNUC_INTERNAL gboolean		v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event);
+G_GNUC_INTERNAL void			v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event);
+G_GNUC_INTERNAL gint			v3270_get_offset_at_point(v3270 *widget, gint x, gint y);
+G_GNUC_INTERNAL gboolean		v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event);
 
-G_GNUC_INTERNAL const struct v3270_ssl_status_msg * v3270_get_ssl_status_msg(GtkWidget *widget);
+G_GNUC_INTERNAL const struct	v3270_ssl_status_msg * v3270_get_ssl_status_msg(GtkWidget *widget);
 
+// I/O Callbacks
+G_GNUC_INTERNAL gboolean		IO_prepare(GSource *source, gint *timeout);
+G_GNUC_INTERNAL gboolean		IO_check(GSource *source);
+G_GNUC_INTERNAL gboolean		IO_dispatch(GSource *source, GSourceFunc callback, gpointer user_data);
+G_GNUC_INTERNAL void			IO_finalize(GSource *source); /* Can be NULL */
+G_GNUC_INTERNAL gboolean		IO_closure(gpointer data);
 
 G_END_DECLS
