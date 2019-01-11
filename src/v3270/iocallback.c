@@ -128,11 +128,53 @@ static void beep(G_GNUC_UNUSED H3270 *session)
 	gdk_display_beep(gdk_display_get_default());
 }
 
+struct bgParameter
+{
+	gboolean	  running;
+	H3270 		* hSession;
+	int			  rc;
+	int			  (*callback)(H3270 *session, void *parm);
+	void		* parm;
+
+};
+
+gpointer BgCall(struct bgParameter *p)
+{
+	p->rc = p->callback(p->hSession,p->parm);
+	p->running = FALSE;
+	return 0;
+}
+
+static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void *parm)
+{
+	struct bgParameter p = { TRUE, hSession, -1, callback, parm };
+
+	p.running = TRUE;
+
+	GThread	*thread = g_thread_new(PACKAGE_NAME, (GThreadFunc) BgCall, &p);
+
+	if(!thread)
+	{
+		g_error("Can't start background thread");
+		return -1;
+	}
+
+	while(p.running)
+	{
+		gtk_main_iteration();
+	}
+
+	g_thread_join(thread);
+
+	return p.rc;
+
+}
+
 void v3270_register_io_handlers(G_GNUC_UNUSED v3270Class *cls)
 {
-	static const struct lib3270_callbacks hdl =
+	static LIB3270_IO_CONTROLLER hdl =
 	{
-		sizeof(struct lib3270_callbacks),
+		sizeof(LIB3270_IO_CONTROLLER),
 
 		static_AddTimeOut,
 		static_RemoveTimeOut,
@@ -142,13 +184,14 @@ void v3270_register_io_handlers(G_GNUC_UNUSED v3270Class *cls)
 
 		static_Sleep,
 		static_RunPendingEvents,
-		beep
+		beep,
+		static_RunTask
 
 	};
 
-	if(lib3270_register_handlers(&hdl))
+	if(lib3270_register_io_controller(&hdl))
 	{
-		g_error("%s",_( "Can't set lib3270 I/O handlers" ) );
+		g_error("%s",_( "Can't set lib3270 I/O controller" ) );
 	}
 
 }
