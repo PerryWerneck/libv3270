@@ -33,6 +33,7 @@
 
 static void				* static_AddSource(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
 static void	  			  static_RemoveSource(H3270 *session, void *id);
+static void      		  static_SetSourceState(H3270 *session, void *id, int enabled);
 
 static void 			* static_AddTimeOut(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session));
 static void 			  static_RemoveTimeOut(H3270 *session, void * timer);
@@ -60,6 +61,11 @@ static void static_RemoveSource(G_GNUC_UNUSED H3270 *session, void *id)
 {
 	if(id)
 		g_source_destroy((GSource *) id);
+}
+
+static void static_SetSourceState(H3270 *session, void *id, int enabled)
+{
+
 }
 
 static gboolean do_timer(TIMER *t)
@@ -181,6 +187,7 @@ void v3270_register_io_handlers(G_GNUC_UNUSED v3270Class *cls)
 
 		static_AddSource,
 		static_RemoveSource,
+		static_SetSourceState,
 
 		static_Sleep,
 		static_RunPendingEvents,
