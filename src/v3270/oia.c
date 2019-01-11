@@ -104,6 +104,8 @@ static gint draw_spinner(cairo_t *cr, GdkRectangle *r, GdkRGBA *color, gint step
 	step++;
 	step %= num_steps;
 
+	debug("%s step=%d",__FUNCTION__,step);
+
 	for (i = 0; i < num_steps; i++)
 	{
 		gint inset = 0.7 * radius;

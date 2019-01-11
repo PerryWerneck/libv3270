@@ -35,6 +35,7 @@
 	#undef PACKAGE_VERSION
 	#undef PACKAGE_RELEASE
 
+	#undef HAVE_LIBM
 	#undef HAVE_GNOME
 	#undef HAVE_GTKMAC
 

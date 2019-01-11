@@ -169,6 +169,12 @@ AC_SUBST(SCCS_USER,$USER)
 AC_SUBST(SCCS_DATE,$sccs_date)
 
 dnl ---------------------------------------------------------------------------
+dnl Check for libm (Required for spinner)
+dnl ---------------------------------------------------------------------------
+
+AC_SEARCH_LIBS( [sin], [m], AC_DEFINE(HAVE_LIBM), AC_MSG_ERROR([libm not present.]))
+
+dnl ---------------------------------------------------------------------------
 dnl Check for libintl
 dnl ---------------------------------------------------------------------------
 

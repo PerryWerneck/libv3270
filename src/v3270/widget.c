@@ -940,7 +940,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
 
 	cbk->update				= v3270_update_char;
-	cbk->changed				= changed;
+	cbk->changed			= changed;
 	cbk->set_timer 			= set_timer;
 
 	cbk->set_selection		= set_selection;

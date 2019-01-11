@@ -47,6 +47,7 @@
 		</Unit>
 		<Unit filename="src/dialogs/private.h" />
 		<Unit filename="src/include/config.h" />
+		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/hostselect.h" />
 		<Unit filename="src/include/v3270.h" />
 		<Unit filename="src/include/v3270/filetransfer.h" />
@@ -69,6 +70,9 @@
 		<Unit filename="src/v3270/keyboard.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/v3270/linux/iosource.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/v3270/macros.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -88,8 +92,10 @@
 		<Unit filename="src/v3270/selection.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/v3270/v3270.marshal" />
 		<Unit filename="src/v3270/widget.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/v3270/windows/iosource.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/v3270ft/filelist.c">

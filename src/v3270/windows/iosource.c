@@ -43,7 +43,48 @@
 	void		* userdata;
  } IO_Source;
 
+static gboolean	IO_prepare(GSource *source, gint *timeout);
+static gboolean	IO_check(GSource *source);
+static gboolean	IO_dispatch(GSource *source, GSourceFunc callback, gpointer user_data);
+static void		IO_finalize(GSource *source); /* Can be NULL */
+static gboolean	IO_closure(gpointer data);
+
 /*---[ Implement ]-----------------------------------------------------------------------------------------*/
+
+GSource	* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata)
+{
+	static GSourceFuncs IOSources =
+	{
+		IO_prepare,
+		IO_check,
+		IO_dispatch,
+		IO_finalize,
+		IO_closure,
+		NULL
+	};
+
+	IO_Source *src = (IO_Source *) g_source_new(&IOSources,sizeof(IO_Source));
+
+	src->fd				= fd;
+	src->enabled		= TRUE;
+	src->call			= call;
+	src->userdata		= userdata;
+	src->session		= session;
+
+	src->poll.fd		= (int) fd;
+	src->poll.events	= G_IO_HUP|G_IO_ERR;
+
+	if(flag & LIB3270_IO_FLAG_READ)
+		src->poll.events |= G_IO_IN;
+
+	if(flag & LIB3270_IO_FLAG_WRITE)
+		src->poll.events |= G_IO_OUT;
+
+	g_source_attach((GSource *) src,NULL);
+	g_source_add_poll((GSource *) src,&src->poll);
+
+	return (GSource *) src;
+}
 
 static gboolean IO_prepare(G_GNUC_UNUSED GSource *source, G_GNUC_UNUSED gint *timeout)
 {
@@ -72,27 +113,30 @@ static gboolean IO_check(GSource *source)
 	 * function was called, so the source should be checked again here.
 	 *
 	 */
-	fd_set rfds, wfds;
-	struct timeval tm;
-
-	memset(&tm,0,sizeof(tm));
-
-	FD_ZERO(&rfds);
-	FD_ZERO(&wfds);
-//	FD_ZERO(&xfds);
-
-	if(((IO_Source *) source)->poll.events & G_IO_IN)
+	if(((IO_Source *) source)->enabled)
 	{
-		FD_SET(((IO_Source *) source)->poll.fd, &rfds);
-	}
+		fd_set rfds, wfds;
+		struct timeval tm;
 
-	if(((IO_Source *) source)->poll.events & G_IO_OUT)
-	{
-		FD_SET(((IO_Source *) source)->poll.fd, &wfds);
-	}
+		memset(&tm,0,sizeof(tm));
 
-	if(select(((IO_Source *) source)->poll.fd+1, &rfds, &wfds, NULL, &tm) > 0)
-		return TRUE;
+		FD_ZERO(&rfds);
+		FD_ZERO(&wfds);
+	//	FD_ZERO(&xfds);
+
+		if(((IO_Source *) source)->poll.events & G_IO_IN)
+		{
+			FD_SET(((IO_Source *) source)->poll.fd, &rfds);
+		}
+
+		if(((IO_Source *) source)->poll.events & G_IO_OUT)
+		{
+			FD_SET(((IO_Source *) source)->poll.fd, &wfds);
+		}
+
+		if(select(((IO_Source *) source)->poll.fd+1, &rfds, &wfds, NULL, &tm) > 0)
+			return TRUE;
+	}
 
 	return FALSE;
 }

@@ -336,10 +336,6 @@ G_GNUC_INTERNAL gboolean		v3270_scroll_event(GtkWidget *widget, GdkEventScroll *
 G_GNUC_INTERNAL const struct	v3270_ssl_status_msg * v3270_get_ssl_status_msg(GtkWidget *widget);
 
 // I/O Callbacks
-G_GNUC_INTERNAL gboolean		IO_prepare(GSource *source, gint *timeout);
-G_GNUC_INTERNAL gboolean		IO_check(GSource *source);
-G_GNUC_INTERNAL gboolean		IO_dispatch(GSource *source, GSourceFunc callback, gpointer user_data);
-G_GNUC_INTERNAL void			IO_finalize(GSource *source); /* Can be NULL */
-G_GNUC_INTERNAL gboolean		IO_closure(gpointer data);
+G_GNUC_INTERNAL GSource			* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
 
 G_END_DECLS

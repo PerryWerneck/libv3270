@@ -28,6 +28,7 @@
  */
 
  #include <config.h>
+ #include <poll.h>
  #include "../private.h"
 
 /*---[ Structs ]-------------------------------------------------------------------------------------------*/
@@ -43,7 +44,49 @@
 	void		* userdata;
  } IO_Source;
 
+static gboolean	IO_prepare(GSource *source, gint *timeout);
+static gboolean	IO_check(GSource *source);
+static gboolean	IO_dispatch(GSource *source, GSourceFunc callback, gpointer user_data);
+static void		IO_finalize(GSource *source); /* Can be NULL */
+static gboolean	IO_closure(gpointer data);
+
 /*---[ Implement ]-----------------------------------------------------------------------------------------*/
+
+GSource	* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata)
+{
+	static GSourceFuncs IOSources =
+	{
+		IO_prepare,
+		IO_check,
+		IO_dispatch,
+		IO_finalize,
+		IO_closure,
+		NULL
+	};
+
+	IO_Source *src = (IO_Source *) g_source_new(&IOSources,sizeof(IO_Source));
+
+	src->fd				= fd;
+	src->enabled		= TRUE;
+	src->call			= call;
+	src->userdata		= userdata;
+	src->session		= session;
+
+	src->poll.fd		= (int) fd;
+	src->poll.events	= G_IO_HUP|G_IO_ERR;
+
+	if(flag & LIB3270_IO_FLAG_READ)
+		src->poll.events |= G_IO_IN;
+
+	if(flag & LIB3270_IO_FLAG_WRITE)
+		src->poll.events |= G_IO_OUT;
+
+	g_source_attach((GSource *) src,NULL);
+	g_source_add_poll((GSource *) src,&src->poll);
+
+	return (GSource *) src;
+}
+
 
 gboolean IO_prepare(G_GNUC_UNUSED GSource *source, G_GNUC_UNUSED gint *timeout)
 {
@@ -72,15 +115,18 @@ gboolean IO_check(GSource *source)
 	 * function was called, so the source should be checked again here.
 	 *
 	 */
-	struct pollfd fds;
+	if(((IO_Source *) source)->enabled)
+	{
+		struct pollfd fds;
 
-	memset(&fds,0,sizeof(fds));
+		memset(&fds,0,sizeof(fds));
 
-	fds.fd     = ((IO_Source *) source)->poll.fd;
-    fds.events = ((IO_Source *) source)->poll.events;
+		fds.fd     = ((IO_Source *) source)->poll.fd;
+		fds.events = ((IO_Source *) source)->poll.events;
 
-	if(poll(&fds,1,0) > 0)
-		return TRUE;
+		if(poll(&fds,1,0) > 0)
+			return TRUE;
+	}
 
 	return FALSE;
 }
