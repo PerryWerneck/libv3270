@@ -46,7 +46,7 @@
  #include <lib3270/session.h>
  #include <lib3270/actions.h>
  #include <lib3270/log.h>
- #include <lib3270/macros.h>
+// #include <lib3270/macros.h>
  #include <errno.h>
 
 #ifdef HAVE_MALLOC_H
