@@ -65,6 +65,13 @@
 	guint 			  log_handler;
 	gboolean		* enabled;
 	gboolean		  destroy_on_close;
+
+	/// @brief lib3270's saved trace handler.
+	struct {
+			void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
+			void *userdata;
+	} trace;
+
  };
 
  const GtkWindowClass	* v3270_trace_get_parent_class(void);
@@ -109,7 +116,7 @@ static void destroy(GtkObject *widget)
 
 	if(hwnd->hSession)
 	{
-		lib3270_set_trace_handler(hwnd->hSession,NULL,NULL);
+		lib3270_set_trace_handler(hwnd->hSession,hwnd->trace.handler,hwnd->trace.userdata);
 	}
 
 	if(hwnd->log_handler)
@@ -393,7 +400,7 @@ static void destroy(GtkObject *widget)
 	window->button = gtk_button_new_from_stock(GTK_STOCK_OK);
 	gtk_box_pack_end(GTK_BOX(widget),window->button,FALSE,FALSE,4);
 	gtk_widget_set_sensitive(window->button,FALSE);
-	gtk_widget_set_focus_on_click(GTK_BUTTON(window->button),FALSE);
+	gtk_widget_set_focus_on_click(GTK_WIDGET(window->button),FALSE);
 
 	g_signal_connect(G_OBJECT(window->button),"clicked",G_CALLBACK(activate),window);
 
@@ -402,7 +409,6 @@ static void destroy(GtkObject *widget)
 	gtk_widget_show_all(vbox);
 
 	gtk_container_add(GTK_CONTAINER(window),vbox);
-
 
 	window->log_handler = g_log_set_handler(NULL,G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,(GLogFunc) glog,window);
 
@@ -427,12 +433,29 @@ static void destroy(GtkObject *widget)
 	g_free(ptr);
  }
 
+ void v3270_trace_set_session(GtkWidget *widget, H3270 *hSession) {
+
+	v3270_trace * trace = V3270_TRACE(widget);
+
+	if(trace->hSession) {
+		lib3270_set_trace_handler(trace->hSession,trace->trace.handler,trace->trace.userdata);
+	}
+
+	trace->hSession = hSession;
+
+	if(hSession) {
+		lib3270_get_trace_handler(hSession,&trace->trace.handler,&trace->trace.userdata);
+		lib3270_set_trace_handler(hSession,trace_handler,(void *) widget);
+	}
+
+ }
+
  LIB3270_EXPORT	GtkWidget * v3270_trace_new_from_session(H3270 *hSession) {
 
 	GtkWidget	* widget	= g_object_new(V3270_TYPE_TRACE, NULL);
 	void		* terminal	= lib3270_get_user_data(hSession);
 
-	V3270_TRACE(widget)->hSession = hSession;
+	V3270_TRACE(widget)->hSession = NULL;
 
 	gtk_window_set_default_size(GTK_WINDOW(widget),590,430);
 
@@ -441,7 +464,7 @@ static void destroy(GtkObject *widget)
 		gtk_window_set_attached_to(GTK_WINDOW(widget),GTK_WIDGET(terminal));
 	}
 
-	lib3270_set_trace_handler(hSession,trace_handler,(void *) widget);
+	v3270_trace_set_session(widget, hSession);
 
 	return widget;
  }

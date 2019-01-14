@@ -51,6 +51,7 @@
 
  LIB3270_EXPORT	GtkWidget			* v3270_trace_new();
  LIB3270_EXPORT	GtkWidget			* v3270_trace_new_from_session(H3270 *hSession);
+ LIB3270_EXPORT	void				  v3270_trace_set_session(GtkWidget *widget, H3270 *hSession);
  LIB3270_EXPORT	GType 				  v3270_trace_get_type(void);
  LIB3270_EXPORT void				  v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args);
  LIB3270_EXPORT void				  v3270_trace_printf(GtkWidget *widget, const char *fmt, ... );
