@@ -35,6 +35,8 @@
  #include <libintl.h>
  #include <glib/gi18n.h>
 
+ #include <lib3270.h>
+ #include <lib3270/trace.h>
  #include <v3270/trace.h>
 
 #if defined( HAVE_SYSLOG )
@@ -57,6 +59,8 @@
 	GtkTextBuffer	* text;
 	GtkWidget		* entry;
 	GtkWidget		* button;
+	GtkWidget		* view;
+	H3270			* hSession;
 	gchar			**line;
 	guint 			  log_handler;
 	gboolean		* enabled;
@@ -102,6 +106,11 @@ static void destroy(GtkObject *widget)
 #endif
  {
 	v3270_trace * hwnd = V3270_TRACE(widget);
+
+	if(hwnd->hSession)
+	{
+		lib3270_set_trace_handler(hwnd->hSession,NULL,NULL);
+	}
 
 	if(hwnd->log_handler)
 	{
@@ -310,19 +319,27 @@ static void destroy(GtkObject *widget)
 
  }
 
+ void v3270_trace_set_font_from_string(GtkWidget *widget, const gchar *name)
+ {
+	PangoFontDescription* fontdesc	= pango_font_description_from_string(name);
+
+#if GTK_CHECK_VERSION(3,0,0)
+	gtk_widget_override_font(V3270_TRACE(widget)->view, fontdesc);
+#else
+	gtk_widget_modify_font(V3270_TRACE(widget)->view, fontdesc);
+#endif // GTK_CHECK_VERSION
+
+	pango_font_description_free(fontdesc);
+ }
+
  static void v3270_trace_init(v3270_trace *window)
  {
  	GtkWidget				* widget;
- 	GtkWidget				* view;
 #if GTK_CHECK_VERSION(3,0,0)
  	GtkWidget				* vbox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
 #else
  	GtkWidget				* vbox		= gtk_vbox_new(FALSE,0);
 #endif // GTK_CHECK_VERSION
- 	gchar					* fontname	= "Monospace";
-	PangoFontDescription	* fontdesc	= pango_font_description_from_string(fontname);
-
-	g_free(fontname);
 
 	// Top menu
 	{
@@ -341,25 +358,23 @@ static void destroy(GtkObject *widget)
 		gtk_box_pack_start(GTK_BOX(vbox),widget,FALSE,TRUE,0);
 	}
 
+	window->hSession = NULL;
+
 	// Trace container
 	widget = gtk_scrolled_window_new(NULL,NULL);
 	window->scroll = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(widget));
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(widget),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
-	view = gtk_text_view_new();
 
-#if GTK_CHECK_VERSION(3,0,0)
-	gtk_widget_override_font(GTK_WIDGET(view), fontdesc);
-#else
-	gtk_widget_modify_font(GTK_WIDGET(view), fontdesc);
-#endif // GTK_CHECK_VERSION
+	window->view = gtk_text_view_new();
+	v3270_trace_set_font_from_string(GTK_WIDGET(window),"Monospaced");
 
-	window->text = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
-	gtk_text_view_set_editable(GTK_TEXT_VIEW(view), TRUE);
+	window->text = gtk_text_view_get_buffer(GTK_TEXT_VIEW(window->view));
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(window->view), TRUE);
 
 #if GTK_CHECK_VERSION(3,8,0)
-	gtk_container_add(GTK_CONTAINER(widget),view);
+	gtk_container_add(GTK_CONTAINER(widget),window->view);
 #else
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(widget),view);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(widget),window->view);
 #endif // GTK_CHECK_VERSION
 	gtk_box_pack_start(GTK_BOX(vbox),widget,TRUE,TRUE,0);
 
@@ -388,29 +403,45 @@ static void destroy(GtkObject *widget)
 
 	gtk_container_add(GTK_CONTAINER(window),vbox);
 
-	pango_font_description_free(fontdesc);
 
 	window->log_handler = g_log_set_handler(NULL,G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,(GLogFunc) glog,window);
 
  }
 
- GtkWidget * v3270_trace_new(H3270 *hSession)
+ GtkWidget * v3270_trace_new()
  {
 	return g_object_new(V3270_TYPE_TRACE, NULL);
  }
 
+ GtkWidget * v3270_new_trace_window(GtkWidget *widget)
+ {
+ 	return v3270_trace_new_from_session(v3270_get_session(widget));
+ }
+
+ static void trace_handler(H3270 *hSession, void *userdata, const char *fmt, va_list args)
+ {
+	gchar *ptr = g_strdup_vprintf(fmt,args);
+	gchar * utftext = g_convert_with_fallback(ptr,-1,"UTF-8",lib3270_get_display_charset(hSession),"?",NULL,NULL,NULL);
+	v3270_trace_printf(GTK_WIDGET(userdata),"%s",utftext);
+	g_free(utftext);
+	g_free(ptr);
+ }
+
  LIB3270_EXPORT	GtkWidget * v3270_trace_new_from_session(H3270 *hSession) {
+
 	GtkWidget	* widget	= g_object_new(V3270_TYPE_TRACE, NULL);
 	void		* terminal	= lib3270_get_user_data(hSession);
+
+	V3270_TRACE(widget)->hSession = hSession;
 
 	gtk_window_set_default_size(GTK_WINDOW(widget),590,430);
 
 	if(terminal && GTK_IS_V3270(terminal))
 	{
-        GtkWidget * toplevel = gtk_widget_get_toplevel(GTK_WIDGET(terminal));
-		gtk_window_set_attached_to(GTK_WINDOW(widget),toplevel);
-
+		gtk_window_set_attached_to(GTK_WINDOW(widget),GTK_WIDGET(terminal));
 	}
+
+	lib3270_set_trace_handler(hSession,trace_handler,(void *) widget);
 
 	return widget;
  }

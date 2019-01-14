@@ -165,6 +165,9 @@
  #endif // v3270_char
 
  GtkWidget		* v3270_new(void);
+
+ GtkWidget		* v3270_new_trace_window(GtkWidget *widget);
+
  GType 			  v3270_get_type(void);
 
  void		  	  v3270_reload(GtkWidget * widget);

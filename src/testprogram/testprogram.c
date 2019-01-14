@@ -81,6 +81,13 @@ static gboolean popup_menu(GtkWidget *widget, G_GNUC_UNUSED gboolean selected, g
 
 }
 
+static void trace_window_destroy(G_GNUC_UNUSED GtkWidget *widget, H3270 *hSession) {
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,0);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,0);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE,0);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,0);
+}
+
 static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	/*
@@ -99,7 +106,12 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 //	gchar 		* filename	= NULL;
 	GValue 		  val		= G_VALUE_INIT;
 
-	// lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_DS_TRACE);
+	GtkWidget *trace = v3270_new_trace_window(terminal);
+	if(trace) {
+		g_signal_connect(trace, "destroy", G_CALLBACK(trace_window_destroy), v3270_get_session(terminal));
+		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_DS_TRACE);
+		gtk_widget_show_all(trace);
+	}
 
 	const gchar *url = getenv("LIB3270_DEFAULT_HOST");
 	if(url) {
