@@ -52,7 +52,11 @@
 		<Unit filename="src/include/v3270.h" />
 		<Unit filename="src/include/v3270/filetransfer.h" />
 		<Unit filename="src/include/v3270/ftprogress.h" />
+		<Unit filename="src/include/v3270/trace.h" />
 		<Unit filename="src/testprogram/testprogram.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/trace/trace.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/v3270/accessible.c">

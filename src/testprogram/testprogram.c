@@ -99,7 +99,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 //	gchar 		* filename	= NULL;
 	GValue 		  val		= G_VALUE_INIT;
 
-	lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_DS_TRACE);
+	// lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_DS_TRACE);
 
 	const gchar *url = getenv("LIB3270_DEFAULT_HOST");
 	if(url) {

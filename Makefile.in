@@ -33,6 +33,7 @@ SOURCES= \
 	$(wildcard src/v3270/@OSNAME@/*.rc) \
 	$(wildcard src/v3270/@OSNAME@/*.c) \
 	$(wildcard src/v3270ft/*.c) \
+	$(wildcard src/trace/*.c) \
 	$(wildcard src/dialogs/*.c)
 
 TEST_SOURCES= \
