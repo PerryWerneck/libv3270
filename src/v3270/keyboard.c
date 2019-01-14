@@ -54,6 +54,9 @@
 	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
 #endif
 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
 	 static struct _keycode

@@ -214,8 +214,8 @@
 	for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)
 	{
 		debug("Property %u=%s (Toggle)",(unsigned int) v3270_properties.type.toggle + ix, lib3270_get_toggle_name(ix));
-		spec = g_param_spec_boolean(lib3270_get_toggle_name(ix),lib3270_get_toggle_name(ix),lib3270_get_toggle_description(ix),FALSE,G_PARAM_WRITABLE|G_PARAM_READABLE);
-		v3270_install_property(gobject_class, v3270_properties.type.toggle + ix, spec);
+		v3270_properties.toggle[ix] = g_param_spec_boolean(lib3270_get_toggle_name(ix),lib3270_get_toggle_name(ix),lib3270_get_toggle_description(ix),FALSE,G_PARAM_WRITABLE|G_PARAM_READABLE);
+		v3270_install_property(gobject_class, v3270_properties.type.toggle + ix, v3270_properties.toggle[ix]);
 	}
 
 

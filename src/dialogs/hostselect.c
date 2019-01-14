@@ -30,6 +30,8 @@
  #include "private.h"
  #include <hostselect.h>
 
+ #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
  static const struct _colortable

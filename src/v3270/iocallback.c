@@ -63,7 +63,7 @@ static void static_RemoveSource(G_GNUC_UNUSED H3270 *session, void *id)
 		g_source_destroy((GSource *) id);
 }
 
-static void static_SetSourceState(H3270 *session, void *id, int enabled)
+static void static_SetSourceState(G_GNUC_UNUSED H3270 *session, G_GNUC_UNUSED void *id, G_GNUC_UNUSED int enabled)
 {
 
 }

@@ -28,6 +28,11 @@
  *
  */
 
+ /**
+  * @brief V3270 Widget test program.
+  *
+  */
+
  #include <v3270.h>
  #include <v3270/filetransfer.h>
  #include <v3270/ftprogress.h>
@@ -42,7 +47,7 @@ static gboolean popup_menu(GtkWidget *widget, G_GNUC_UNUSED gboolean selected, g
 
 	GtkWidget * dialog = v3270ft_new();
 
-	v3270ft_load(dialog,"transfer.xml");
+	// v3270ft_load(dialog,"transfer.xml");
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
 
@@ -93,6 +98,8 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget	* terminal	= v3270_new();
 //	gchar 		* filename	= NULL;
 	GValue 		  val		= G_VALUE_INIT;
+
+	lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_DS_TRACE);
 
 	const gchar *url = getenv("LIB3270_DEFAULT_HOST");
 	if(url) {

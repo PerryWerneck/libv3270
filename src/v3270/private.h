@@ -235,8 +235,8 @@ G_BEGIN_DECLS
 
  G_GNUC_INTERNAL struct _v3270_properties
  {
-    size_t		  count;	// Number of properties.
-    GParamSpec	**toggle;	// Toggle properties.
+    size_t		  count;							// Number of properties.
+    GParamSpec	* toggle[LIB3270_TOGGLE_COUNT];		// Toggle properties.
 
     struct
     {

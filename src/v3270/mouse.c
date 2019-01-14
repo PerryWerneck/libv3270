@@ -37,6 +37,7 @@
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
 
+ #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 

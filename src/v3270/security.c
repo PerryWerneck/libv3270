@@ -29,6 +29,8 @@
 
  #include <config.h>
 
+ #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
  #define ENABLE_NLS
  #define GETTEXT_PACKAGE PACKAGE_NAME
 
