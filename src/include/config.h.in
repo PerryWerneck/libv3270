@@ -38,5 +38,6 @@
 	#undef HAVE_LIBM
 	#undef HAVE_GNOME
 	#undef HAVE_GTKMAC
+	#undef HAVE_LIBSSL
 
 #endif /* LIBV3270_CONFIG_INCLUDED */

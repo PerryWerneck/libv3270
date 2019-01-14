@@ -175,6 +175,16 @@ dnl ---------------------------------------------------------------------------
 AC_SEARCH_LIBS( [sin], [m], AC_DEFINE(HAVE_LIBM), AC_MSG_ERROR([libm not present.]))
 
 dnl ---------------------------------------------------------------------------
+dnl Check for SSL
+dnl ---------------------------------------------------------------------------
+
+PKG_CHECK_MODULES( [LIBSSL], [libssl libcrypto], AC_DEFINE(HAVE_LIBSSL), AC_MSG_NOTICE([libssl not present.]) )
+
+AC_SUBST(LIBSSL_LIBS)
+AC_SUBST(LIBSSL_CFLAGS)
+
+
+dnl ---------------------------------------------------------------------------
 dnl Check for libintl
 dnl ---------------------------------------------------------------------------
 
