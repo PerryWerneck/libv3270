@@ -320,7 +320,8 @@ install-static: \
 		$(DESTDIR)$(libdir)/$(LIBNAME)-static.a
 
 install-dev: \
-	install-shared
+	install-shared \
+	$(POTDIR)/$(LIBNAME).pot
 
 	@$(LN_S) \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
@@ -343,6 +344,10 @@ install-dev: \
 	@$(INSTALL_DATA) \
 		libv3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/libv3270.pc
+
+	# Install translation files
+	@$(MKDIR) $(DESTDIR)$(datarootdir)/pw3270/pot
+	@$(INSTALL_DATA) $(POTDIR)/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/pw3270/pot/$(LIBNAME).pot
 
 install-glade:
 
