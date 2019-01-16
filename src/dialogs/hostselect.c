@@ -63,13 +63,18 @@
 	GtkVBox			  parent;
 #endif // GTK_CHECK_VERSION
 
-	LIB3270_OPTION	  options;								/**< Connect option */
+	LIB3270_HOST_TYPE	type;									/**< @brief Connect option */
 
-	GtkEntry		* entry[ENTRY_COUNT];					/**< Entry fields for host & service name */
-	GtkToggleButton	* ssl;									/**< SSL Connection? */
-	GtkComboBox		* combo[G_N_ELEMENTS(comboLabel)];		/**< Model & Color combobox */
-	unsigned short	  colors;								/**< Number of colors */
-	H3270			* hSession;								/**< lib3270's session handle */
+	struct
+	{
+		GtkEntry			* entry[ENTRY_COUNT];				/**< @brief Entry fields for host & service name */
+		GtkToggleButton		* ssl;								/**< @brief SSL Connection? */
+		GtkComboBox			* combo[G_N_ELEMENTS(comboLabel)];	/**< @brief Model & Color combobox */
+
+	} input;
+
+	unsigned short		  colors;								/**< @brief Number of colors */
+	H3270				* hSession;								/**< @brief lib3270's session handle */
 
  };
 
@@ -93,18 +98,13 @@
 
 static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidgetClass *klass)
 {
-#if GTK_CHECK_VERSION(3,0,0)
-#else
-#endif // GTK_CHECK_VERSION
 }
 
+/*
 static void toggle_ssl(GtkToggleButton *button, V3270HostSelectWidget *dialog)
 {
-	if(gtk_toggle_button_get_active(button))
-		dialog->options |= LIB3270_OPTION_SSL;
-	else
-		dialog->options &= ~LIB3270_OPTION_SSL;
 }
+*/
 
 static void systype_changed(GtkComboBox *widget, V3270HostSelectWidget *dialog)
 {
@@ -116,8 +116,7 @@ static void systype_changed(GtkComboBox *widget, V3270HostSelectWidget *dialog)
 
 	gtk_tree_model_get_value(gtk_combo_box_get_model(widget),&iter,1,&value);
 
-	dialog->options &= ~(LIB3270_OPTION_HOST_TYPE);
-	dialog->options |= g_value_get_int(&value);
+	dialog->type = g_value_get_int(&value);
 
 }
 
@@ -155,18 +154,19 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	for(f=0;f<ENTRY_COUNT;f++)
 	{
-		widget->entry[f] = GTK_ENTRY(gtk_entry_new());
+		widget->input.entry[f] = GTK_ENTRY(gtk_entry_new());
 		gtk_misc_set_alignment(GTK_MISC(label[f]),0,0.5);
-		gtk_label_set_mnemonic_widget(GTK_LABEL(label[f]),GTK_WIDGET(widget->entry[f]));
+		gtk_label_set_mnemonic_widget(GTK_LABEL(label[f]),GTK_WIDGET(widget->input.entry[f]));
 	}
 
-	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->entry[ENTRY_HOSTNAME]),_("Address or name of the host to connect.") );
-	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->entry[ENTRY_SRVCNAME]),_("Port or service name (empty for \"telnet\").") );
+	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),_("Address or name of the host to connect.") );
+	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.entry[ENTRY_SRVCNAME]),_("Port or service name (empty for \"telnet\").") );
 
 	// SSL checkbox
-	widget->ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
-	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->ssl),_( "Check for SSL secure connection." ));
-	g_signal_connect(G_OBJECT(widget->ssl),"toggled",G_CALLBACK(toggle_ssl),widget);
+	widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
+	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
+
+	//g_signal_connect(G_OBJECT(widget->input.ssl),"toggled",G_CALLBACK(toggle_ssl),widget);
 
 	// Extended options
 	GtkWidget * expander = gtk_expander_new_with_mnemonic(_( "_Host options"));
@@ -176,20 +176,20 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		GtkTreeModel    * model		= (GtkTreeModel *) gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_INT);
 		GtkCellRenderer * renderer	= gtk_cell_renderer_text_new();
 
-		widget->combo[0] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
+		widget->input.combo[0] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
 
-		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->combo[0]), renderer, TRUE);
-		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->combo[0]), renderer, "text", 0, NULL);
+		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.combo[0]), renderer, TRUE);
+		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combo[0]), renderer, "text", 0, NULL);
 
-		const LIB3270_OPTION_ENTRY *entry = lib3270_get_option_list();
+		const LIB3270_HOST_TYPE_ENTRY *entry = lib3270_get_option_list();
 		for(f=0;entry[f].name != NULL;f++)
 		{
 			GtkTreeIter iter;
 			gtk_list_store_append((GtkListStore *) model,&iter);
-			gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(entry[f].description), 1, entry[f].option, -1);
+			gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(entry[f].description), 1, entry[f].type, -1);
 		}
 
-		g_signal_connect(G_OBJECT(widget->combo[0]),"changed",G_CALLBACK(systype_changed),widget);
+		g_signal_connect(G_OBJECT(widget->input.combo[0]),"changed",G_CALLBACK(systype_changed),widget);
 
 	}
 
@@ -198,10 +198,10 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		GtkTreeModel    * model		= (GtkTreeModel *) gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_INT);
 		GtkCellRenderer * renderer	= gtk_cell_renderer_text_new();
 
-		widget->combo[1] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
+		widget->input.combo[1] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
 
-		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->combo[1]), renderer, TRUE);
-		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->combo[1]), renderer, "text", 0, NULL);
+		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.combo[1]), renderer, TRUE);
+		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combo[1]), renderer, "text", 0, NULL);
 
 		for(f=0;f< (int) G_N_ELEMENTS(colortable);f++)
 		{
@@ -210,22 +210,22 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(colortable[f].description), 1, colortable[f].colors, -1);
 		}
 
-		g_signal_connect(G_OBJECT(widget->combo[1]),"changed",G_CALLBACK(colortable_changed),widget);
+		g_signal_connect(G_OBJECT(widget->input.combo[1]),"changed",G_CALLBACK(colortable_changed),widget);
 
 	}
 
-	gtk_entry_set_max_length(widget->entry[ENTRY_HOSTNAME],0xFF);
-	gtk_entry_set_width_chars(widget->entry[ENTRY_HOSTNAME],50);
+	gtk_entry_set_max_length(widget->input.entry[ENTRY_HOSTNAME],0xFF);
+	gtk_entry_set_width_chars(widget->input.entry[ENTRY_HOSTNAME],50);
 
-	gtk_entry_set_max_length(widget->entry[ENTRY_SRVCNAME],6);
-	gtk_entry_set_width_chars(widget->entry[ENTRY_SRVCNAME],7);
+	gtk_entry_set_max_length(widget->input.entry[ENTRY_SRVCNAME],6);
+	gtk_entry_set_width_chars(widget->input.entry[ENTRY_SRVCNAME],7);
 
 #if GTK_CHECK_VERSION(3,0,0)
 
-	gtk_entry_set_placeholder_text(widget->entry[ENTRY_SRVCNAME],"telnet");
+	gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
 
-	gtk_widget_set_hexpand(GTK_WIDGET(widget->entry[ENTRY_HOSTNAME]),TRUE);
-	gtk_widget_set_hexpand(GTK_WIDGET(widget->ssl),TRUE);
+	gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
+	gtk_widget_set_hexpand(GTK_WIDGET(widget->input.ssl),TRUE);
 	gtk_widget_set_hexpand(GTK_WIDGET(expander),TRUE);
 
 	gtk_grid_set_row_homogeneous(grid,FALSE);
@@ -234,12 +234,12 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	gtk_grid_set_row_spacing(grid,5);
 
 	gtk_grid_attach(grid,label[ENTRY_HOSTNAME],0,0,1,1);
-	gtk_grid_attach(grid,GTK_WIDGET(widget->entry[ENTRY_HOSTNAME]),1,0,3,1);
+	gtk_grid_attach(grid,GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),1,0,3,1);
 
 	gtk_grid_attach(grid,label[ENTRY_SRVCNAME],4,0,1,1);
-	gtk_grid_attach(grid,GTK_WIDGET(widget->entry[ENTRY_SRVCNAME]),5,0,1,1);
+	gtk_grid_attach(grid,GTK_WIDGET(widget->input.entry[ENTRY_SRVCNAME]),5,0,1,1);
 
-	gtk_grid_attach(grid,GTK_WIDGET(widget->ssl),1,1,3,1);
+	gtk_grid_attach(grid,GTK_WIDGET(widget->input.ssl),1,1,3,1);
 
 
 	// Host options
@@ -253,7 +253,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			GtkWidget *label = gtk_label_new_with_mnemonic(gettext(comboLabel[f]));
 			gtk_misc_set_alignment(GTK_MISC(label),0,0.5);
 			gtk_grid_attach(opt,label,0,f+1,1,1);
-			gtk_grid_attach(opt,GTK_WIDGET(widget->combo[f]),1,f+1,2,1);
+			gtk_grid_attach(opt,GTK_WIDGET(widget->input.combo[f]),1,f+1,2,1);
 		}
 
 		gtk_container_add(GTK_CONTAINER(expander),GTK_WIDGET(opt));
@@ -318,16 +318,16 @@ LIB3270_EXPORT void v3270_host_select_set_session(V3270HostSelectWidget *widget,
 
 	widget->hSession = v3270_get_session(session);
 
-	gtk_entry_set_text(widget->entry[ENTRY_HOSTNAME],lib3270_get_hostname(widget->hSession));
-	gtk_entry_set_text(widget->entry[ENTRY_SRVCNAME],lib3270_get_srvcname(widget->hSession));
+	gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],lib3270_get_hostname(widget->hSession));
+	gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],lib3270_get_srvcname(widget->hSession));
 
-	LIB3270_OPTION opt = lib3270_get_options(widget->hSession);
+	LIB3270_HOST_TYPE type = lib3270_get_host_type(widget->hSession);
 
-	gtk_toggle_button_set_active(widget->ssl,(opt & LIB3270_OPTION_SSL) != 0);
+	gtk_toggle_button_set_active(widget->input.ssl,lib3270_get_secure_host(widget->hSession) != 0);
 
 	// Set host type
 	{
-		GtkTreeModel	* model = gtk_combo_box_get_model(widget->combo[0]);
+		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combo[0]);
 		GtkTreeIter		  iter;
 
 		if(gtk_tree_model_get_iter_first(model,&iter))
@@ -338,9 +338,9 @@ LIB3270_EXPORT void v3270_host_select_set_session(V3270HostSelectWidget *widget,
 
 				gtk_tree_model_get_value(model,&iter,1,&value);
 
-				if(g_value_get_int(&value) == (int) (opt&LIB3270_OPTION_HOST_TYPE))
+				if(g_value_get_int(&value) == (int) type)
 				{
-					gtk_combo_box_set_active_iter(widget->combo[0],&iter);
+					gtk_combo_box_set_active_iter(widget->input.combo[0],&iter);
 					break;
 				}
 
@@ -350,7 +350,7 @@ LIB3270_EXPORT void v3270_host_select_set_session(V3270HostSelectWidget *widget,
 
 	// Set color type
 	{
-		GtkTreeModel	* model = gtk_combo_box_get_model(widget->combo[1]);
+		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combo[1]);
 		GtkTreeIter		  iter;
 		int				  colors = (int) lib3270_get_color_type(widget->hSession);
 
@@ -366,7 +366,7 @@ LIB3270_EXPORT void v3270_host_select_set_session(V3270HostSelectWidget *widget,
 
 				if(g_value_get_int(&value) == colors)
 				{
-					gtk_combo_box_set_active_iter(widget->combo[1],&iter);
+					gtk_combo_box_set_active_iter(widget->input.combo[1],&iter);
 					break;
 				}
 
@@ -375,7 +375,8 @@ LIB3270_EXPORT void v3270_host_select_set_session(V3270HostSelectWidget *widget,
 	}
 
 	// Just in case
-	widget->options = opt;
+	widget->type = type;
+
 }
 
 LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
@@ -432,11 +433,11 @@ int v3270_host_select_apply(V3270HostSelectWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270HostSelectWidget(widget),0);
 
-	lib3270_set_hostname(widget->hSession,gtk_entry_get_text(widget->entry[ENTRY_HOSTNAME]));
-	lib3270_set_srvcname(widget->hSession,gtk_entry_get_text(widget->entry[ENTRY_SRVCNAME]));
+	lib3270_set_hostname(widget->hSession,gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]));
+	lib3270_set_srvcname(widget->hSession,gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]));
 
-	lib3270_set_options(widget->hSession,widget->options);
+	lib3270_set_host_type(widget->hSession,widget->type);
 
-	return lib3270_connect(widget->hSession,0);
+	return lib3270_reconnect(widget->hSession,0);
 }
 

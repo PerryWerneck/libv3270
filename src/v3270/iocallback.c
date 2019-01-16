@@ -35,8 +35,8 @@ static void				* static_AddSource(H3270 *session, int fd, LIB3270_IO_FLAG flag, 
 static void	  			  static_RemoveSource(H3270 *session, void *id);
 static void      		  static_SetSourceState(H3270 *session, void *id, int enabled);
 
-static void 			* static_AddTimeOut(H3270 *session, unsigned long interval_ms, void (*proc)(H3270 *session));
-static void 			  static_RemoveTimeOut(H3270 *session, void * timer);
+static void 			* static_AddTimer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session));
+static void 			  static_RemoveTimer(H3270 *session, void * timer);
 static int				  static_Sleep(H3270 *hSession, int seconds);
 static int 				  static_RunPendingEvents(H3270 *hSession, int wait);
 
@@ -46,7 +46,7 @@ static int 				  static_RunPendingEvents(H3270 *hSession, int wait);
  {
 	unsigned char remove;
 	void	* userdata;
-	void	(*call)(H3270 *session);
+	int		(*call)(H3270 *session);
 	H3270 	* session;
  } TIMER;
 
@@ -71,11 +71,12 @@ static void static_SetSourceState(G_GNUC_UNUSED H3270 *session, G_GNUC_UNUSED vo
 static gboolean do_timer(TIMER *t)
 {
 	if(!t->remove)
-		t->call(t->session);
+		return t->call(t->session) != 0;
+
 	return FALSE;
 }
 
-static void * static_AddTimeOut(H3270 *session, unsigned long interval, void (*call)(H3270 *session))
+static void * static_AddTimer(H3270 *session, unsigned long interval, int (*call)(H3270 *session))
 {
 	TIMER *t = g_malloc0(sizeof(TIMER));
 
@@ -87,22 +88,10 @@ static void * static_AddTimeOut(H3270 *session, unsigned long interval, void (*c
 	return t;
 }
 
-static void static_RemoveTimeOut(G_GNUC_UNUSED H3270 *session, void * timer)
+static void static_RemoveTimer(G_GNUC_UNUSED H3270 *session, void * timer)
 {
 	((TIMER *) timer)->remove++;
 }
-
-/*
-struct bgParameter
-{
-	gboolean	running;
-	H3270		*session;
-	int			rc;
-	int(*callback)(H3270 *session, void *);
-	void		*parm;
-
-};
-*/
 
 static int static_Sleep(G_GNUC_UNUSED H3270 *hSession, int seconds)
 {
@@ -182,8 +171,8 @@ void v3270_register_io_handlers(G_GNUC_UNUSED v3270Class *cls)
 	{
 		sizeof(LIB3270_IO_CONTROLLER),
 
-		static_AddTimeOut,
-		static_RemoveTimeOut,
+		static_AddTimer,
+		static_RemoveTimer,
 
 		static_AddSource,
 		static_RemoveSource,

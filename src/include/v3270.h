@@ -178,7 +178,7 @@
  H3270			* v3270_get_session(GtkWidget *widget);
  gboolean		  v3270_is_connected(GtkWidget *widget);
 
- int			  v3270_connect(GtkWidget *widget);
+ int			  v3270_reconnect(GtkWidget *widget);
  void			  v3270_disconnect(GtkWidget *widget);
 
  int			  v3270_set_host_charset(GtkWidget *widget, const gchar *name);
@@ -239,13 +239,17 @@
  void			  v3270_set_session_name(GtkWidget *widget, const gchar *name);
  int			  v3270_set_script(GtkWidget *widget, const gchar id, gboolean on);
  void			  v3270_set_scaled_fonts(GtkWidget *widget, gboolean on);
- void			  v3270_set_session_options(GtkWidget *widget, LIB3270_OPTION options);
  int			  v3270_set_session_color_type(GtkWidget *widget, unsigned short colortype);
- int			  v3270_set_host_type(GtkWidget *widget, const char *name);
+
+ int			  v3270_set_host_type(GtkWidget *widget, LIB3270_HOST_TYPE type);
+ int			  v3270_set_host_type_by_name(GtkWidget *widget, const char *name);
+
  void			  v3270_set_url(GtkWidget *widget, const gchar *uri);
  const gchar	* v3270_get_hostname(GtkWidget *widget);
  const char		* v3270_get_luname(GtkWidget *widget);
  GtkWidget		* v3270_get_default_widget(void);
+
+  void			  v3270_set_session_host_type(GtkWidget *widget, LIB3270_HOST_TYPE);
 
  void			  v3270_remap_from_xml(GtkWidget *widget, const gchar *path);
 
