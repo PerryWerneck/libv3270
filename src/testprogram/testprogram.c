@@ -109,35 +109,32 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget *trace = v3270_new_trace_window(terminal);
 	if(trace) {
 		g_signal_connect(trace, "destroy", G_CALLBACK(trace_window_destroy), v3270_get_session(terminal));
-		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_DS_TRACE);
+		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_SSL_TRACE);
 		gtk_widget_show_all(trace);
 	}
 
-	const gchar *url = getenv("LIB3270_DEFAULT_HOST");
-	if(url) {
 
-		/*
-		v3270_set_url(terminal,url);
-		v3270_connect(terminal);
-		*/
+	/*
+	v3270_set_url(terminal,url);
+	v3270_connect(terminal);
+	*/
 
-		g_value_init (&val, G_TYPE_STRING);
-		g_value_set_string(&val,url);
-		g_object_set_property(G_OBJECT(terminal), "url", &val);
-		g_value_unset(&val);
-
-		gchar * title = g_strdup_printf("%s - %s", v3270_get_session_name(terminal), url);
-		gtk_window_set_title(GTK_WINDOW(window), title);
-		g_free(title);
-
-	} else {
-		gtk_window_set_title(GTK_WINDOW(window), v3270_get_session_name(terminal));
-	}
+	/*
+	g_value_init (&val, G_TYPE_STRING);
+	g_value_set_string(&val,url);
+	g_object_set_property(G_OBJECT(terminal), "url", &val);
+	g_value_unset(&val);
+	*/
 
 	g_value_init(&val, G_TYPE_STRING);
 	g_object_get_property(G_OBJECT(terminal),"url",&val);
 	g_message("URL=%s",g_value_get_string(&val));
+
+	gchar * title = g_strdup_printf("%s - %s", v3270_get_session_name(terminal), g_value_get_string(&val));
+	gtk_window_set_title(GTK_WINDOW(window), title);
+	g_free(title);
 	g_value_unset(&val);
+
 
 	g_value_init(&val, G_TYPE_BOOLEAN);
 	g_object_get_property(G_OBJECT(terminal),"tso",&val);
@@ -161,6 +158,8 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
 	gtk_container_add(GTK_CONTAINER(window),terminal);
 	gtk_widget_show_all (window);
+
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,1);
 
 }
 
