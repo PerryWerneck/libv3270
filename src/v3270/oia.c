@@ -353,9 +353,6 @@ void v3270_draw_ssl_status(v3270 *widget, cairo_t *cr, GdkRectangle *rect)
 	cairo_rectangle(cr, 0, 0, rect->width, rect->height);
 	cairo_fill(cr);
 
-	if(widget->blink.show)
-		return;
-
 	switch(lib3270_get_secure(widget->host))
 	{
 	case LIB3270_SSL_UNDEFINED:			// Undefined.
