@@ -727,9 +727,24 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value
 
 }
 
-static void update_message(H3270 *session, LIB3270_MESSAGE id)
+static void bg_update_message(H3270 *session)
 {
-	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)), v3270_widget_signal[SIGNAL_MESSAGE_CHANGED], 0, (gint) id);
+	void *widget = lib3270_get_user_data(session);
+ 	trace("-----A %s %p",__FUNCTION__, lib3270_get_user_data(session));
+
+	g_signal_emit(
+		GTK_WIDGET(widget),
+		v3270_widget_signal[SIGNAL_MESSAGE_CHANGED],
+		0,
+		(gint) lib3270_get_program_message(session)
+	);
+
+ 	trace("-----B %s %p",__FUNCTION__, lib3270_get_user_data(session));
+}
+
+static void update_message(H3270 *session, G_GNUC_UNUSED LIB3270_MESSAGE id)
+{
+	g_idle_add((GSourceFunc) bg_update_message, session);
 }
 
 static void update_luname(H3270 *session, const char *name)
@@ -923,11 +938,21 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
  }
 
+ static gboolean bg_update_ssl(H3270 *session)
+ {
+ 	trace("%s",__FUNCTION__);
+
+ 	v3270_blink_ssl(GTK_V3270(lib3270_get_user_data(session)));
+
+	if(lib3270_get_secure(session) == LIB3270_SSL_NEGOTIATING)
+		v3270_start_blinking(GTK_WIDGET(lib3270_get_user_data(session)));
+
+	return FALSE;
+ }
+
  static void update_ssl(H3270 *session, G_GNUC_UNUSED LIB3270_SSL_STATE state)
  {
-	v3270_blink_ssl(GTK_V3270(lib3270_get_user_data(session)));
-	if(state == LIB3270_SSL_NEGOTIATING)
-		v3270_start_blinking(GTK_WIDGET(lib3270_get_user_data(session)));
+	g_idle_add((GSourceFunc) bg_update_ssl, session);
  }
 
  const gchar * v3270_default_font = "monospace";
@@ -1020,17 +1045,22 @@ static void v3270_destroy(GtkObject *widget)
 {
 	v3270 * terminal = GTK_V3270(widget);
 
+	if(terminal->host)
+	{
+		// Cleanup
+		lib3270_reset_callbacks(terminal->host);
+		lib3270_set_user_data(terminal->host,NULL);
+
+		// Release session
+		lib3270_session_free(terminal->host);
+		terminal->host = NULL;
+	}
+
 	if(terminal->accessible)
 	{
 		gtk_accessible_set_widget(terminal->accessible, NULL);
 		g_object_unref(terminal->accessible);
 		terminal->accessible = NULL;
-	}
-
-	if(terminal->host)
-	{
-		lib3270_session_free(terminal->host);
-		terminal->host = NULL;
 	}
 
 	if(terminal->font.family)

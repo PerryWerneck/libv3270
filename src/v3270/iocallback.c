@@ -29,6 +29,7 @@
 
 #include <config.h>
 #include <lib3270.h>
+#include <lib3270/log.h>
 #include "private.h"
 
 static void				* static_AddSource(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
@@ -142,6 +143,12 @@ gpointer BgCall(struct bgParameter *p)
 
 static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void *parm)
 {
+	trace("%s starts -------------------------------------", __FUNCTION__);
+
+	int rc = callback(hSession,parm);
+
+	trace("%s starts -------------------------------------", __FUNCTION__);
+	/*
 	struct bgParameter p = { TRUE, hSession, -1, callback, parm };
 
 	p.running = TRUE;
@@ -162,7 +169,9 @@ static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void
 	g_thread_join(thread);
 
 	return p.rc;
+	*/
 
+	return rc;
 }
 
 void v3270_register_io_handlers(G_GNUC_UNUSED v3270Class *cls)
