@@ -146,6 +146,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/v3270
 
 %{_libdir}/*.a
+%{_datadir}/pw3270/pot/*.pot
 
 %files -n glade-catalog-v3270
 %defattr(-,root,root)

@@ -154,6 +154,7 @@ rm -rf %{buildroot}
 
 %{_mingw64_libdir}/pkgconfig/*.pc
 %{_mingw64_libdir}/*.a
+%{_mingw64_datadir}/pw3270/pot/*.pot
 
 %files -n mingw64-glade-catalog-v3270
 %defattr(-,root,root)
