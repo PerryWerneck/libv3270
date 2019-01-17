@@ -161,6 +161,8 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,1);
 
+	// v3270_set_script(terminal,'R');
+
 }
 
 int main (int argc, char **argv) {

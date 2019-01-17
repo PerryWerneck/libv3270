@@ -237,7 +237,7 @@
  void			  v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type, const gchar *title, const gchar *message, const gchar *text);
  const gchar	* v3270_get_session_name(GtkWidget *widget);
  void			  v3270_set_session_name(GtkWidget *widget, const gchar *name);
- int			  v3270_set_script(GtkWidget *widget, const gchar id, gboolean on);
+ int			  v3270_set_script(GtkWidget *widget, const gchar id);
  void			  v3270_set_scaled_fonts(GtkWidget *widget, gboolean on);
  int			  v3270_set_session_color_type(GtkWidget *widget, unsigned short colortype);
 

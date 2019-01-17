@@ -142,14 +142,12 @@ G_BEGIN_DECLS
 
 	struct
 	{
-	    char                * text;                 /**< Clipboard contents (lib3270 charset) */
-        int                   baddr;	        	/**< Selection addr */
+	    char                * text;                 	/**< Clipboard contents (lib3270 charset) */
+        int                   baddr;	        		/**< Selection addr */
 	} selection;
 
 	LIB3270_POINTER 		  pointer_id;
-	unsigned char			  pointer;				/**< Mouse pointer ID */
-
-	V3270_OIA_FIELD			  selected_field;		/**< Clicked OIA field */
+	unsigned char			  pointer;					/**< Mouse pointer ID */
 
 	// Font info
 	cairo_surface_t			* surface;
@@ -159,10 +157,14 @@ G_BEGIN_DECLS
 	gint					  minimum_height;
 
 	// Colors
-	GdkRGBA					  color[V3270_COLOR_COUNT];	/**< Terminal widget colors */
+	GdkRGBA					  color[V3270_COLOR_COUNT];		/**< Terminal widget colors */
 
-	// Regions
-	GdkRectangle			  oia_rect[V3270_OIA_FIELD_COUNT];
+	// OIA
+	struct
+	{
+		GdkRectangle		  rect[V3270_OIA_FIELD_COUNT];
+		V3270_OIA_FIELD		  selected;						/**< Clicked OIA field */
+	} oia;
 
 	struct
 	{
@@ -189,13 +191,24 @@ G_BEGIN_DECLS
 		GSource					* timer;					/**< Auto disconnect timer */
 	} activity;
 
+	char					  script;						/**< @brief Script ID */
+
+	// Blink
+	struct
+	{
+		int					  show : 1;						/**< @brief Show element? */
+		GSource				* timer;						/**< @brief Timer source. */
+	} blink;
+
+	/*
 	// Scripting
 	struct
 	{
 		int					  blink : 1;
-		gchar				  id;						/**< Script indicator */
+		gchar				  id;						///< Script indicator
 		GSource				* timer;
 	} script;
+	*/
 
  };
 
@@ -229,9 +242,12 @@ G_BEGIN_DECLS
 
  G_GNUC_INTERNAL guint			  v3270_widget_signal[LAST_SIGNAL];
  G_GNUC_INTERNAL GdkCursor		* v3270_cursor[LIB3270_POINTER_COUNT];
-//  G_GNUC_INTERNAL GParamSpec		* v3270_properties[PROP_LAST];
  G_GNUC_INTERNAL const gchar	* v3270_default_colors;
  G_GNUC_INTERNAL const gchar	* v3270_default_font;
+ G_GNUC_INTERNAL void			  v3270_start_blinking(GtkWidget *widget);
+
+ G_GNUC_INTERNAL void			  v3270_oia_update_text_field(v3270 *terminal, gboolean flag, V3270_OIA_FIELD id, const gchar chr);
+ G_GNUC_INTERNAL cairo_t		* v3270_oia_set_update_region(v3270 * terminal, GdkRectangle **r, V3270_OIA_FIELD id);
 
  G_GNUC_INTERNAL struct _v3270_properties
  {
@@ -256,10 +272,11 @@ G_BEGIN_DECLS
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
-const GtkWidgetClass	* v3270_get_parent_class(void);
+const GtkWidgetClass		* v3270_get_parent_class(void);
 
 G_GNUC_INTERNAL gboolean	  v3270_draw(GtkWidget * widget, cairo_t * cr);
-G_GNUC_INTERNAL void 		  v3270_draw_oia(cairo_t *cr, H3270 *host, int row, int cols, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect);
+
+G_GNUC_INTERNAL void		  v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols);
 G_GNUC_INTERNAL void		  v3270_update_mouse_pointer(GtkWidget *widget);
 
 #if ! GTK_CHECK_VERSION(2,18,0)
@@ -302,7 +319,8 @@ G_GNUC_INTERNAL void		  v3270_start_timer(GtkWidget *terminal);
 G_GNUC_INTERNAL void		  v3270_stop_timer(GtkWidget *terminal);
 
 G_GNUC_INTERNAL void		  v3270_draw_connection(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, const GdkRectangle *rect);
-G_GNUC_INTERNAL void		  v3270_draw_ssl_status(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect);
+
+G_GNUC_INTERNAL void		  v3270_draw_ssl_status(v3270 *widget, cairo_t *cr, GdkRectangle *rect);
 
 G_GNUC_INTERNAL void		  v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor);
 
@@ -313,7 +331,8 @@ G_GNUC_INTERNAL void		  v3270_update_cursor_rect(v3270 *widget, GdkRectangle *re
 G_GNUC_INTERNAL void		  v3270_update_message(v3270 *widget, LIB3270_MESSAGE id);
 G_GNUC_INTERNAL void		  v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col, unsigned char c, unsigned short attr);
 G_GNUC_INTERNAL void		  v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on);
-G_GNUC_INTERNAL void		  v3270_update_ssl(H3270 *session, LIB3270_SSL_STATE state);
+
+G_GNUC_INTERNAL void			v3270_blink_ssl(v3270 *terminal);
 
 G_GNUC_INTERNAL void			v3270_update_luname(GtkWidget *widget,const gchar *name);
 G_GNUC_INTERNAL void			v3270_init_properties(GObjectClass * gobject_class);

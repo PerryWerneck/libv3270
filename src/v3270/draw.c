@@ -62,7 +62,7 @@ gboolean v3270_draw(GtkWidget * widget, cairo_t * cr)
 		cairo_rectangle(cr,	0,terminal->cursor.rect.y+terminal->font.height,allocation.width,1);
 		cairo_fill(cr);
 
-		cairo_rectangle(cr,	terminal->cursor.rect.x,0,1,terminal->oia_rect->y-3);
+		cairo_rectangle(cr,	terminal->cursor.rect.x,0,1,terminal->oia.rect->y-3);
 		cairo_fill(cr);
 	}
 
@@ -439,7 +439,7 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 	}
 
 	cairo_set_scaled_font(cr,terminal->font.scaled);
-	v3270_draw_oia(cr, terminal->host, rect.y, cols, &terminal->font, terminal->color,terminal->oia_rect);
+	v3270_draw_oia(terminal, cr, rect.y, cols);
 
     cairo_destroy(cr);
 

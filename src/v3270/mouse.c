@@ -138,13 +138,13 @@ void v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event)
 
 static V3270_OIA_FIELD get_field_from_event(v3270 *widget, GdkEventButton *event)
 {
-	if(event->y >= widget->oia_rect->y)
+	if(event->y >= widget->oia.rect->y)
 	{
 		V3270_OIA_FIELD f;
 
 		for(f=0;f<V3270_OIA_FIELD_COUNT;f++)
 		{
-			if(event->x >= widget->oia_rect[f].x && event->x <= (widget->oia_rect[f].x+widget->oia_rect[f].width))
+			if(event->x >= widget->oia.rect[f].x && event->x <= (widget->oia.rect[f].x+widget->oia.rect[f].width))
 				return f;
 		}
 	}
@@ -158,7 +158,7 @@ gboolean v3270_button_press_event(GtkWidget *widget, GdkEventButton *event)
 
 	if(baddr >= 0)
 	{
-		GTK_V3270(widget)->selected_field = V3270_OIA_FIELD_INVALID;
+		GTK_V3270(widget)->oia.selected = V3270_OIA_FIELD_INVALID;
 
 		switch(event->button)
 		{
@@ -175,7 +175,7 @@ gboolean v3270_button_press_event(GtkWidget *widget, GdkEventButton *event)
 	}
 	else if(event->button == 1 && event->type == GDK_BUTTON_PRESS)
 	{
-		GTK_V3270(widget)->selected_field = get_field_from_event(GTK_V3270(widget),event);
+		GTK_V3270(widget)->oia.selected = get_field_from_event(GTK_V3270(widget),event);
 	}
 
 	return FALSE;
@@ -190,13 +190,13 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 		GTK_V3270(widget)->moving	 = 0;
 		GTK_V3270(widget)->resizing	 = 0;
 
-		if(GTK_V3270(widget)->selected_field != V3270_OIA_FIELD_INVALID && GTK_V3270(widget)->selected_field == get_field_from_event(GTK_V3270(widget),event))
+		if(GTK_V3270(widget)->oia.selected != V3270_OIA_FIELD_INVALID && GTK_V3270(widget)->oia.selected == get_field_from_event(GTK_V3270(widget),event))
 		{
 			gboolean handled = FALSE;
 
 			g_signal_emit(widget,	v3270_widget_signal[SIGNAL_FIELD], 0,
 									lib3270_connected(GTK_V3270(widget)->host) ? TRUE : FALSE,
-									GTK_V3270(widget)->selected_field,
+									GTK_V3270(widget)->oia.selected,
 									event,
 									&handled);
 
@@ -205,7 +205,7 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 
 		}
 
-		GTK_V3270(widget)->selected_field = V3270_OIA_FIELD_INVALID;
+		GTK_V3270(widget)->oia.selected = V3270_OIA_FIELD_INVALID;
 
 		break;
 
@@ -267,11 +267,11 @@ gboolean v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event)
 			update_mouse_pointer(widget,baddr);
 		}
 	}
-	else if(event->y >= terminal->oia_rect->y)
+	else if(event->y >= terminal->oia.rect->y)
 	{
 		int id = LIB3270_POINTER_PROTECTED;
 
-		if(event->x >= terminal->oia_rect[V3270_OIA_SSL].x && event->x <= (terminal->oia_rect[V3270_OIA_SSL].x + terminal->oia_rect[V3270_OIA_SSL].width))
+		if(event->x >= terminal->oia.rect[V3270_OIA_SSL].x && event->x <= (terminal->oia.rect[V3270_OIA_SSL].x + terminal->oia.rect[V3270_OIA_SSL].width))
 		{
 			switch(lib3270_get_secure(terminal->host))
 			{

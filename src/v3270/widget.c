@@ -230,9 +230,9 @@ void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *t
 
 gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, G_GNUC_UNUSED gboolean keyboard_tooltip, GtkTooltip *tooltip)
 {
-	if(y >= GTK_V3270(widget)->oia_rect->y)
+	if(y >= GTK_V3270(widget)->oia.rect->y)
 	{
-		GdkRectangle *rect = GTK_V3270(widget)->oia_rect;
+		GdkRectangle *rect = GTK_V3270(widget)->oia.rect;
 
 		if(x >= rect[V3270_OIA_SSL].x && x <= (rect[V3270_OIA_SSL].x + rect[V3270_OIA_SSL].width))
 		{
@@ -923,6 +923,13 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
  }
 
+ static void update_ssl(H3270 *session, G_GNUC_UNUSED LIB3270_SSL_STATE state)
+ {
+	v3270_blink_ssl(GTK_V3270(lib3270_get_user_data(session)));
+	if(state == LIB3270_SSL_NEGOTIATING)
+		v3270_start_blinking(GTK_WIDGET(lib3270_get_user_data(session)));
+ }
+
  const gchar * v3270_default_font = "monospace";
 
  static void v3270_init(v3270 *widget)
@@ -961,9 +968,8 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->changed			= changed;
 	cbk->ctlr_done			= ctlr_done;
 	cbk->message			= message;
-	cbk->update_ssl			= v3270_update_ssl;
+	cbk->update_ssl			= update_ssl;
 	cbk->print				= emit_print_signal;
-
 
 	// Reset timer
 	widget->activity.timestamp		= time(0);
@@ -1058,11 +1064,11 @@ static void v3270_destroy(GtkObject *widget)
 			g_source_unref(terminal->timer);
 	}
 
-	if(terminal->script.timer)
+	if(terminal->blink.timer)
 	{
-		g_source_destroy(terminal->script.timer);
-		while(terminal->script.timer)
-			g_source_unref(terminal->script.timer);
+		g_source_destroy(terminal->blink.timer);
+		while(terminal->blink.timer)
+			g_source_unref(terminal->blink.timer);
 	}
 
 	if(terminal->cursor.timer)

@@ -343,44 +343,48 @@ static void draw_xbm(cairo_t *cr, GdkRectangle *rect, int width, int height, uns
 	cairo_restore(cr);
 }
 
-void v3270_draw_ssl_status(cairo_t *cr, H3270 *host, G_GNUC_UNUSED v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect)
+void v3270_draw_ssl_status(v3270 *widget, cairo_t *cr, GdkRectangle *rect)
 {
-#ifdef DEBUG
-	cairo_set_source_rgb(cr,0.1,0.1,0.1);
-#else
-	gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_BACKGROUND);
-#endif
+	// v3270_draw_ssl_status(cr,terminal->host,&terminal->font,terminal->color,r);
+
+	gdk_cairo_set_source_rgba(cr,widget->color+V3270_COLOR_OIA_BACKGROUND);
 
 	cairo_translate(cr, rect->x, rect->y);
 	cairo_rectangle(cr, 0, 0, rect->width, rect->height);
 	cairo_fill(cr);
 
-	switch(lib3270_get_secure(host))
+	if(widget->blink.show)
+		return;
+
+	switch(lib3270_get_secure(widget->host))
 	{
-	case LIB3270_SSL_UNSECURE:	/**< No secure connection */
-		gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_FOREGROUND);
+	case LIB3270_SSL_UNDEFINED:			// Undefined.
+		break;
+
+	case LIB3270_SSL_UNSECURE:			// No secure connection
+		gdk_cairo_set_source_rgba(cr,widget->color+V3270_COLOR_OIA_FOREGROUND);
 		draw_xbm(cr,rect,unlocked_width,unlocked_height,unlocked_bits);
 		break;
 
-	case LIB3270_SSL_NEGOTIATING:	/**< Negotiating SSL */
-		gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_STATUS_WARNING);
-		draw_xbm(cr,rect,negotiated_width,negotiated_height,negotiated_bits);
+	case LIB3270_SSL_NEGOTIATING:		// Negotiating SSL
+		if(widget->blink.show)
+		{
+			gdk_cairo_set_source_rgba(cr,widget->color+V3270_COLOR_OIA_STATUS_WARNING);
+			draw_xbm(cr,rect,negotiated_width,negotiated_height,negotiated_bits);
+		}
 		break;
 
-	case LIB3270_SSL_NEGOTIATED:	/**< Connection secure, no CA or self-signed */
-		gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_STATUS_OK);
+	case LIB3270_SSL_NEGOTIATED:		// Connection secure, no CA, self-signed or expired CRL
+		gdk_cairo_set_source_rgba(cr,widget->color+V3270_COLOR_OIA_STATUS_OK);
 		draw_xbm(cr,rect,locked_width,locked_height,locked_bits);
-		gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_STATUS_WARNING);
+		gdk_cairo_set_source_rgba(cr,widget->color+V3270_COLOR_OIA_STATUS_WARNING);
 		draw_xbm(cr,rect,warning_width,warning_height,warning_bits);
 		break;
 
-	case LIB3270_SSL_SECURE:	/**< Connection secure with CA check */
-		gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_STATUS_OK);
+	case LIB3270_SSL_SECURE:			// Connection secure with CA check
+		gdk_cairo_set_source_rgba(cr,widget->color+V3270_COLOR_OIA_STATUS_OK);
 		draw_xbm(cr,rect,locked_width,locked_height,locked_bits);
 		break;
-
-	default:
-		return;
 
 	}
 
@@ -552,7 +556,10 @@ static void draw_insert(cairo_t *cr, H3270 *host, GdkRGBA *color, GdkRectangle *
 
 }
 
-void v3270_draw_oia(cairo_t *cr, H3270 *host, int row, int cols, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect)
+// v3270_draw_oia(cr, terminal->host, rect.y, cols, &terminal->font, terminal->color,terminal->oia_rect);
+// void v3270_draw_oia(cairo_t *cr, H3270 *host, int row, int cols, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect)
+
+void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 {
 	static const struct _right_fields
 	{
@@ -577,80 +584,81 @@ void v3270_draw_oia(cairo_t *cr, H3270 *host, int row, int cols, v3270FontInfo *
 	};
 
 	int f;
-	int rCol = metrics->left+(cols*metrics->width);
-	int lCol = metrics->left+1;
+	int rCol = terminal->font.left+(cols*terminal->font.width);
+	int lCol = terminal->font.left+1;
 
 	row += OIA_TOP_MARGIN;
-	gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_SEPARATOR);
-	cairo_rectangle(cr, metrics->left, row, cols*metrics->width, 1);
+	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_SEPARATOR);
+	cairo_rectangle(cr, terminal->font.left, row, cols*terminal->font.width, 1);
 	cairo_fill(cr);
 
 	row += 2;
 
-	gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_BACKGROUND);
-	cairo_rectangle(cr, metrics->left, row, cols*metrics->width, metrics->spacing);
+	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_BACKGROUND);
+	cairo_rectangle(cr, terminal->font.left, row, cols*terminal->font.width, terminal->font.spacing);
 	cairo_fill(cr);
 
 	for(f=0;f< (int) G_N_ELEMENTS(right);f++)
 	{
-		GdkRectangle *r = rect+right[f].id;
+		GdkRectangle *r = terminal->oia.rect+right[f].id;
 
 		memset(r,0,sizeof(GdkRectangle));
 		r->x = rCol;
 		r->y = row;
-		r->width  = metrics->width;
-		r->height = metrics->spacing;
-		gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_FOREGROUND);
-		right[f].draw(r,metrics,cr,host,cols,color);
-		rCol = r->x - (metrics->width/3);
+		r->width  = terminal->font.width;
+		r->height = terminal->font.spacing;
+		gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_FOREGROUND);
+		right[f].draw(r,&terminal->font,cr,terminal->host,cols,terminal->color);
+		rCol = r->x - (terminal->font.width/3);
 	}
 
-	gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_FOREGROUND);
+	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_FOREGROUND);
 
-	draw_centered_char(cr,metrics,lCol,row,'4');
+	draw_centered_char(cr,&terminal->font,lCol,row,'4');
 
 	cairo_stroke(cr);
-	cairo_rectangle(cr, lCol, row, metrics->width+2, metrics->spacing);
+	cairo_rectangle(cr, lCol, row, terminal->font.width+2, terminal->font.spacing);
 	cairo_stroke(cr);
 
-	lCol += (metrics->width+5);
+	lCol += (terminal->font.width+5);
 
 	// Undera indicator
-	rect[V3270_OIA_UNDERA].x = lCol;
-	rect[V3270_OIA_UNDERA].y = row;
-	rect[V3270_OIA_UNDERA].width  = metrics->width+3;
-	rect[V3270_OIA_UNDERA].height = metrics->spacing;
-	draw_undera(cr,host,metrics,color,rect+V3270_OIA_UNDERA);
+	terminal->oia.rect[V3270_OIA_UNDERA].x = lCol;
+	terminal->oia.rect[V3270_OIA_UNDERA].y = row;
+	terminal->oia.rect[V3270_OIA_UNDERA].width  = terminal->font.width+3;
+	terminal->oia.rect[V3270_OIA_UNDERA].height = terminal->font.spacing;
+	draw_undera(cr,terminal->host,&terminal->font,terminal->color,terminal->oia.rect+V3270_OIA_UNDERA);
 
-	lCol += (3 + rect[V3270_OIA_UNDERA].width);
+	lCol += (3 + terminal->oia.rect[V3270_OIA_UNDERA].width);
 
 	// Connection indicator
-	rect[V3270_OIA_CONNECTION].x = lCol;
-	rect[V3270_OIA_CONNECTION].y = row;
-	rect[V3270_OIA_CONNECTION].width  = metrics->width+3;
-	rect[V3270_OIA_CONNECTION].height = metrics->spacing;
-	v3270_draw_connection(cr,host,metrics,color,rect+V3270_OIA_CONNECTION);
+	terminal->oia.rect[V3270_OIA_CONNECTION].x = lCol;
+	terminal->oia.rect[V3270_OIA_CONNECTION].y = row;
+	terminal->oia.rect[V3270_OIA_CONNECTION].width  = terminal->font.width+3;
+	terminal->oia.rect[V3270_OIA_CONNECTION].height = terminal->font.spacing;
+	v3270_draw_connection(cr,terminal->host,&terminal->font,terminal->color,terminal->oia.rect+V3270_OIA_CONNECTION);
 
-	lCol += (4 + rect[V3270_OIA_CONNECTION].width);
+	lCol += (4 + terminal->oia.rect[V3270_OIA_CONNECTION].width);
 
-	memset(rect+V3270_OIA_MESSAGE,0,sizeof(GdkRectangle));
+	memset(terminal->oia.rect+V3270_OIA_MESSAGE,0,sizeof(GdkRectangle));
 
 	if(lCol < rCol)
 	{
-		GdkRectangle *r = rect+V3270_OIA_MESSAGE;
+		GdkRectangle *r = terminal->oia.rect+V3270_OIA_MESSAGE;
 		r->x = lCol;
 		r->y = row;
 		r->width  = rCol - lCol;
-		r->height = metrics->spacing;
-		draw_status_message(cr,lib3270_get_program_message(host),metrics,color,r);
+		r->height = terminal->font.spacing;
+		draw_status_message(cr,lib3270_get_program_message(terminal->host),&terminal->font,terminal->color,r);
 	}
 
 	cairo_save(cr);
-	v3270_draw_ssl_status(cr,host,metrics,color,rect+V3270_OIA_SSL);
+//	v3270_draw_ssl_status(cr,terminal->host,&terminal->font,terminal->color,terminal->oia.rect+V3270_OIA_SSL);
+	v3270_draw_ssl_status(terminal,cr,terminal->oia.rect+V3270_OIA_SSL);
 	cairo_restore(cr);
 
 	cairo_save(cr);
-	draw_insert(cr,host,color,rect+V3270_OIA_INSERT);
+	draw_insert(cr,terminal->host,terminal->color,terminal->oia.rect+V3270_OIA_INSERT);
 	cairo_restore(cr);
 }
 
@@ -664,9 +672,9 @@ void v3270_draw_oia(cairo_t *cr, H3270 *host, int row, int cols, v3270FontInfo *
  * @return cairo object for drawing.
  *
  */
-static cairo_t * set_update_region(v3270 * terminal, GdkRectangle **r, V3270_OIA_FIELD id)
+cairo_t * v3270_oia_set_update_region(v3270 * terminal, GdkRectangle **r, V3270_OIA_FIELD id)
 {
-	GdkRectangle	* rect		= terminal->oia_rect + id;
+	GdkRectangle	* rect		= terminal->oia.rect + id;
 	cairo_t 		* cr		= cairo_create(terminal->surface);
 
 	cairo_set_scaled_font(cr,terminal->font.scaled);
@@ -698,7 +706,7 @@ void v3270_update_luname(GtkWidget *widget,const gchar *name)
 
 	if(terminal->surface)
 	{
-		cr = set_update_region(terminal,&rect,V3270_OIA_LUNAME);
+		cr = v3270_oia_set_update_region(terminal,&rect,V3270_OIA_LUNAME);
 
 		if(name)
 		{
@@ -727,7 +735,7 @@ void v3270_update_message(v3270 *widget, LIB3270_MESSAGE id)
 	if(!widget->surface)
 		return;
 
-	cr = set_update_region(widget,&rect,V3270_OIA_MESSAGE);
+	cr = v3270_oia_set_update_region(widget,&rect,V3270_OIA_MESSAGE);
 
 	draw_status_message(cr,id,&widget->font,widget->color,rect);
 
@@ -789,10 +797,10 @@ void v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col,
 		gtk_widget_get_allocation(GTK_WIDGET(terminal), &allocation);
 
 		v3270_queue_draw_area(GTK_WIDGET(terminal),0,saved.y+terminal->font.height,allocation.width,1);
-		v3270_queue_draw_area(GTK_WIDGET(terminal),saved.x,0,1,terminal->oia_rect->y-3);
+		v3270_queue_draw_area(GTK_WIDGET(terminal),saved.x,0,1,terminal->oia.rect->y-3);
 
 		v3270_queue_draw_area(GTK_WIDGET(terminal),0,terminal->cursor.rect.y+terminal->font.height,allocation.width,1);
-		v3270_queue_draw_area(GTK_WIDGET(terminal),terminal->cursor.rect.x,0,1,terminal->oia_rect->y-3);
+		v3270_queue_draw_area(GTK_WIDGET(terminal),terminal->cursor.rect.x,0,1,terminal->oia.rect->y-3);
 	}
 
 	if(lib3270_get_toggle(session,LIB3270_TOGGLE_CURSOR_POS))
@@ -801,7 +809,7 @@ void v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col,
 		GdkRectangle	* rect;
 		cairo_t 		* cr;
 
-		cr = set_update_region(terminal,&rect,V3270_OIA_CURSOR_POSITION);
+		cr = v3270_oia_set_update_region(terminal,&rect,V3270_OIA_CURSOR_POSITION);
 
 		draw_cursor_position(cr,rect,&terminal->font,row,col);
 
@@ -849,7 +857,7 @@ static void release_timer(struct timer_info *info)
 
 		for(f=0;f< (int) G_N_ELEMENTS(id);f++)
 		{
-			GdkRectangle *rect = info->terminal->oia_rect + id[f];
+			GdkRectangle *rect = info->terminal->oia.rect + id[f];
 			cairo_rectangle(cr, rect->x, rect->y, rect->width, rect->height);
 			cairo_fill(cr);
 			v3270_queue_draw_area(GTK_WIDGET(info->terminal),rect->x,rect->y,rect->width,rect->height);
@@ -868,7 +876,7 @@ void v3270_draw_shift_status(v3270 *terminal)
 	if(!terminal->surface)
 		return;
 
-	cr = set_update_region(terminal,&r,V3270_OIA_SHIFT);
+	cr = v3270_oia_set_update_region(terminal,&r,V3270_OIA_SHIFT);
 	cairo_translate(cr, r->x, r->y+1);
 
 	if(r->width > 2 && r->height > 7 && (terminal->keyflags & KEY_FLAG_SHIFT))
@@ -911,7 +919,7 @@ void v3270_draw_shift_status(v3270 *terminal)
 
 }
 
-static void update_text_field(v3270 *terminal, gboolean flag, V3270_OIA_FIELD id, const gchar chr)
+void v3270_oia_update_text_field(v3270 *terminal, gboolean flag, V3270_OIA_FIELD id, const gchar chr)
 {
 	GdkRectangle	* r;
 	cairo_t 		* cr;
@@ -920,7 +928,7 @@ static void update_text_field(v3270 *terminal, gboolean flag, V3270_OIA_FIELD id
 	if(!terminal->surface)
 		return;
 
-	cr = set_update_region(terminal,&r,id);
+	cr = v3270_oia_set_update_region(terminal,&r,id);
 	cairo_translate(cr, r->x, r->y);
 
 	if(flag)
@@ -938,7 +946,7 @@ static void update_text_field(v3270 *terminal, gboolean flag, V3270_OIA_FIELD id
 void v3270_draw_alt_status(v3270 *terminal)
 {
 #ifdef KEY_FLAG_ALT
-	update_text_field(terminal,terminal->keyflags & KEY_FLAG_ALT,V3270_OIA_ALT,'A');
+	v3270_oia_update_text_field(terminal,terminal->keyflags & KEY_FLAG_ALT,V3270_OIA_ALT,'A');
 #endif // KEY_FLAG_ALT
 }
 
@@ -950,7 +958,7 @@ void v3270_draw_ins_status(v3270 *terminal)
 	if(!terminal->surface)
 		return;
 
-	cr = set_update_region(terminal,&r,V3270_OIA_INSERT);
+	cr = v3270_oia_set_update_region(terminal,&r,V3270_OIA_INSERT);
 
 	draw_insert(cr,terminal->host,terminal->color,r);
 
@@ -976,13 +984,9 @@ static gboolean update_timer(struct timer_info *info)
 		time_t seconds = now - info->start;
 		char buffer[7];
 
-		rect = info->terminal->oia_rect + V3270_OIA_TIMER;
+		rect = info->terminal->oia.rect + V3270_OIA_TIMER;
 
-#ifdef DEBUG
-		cairo_set_source_rgb(cr,0.1,0.1,0.1);
-#else
 		gdk_cairo_set_source_rgba(cr,info->terminal->color+V3270_COLOR_OIA_BACKGROUND);
-#endif
 
 		cairo_rectangle(cr, rect->x, rect->y, rect->width, rect->height);
 		cairo_fill(cr);
@@ -1008,7 +1012,7 @@ static gboolean update_timer(struct timer_info *info)
 
 #ifdef HAVE_LIBM
 
-    rect = info->terminal->oia_rect + V3270_OIA_SPINNER;
+    rect = info->terminal->oia.rect + V3270_OIA_SPINNER;
 
 #ifdef DEBUG
 	cairo_set_source_rgb(cr,0.1,0.1,0.1);
@@ -1075,19 +1079,18 @@ void v3270_stop_timer(GtkWidget *widget)
 
 }
 
-void v3270_update_ssl(H3270 *session, G_GNUC_UNUSED LIB3270_SSL_STATE state)
+void v3270_blink_ssl(v3270 *terminal)
 {
-	v3270 			* terminal = GTK_V3270(lib3270_get_user_data(session));
-	cairo_t			* cr;
-	GdkRectangle	* r;
+	if(terminal->surface)
+	{
+		GdkRectangle	* r;
+		cairo_t			* cr = v3270_oia_set_update_region(terminal,&r,V3270_OIA_SSL);
 
-	if(!terminal->surface)
-		return;
+		v3270_draw_ssl_status(terminal,cr,r);
+		v3270_queue_draw_area(GTK_WIDGET(terminal),r->x,r->y,r->width,r->height);
+		cairo_destroy(cr);
 
-	cr = set_update_region(terminal,&r,V3270_OIA_SSL);
-	v3270_draw_ssl_status(cr,terminal->host,&terminal->font,terminal->color,r);
-	v3270_queue_draw_area(GTK_WIDGET(terminal),r->x,r->y,r->width,r->height);
-	cairo_destroy(cr);
+	}
 
 }
 
@@ -1105,7 +1108,7 @@ void v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on)
 	{
 	case LIB3270_FLAG_BOXSOLID:
 		debug("%s LIB3270_FLAG_BOXSOLID",__FUNCTION__);
-		cr = set_update_region(terminal,&r,V3270_OIA_CONNECTION);
+		cr = v3270_oia_set_update_region(terminal,&r,V3270_OIA_CONNECTION);
 		v3270_draw_connection(cr,terminal->host,&terminal->font,terminal->color,r);
 		cairo_destroy(cr);
 		v3270_queue_draw_area(GTK_WIDGET(terminal),r->x,r->y,r->width,r->height);
@@ -1113,7 +1116,7 @@ void v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on)
 
 	case LIB3270_FLAG_UNDERA:
 		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
-		cr = set_update_region(terminal,&r,V3270_OIA_UNDERA);
+		cr = v3270_oia_set_update_region(terminal,&r,V3270_OIA_UNDERA);
 		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
 		draw_undera(cr,terminal->host,&terminal->font,terminal->color,r);
 		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
@@ -1125,19 +1128,19 @@ void v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on)
 
 	case LIB3270_FLAG_TYPEAHEAD:
 		debug("%s LIB3270_FLAG_TYPEAHEAD",__FUNCTION__);
-		update_text_field(terminal,on,V3270_OIA_TYPEAHEAD,'T');
+		v3270_oia_update_text_field(terminal,on,V3270_OIA_TYPEAHEAD,'T');
 		break;
 
 #ifdef HAVE_PRINTER
 	case LIB3270_FLAG_PRINTER:
 		debug("%s LIB3270_FLAG_PRINTER",__FUNCTION__);
-		update_text_field(terminal,on,V3270_OIA_PRINTER,'P');
+		v3270_oia_update_text_field(terminal,on,V3270_OIA_PRINTER,'P');
 		break;
 #endif // HAVE_PRINTER
 
 /*
 	case LIB3270_FLAG_SCRIPT:
-		update_text_field(terminal,on,V3270_OIA_SCRIPT,terminal->script_id);
+		v3270_oia_update_text_field(terminal,on,V3270_OIA_SCRIPT,terminal->script_id);
 		break;
 */
 
@@ -1148,55 +1151,20 @@ void v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on)
 	debug("%s",__FUNCTION__);
 }
 
-static gboolean blink_script(v3270 *widget)
+
+int v3270_set_script(GtkWidget *widget, const gchar id)
 {
-	if(!widget->script.id)
-		return FALSE;
-
-	update_text_field(widget,1,V3270_OIA_SCRIPT,widget->script.blink ? 'S' : ' ');
-	widget->script.blink = !widget->script.blink;
-
-	return TRUE;
-}
-
-static void release_script(v3270 *widget)
-{
-	widget->script.timer = NULL;
-	widget->script.id = 0;
-}
-
-int v3270_set_script(GtkWidget *widget, const gchar id, gboolean on)
-{
-	v3270 *terminal;
 	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
 
-	terminal = GTK_V3270(widget);
+	v3270 * terminal = GTK_V3270(widget);
 
-	if(terminal->script.id && id != terminal->script.id)
+	if(id && terminal->script)
 		return EBUSY;
 
-	terminal->script.id = on ? id : 0;
-	update_text_field(terminal,on,V3270_OIA_SCRIPT,'S');
+	terminal->script = id;
 
-	if(on)
-	{
-		if(!terminal->script.timer)
-		{
-			terminal->script.timer = g_timeout_source_new(500);
-			g_source_set_callback(terminal->script.timer,(GSourceFunc) blink_script, terminal, (GDestroyNotify) release_script);
-
-			g_source_attach(terminal->script.timer, NULL);
-			g_source_unref(terminal->script.timer);
-		}
-	}
-	else if(terminal->script.timer)
-	{
-		if(terminal->script.timer->ref_count < 2)
-			g_source_destroy(terminal->script.timer);
-
-		if(terminal->timer)
-			g_source_unref(terminal->script.timer);
-	}
+	if(terminal->script)
+		v3270_start_blinking(widget);
 
 	return 0;
 }
