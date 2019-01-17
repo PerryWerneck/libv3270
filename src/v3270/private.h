@@ -330,7 +330,7 @@ G_GNUC_INTERNAL void		  v3270_update_cursor_rect(v3270 *widget, GdkRectangle *re
 
 G_GNUC_INTERNAL void		  v3270_update_message(v3270 *widget, LIB3270_MESSAGE id);
 G_GNUC_INTERNAL void		  v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col, unsigned char c, unsigned short attr);
-G_GNUC_INTERNAL void		  v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on);
+G_GNUC_INTERNAL void		    v3270_update_oia(v3270 *terminal, LIB3270_FLAG id, unsigned char on);
 
 G_GNUC_INTERNAL void			v3270_blink_ssl(v3270 *terminal);
 

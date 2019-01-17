@@ -1091,16 +1091,16 @@ void v3270_blink_ssl(v3270 *terminal)
 
 }
 
-void v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on)
+void v3270_update_oia(v3270 *terminal, LIB3270_FLAG id, unsigned char on)
 {
 	cairo_t *cr;
 	GdkRectangle *r;
 
-	v3270 *terminal = GTK_V3270(lib3270_get_user_data(session));
-
 	if(!(terminal->surface && terminal->drawing))
 		return;
 
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wswitch"
 	switch(id)
 	{
 	case LIB3270_FLAG_BOXSOLID:
@@ -1141,13 +1141,10 @@ void v3270_update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on)
 		break;
 */
 
-	default:
-		return;
 	}
+	#pragma GCC diagnostic pop
 
-	debug("%s",__FUNCTION__);
 }
-
 
 int v3270_set_script(GtkWidget *widget, const gchar id)
 {

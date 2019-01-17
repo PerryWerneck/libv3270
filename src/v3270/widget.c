@@ -957,6 +957,28 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
  const gchar * v3270_default_font = "monospace";
 
+ struct update_oia_data
+ {
+ 	H3270 *session;
+	LIB3270_FLAG id;
+	unsigned char on;
+ };
+
+ static gboolean bg_update_oia(struct update_oia_data *data)
+ {
+  	v3270_update_oia(GTK_V3270(lib3270_get_user_data(data->session)), data->id, data->on);
+ 	return FALSE;
+ }
+
+ static void update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on)
+ {
+	struct update_oia_data *data = g_new0(struct update_oia_data,1);
+	data->session = session;
+	data->id = id;
+	data->on = on;
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_update_oia, data, g_free);
+ }
+
  static void v3270_init(v3270 *widget)
  {
 	struct lib3270_session_callbacks *cbk;
@@ -986,7 +1008,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->update_status 		= update_message;
 	cbk->update_cursor 		= v3270_update_cursor;
 	cbk->update_toggle 		= update_toggle;
-	cbk->update_oia			= v3270_update_oia;
+	cbk->update_oia			= update_oia;
 	cbk->cursor				= select_cursor;
 	cbk->update_connect		= update_connect;
 	cbk->update_model		= update_model;

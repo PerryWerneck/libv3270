@@ -228,11 +228,6 @@ static void update_mouse_pointer(GtkWidget *widget, int baddr)
 void v3270_update_mouse_pointer(GtkWidget *widget)
 {
 	gint	  x, y;
-
-#if GTK_CHECK_VERSION(3,4,0)
-	#warning Implement gdk_window_get_device_position
-#endif // GTK(3,4,0)
-
 	gtk_widget_get_pointer(widget,&x,&y);
 	update_mouse_pointer(widget,v3270_get_offset_at_point(GTK_V3270(widget),x,y));
 }
