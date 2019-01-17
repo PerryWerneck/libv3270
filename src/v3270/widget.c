@@ -1037,11 +1037,7 @@ void v3270_clear_clipboard(v3270 *terminal)
     terminal->selection.text = lib3270_free(terminal->selection.text);
 }
 
-#if GTK_CHECK_VERSION(3,0,0)
 static void v3270_destroy(GtkWidget *widget)
-#else
-static void v3270_destroy(GtkObject *widget)
-#endif
 {
 	v3270 * terminal = GTK_V3270(widget);
 
