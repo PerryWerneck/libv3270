@@ -1,0 +1,35 @@
+Source: libv3270
+Section: unknown
+Priority: optional
+Maintainer: Perry Werneck <perry.werneck@gmail.com>
+Build-Depends: debhelper (>= 7), autotools-dev, autoconf, gettext, libssl-dev, libssl-dev, lib3270-5.2-dev, libgtk-3-dev, imagemagick
+
+Package: libv3270
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: libv3270 (= ${binary:Version}), libv3270-5.2 (= ${binary:Version})
+Description: TN3270 Access library.
+ 3270 Virtual Terminal for GTK.
+
+Package: libv3270-dev
+Architecture: any
+Section: libdevel
+Depends: ${misc:Depends}, pkg-config, lib3270-dev, libv3270-5.2 (= ${binary:Version})
+Provides: libv3270-5.2-dev
+Description: TN3270 Access library development files.
+ 3270 Virtual Terminal for GTK development files.
+
+Package: libv3270-glade
+Architecture: any
+Section: libdevel
+Depends: ${misc:Depends}, libv3270-5.2-dev (= ${binary:Version})
+Description: Glade files for v3270 library.
+ Glade files for 3270 Virtual Terminal for GTK.
+
+Package: libv3270-dbg
+Architecture: any
+Depends: ${misc:Depends}, libv3270-5.2-dev (= ${binary:Version})
+Description: Debugging symbols for GTK 3270 virtual terminal
+ This package contains the debugging symbols for libv3270.
+
