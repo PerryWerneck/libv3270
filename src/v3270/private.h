@@ -356,5 +356,6 @@ G_GNUC_INTERNAL const struct	v3270_ssl_status_msg * v3270_get_ssl_status_msg(Gtk
 
 // I/O Callbacks
 G_GNUC_INTERNAL GSource			* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
+G_GNUC_INTERNAL void			  IO_source_set_state(GSource *source, gboolean enable);
 
 G_END_DECLS

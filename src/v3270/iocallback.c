@@ -64,9 +64,10 @@ static void static_RemoveSource(G_GNUC_UNUSED H3270 *session, void *id)
 		g_source_destroy((GSource *) id);
 }
 
-static void static_SetSourceState(G_GNUC_UNUSED H3270 *session, G_GNUC_UNUSED void *id, G_GNUC_UNUSED int enabled)
+static void static_SetSourceState(G_GNUC_UNUSED H3270 *session, void *id, int enabled)
 {
-
+	if(id)
+		IO_source_set_state( (GSource *) id, (gboolean) (enabled != 0));
 }
 
 static gboolean do_timer(TIMER *t)
@@ -143,13 +144,12 @@ gpointer BgCall(struct bgParameter *p)
 
 static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void *parm)
 {
+	struct bgParameter p = { TRUE, hSession, -1, callback, parm };
+
 	trace("%s starts -------------------------------------", __FUNCTION__);
 
-	int rc = callback(hSession,parm);
+//	p.rc = callback(hSession,parm);
 
-	trace("%s ends ---------------------------------------", __FUNCTION__);
-	/*
-	struct bgParameter p = { TRUE, hSession, -1, callback, parm };
 
 	p.running = TRUE;
 
@@ -168,10 +168,9 @@ static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void
 
 	g_thread_join(thread);
 
-	return p.rc;
-	*/
+	trace("%s ends ---------------------------------------", __FUNCTION__);
 
-	return rc;
+	return p.rc;
 }
 
 void v3270_register_io_handlers(G_GNUC_UNUSED v3270Class *cls)

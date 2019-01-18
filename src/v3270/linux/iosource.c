@@ -28,6 +28,8 @@
  */
 
  #include <config.h>
+ #include <lib3270.h>
+ #include <lib3270/log.h>
  #include <poll.h>
  #include "../private.h"
 
@@ -81,10 +83,30 @@ GSource	* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call
 	if(flag & LIB3270_IO_FLAG_WRITE)
 		src->poll.events |= G_IO_OUT;
 
+	IO_source_set_state((GSource *) src, TRUE);
+
 	g_source_attach((GSource *) src,NULL);
-	g_source_add_poll((GSource *) src,&src->poll);
+	g_source_add_poll((GSource *) src, &((IO_Source *)src)->poll);
 
 	return (GSource *) src;
+}
+
+G_GNUC_INTERNAL void IO_source_set_state(GSource *source, gboolean enable)
+{
+	((IO_Source *)source)->enabled = enable;
+
+	/*
+	if(enable)
+	{
+		trace("Polling %d was enabled",((IO_Source *)source)->poll.fd);
+		g_source_add_poll((GSource *) source,&((IO_Source *)source)->poll);
+	}
+	else
+	{
+		trace("Polling of %d was disabled",((IO_Source *)source)->poll.fd);
+		g_source_remove_poll((GSource *) source,&((IO_Source *)source)->poll);
+	}
+	*/
 }
 
 
