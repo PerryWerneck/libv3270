@@ -110,6 +110,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	if(trace) {
 		g_signal_connect(trace, "destroy", G_CALLBACK(trace_window_destroy), v3270_get_session(terminal));
 		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_SSL_TRACE);
+		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_DS_TRACE);
 		gtk_widget_show_all(trace);
 	}
 

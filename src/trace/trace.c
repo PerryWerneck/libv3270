@@ -57,10 +57,10 @@
  struct _v3270_trace
  {
 	GtkWindow		  parent;
-	GtkAdjustment	* scroll;
 	GtkTextBuffer	* text;
 	GtkWidget		* entry;
 	GtkWidget		* button;
+	GtkWidget		* scroll;
 	GtkWidget		* view;
 	H3270			* hSession;
 	gchar			**line;
@@ -108,12 +108,8 @@
 
  }
 
-#if GTK_CHECK_VERSION(3,0,0)
 static void destroy(GtkWidget *widget)
-#else
-static void destroy(GtkObject *widget)
-#endif
- {
+{
 	v3270_trace * hwnd = V3270_TRACE(widget);
 
 	if(hwnd->hSession)
@@ -160,16 +156,7 @@ static void destroy(GtkObject *widget)
 	window_class->activate_default	= activate_default;
 	widget_class->delete_event 		= delete_event;
 
-#if GTK_CHECK_VERSION(3,0,0)
-	{
-		widget_class->destroy = destroy;
-	}
-#else
-	{
-		GtkObjectClass *object_class = (GtkObjectClass*) klass;
-		object_class->destroy = destroy;
-	}
-#endif // GTK3
+	widget_class->destroy = destroy;
 
  }
 
@@ -332,17 +319,13 @@ static void destroy(GtkObject *widget)
  {
 	PangoFontDescription* fontdesc	= pango_font_description_from_string(name);
 
-#if GTK_CHECK_VERSION(3,0,0)
 	gtk_widget_override_font(V3270_TRACE(widget)->view, fontdesc);
-#else
-	gtk_widget_modify_font(V3270_TRACE(widget)->view, fontdesc);
-#endif // GTK_CHECK_VERSION
 
 	pango_font_description_free(fontdesc);
  }
 
  static void v3270_trace_init(v3270_trace *window)
- {
+{
  	GtkWidget				* widget;
 #if GTK_CHECK_VERSION(3,0,0)
  	GtkWidget				* vbox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
@@ -370,9 +353,8 @@ static void destroy(GtkObject *widget)
 	window->hSession = NULL;
 
 	// Trace container
-	widget = gtk_scrolled_window_new(NULL,NULL);
-	window->scroll = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(widget));
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(widget),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
+	window->scroll = gtk_scrolled_window_new(NULL,NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(window->scroll),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
 
 	window->view = gtk_text_view_new();
 	v3270_trace_set_font_from_string(GTK_WIDGET(window),"Monospaced");
@@ -380,19 +362,11 @@ static void destroy(GtkObject *widget)
 	window->text = gtk_text_view_get_buffer(GTK_TEXT_VIEW(window->view));
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(window->view), TRUE);
 
-#if GTK_CHECK_VERSION(3,8,0)
-	gtk_container_add(GTK_CONTAINER(widget),window->view);
-#else
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(widget),window->view);
-#endif // GTK_CHECK_VERSION
-	gtk_box_pack_start(GTK_BOX(vbox),widget,TRUE,TRUE,0);
+	gtk_container_add(GTK_CONTAINER(window->scroll),window->view);
+	gtk_box_pack_start(GTK_BOX(vbox),window->scroll,TRUE,TRUE,0);
 
 	// Edit box
-#if GTK_CHECK_VERSION(3,0,0)
 	widget = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
-#else
-	widget = gtk_hbox_new(FALSE,0);
-#endif // GTK_CHECK_VERSION
 	gtk_box_pack_start(GTK_BOX(widget),gtk_label_new( _( "Command:" )),FALSE,TRUE,4);
 	window->entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(widget),window->entry,TRUE,TRUE,4);
@@ -413,7 +387,6 @@ static void destroy(GtkObject *widget)
 	gtk_container_add(GTK_CONTAINER(window),vbox);
 
 	window->log_handler = g_log_set_handler(NULL,G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,(GLogFunc) glog,window);
-
  }
 
  GtkWidget * v3270_trace_new()
@@ -471,34 +444,47 @@ static void destroy(GtkObject *widget)
 	return widget;
  }
 
-
- void v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args)
+ struct bg_print_data
  {
+	GtkWidget	* widget;
+	gchar		* msg;
+ };
+
+ static void bg_trace_vprintf(struct bg_print_data *data)
+ {
+
 	GtkTextIter		  itr;
-	gchar			* msg;
-	v3270_trace	* hwnd = V3270_TRACE(widget);
+	v3270_trace		* hwnd 	= V3270_TRACE(data->widget);
 
 	gtk_text_buffer_get_end_iter(hwnd->text,&itr);
 
-	msg = g_strdup_vprintf(fmt,args);
-
-	if(g_utf8_validate(msg,strlen(msg),NULL))
+	if(g_utf8_validate(data->msg,strlen(data->msg),NULL))
 	{
-		gtk_text_buffer_insert(hwnd->text,&itr,msg,strlen(msg));
+		gtk_text_buffer_insert(hwnd->text,&itr,data->msg,strlen(data->msg));
 	}
 	else
 	{
 		gtk_text_buffer_insert(hwnd->text,&itr,"** Invalid UTF8 String **",-1);
 	}
-	g_free(msg);
 
-	gtk_text_buffer_get_end_iter(hwnd->text,&itr);
+	// gtk_text_buffer_get_end_iter(hwnd->text,&itr);
+	// gtk_text_view_scroll_to_iter (GTK_TEXT_VIEW(hwnd->view), &itr, 0.0, FALSE, 0.0, 0.0);
 
-#if GTK_CHECK_VERSION(2,14,0)
-	gtk_adjustment_set_value(hwnd->scroll,gtk_adjustment_get_upper(hwnd->scroll));
-#else
-	gtk_adjustment_set_value(hwnd->scroll,(GTK_ADJUSTMENT(hwnd->scroll))->upper);
-#endif 	//
+	//GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(hwnd->scroll));
+	//gtk_adjustment_set_value(vadj,gtk_adjustment_get_upper(vadj));
+	//gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(hwnd->scroll), vadj);
+
+	g_free(data->msg);
+ }
+
+ void v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args)
+ {
+	struct bg_print_data * data = g_new0(struct bg_print_data,1);
+
+	data->widget = widget;
+	data->msg = g_strdup_vprintf(fmt,args);
+
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_trace_vprintf, data, g_free);
 
  }
 
