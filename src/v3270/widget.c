@@ -507,12 +507,6 @@ static void v3270_class_init(v3270Class *klass)
 
 }
 
-static int emit_print_signal(H3270 *session)
-{
-	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)), v3270_widget_signal[SIGNAL_PRINT], 0);
-	return 0;
-}
-
 static gboolean activity_tick(v3270 *widget)
 {
 	if(widget->activity.disconnect && lib3270_is_connected(widget->host) && ((time(0) - widget->activity.timestamp)/60) >= widget->activity.disconnect)
