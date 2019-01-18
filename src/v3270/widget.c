@@ -752,9 +752,15 @@ static void update_luname(H3270 *session, const char *name)
 	v3270_update_luname(GTK_WIDGET(lib3270_get_user_data(session)),name);
 }
 
-static void select_cursor(H3270 *session, LIB3270_POINTER id)
+struct select_cursor_data
 {
-	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
+	H3270			* hSession;
+	LIB3270_POINTER   id;
+};
+
+static void bg_select_cursor(struct select_cursor_data *data)
+{
+	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(data->hSession));
 
 #if GTK_CHECK_VERSION(2,20,0)
 	if(gtk_widget_get_realized(widget) && gtk_widget_get_has_window(widget))
@@ -762,9 +768,17 @@ static void select_cursor(H3270 *session, LIB3270_POINTER id)
 	if(GTK_WIDGET_REALIZED(widget) && widget->window)
 #endif // GTK(2,20)
 	{
-		GTK_V3270(widget)->pointer_id = id;
+		GTK_V3270(widget)->pointer_id = data->id;
 		v3270_update_mouse_pointer(widget);
 	}
+}
+
+static void select_cursor(H3270 *session, LIB3270_POINTER id)
+{
+	struct select_cursor_data *data = g_new0(struct select_cursor_data,1);
+	data->hSession = session;
+	data->id = id;
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_select_cursor, data, g_free);
 }
 
 static void ctlr_done(H3270 *session)
