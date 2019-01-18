@@ -275,9 +275,12 @@ G_BEGIN_DECLS
 const GtkWidgetClass		* v3270_get_parent_class(void);
 
 G_GNUC_INTERNAL gboolean	  v3270_draw(GtkWidget * widget, cairo_t * cr);
+G_GNUC_INTERNAL void		  v3270_cursor_draw(v3270 *widget);
 
 G_GNUC_INTERNAL void		  v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols);
 G_GNUC_INTERNAL void		  v3270_update_mouse_pointer(GtkWidget *widget);
+
+G_GNUC_INTERNAL AtkObject	* v3270_get_accessible(GtkWidget * widget);
 
 #if ! GTK_CHECK_VERSION(2,18,0)
 	G_GNUC_INTERNAL void gtk_widget_get_allocation(GtkWidget *widget,GtkAllocation *allocation);

@@ -269,3 +269,25 @@
 	g_return_val_if_fail(GTK_IS_V3270(widget),0);
  	return GTK_V3270(widget)->activity.disconnect;
  }
+
+LIB3270_EXPORT gboolean v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
+
+	if(ix < LIB3270_TOGGLE_COUNT)
+		return lib3270_get_toggle(GTK_V3270(widget)->host,ix) ? TRUE : FALSE;
+
+	return FALSE;
+}
+
+LIB3270_EXPORT gboolean	v3270_set_toggle(GtkWidget *widget, LIB3270_TOGGLE ix, gboolean state)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
+
+	if(ix < LIB3270_TOGGLE_COUNT)
+		return lib3270_set_toggle(GTK_V3270(widget)->host,ix,state ? 1 : 0) ? TRUE : FALSE;
+
+	return FALSE;
+
+}
+

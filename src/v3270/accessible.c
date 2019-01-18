@@ -74,6 +74,22 @@ G_DEFINE_TYPE_WITH_CODE (v3270Accessible, v3270_accessible, GTK_TYPE_ACCESSIBLE,
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+AtkObject * v3270_get_accessible(GtkWidget * widget)
+{
+	v3270 * terminal = GTK_V3270(widget);
+
+	if(!terminal->accessible)
+	{
+		terminal->accessible = g_object_new(GTK_TYPE_V3270_ACCESSIBLE,NULL);
+		atk_object_initialize(ATK_OBJECT(terminal->accessible), widget);
+		gtk_accessible_set_widget(GTK_ACCESSIBLE(terminal->accessible),widget);
+		g_object_ref(terminal->accessible);
+	}
+
+	return ATK_OBJECT(terminal->accessible);
+}
+
+
 static const gchar * v3270_accessible_get_description (AtkObject *accessible)
 {
 	GtkWidget *widget = gtk_accessible_get_widget(GTK_ACCESSIBLE (accessible));

@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como widget.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -28,43 +28,17 @@
  */
 
  #include <config.h>
-
- #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
- #define ENABLE_NLS
- #define GETTEXT_PACKAGE PACKAGE_NAME
-
- #include <gtk/gtk.h>
- #include <libintl.h>
- #include <glib/gi18n.h>
-
-#ifdef WIN32
-	#include <winsock2.h>
-	#include <windows.h>
-	#include <ws2tcpip.h>
-#endif // WIN32
-
- #include <lib3270.h>
- #include <lib3270/session.h>
- #include <lib3270/actions.h>
- #include <lib3270/log.h>
-// #include <lib3270/macros.h>
- #include <errno.h>
-
-#ifdef HAVE_MALLOC_H
-	#include <malloc.h>
-#endif // HAVE_MALLOC_H
-
- #include <v3270.h>
  #include "private.h"
- #include <v3270/accessible.h>
  #include "marshal.h"
 
-#if GTK_CHECK_VERSION(3,0,0)
+ #include <lib3270.h>
+ #include <lib3270/log.h>
+
+ #if GTK_CHECK_VERSION(3,0,0)
 	#include <gdk/gdkkeysyms-compat.h>
-#else
+ #else
 	#include <gdk/gdkkeysyms.h>
-#endif
+ #endif
 
  #define WIDTH_IN_PIXELS(terminal,x) (x * cols)
  #define HEIGHT_IN_PIXELS(terminal,x) (x * (rows+1))
@@ -96,7 +70,6 @@ static void			  v3270_realize				(	GtkWidget		* widget) ;
 static void			  v3270_size_allocate		(	GtkWidget		* widget,
 													GtkAllocation	* allocation );
 static void			  v3270_send_configure		(	v3270			* terminal );
-static AtkObject	* v3270_get_accessible		(	GtkWidget 		* widget );
 
 // Signals
 static void v3270_activate			(GtkWidget *widget);
@@ -104,19 +77,11 @@ static void v3270_activate			(GtkWidget *widget);
 gboolean v3270_focus_in_event(GtkWidget *widget, GdkEventFocus *event);
 gboolean v3270_focus_out_event(GtkWidget *widget, GdkEventFocus *event);
 
-#if GTK_CHECK_VERSION(3,0,0)
-
 static void 	v3270_destroy		(GtkWidget		* object);
-
-#else
-
-static void 	v3270_destroy		(GtkObject		* object);
-
-#endif // gtk3
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void v3270_cursor_draw(v3270 *widget)
+void v3270_cursor_draw(v3270 *widget)
 {
 	int 			pos = lib3270_get_cursor_address(widget->host);
 	unsigned char	c;
@@ -128,16 +93,6 @@ static void v3270_cursor_draw(v3270 *widget)
 							widget->cursor.rect.x,widget->cursor.rect.y,
 							widget->cursor.rect.width,widget->cursor.rect.height);
 
-}
-
-
-static void v3270_toggle_changed(G_GNUC_UNUSED v3270 *widget, G_GNUC_UNUSED LIB3270_TOGGLE toggle_id, G_GNUC_UNUSED gboolean toggle_state, G_GNUC_UNUSED const gchar *toggle_name)
-{
-}
-
-static void loghandler(G_GNUC_UNUSED H3270 *session, const char *module, int rc, const char *fmt, va_list args)
-{
-	g_logv(module,rc ? G_LOG_LEVEL_WARNING : G_LOG_LEVEL_MESSAGE, fmt, args);
 }
 
 static gboolean v3270_popup_menu(GtkWidget * widget)
@@ -156,8 +111,6 @@ static gboolean v3270_popup_menu(GtkWidget * widget)
 
 	return TRUE;
 }
-
-#if GTK_CHECK_VERSION(3,0,0)
 
 void get_preferred_height(GtkWidget *widget, gint *minimum_height, gint *natural_height)
 {
@@ -181,8 +134,6 @@ void get_preferred_width(GtkWidget *widget, gint *minimum_width, gint *natural_w
 	if(natural_width)
 		*natural_width = 600;
 }
-
-#endif // GTK(3,0,0)
 
 void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *title, const gchar *message, const gchar *text)
 {
@@ -286,6 +237,15 @@ gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, G_GNUC_UNUSED g
 
 	}
 	return FALSE;
+}
+
+static void loghandler(G_GNUC_UNUSED H3270 *session, const char *module, int rc, const char *fmt, va_list args)
+{
+	g_logv(module,rc ? G_LOG_LEVEL_WARNING : G_LOG_LEVEL_MESSAGE, fmt, args);
+}
+
+static void v3270_toggle_changed(G_GNUC_UNUSED v3270 *widget, G_GNUC_UNUSED LIB3270_TOGGLE toggle_id, G_GNUC_UNUSED gboolean toggle_state, G_GNUC_UNUSED const gchar *toggle_name)
+{
 }
 
 static void v3270_class_init(v3270Class *klass)
@@ -547,371 +507,6 @@ static void v3270_class_init(v3270Class *klass)
 
 }
 
-void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int height)
-{
-	// update font metrics
-	int rows, cols, hFont, size;
-
-	cairo_font_extents_t extents;
-
-	lib3270_get_screen_size(terminal->host,&rows,&cols);
-
-	terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
-
-	cairo_select_font_face(cr,terminal->font.family, CAIRO_FONT_SLANT_NORMAL,terminal->font.weight);
-
-	if(terminal->font.scaled)
-	{
-		double w = ((double) width) / ((double)cols);
-		double h = ((double) height) / ((double) (rows+2));
-		double s = w < h ? w : h;
-
-		cairo_set_font_size(cr,s);
-		cairo_font_extents(cr,&extents);
-
-		while( HEIGHT_IN_PIXELS(terminal,(extents.height+extents.descent)) < height && WIDTH_IN_PIXELS(terminal,extents.max_x_advance) < width )
-		{
-			s += 1.0;
-			cairo_set_font_size(cr,s);
-			cairo_font_extents(cr,&extents);
-		}
-
-		s -= 1.0;
-
-		cairo_set_font_size(cr,s < 1.0 ? 1.0 : s);
-		cairo_font_extents(cr,&extents);
-	}
-	else
-	{
-		static const int font_size[] = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 32, 36, 40, 48, 56, 64, 72, 0 };
-		int f;
-
-		size = font_size[0];
-
-		for(f=0;font_size[f];f++)
-		{
-			cairo_set_font_size(cr,font_size[f]);
-			cairo_font_extents(cr,&extents);
-
-			if(f == 0)
-			{
-				terminal->minimum_width  = (cols * extents.max_x_advance);
-				terminal->minimum_height = ((rows+1) * (extents.height + extents.descent)) + (OIA_TOP_MARGIN+2);
-			}
-
-			if( HEIGHT_IN_PIXELS(terminal,(extents.height+extents.descent)) < height && WIDTH_IN_PIXELS(terminal,extents.max_x_advance) < width )
-				size = font_size[f];
-		}
-
-		cairo_set_font_size(cr,size);
-
-		#if !GTK_CHECK_VERSION(3,0,0)
-			gtk_widget_set_size_request(GTK_WIDGET(terminal),terminal->minimum_width,terminal->minimum_height);
-		#endif // !GTK(3,0,0)
-
-	}
-
-	cairo_font_extents(cr,&extents);
-
-	// Save scaled font for use on next drawings
-	if(terminal->font.scaled)
-		cairo_scaled_font_destroy(terminal->font.scaled);
-
-	terminal->font.scaled = cairo_get_scaled_font(cr);
-	cairo_scaled_font_reference(terminal->font.scaled);
-
-	cairo_scaled_font_extents(terminal->font.scaled,&extents);
-
-	terminal->font.width    = (int) extents.max_x_advance;
-	terminal->font.height   = (int) extents.height;
-	terminal->font.ascent   = (int) extents.ascent;
-	terminal->font.descent  = (int) extents.descent;
-
-	hFont = terminal->font.height + terminal->font.descent;
-
-	// Create new cursor surface
-	if(terminal->cursor.surface)
-		cairo_surface_destroy(terminal->cursor.surface);
-
-	terminal->cursor.surface = gdk_window_create_similar_surface(gtk_widget_get_window(GTK_WIDGET(terminal)),CAIRO_CONTENT_COLOR,terminal->font.width,hFont);
-
-	// Center image
-	size = CONTENTS_WIDTH(terminal);
-	terminal->font.left = (width >> 1) - ((size) >> 1);
-
-	terminal->font.spacing = height / (rows+2);
-	if((int) terminal->font.spacing < hFont)
-		terminal->font.spacing = hFont;
-
-	size = CONTENTS_HEIGHT(terminal);
-
-	terminal->font.top = (height >> 1) - (size >> 1);
-
-}
-
-static void set_timer(H3270 *session, unsigned char on)
-{
-	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
-
-	if(on)
-		v3270_start_timer(widget);
-	else
-		v3270_stop_timer(widget);
-
-}
-
-static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value, G_GNUC_UNUSED LIB3270_TOGGLE_TYPE reason, const char *name)
-{
-	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
-
-	switch(ix)
-	{
-	case LIB3270_TOGGLE_CURSOR_POS:
-	case LIB3270_TOGGLE_MONOCASE:
-	case LIB3270_TOGGLE_LINE_WRAP:
-	case LIB3270_TOGGLE_CROSSHAIR:
-	case LIB3270_TOGGLE_BLANK_FILL:
-	case LIB3270_TOGGLE_MARGINED_PASTE:
-	case LIB3270_TOGGLE_SHOW_TIMING:
-	case LIB3270_TOGGLE_RECTANGLE_SELECT:
-	case LIB3270_TOGGLE_UNDERLINE:
-	case LIB3270_TOGGLE_VIEW_FIELD:
-	case LIB3270_TOGGLE_ALTSCREEN:
-		v3270_reload(widget);
-		gtk_widget_queue_draw(widget);
-		break;
-
-	case LIB3270_TOGGLE_CURSOR_BLINK:
-		GTK_V3270(widget)->cursor.show |= 1;
-		break;
-
-	case LIB3270_TOGGLE_INSERT:
-		v3270_draw_ins_status(GTK_V3270(widget));
-		v3270_cursor_draw(GTK_V3270(widget));
-		break;
-
-	case LIB3270_TOGGLE_BOLD:
-		v3270_reload(widget);
-		gtk_widget_queue_draw(widget);
-		break;
-
-	case LIB3270_TOGGLE_FULL_SCREEN:
-		if(value)
-			gtk_window_fullscreen(GTK_WINDOW(gtk_widget_get_toplevel(widget)));
-		else
-			gtk_window_unfullscreen(GTK_WINDOW(gtk_widget_get_toplevel(widget)));
-
-		break;
-
-	case LIB3270_TOGGLE_DS_TRACE:
-	case LIB3270_TOGGLE_SSL_TRACE:
-	case LIB3270_TOGGLE_SCREEN_TRACE:
-	case LIB3270_TOGGLE_EVENT_TRACE:
-	case LIB3270_TOGGLE_RECONNECT:
-	case LIB3270_TOGGLE_SMART_PASTE:
-	case LIB3270_TOGGLE_KEEP_SELECTED:
-	case LIB3270_TOGGLE_CONNECT_ON_STARTUP:
-	case LIB3270_TOGGLE_KP_ALTERNATIVE:
-	case LIB3270_TOGGLE_NETWORK_TRACE:
-	case LIB3270_TOGGLE_BEEP:
-	case LIB3270_TOGGLE_KEEP_ALIVE:
-		break;
-
-	case LIB3270_TOGGLE_COUNT:
-		break;
-
-	}
-
-	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.toggle[ix]);
-	g_signal_emit(widget, v3270_widget_signal[SIGNAL_TOGGLE_CHANGED], 0, (guint) ix, (gboolean) (value != 0), (gchar *) name);
-
-}
-
-static void bg_update_message(H3270 *session)
-{
-	void *widget = lib3270_get_user_data(session);
- 	trace("-----A %s %p",__FUNCTION__, lib3270_get_user_data(session));
-
-	g_signal_emit(
-		GTK_WIDGET(widget),
-		v3270_widget_signal[SIGNAL_MESSAGE_CHANGED],
-		0,
-		(gint) lib3270_get_program_message(session)
-	);
-
- 	trace("-----B %s %p",__FUNCTION__, lib3270_get_user_data(session));
-}
-
-static void update_message(H3270 *session, G_GNUC_UNUSED LIB3270_MESSAGE id)
-{
-	g_idle_add((GSourceFunc) bg_update_message, session);
-}
-
-static void update_luname(H3270 *session, const char *name)
-{
-	v3270_update_luname(GTK_WIDGET(lib3270_get_user_data(session)),name);
-}
-
-struct select_cursor_data
-{
-	H3270			* hSession;
-	LIB3270_POINTER   id;
-};
-
-static void bg_select_cursor(struct select_cursor_data *data)
-{
-	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(data->hSession));
-
-#if GTK_CHECK_VERSION(2,20,0)
-	if(gtk_widget_get_realized(widget) && gtk_widget_get_has_window(widget))
-#else
-	if(GTK_WIDGET_REALIZED(widget) && widget->window)
-#endif // GTK(2,20)
-	{
-		GTK_V3270(widget)->pointer_id = data->id;
-		v3270_update_mouse_pointer(widget);
-	}
-}
-
-static void select_cursor(H3270 *session, LIB3270_POINTER id)
-{
-	struct select_cursor_data *data = g_new0(struct select_cursor_data,1);
-	data->hSession = session;
-	data->id = id;
-	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_select_cursor, data, g_free);
-}
-
-static void ctlr_done(H3270 *session)
-{
-	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
-
-#if GTK_CHECK_VERSION(2,20,0)
-	if(gtk_widget_get_realized(widget) && gtk_widget_get_has_window(widget))
-#else
-	if(GTK_WIDGET_REALIZED(widget) && widget->window)
-#endif // GTK(2,20)
-	{
-		v3270_update_mouse_pointer(widget);
-	}
-
-}
-
-static void update_connect(H3270 *session, unsigned char connected)
-{
-	v3270 *widget = GTK_V3270(lib3270_get_user_data(session));
-
-	if(connected)
-	{
-		widget->cursor.show |= 2;
-		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_CONNECTED], 0, lib3270_get_host(session));
-	}
-	else
-	{
-		widget->cursor.show &= ~2;
-		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_DISCONNECTED], 0);
-	}
-
-	if(v3270_properties.online)
-		g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.online);
-
-	widget->activity.timestamp = time(0);
-
-	gtk_widget_queue_draw(GTK_WIDGET(widget));
-}
-
-static void update_screen_size(H3270 *session, G_GNUC_UNUSED unsigned short rows, G_GNUC_UNUSED unsigned short cols)
-{
-	v3270_reload(GTK_WIDGET(lib3270_get_user_data(session)));
-	gtk_widget_queue_draw(GTK_WIDGET(lib3270_get_user_data(session)));
-}
-
-static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNUSED int rows, G_GNUC_UNUSED int cols)
-{
-	if(v3270_properties.model)
-		g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), v3270_properties.model);
-
-	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)),v3270_widget_signal[SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
-}
-
-static void changed(H3270 *session, int offset, int len)
-{
-	GtkWidget 		* widget	= lib3270_get_user_data(session);
-	GtkAccessible	* obj		= GTK_V3270(widget)->accessible;
-
-	if(obj)
-	{
-		// Get new text, notify atk
-		gsize	  bytes_written	= 0;
-		char	* text 			= lib3270_get_string_at_address(session,offset,len,'\n');
-
-		if(text)
-		{
-			GError	* error		= NULL;
-			gchar	* utfchar	= g_convert_with_fallback(	text,
-																-1,
-																"UTF-8",
-																lib3270_get_display_charset(session),
-																" ",
-																NULL,
-																&bytes_written,
-																&error );
-
-			lib3270_free(text);
-
-			if(error)
-			{
-				g_warning("%s failed: %s",__FUNCTION__,error->message);
-				g_error_free(error);
-			}
-
-			if(utfchar)
-			{
-				g_signal_emit_by_name(obj, "text-insert", offset, bytes_written, utfchar);
-				g_free(utfchar);
-			}
-
-		}
-	}
-
-#ifdef WIN32
-	gtk_widget_queue_draw(widget);
-#endif // WIN32
-
-	g_signal_emit(GTK_WIDGET(widget),v3270_widget_signal[SIGNAL_CHANGED], 0, (guint) offset, (guint) len);
-}
-
-static void set_selection(H3270 *session, unsigned char status)
-{
-	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
-
-	if(v3270_properties.selection)
-		g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.selection);
-
-	g_signal_emit(widget,v3270_widget_signal[SIGNAL_SELECTING], 0, status ? TRUE : FALSE);
-
-}
-
-static void update_selection(H3270 *session, G_GNUC_UNUSED int start, G_GNUC_UNUSED int end)
-{
-	// Selected region changed
-	GtkWidget		* widget	= GTK_WIDGET(lib3270_get_user_data(session));
-	GtkAccessible	* atk_obj	= GTK_V3270(widget)->accessible;
-
-	if(atk_obj)
-		g_signal_emit_by_name(atk_obj,"text-selection-changed");
-
-}
-
-static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text)
-{
-	g_signal_emit(	GTK_WIDGET(lib3270_get_user_data(session)), v3270_widget_signal[SIGNAL_MESSAGE], 0,
-							(int) id,
-							(gchar *) title,
-							(gchar *) message,
-							(gchar *) text );
-
-}
-
 static int emit_print_signal(H3270 *session)
 {
 	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)), v3270_widget_signal[SIGNAL_PRINT], 0);
@@ -922,7 +517,6 @@ static gboolean activity_tick(v3270 *widget)
 {
 	if(widget->activity.disconnect && lib3270_is_connected(widget->host) && ((time(0) - widget->activity.timestamp)/60) >= widget->activity.disconnect)
 		lib3270_disconnect(widget->host);
-
 	return TRUE;
 }
 
@@ -931,106 +525,14 @@ static void release_activity_timer(v3270 *widget)
 	widget->activity.timer = NULL;
 }
 
-static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
+static void v3270_init(v3270 *widget)
 {
- 	GtkWidget *terminal = (GtkWidget *) lib3270_get_user_data(session);
-
- 	if(terminal && GTK_IS_V3270(terminal)) {
-
-		if(fmt)
-		{
-			gchar *text = g_strdup_vprintf(fmt,args);
-			v3270_popup_message(GTK_WIDGET(terminal),type,title,msg,text);
-			g_free(text);
-		}
-		else
-		{
-			v3270_popup_message(GTK_WIDGET(terminal),type,title,msg,NULL);
-		}
-
- 	}
-
- }
-
- static gboolean bg_update_ssl(H3270 *session)
- {
- 	trace("%s",__FUNCTION__);
-
- 	v3270_blink_ssl(GTK_V3270(lib3270_get_user_data(session)));
-
-	if(lib3270_get_secure(session) == LIB3270_SSL_NEGOTIATING)
-		v3270_start_blinking(GTK_WIDGET(lib3270_get_user_data(session)));
-
-	return FALSE;
- }
-
- static void update_ssl(H3270 *session, G_GNUC_UNUSED LIB3270_SSL_STATE state)
- {
-	g_idle_add((GSourceFunc) bg_update_ssl, session);
- }
-
- const gchar * v3270_default_font = "monospace";
-
- struct update_oia_data
- {
- 	H3270 *session;
-	LIB3270_FLAG id;
-	unsigned char on;
- };
-
- static gboolean bg_update_oia(struct update_oia_data *data)
- {
-  	v3270_update_oia(GTK_V3270(lib3270_get_user_data(data->session)), data->id, data->on);
- 	return FALSE;
- }
-
- static void update_oia(H3270 *session, LIB3270_FLAG id, unsigned char on)
- {
-	struct update_oia_data *data = g_new0(struct update_oia_data,1);
-	data->session = session;
-	data->id = id;
-	data->on = on;
-	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_update_oia, data, g_free);
- }
-
- static void v3270_init(v3270 *widget)
- {
-	struct lib3270_session_callbacks *cbk;
 
 	widget->host = lib3270_session_new("");
-
 	lib3270_set_user_data(widget->host,widget);
-	lib3270_set_popup_handler(widget->host, popup_handler);
 
-	cbk = lib3270_get_session_callbacks(widget->host,sizeof(struct lib3270_session_callbacks));
-	if(!cbk)
-	{
-		g_error( _( "Invalid callback table, possible version mismatch in lib3270") );
-		return;
-	}
-
-
-	cbk->update				= v3270_update_char;
-	cbk->changed			= changed;
-	cbk->set_timer 			= set_timer;
-
-	cbk->set_selection		= set_selection;
-	cbk->update_selection	= update_selection;
-
-	cbk->update_luname		= update_luname;
-	cbk->configure			= update_screen_size;
-	cbk->update_status 		= update_message;
-	cbk->update_cursor 		= v3270_update_cursor;
-	cbk->update_toggle 		= update_toggle;
-	cbk->update_oia			= update_oia;
-	cbk->cursor				= select_cursor;
-	cbk->update_connect		= update_connect;
-	cbk->update_model		= update_model;
-	cbk->changed			= changed;
-	cbk->ctlr_done			= ctlr_done;
-	cbk->message			= message;
-	cbk->update_ssl			= update_ssl;
-	cbk->print				= emit_print_signal;
+	// Install callbacks
+	v3270_install_callbacks(widget);
 
 	// Reset timer
 	widget->activity.timestamp		= time(0);
@@ -1365,192 +867,6 @@ static void v3270_send_configure(v3270 * terminal)
 	gdk_event_free(event);
 }
 
-const gchar * v3270_default_colors =
-		"#000000,"			// V3270_COLOR_BACKGROUND
-		"#7890F0,"			// V3270_COLOR_BLUE
-		"#FF0000,"			// V3270_COLOR_RED
-		"#FF00FF,"			// V3270_COLOR_PINK
-		"#00FF00,"			// V3270_COLOR_GREEN
-		"#00FFFF,"			// V3270_COLOR_TURQUOISE
-		"#FFFF00,"			// V3270_COLOR_YELLOW
-		"#FFFFFF,"			// V3270_COLOR_WHITE
-		"#000000,"			// V3270_COLOR_BLACK
-		"#000080,"			// V3270_COLOR_DARK_BLUE
-		"#FFA200,"			// V3270_COLOR_ORANGE
-		"#800080,"			// V3270_COLOR_PURPLE
-		"#008000,"			// V3270_COLOR_DARK_GREEN
-		"#008080,"			// V3270_COLOR_DARK_TURQUOISE
-		"#A0A000,"			// V3270_COLOR_MUSTARD
-		"#C0C0C0,"			// V3270_COLOR_GRAY
-
-		"#00FF00,"			// V3270_COLOR_FIELD_DEFAULT
-		"#FF0000,"			// V3270_COLOR_FIELD_INTENSIFIED
-		"#00FFFF,"			// V3270_COLOR_FIELD_PROTECTED
-		"#FFFFFF,"			// V3270_COLOR_FIELD_PROTECTED_INTENSIFIED
-
-		"#404040,"			// V3270_COLOR_SELECTED_BG
-		"#FFFFFF,"			// V3270_COLOR_SELECTED_FG,
-
-		"#00FF00," 			// V3270_COLOR_CROSS_HAIR
-
-		"#000000,"	 		// V3270_COLOR_OIA_BACKGROUND
-		"#00FF00,"			// V3270_COLOR_OIA
-		"#7890F0,"			// V3270_COLOR_OIA_SEPARATOR
-		"#FFFFFF,"			// V3270_COLOR_OIA_STATUS_OK
-		"#FFFF00,"			// V3270_COLOR_OIA_STATUS_WARNING
-		"#FF0000";			// V3270_COLOR_OIA_STATUS_INVALID
-
-
-
-void v3270_set_colors(GtkWidget *widget, const gchar *colors)
-{
-	g_return_if_fail(GTK_IS_V3270(widget));
-
-	if(!colors)
-	{
-		colors = v3270_default_colors;
-	}
-
-	v3270_set_color_table(GTK_V3270(widget)->color,colors);
-	g_signal_emit(widget,v3270_widget_signal[SIGNAL_UPDATE_CONFIG], 0, "colors", colors);
-	v3270_reload(widget);
-
-}
-
-void v3270_set_color(GtkWidget *widget, enum V3270_COLOR id, GdkRGBA *color)
-{
-	g_return_if_fail(GTK_IS_V3270(widget));
-
-	GTK_V3270(widget)->color[id] = *color;
-
-#if !GTK_CHECK_VERSION(3,0,0)
-	gdk_colormap_alloc_color(gtk_widget_get_default_colormap(),color,TRUE,TRUE);
-#endif // !GTK(3,0,0)
-
-}
-GdkRGBA * v3270_get_color(GtkWidget *widget, enum V3270_COLOR id)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
- 	return GTK_V3270(widget)->color+id;
-}
-
-const GdkRGBA * v3270_get_color_table(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
- 	return GTK_V3270(widget)->color;
-}
-
-void v3270_set_mono_color_table(GdkRGBA *clr, const gchar *fg, const gchar *bg)
-{
-	int f;
-
-	gdk_rgba_parse(clr,bg);
-	gdk_rgba_parse(clr+1,fg);
-
-	for(f=2;f<V3270_COLOR_COUNT;f++)
-		clr[f] = clr[1];
-
-	clr[V3270_COLOR_BLACK]			= *clr;
-	clr[V3270_COLOR_OIA_BACKGROUND]	= *clr;
-	clr[V3270_COLOR_SELECTED_BG]	= clr[V3270_COLOR_WHITE];
-	clr[V3270_COLOR_SELECTED_FG]	= clr[V3270_COLOR_BLACK];
-
-
-}
-
-void v3270_set_color_table(GdkRGBA *table, const gchar *colors)
-{
- 	gchar	**clr;
- 	guint	  cnt;
- 	guint	  f;
-
-	if(strchr(colors,':'))
-		clr = g_strsplit(colors,":",V3270_COLOR_COUNT+1);
-	else if(strchr(colors,';'))
-		clr = g_strsplit(colors,";",V3270_COLOR_COUNT+1);
-	else
-		clr = g_strsplit(colors,",",V3270_COLOR_COUNT+1);
-
- 	cnt = g_strv_length(clr);
-
- 	switch(cnt)
- 	{
- 	case 28:				// Version 4 string
-		for(f=0;f < 28;f++)
-			gdk_rgba_parse(table+f,clr[f]);
-		table[V3270_COLOR_OIA_STATUS_INVALID] = table[V3270_COLOR_OIA_STATUS_WARNING];
-		break;
-
-	case V3270_COLOR_COUNT:	// Complete string
-		for(f=0;f < V3270_COLOR_COUNT;f++)
-			gdk_rgba_parse(table+f,clr[f]);
-		break;
-
-	default:
-
-		g_warning("Color table has %d elements; should be %d.",cnt,V3270_COLOR_COUNT);
-
-		if(cnt < V3270_COLOR_COUNT)
-		{
-			// Less than the required
-			for(f=0;f < cnt;f++)
-				gdk_rgba_parse(table+f,clr[f]);
-
-			for(f=cnt; f < V3270_COLOR_COUNT;f++)
-				gdk_rgba_parse(table+f,clr[cnt-1]);
-
-			clr[V3270_COLOR_OIA_BACKGROUND] = clr[0];
-			clr[V3270_COLOR_SELECTED_BG] 	= clr[0];
-		}
-		else
-		{
-			// More than required
-			for(f=0;f < V3270_COLOR_COUNT;f++)
-				gdk_rgba_parse(table+f,clr[f]);
-		}
- 	}
-
-	g_strfreev(clr);
-
-}
-
-LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
-{
-	v3270 * terminal;
-
-	g_return_if_fail(GTK_IS_V3270(widget));
-
-	terminal = GTK_V3270(widget);
-
-	if(!name)
-	{
-		name = v3270_default_font;
-	}
-
-	if(g_ascii_strcasecmp(terminal->font.family,name))
-	{
-		// Font has changed, update it
-		g_free(terminal->font.family);
-
-		terminal->font.family = g_strdup(name);
-		terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
-
-		g_signal_emit(widget,v3270_widget_signal[SIGNAL_UPDATE_CONFIG], 0, "font-family", name);
-
-		v3270_reload(widget);
-		gtk_widget_queue_draw(widget);
-
-	}
-
-
-}
-
-LIB3270_EXPORT const gchar	* v3270_get_font_family(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
-	return GTK_V3270(widget)->font.family;
-}
-
 LIB3270_EXPORT void v3270_disconnect(GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
@@ -1624,45 +940,9 @@ const GtkWidgetClass * v3270_get_parent_class(void)
 	return GTK_WIDGET_CLASS(v3270_parent_class);
 }
 
-static AtkObject * v3270_get_accessible(GtkWidget * widget)
-{
-	v3270 * terminal = GTK_V3270(widget);
-
-	if(!terminal->accessible)
-	{
-		terminal->accessible = g_object_new(GTK_TYPE_V3270_ACCESSIBLE,NULL);
-		atk_object_initialize(ATK_OBJECT(terminal->accessible), widget);
-		gtk_accessible_set_widget(GTK_ACCESSIBLE(terminal->accessible),widget);
-		g_object_ref(terminal->accessible);
-	}
-
-	return ATK_OBJECT(terminal->accessible);
-}
-
 GtkIMContext * v3270_get_im_context(GtkWidget *widget)
 {
 	return GTK_V3270(widget)->input_method;
-}
-
-LIB3270_EXPORT gboolean v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
-
-	if(ix < LIB3270_TOGGLE_COUNT)
-		return lib3270_get_toggle(GTK_V3270(widget)->host,ix) ? TRUE : FALSE;
-
-	return FALSE;
-}
-
-LIB3270_EXPORT gboolean	v3270_set_toggle(GtkWidget *widget, LIB3270_TOGGLE ix, gboolean state)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
-
-	if(ix < LIB3270_TOGGLE_COUNT)
-		return lib3270_set_toggle(GTK_V3270(widget)->host,ix,state ? 1 : 0) ? TRUE : FALSE;
-
-	return FALSE;
-
 }
 
 /**
@@ -1706,14 +986,6 @@ LIB3270_EXPORT const gchar	* v3270_get_session_name(GtkWidget *widget)
 	return GTK_V3270(widget)->session_name;
 }
 
-void v3270_set_scaled_fonts(GtkWidget *widget, gboolean on)
-{
-	g_return_if_fail(GTK_IS_V3270(widget));
-
-	GTK_V3270(widget)->scaled_fonts = on ? 1 : 0;
-
-}
-
 LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
@@ -1737,19 +1009,6 @@ LIB3270_EXPORT int v3270_set_host_type_by_name(GtkWidget *widget, const char *na
 	return lib3270_set_host_type_by_name(GTK_V3270(widget)->host,name);
 }
 
-LIB3270_EXPORT int v3270_set_session_color_type(GtkWidget *widget, unsigned short colortype)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
-	return lib3270_set_color_type(GTK_V3270(widget)->host,colortype);
-}
-
-
-LIB3270_EXPORT unsigned short v3270_get_session_color_type(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),-1);
-	return lib3270_get_color_type(GTK_V3270(widget)->host);
-}
-
 LIB3270_EXPORT gboolean v3270_is_connected(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
@@ -1762,6 +1021,7 @@ LIB3270_EXPORT int v3270_set_host_charset(GtkWidget *widget, const gchar *name)
 	return lib3270_set_host_charset(GTK_V3270(widget)->host,name);
 }
 
+/*
 GtkWidget * v3270_get_default_widget(void)
 {
 	H3270 * hSession = lib3270_get_default_session_handle();
@@ -1782,18 +1042,5 @@ GtkWidget * v3270_get_default_widget(void)
 
 	return GTK_WIDGET(widget);
 }
+*/
 
-void v3270_disable_updates(GtkWidget *widget)
-{
-	GTK_V3270(widget)->drawing = 0;
-}
-
-void v3270_enable_updates(GtkWidget *widget)
-{
-	if(gtk_widget_get_realized(widget))
-	{
-		GTK_V3270(widget)->drawing = 1;
-		v3270_reload(widget);
-		gtk_widget_queue_draw(widget);
-	}
-}

@@ -522,3 +522,18 @@ void v3270_queue_draw_area(GtkWidget *widget, gint x, gint y, gint width, gint h
 	}
 
 }
+
+void v3270_disable_updates(GtkWidget *widget)
+{
+	GTK_V3270(widget)->drawing = 0;
+}
+
+void v3270_enable_updates(GtkWidget *widget)
+{
+	if(gtk_widget_get_realized(widget))
+	{
+		GTK_V3270(widget)->drawing = 1;
+		v3270_reload(widget);
+		gtk_widget_queue_draw(widget);
+	}
+}
