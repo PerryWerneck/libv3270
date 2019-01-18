@@ -147,7 +147,7 @@ static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void
 
 	int rc = callback(hSession,parm);
 
-	trace("%s starts -------------------------------------", __FUNCTION__);
+	trace("%s ends ---------------------------------------", __FUNCTION__);
 	/*
 	struct bgParameter p = { TRUE, hSession, -1, callback, parm };
 
