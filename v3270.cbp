@@ -65,10 +65,19 @@
 		<Unit filename="src/v3270/blink.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/v3270/callbacks.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/v3270/charset.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/v3270/colors.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/v3270/draw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/v3270/font.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/v3270/iocallback.c">
