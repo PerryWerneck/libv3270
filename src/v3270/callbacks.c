@@ -346,7 +346,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
  static gboolean bg_update_ssl(H3270 *session)
  {
- 	trace("%s",__FUNCTION__);
+ 	trace("%s(%p,%p)",__FUNCTION__,session,lib3270_get_user_data(session));
 
  	v3270_blink_ssl(GTK_V3270(lib3270_get_user_data(session)));
 
