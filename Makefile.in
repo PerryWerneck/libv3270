@@ -314,11 +314,11 @@ install-shared: \
 
 
 	# Install default configs
-	@mkdir -p $(datarootdir)/pw3270
+	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
 
 	@$(INSTALL_DATA) \
 		colors.conf \
-		$(datarootdir)/pw3270
+		$(DESTDIR)$(datarootdir)/pw3270
 
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
