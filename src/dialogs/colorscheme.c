@@ -336,6 +336,33 @@
  	return TRUE;
  }
 
+ gchar * v3270_color_scheme_get_text(GtkWidget *widget)
+ {
+	GdkRGBA		* clr		= NULL;
+	GValue		  value	= { 0, };
+	GtkTreeIter	  iter;
+	int			  f;
+
+	if(!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget),&iter))
+		return NULL;
+
+	gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget)),&iter,1,&value);
+	clr = g_value_get_pointer(&value);
+
+	GString *str = g_string_new("");
+	for(f=0;f<V3270_COLOR_COUNT;f++)
+	{
+		if(f)
+			g_string_append_c(str,';');
+
+		g_autofree gchar * color = gdk_rgba_to_string(clr+f);
+		g_string_append_printf(str,"%s",color);
+	}
+
+	return g_string_free(str,FALSE);
+
+ }
+
  void v3270_color_scheme_set_rgba(GtkWidget *widget, const GdkRGBA *colors)
  {
  	GtkTreeModel	* model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
@@ -362,5 +389,44 @@
 		} while(gtk_tree_model_iter_next(model,&iter));
 	}
 
+
+ }
+
+ void v3270_color_scheme_set_text(GtkWidget *widget, const gchar *colors)
+ {
+	GdkRGBA		  clr[V3270_COLOR_COUNT];
+	gchar		**str = g_strsplit(colors,";",V3270_COLOR_BASE);
+	size_t 		  f;
+
+	switch(g_strv_length(str))
+	{
+	case 2:	// Only 2 colors, create monocromatic table
+		v3270_set_mono_color_table(clr,str[1],str[0]);
+		break;
+
+	case V3270_COLOR_BASE:	// All colors, update it
+		for(f=0;f<V3270_COLOR_BASE;f++)
+			gdk_rgba_parse(clr+f,str[f]);
+		break;
+
+	default:
+
+		// Unexpected size, load new colors over the defaults
+		gdk_rgba_parse(clr,str[0]);
+		gdk_rgba_parse(clr+1,str[1]);
+
+		for(f=2;f<V3270_COLOR_BASE;f++)
+			clr[f] = clr[1];
+
+		clr[V3270_COLOR_BLACK] = *clr;
+
+		for(f=2;f<MIN(g_strv_length(str),V3270_COLOR_BASE-1);f++)
+			gdk_rgba_parse(clr+f,str[f]);
+
+	}
+
+	g_strfreev(str);
+
+	v3270_color_scheme_set_rgba(widget,clr);
 
  }

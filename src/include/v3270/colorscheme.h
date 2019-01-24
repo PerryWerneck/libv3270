@@ -49,6 +49,8 @@
 
  LIB3270_EXPORT GtkWidget	* v3270_color_scheme_new();
  LIB3270_EXPORT void 		  v3270_color_scheme_set_rgba(GtkWidget *widget, const GdkRGBA *colors);
+ LIB3270_EXPORT gchar 		* v3270_color_scheme_get_text(GtkWidget *widget);
+ LIB3270_EXPORT void		  v3270_color_scheme_set_text(GtkWidget *widget, const gchar *colors);
 
  G_END_DECLS
 
