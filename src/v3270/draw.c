@@ -120,7 +120,7 @@ static void get_element_colors(unsigned short attr, GdkRGBA **fg, GdkRGBA **bg, 
 	}
 }
 
-void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *fontInfo, GdkRectangle *rect, GdkRGBA *color)
+LIB3270_EXPORT void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *fontInfo, GdkRectangle *rect, GdkRGBA *color)
 {
 	GdkRGBA *fg;
 	GdkRGBA *bg;

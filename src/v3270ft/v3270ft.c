@@ -121,7 +121,7 @@ static void local_file_changed(GtkEntry *widget, v3270ft *dialog) {
 	struct v3270ft_entry *entry = v3270ft_get_selected(dialog);
 
 	if(entry) {
-		strncpy(entry->local,gtk_entry_get_text(widget),sizeof(entry->local));
+		strncpy(entry->local,gtk_entry_get_text(widget),sizeof(entry->local)-1);
 		v3270ft_update_actions(dialog);
 	}
 
@@ -132,7 +132,7 @@ static void remote_file_changed(GtkEntry *widget, v3270ft *dialog) {
 	struct v3270ft_entry *entry = v3270ft_get_selected(dialog);
 
 	if(entry) {
-		strncpy(entry->remote,gtk_entry_get_text(widget),sizeof(entry->remote));
+		strncpy(entry->remote,gtk_entry_get_text(widget),sizeof(entry->remote)-1);
 		v3270ft_update_actions(dialog);
 	}
 

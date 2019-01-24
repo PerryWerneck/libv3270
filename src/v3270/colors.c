@@ -132,7 +132,7 @@ LIB3270_EXPORT void v3270_set_mono_color_table(GdkRGBA *clr, const gchar *fg, co
 
 }
 
-void v3270_set_color_table(GdkRGBA *table, const gchar *colors)
+LIB3270_EXPORT void v3270_set_color_table(GdkRGBA *table, const gchar *colors)
 {
  	gchar	**clr;
  	guint	  cnt;

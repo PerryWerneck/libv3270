@@ -183,7 +183,7 @@ LIB3270_EXPORT const gchar * v3270_get_font_family(GtkWidget *widget)
 	return GTK_V3270(widget)->font.family;
 }
 
-void v3270_set_scaled_fonts(GtkWidget *widget, gboolean on)
+LIB3270_EXPORT void v3270_set_scaled_fonts(GtkWidget *widget, gboolean on)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
