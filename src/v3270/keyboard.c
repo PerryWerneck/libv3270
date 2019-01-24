@@ -171,7 +171,7 @@
  	return FALSE;
  }
 
- gboolean v3270_set_keyboard_action(GtkWidget *widget, const gchar *key_name, GtkAction *action)
+ LIB3270_EXPORT gboolean v3270_set_keyboard_action(GtkWidget *widget, const gchar *key_name, GtkAction *action)
  {
 	guint			keyval;
 	GdkModifierType	state;
@@ -226,21 +226,21 @@
 
  }
 
- void v3270_tab(GtkWidget *widget)
+ LIB3270_EXPORT void v3270_tab(GtkWidget *widget)
  {
 	g_return_if_fail(GTK_IS_V3270(widget));
 	GTK_V3270(widget)->activity.timestamp = time(0);
 	lib3270_nextfield(GTK_V3270(widget)->host);
  }
 
- void v3270_backtab(GtkWidget *widget)
+ LIB3270_EXPORT void v3270_backtab(GtkWidget *widget)
  {
 	g_return_if_fail(GTK_IS_V3270(widget));
 	GTK_V3270(widget)->activity.timestamp = time(0);
 	lib3270_previousfield(GTK_V3270(widget)->host);
  }
 
- void v3270_set_string(GtkWidget *widget, const gchar *str)
+ LIB3270_EXPORT void v3270_set_string(GtkWidget *widget, const gchar *str)
  {
  	H3270 *host;
 	gchar *utf;

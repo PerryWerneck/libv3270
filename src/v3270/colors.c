@@ -75,7 +75,7 @@ const gchar * v3270_default_colors =
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-void v3270_set_colors(GtkWidget *widget, const gchar *colors)
+LIB3270_EXPORT void v3270_set_colors(GtkWidget *widget, const gchar *colors)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
@@ -90,7 +90,7 @@ void v3270_set_colors(GtkWidget *widget, const gchar *colors)
 
 }
 
-void v3270_set_color(GtkWidget *widget, enum V3270_COLOR id, GdkRGBA *color)
+LIB3270_EXPORT void v3270_set_color(GtkWidget *widget, enum V3270_COLOR id, GdkRGBA *color)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
@@ -101,19 +101,20 @@ void v3270_set_color(GtkWidget *widget, enum V3270_COLOR id, GdkRGBA *color)
 #endif // !GTK(3,0,0)
 
 }
-GdkRGBA * v3270_get_color(GtkWidget *widget, enum V3270_COLOR id)
+
+LIB3270_EXPORT GdkRGBA * v3270_get_color(GtkWidget *widget, enum V3270_COLOR id)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
  	return GTK_V3270(widget)->color+id;
 }
 
-const GdkRGBA * v3270_get_color_table(GtkWidget *widget)
+LIB3270_EXPORT const GdkRGBA * v3270_get_color_table(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
  	return GTK_V3270(widget)->color;
 }
 
-void v3270_set_mono_color_table(GdkRGBA *clr, const gchar *fg, const gchar *bg)
+LIB3270_EXPORT void v3270_set_mono_color_table(GdkRGBA *clr, const gchar *fg, const gchar *bg)
 {
 	int f;
 

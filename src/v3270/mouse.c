@@ -297,7 +297,7 @@ gboolean v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event)
 	return FALSE;
 }
 
-void v3270_set_scroll_action(GtkWidget *widget, GdkScrollDirection direction, GtkAction *action)
+LIB3270_EXPORT void v3270_set_scroll_action(GtkWidget *widget, GdkScrollDirection direction, GtkAction *action)
 {
  	g_return_if_fail(GTK_IS_V3270(widget));
 	action_scroll[((int) direction) & 0x03] = action;

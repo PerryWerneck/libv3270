@@ -935,7 +935,7 @@ const GtkWidgetClass * v3270_get_parent_class(void)
 	return GTK_WIDGET_CLASS(v3270_parent_class);
 }
 
-GtkIMContext * v3270_get_im_context(GtkWidget *widget)
+LIB3270_EXPORT GtkIMContext * v3270_get_im_context(GtkWidget *widget)
 {
 	return GTK_V3270(widget)->input_method;
 }

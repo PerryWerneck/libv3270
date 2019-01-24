@@ -86,7 +86,7 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
  * @param len       Number of characters to get.
  *
  */
-gchar * v3270_get_text(GtkWidget *widget, int offset, int len)
+LIB3270_EXPORT gchar * v3270_get_text(GtkWidget *widget, int offset, int len)
 {
 	v3270	* terminal;
 	gchar	* text;
@@ -301,7 +301,7 @@ static void update_system_clipboard(GtkWidget *widget)
 }
 
 
-void v3270_copy_append(GtkWidget *widget)
+LIB3270_EXPORT void v3270_copy_append(GtkWidget *widget)
 {
 	v3270			* terminal;
 	char 			* str;
@@ -377,14 +377,14 @@ static void text_received(G_GNUC_UNUSED  GtkClipboard *clipboard, const gchar *t
 	v3270_paste_string(widget,text,"UTF-8");
 }
 
-void v3270_paste(GtkWidget *widget)
+LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 {
 	gtk_clipboard_request_text(gtk_widget_get_clipboard(widget,GDK_SELECTION_CLIPBOARD),(GtkClipboardTextReceivedFunc) text_received,(gpointer) widget);
 }
 
 #endif // _WIN32
 
-void v3270_paste_string(GtkWidget *widget, const gchar *text, const gchar *encoding)
+LIB3270_EXPORT void v3270_paste_string(GtkWidget *widget, const gchar *text, const gchar *encoding)
 {
  	gchar 		* buffer 	= NULL;
  	H3270		* session 	= v3270_get_session(widget);
@@ -508,7 +508,7 @@ void v3270_paste_string(GtkWidget *widget, const gchar *text, const gchar *encod
 
 }
 
-void v3270_unselect(GtkWidget *widget)
+LIB3270_EXPORT void v3270_unselect(GtkWidget *widget)
 {
 	v3270_disable_updates(widget);
 	lib3270_unselect(v3270_get_session(widget));
@@ -539,13 +539,13 @@ gchar * v3270_get_region(GtkWidget *widget, gint start_pos, gint end_pos, gboole
 	return utftext;
 }
 
- void v3270_select_region(GtkWidget *widget, gint start, gint end)
- {
+LIB3270_EXPORT  void v3270_select_region(GtkWidget *widget, gint start, gint end)
+{
  	g_return_if_fail(GTK_IS_V3270(widget));
  	lib3270_select_region(GTK_V3270(widget)->host,start,end);
- }
+}
 
-void v3270_select_all(GtkWidget *widget)
+LIB3270_EXPORT void v3270_select_all(GtkWidget *widget)
 {
  	g_return_if_fail(GTK_IS_V3270(widget));
 	v3270_disable_updates(widget);
