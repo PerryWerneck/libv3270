@@ -326,9 +326,10 @@ static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const
 
 }
 
-static int emit_print_signal(H3270 *session)
+
+static int print(H3270 *session, LIB3270_PRINT_MODE mode)
 {
-	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)), v3270_widget_signal[SIGNAL_PRINT], 0);
+	v3270_print(GTK_WIDGET(lib3270_get_user_data(session)), mode);
 	return 0;
 }
 
@@ -425,7 +426,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->ctlr_done			= ctlr_done;
 	cbk->message			= message;
 	cbk->update_ssl			= update_ssl;
-	cbk->print				= emit_print_signal;
+	cbk->print				= print;
 
 }
 

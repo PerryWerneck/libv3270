@@ -114,7 +114,6 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 		gtk_widget_show_all(trace);
 	}
 
-
 	/*
 	v3270_set_url(terminal,url);
 	v3270_connect(terminal);
@@ -163,6 +162,9 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,1);
 
 	// v3270_set_script(terminal,'R');
+
+	v3270_print_all(terminal);
+
 
 }
 
