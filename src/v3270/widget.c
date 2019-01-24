@@ -27,6 +27,8 @@
  *
  */
 
+ #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
  #include <config.h>
  #include "private.h"
  #include "marshal.h"

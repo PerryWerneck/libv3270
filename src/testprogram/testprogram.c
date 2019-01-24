@@ -173,6 +173,8 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget *grid		= gtk_grid_new();
 	GtkWidget *color	= v3270_color_scheme_new();
 
+	gtk_widget_set_can_focus(color,FALSE);
+	gtk_widget_set_focus_on_click(color,FALSE);
 	v3270_color_scheme_set_rgba(color,v3270_get_color_table(terminal));
 	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),terminal);
 
@@ -186,6 +188,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
 	gtk_container_add(GTK_CONTAINER(window),box);
 	gtk_widget_show_all (window);
+	gtk_widget_grab_focus(terminal);
 
 	// v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,1);
 

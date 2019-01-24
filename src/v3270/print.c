@@ -27,6 +27,8 @@
  *
  */
 
+ #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
  #include "private.h"
  #include <v3270.h>
  #include <v3270/colorscheme.h>
@@ -340,7 +342,8 @@
 	g_signal_emit(info->widget, v3270_widget_signal[SIGNAL_PRINT_BEGIN], 0, prt);
 
 
-	widget = v3270_color_scheme_new(info->color);
+	widget = v3270_color_scheme_new();
+	v3270_color_scheme_set_rgba(widget,info->color);
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label[1]),widget);
 
 	g_object_set_data(G_OBJECT(container),"combo",widget);
@@ -465,7 +468,7 @@
  	gchar			    * text;
  	GError				* err		= NULL;
 
- 	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
+ 	g_return_if_fail(GTK_IS_V3270(widget));
 
  	print = begin_print_operation(widget,&info);
  	if(!print)
