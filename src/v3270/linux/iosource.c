@@ -91,24 +91,10 @@ GSource	* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call
 	return (GSource *) src;
 }
 
-G_GNUC_INTERNAL void IO_source_set_state(GSource *source, gboolean enable)
+void IO_source_set_state(GSource *source, gboolean enable)
 {
 	((IO_Source *)source)->enabled = enable;
-
-	/*
-	if(enable)
-	{
-		trace("Polling %d was enabled",((IO_Source *)source)->poll.fd);
-		g_source_add_poll((GSource *) source,&((IO_Source *)source)->poll);
-	}
-	else
-	{
-		trace("Polling of %d was disabled",((IO_Source *)source)->poll.fd);
-		g_source_remove_poll((GSource *) source,&((IO_Source *)source)->poll);
-	}
-	*/
 }
-
 
 gboolean IO_prepare(G_GNUC_UNUSED GSource *source, G_GNUC_UNUSED gint *timeout)
 {

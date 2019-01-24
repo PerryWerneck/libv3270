@@ -86,11 +86,11 @@ static void entry_start(G_GNUC_UNUSED GMarkupParseContext *context, const gchar 
 
 		if(!g_ascii_strcasecmp(type,"local")) {
 
-			strncpy(info->local,path,sizeof(info->local));
+			strncpy(info->local,path,sizeof(info->local)-1);
 
 		} else if(!g_ascii_strcasecmp(type,"remote")) {
 
-			strncpy(info->remote,path,sizeof(info->remote));
+			strncpy(info->remote,path,sizeof(info->remote)-1);
 
 		}
 

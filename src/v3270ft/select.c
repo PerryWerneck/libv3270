@@ -37,6 +37,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+/*
 #if defined(_WIN32)
 
 struct file {
@@ -69,8 +70,8 @@ static gpointer select_file(struct file *fl) {
 
 	return 0;
 }
-
 #endif // _WIN32
+*/
 
 gchar * v3270ft_select_file(v3270ft *dialog, const gchar *title, const gchar *button, GtkFileChooserAction action, G_GNUC_UNUSED const gchar *filename, G_GNUC_UNUSED const gchar *filter, ...) {
 
@@ -189,7 +190,7 @@ gchar * v3270ft_select_file(v3270ft *dialog, const gchar *title, const gchar *bu
 	gtk_widget_destroy(chooser);
 
 
-#endif // defined
+#endif // WIN32
 
 	return rc;
 

@@ -28,6 +28,11 @@
  */
 
  #include <config.h>
+
+ #ifdef _WIN32
+	#include <winsock2.h>
+ #endif // _WIN32
+
  #include "private.h"
 
  #include <gtk/gtk.h>
@@ -132,7 +137,7 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value
 
 }
 
-static void bg_update_message(H3270 *session)
+static gboolean bg_update_message(H3270 *session)
 {
 	void *widget = lib3270_get_user_data(session);
  	trace("-----A %s %p",__FUNCTION__, lib3270_get_user_data(session));
@@ -145,6 +150,8 @@ static void bg_update_message(H3270 *session)
 	);
 
  	trace("-----B %s %p",__FUNCTION__, lib3270_get_user_data(session));
+
+ 	return FALSE;
 }
 
 static void update_message(H3270 *session, G_GNUC_UNUSED LIB3270_MESSAGE id)
@@ -163,7 +170,7 @@ struct select_cursor_data
 	LIB3270_POINTER   id;
 };
 
-static void bg_select_cursor(struct select_cursor_data *data)
+static gboolean bg_select_cursor(struct select_cursor_data *data)
 {
 	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(data->hSession));
 
@@ -176,6 +183,8 @@ static void bg_select_cursor(struct select_cursor_data *data)
 		GTK_V3270(widget)->pointer_id = data->id;
 		v3270_update_mouse_pointer(widget);
 	}
+
+	return FALSE;
 }
 
 static void select_cursor(H3270 *session, LIB3270_POINTER id)

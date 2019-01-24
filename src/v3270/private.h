@@ -229,6 +229,8 @@ G_BEGIN_DECLS
  G_GNUC_INTERNAL void			  v3270_oia_update_text_field(v3270 *terminal, gboolean flag, V3270_OIA_FIELD id, const gchar chr);
  G_GNUC_INTERNAL cairo_t		* v3270_oia_set_update_region(v3270 * terminal, GdkRectangle **r, V3270_OIA_FIELD id);
 
+ G_GNUC_INTERNAL void			  v3270_install_callbacks(v3270 *widget);
+
  G_GNUC_INTERNAL struct _v3270_properties
  {
     size_t		  count;							// Number of properties.

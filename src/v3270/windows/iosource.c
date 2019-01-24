@@ -86,6 +86,11 @@ GSource	* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call
 	return (GSource *) src;
 }
 
+void IO_source_set_state(GSource *source, gboolean enable)
+{
+	((IO_Source *)source)->enabled = enable;
+}
+
 static gboolean IO_prepare(G_GNUC_UNUSED GSource *source, G_GNUC_UNUSED gint *timeout)
 {
 	/*

@@ -33,6 +33,7 @@
 
  #include <lib3270.h>
  #include <lib3270/log.h>
+ #include <lib3270/actions.h>
 
  #if GTK_CHECK_VERSION(3,0,0)
 	#include <gdk/gdkkeysyms-compat.h>
@@ -509,7 +510,7 @@ static void v3270_class_init(v3270Class *klass)
 
 static gboolean activity_tick(v3270 *widget)
 {
-	if(widget->activity.disconnect && lib3270_is_connected(widget->host) && ((time(0) - widget->activity.timestamp)/60) >= widget->activity.disconnect)
+	if(widget->activity.disconnect && lib3270_is_connected(widget->host) && ((guint) ((time(0) - widget->activity.timestamp)/60)) >= widget->activity.disconnect)
 		lib3270_disconnect(widget->host);
 	return TRUE;
 }

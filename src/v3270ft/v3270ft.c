@@ -290,7 +290,7 @@ static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
 }
 
 #ifdef WIN32
-static void select_local_file(GtkButton *button, v3270ft *dialog) {
+static void select_local_file(GtkButton G_GNUC_UNUSED(*button), v3270ft *dialog) {
 #else
 static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, v3270ft *dialog) {
 #endif // WIN32

@@ -101,8 +101,8 @@ void v3270ft_append_file(GtkWidget *widget, const gchar *filename, gboolean text
 	struct v3270ft_entry	* entry = v3270ft_create_entry();
 	gchar 					* base	= g_path_get_basename(filename);
 
-	strncpy(entry->local,filename,FILENAME_MAX);
-	strncpy(entry->remote,base,FILENAME_MAX);
+	strncpy(entry->local,filename,ENTRY_FILENAME_LENGTH);
+	strncpy(entry->remote,base,ENTRY_FILENAME_LENGTH);
 
 	g_free(base);
 

@@ -394,7 +394,7 @@ static void destroy(GtkWidget *widget)
 	return g_object_new(V3270_TYPE_TRACE, NULL);
  }
 
- GtkWidget * v3270_new_trace_window(GtkWidget *widget)
+ LIB3270_EXPORT GtkWidget * v3270_new_trace_window(GtkWidget *widget)
  {
  	return v3270_trace_new_from_session(v3270_get_session(widget));
  }
@@ -450,7 +450,7 @@ static void destroy(GtkWidget *widget)
 	gchar		* msg;
  };
 
- static void bg_trace_vprintf(struct bg_print_data *data)
+ static gboolean bg_trace_vprintf(struct bg_print_data *data)
  {
 
 	GtkTextIter		  itr;
@@ -475,6 +475,9 @@ static void destroy(GtkWidget *widget)
 	//gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(hwnd->scroll), vadj);
 
 	g_free(data->msg);
+
+	return FALSE;
+
  }
 
  void v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args)

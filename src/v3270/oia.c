@@ -940,12 +940,16 @@ void v3270_oia_update_text_field(v3270 *terminal, gboolean flag, V3270_OIA_FIELD
 	v3270_queue_draw_area(GTK_WIDGET(terminal),r->x,r->y,r->width,r->height);
 }
 
+#ifdef KEY_FLAG_ALT
 void v3270_draw_alt_status(v3270 *terminal)
 {
-#ifdef KEY_FLAG_ALT
 	v3270_oia_update_text_field(terminal,terminal->keyflags & KEY_FLAG_ALT,V3270_OIA_ALT,'A');
-#endif // KEY_FLAG_ALT
 }
+#else
+void v3270_draw_alt_status(v3270 G_GNUC_UNUSED(*terminal))
+{
+}
+#endif // KEY_FLAG_ALT
 
 void v3270_draw_ins_status(v3270 *terminal)
 {

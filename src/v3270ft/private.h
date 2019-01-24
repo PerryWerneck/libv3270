@@ -98,11 +98,12 @@
 	extern const struct v3270ft_type	ft_type[];
 	extern const struct v3270ft_value	ft_value[];
 
+	#define ENTRY_FILENAME_LENGTH FILENAME_MAX
 	struct v3270ft_entry {
 		gint				  type;								///< Transfer type.
 		gboolean			  valid;							///< Is dialog content valid?
-		gchar				  local[FILENAME_MAX];				///< Local file name.
-		gchar				  remote[FILENAME_MAX];				///< Remote file name.
+		gchar				  local[ENTRY_FILENAME_LENGTH+1];	///< Local file name.
+		gchar				  remote[ENTRY_FILENAME_LENGTH+1];	///< Remote file name.
 		LIB3270_FT_OPTION	  options;							///< File Transfer options.
 		guint				  value[LIB3270_FT_VALUE_COUNT];	///< File transfer values.
 	};
