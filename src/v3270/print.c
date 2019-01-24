@@ -210,7 +210,6 @@
  	debug("%s(%p)",__FUNCTION__,info->widget);
 	g_signal_emit(info->widget, v3270_widget_signal[SIGNAL_PRINT_DONE], 0, prt, (guint) result);
 
-
 	debug("%s",__FUNCTION__);
 	if(info->font.scaled)
 		cairo_scaled_font_destroy(info->font.scaled);

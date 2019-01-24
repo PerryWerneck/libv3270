@@ -90,7 +90,7 @@ LIB3270_EXPORT void v3270_set_colors(GtkWidget *widget, const gchar *colors)
 
 }
 
-LIB3270_EXPORT void v3270_set_color(GtkWidget *widget, enum V3270_COLOR id, GdkRGBA *color)
+LIB3270_EXPORT void v3270_set_color(GtkWidget *widget, enum V3270_COLOR id, const GdkRGBA *color)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 

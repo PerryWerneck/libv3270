@@ -36,6 +36,8 @@
  #include <v3270.h>
  #include <v3270/filetransfer.h>
  #include <v3270/ftprogress.h>
+ #include <v3270/colorscheme.h>
+ #include <lib3270/log.h>
  #include <stdlib.h>
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
@@ -86,6 +88,19 @@ static void trace_window_destroy(G_GNUC_UNUSED GtkWidget *widget, H3270 *hSessio
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,0);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE,0);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,0);
+}
+
+static void color_scheme_changed(GtkWidget *widget, const GdkRGBA *colors, GtkWidget *terminal) {
+
+	debug("%s=%p",__FUNCTION__,colors);
+
+	int f;
+	for(f=0;f<V3270_COLOR_COUNT;f++)
+		v3270_set_color(terminal,f,colors+f);
+
+	v3270_reload(terminal);
+	gtk_widget_queue_draw(terminal);
+
 }
 
 static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
@@ -153,17 +168,29 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);
 
+	// Create box
+	GtkWidget *box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
+	GtkWidget *grid		= gtk_grid_new();
+	GtkWidget *color	= v3270_color_scheme_new();
+
+	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),terminal);
+
+	gtk_grid_attach(GTK_GRID(grid),color,0,0,1,1);
+
+	gtk_box_pack_start(GTK_BOX(box),grid,FALSE,TRUE,0);
+	gtk_box_pack_start(GTK_BOX(box),terminal,TRUE,TRUE,0);
+
 	// Setup and show window
 	gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
-	gtk_container_add(GTK_CONTAINER(window),terminal);
+	gtk_container_add(GTK_CONTAINER(window),box);
 	gtk_widget_show_all (window);
 
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,1);
+	// v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,1);
 
 	// v3270_set_script(terminal,'R');
 
-	v3270_print_all(terminal);
+	// v3270_print_all(terminal);
 
 
 }

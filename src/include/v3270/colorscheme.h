@@ -47,7 +47,7 @@
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
- LIB3270_EXPORT GtkWidget * v3270_color_scheme_new(GdkRGBA *colors);
+ LIB3270_EXPORT GtkWidget * v3270_color_scheme_new();
 
  G_END_DECLS
 

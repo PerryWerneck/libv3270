@@ -313,6 +313,13 @@ install-shared: \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
 
 
+	# Install default configs
+	@mkdir -p $(datarootdir)/pw3270
+
+	@$(INSTALL_DATA) \
+		colors.conf \
+		$(datarootdir)/pw3270
+
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
 
