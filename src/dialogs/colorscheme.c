@@ -308,3 +308,59 @@
 	return widget;
  }
 
+ static gboolean compare_colors(const GdkRGBA *colora, const GdkRGBA *colorb)
+ {
+ 	int f;
+
+ 	for(f=0;f<V3270_COLOR_COUNT;f++)
+	{
+		if(!gdk_rgba_equal(colora+f,colorb+f))
+		{
+#ifdef DEBUG
+			g_autofree gchar * cla = gdk_rgba_to_string(colora+f);
+			g_autofree gchar * clb = gdk_rgba_to_string(colorb+f);
+
+			debug(
+				"diff on %d of %d %s - %s",
+					f,
+					V3270_COLOR_COUNT,
+					cla,
+					clb
+			);
+#endif // DEBUG
+
+			return FALSE;
+		}
+	}
+
+ 	return TRUE;
+ }
+
+ void v3270_color_scheme_set_rgba(GtkWidget *widget, const GdkRGBA *colors)
+ {
+ 	GtkTreeModel	* model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
+	GtkTreeIter		  iter;
+
+	if(gtk_tree_model_get_iter_first(model,&iter))
+	{
+		do
+		{
+			GdkRGBA		* clr		= NULL;
+			GValue		  value	= { 0, };
+
+			gtk_tree_model_get_value(model,&iter,1,&value);
+			clr = g_value_get_pointer(&value);
+
+			debug("%p",clr);
+
+			if(clr && compare_colors(clr,colors))
+			{
+				gtk_combo_box_set_active_iter(GTK_COMBO_BOX(widget),&iter);
+				break;
+			}
+
+		} while(gtk_tree_model_iter_next(model,&iter));
+	}
+
+
+ }

@@ -90,7 +90,7 @@ static void trace_window_destroy(G_GNUC_UNUSED GtkWidget *widget, H3270 *hSessio
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,0);
 }
 
-static void color_scheme_changed(GtkWidget *widget, const GdkRGBA *colors, GtkWidget *terminal) {
+static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA *colors, GtkWidget *terminal) {
 
 	debug("%s=%p",__FUNCTION__,colors);
 
@@ -173,6 +173,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget *grid		= gtk_grid_new();
 	GtkWidget *color	= v3270_color_scheme_new();
 
+	v3270_color_scheme_set_rgba(color,v3270_get_color_table(terminal));
 	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),terminal);
 
 	gtk_grid_attach(GTK_GRID(grid),color,0,0,1,1);

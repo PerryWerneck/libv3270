@@ -70,7 +70,7 @@ const gchar * v3270_default_colors =
 		"#7890F0,"			// V3270_COLOR_OIA_SEPARATOR
 		"#FFFFFF,"			// V3270_COLOR_OIA_STATUS_OK
 		"#FFFF00,"			// V3270_COLOR_OIA_STATUS_WARNING
-		"#FF0000";			// V3270_COLOR_OIA_STATUS_INVALID
+		"#FFFF00";			// V3270_COLOR_OIA_STATUS_INVALID
 
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
