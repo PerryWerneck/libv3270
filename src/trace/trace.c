@@ -357,7 +357,7 @@ static void destroy(GtkWidget *widget)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(window->scroll),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
 
 	window->view = gtk_text_view_new();
-	v3270_trace_set_font_from_string(GTK_WIDGET(window),"Monospaced");
+	v3270_trace_set_font_from_string(GTK_WIDGET(window),v3270_get_default_font_name());
 
 	window->text = gtk_text_view_get_buffer(GTK_TEXT_VIEW(window->view));
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(window->view), TRUE);

@@ -103,6 +103,12 @@ static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA
 
 }
 
+static void print_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+{
+	debug("%s",__FUNCTION__);
+	v3270_print_all(terminal);
+}
+
 static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	/*
@@ -172,6 +178,9 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget *box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
 	GtkWidget *grid		= gtk_grid_new();
 	GtkWidget *color	= v3270_color_scheme_new();
+	GtkWidget *print	= gtk_button_new_with_label("Print");
+
+	g_signal_connect(G_OBJECT(print),"clicked",G_CALLBACK(print_clicked),terminal);
 
 	gtk_widget_set_can_focus(color,FALSE);
 	gtk_widget_set_focus_on_click(color,FALSE);
@@ -179,6 +188,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),terminal);
 
 	gtk_grid_attach(GTK_GRID(grid),color,0,0,1,1);
+	gtk_grid_attach(GTK_GRID(grid),print,1,0,1,1);
 
 	gtk_box_pack_start(GTK_BOX(box),grid,FALSE,TRUE,0);
 	gtk_box_pack_start(GTK_BOX(box),terminal,TRUE,TRUE,0);

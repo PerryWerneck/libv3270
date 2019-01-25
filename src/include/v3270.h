@@ -220,6 +220,7 @@
 
  // Misc
  LIB3270_EXPORT GtkIMContext	* v3270_get_im_context(GtkWidget *widget);
+ LIB3270_EXPORT const gchar		* v3270_get_default_font_name();
 
  LIB3270_EXPORT gboolean		  v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix);
  LIB3270_EXPORT gboolean		  v3270_set_toggle(GtkWidget *widget, LIB3270_TOGGLE ix, gboolean state);

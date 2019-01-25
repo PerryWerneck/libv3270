@@ -497,18 +497,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_BOOLEAN, 3, G_TYPE_BOOLEAN, G_TYPE_UINT, G_TYPE_POINTER);
 
 
-	/*
-	v3270_widget_signal[SIGNAL_PRINT] =
-		g_signal_new(	"print",
-						G_OBJECT_CLASS_TYPE (gobject_class),
-						G_SIGNAL_RUN_FIRST,
-						0,
-						NULL, NULL,
-						v3270_VOID__VOID,
-						G_TYPE_NONE, 0);
-	*/
-
-	v3270_widget_signal[SIGNAL_PRINT_BEGIN] =
+	v3270_widget_signal[SIGNAL_PRINT_SETUP] =
 		g_signal_new(	"print-begin",
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,

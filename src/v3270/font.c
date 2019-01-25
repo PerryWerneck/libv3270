@@ -44,6 +44,11 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+const gchar * v3270_get_default_font_name()
+{
+	return v3270_default_font;
+}
+
 void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int height)
 {
 	// update font metrics
