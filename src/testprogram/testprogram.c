@@ -91,6 +91,7 @@ static void trace_window_destroy(G_GNUC_UNUSED GtkWidget *widget, H3270 *hSessio
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE,0);
 }
 
+
 static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA *colors, GtkWidget *terminal) {
 
 	debug("%s=%p",__FUNCTION__,colors);
@@ -128,7 +129,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 //	gchar 		* filename	= NULL;
 	GValue 		  val		= G_VALUE_INIT;
 
-	GtkWidget *trace = v3270_new_trace_window(terminal);
+	GtkWidget *trace = v3270_new_trace_window(terminal,NULL);
 	if(trace) {
 		g_signal_connect(trace, "destroy", G_CALLBACK(trace_window_destroy), v3270_get_session(terminal));
 		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_SSL_TRACE);

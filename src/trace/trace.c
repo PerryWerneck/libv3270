@@ -82,6 +82,8 @@
 
  G_DEFINE_TYPE(v3270_trace, v3270_trace, GTK_TYPE_WINDOW);
 
+ static void append_text(v3270_trace *hwnd, const gchar *text);
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  const GtkWindowClass * v3270_trace_get_parent_class(void)
@@ -394,9 +396,10 @@ static void destroy(GtkWidget *widget)
 	return g_object_new(V3270_TYPE_TRACE, NULL);
  }
 
- LIB3270_EXPORT GtkWidget * v3270_new_trace_window(GtkWidget *widget)
+ LIB3270_EXPORT GtkWidget * v3270_new_trace_window(GtkWidget *widget, const gchar *header)
  {
- 	return v3270_trace_new_from_session(v3270_get_session(widget));
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+ 	return v3270_trace_new_from_session(v3270_get_session(widget), header);
  }
 
  static void trace_handler(H3270 *hSession, void *userdata, const char *fmt, va_list args)
@@ -425,7 +428,7 @@ static void destroy(GtkWidget *widget)
 
  }
 
- LIB3270_EXPORT	GtkWidget * v3270_trace_new_from_session(H3270 *hSession) {
+ LIB3270_EXPORT	GtkWidget * v3270_trace_new_from_session(H3270 *hSession, const gchar *header) {
 
 	GtkWidget	* widget	= g_object_new(V3270_TYPE_TRACE, NULL);
 	void		* terminal	= lib3270_get_user_data(hSession);
@@ -441,6 +444,9 @@ static void destroy(GtkWidget *widget)
 
 	v3270_trace_set_session(widget, hSession);
 
+	if(header)
+		append_text(V3270_TRACE(widget), header);
+
 	return widget;
  }
 
@@ -450,17 +456,15 @@ static void destroy(GtkWidget *widget)
 	gchar		* msg;
  };
 
- static gboolean bg_trace_vprintf(struct bg_print_data *data)
+ static void append_text(v3270_trace *hwnd, const gchar *text)
  {
-
-	GtkTextIter		  itr;
-	v3270_trace		* hwnd 	= V3270_TRACE(data->widget);
+	GtkTextIter	itr;
 
 	gtk_text_buffer_get_end_iter(hwnd->text,&itr);
 
-	if(g_utf8_validate(data->msg,strlen(data->msg),NULL))
+	if(g_utf8_validate(text,strlen(text),NULL))
 	{
-		gtk_text_buffer_insert(hwnd->text,&itr,data->msg,strlen(data->msg));
+		gtk_text_buffer_insert(hwnd->text,&itr,text,strlen(text));
 	}
 	else
 	{
@@ -473,11 +477,23 @@ static void destroy(GtkWidget *widget)
 	//GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(hwnd->scroll));
 	//gtk_adjustment_set_value(vadj,gtk_adjustment_get_upper(vadj));
 	//gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(hwnd->scroll), vadj);
+ }
 
+ static gboolean bg_trace_append_text(struct bg_print_data *data)
+ {
+	append_text(V3270_TRACE(data->widget),data->msg);
 	g_free(data->msg);
-
 	return FALSE;
+ }
 
+ void v3270_trace_append_text(GtkWidget *widget, const gchar *text)
+ {
+	struct bg_print_data * data = g_new0(struct bg_print_data,1);
+
+	data->widget = widget;
+	data->msg = g_strdup(text);
+
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_trace_append_text, data, g_free);
  }
 
  void v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args)
@@ -487,8 +503,7 @@ static void destroy(GtkWidget *widget)
 	data->widget = widget;
 	data->msg = g_strdup_vprintf(fmt,args);
 
-	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_trace_vprintf, data, g_free);
-
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_trace_append_text, data, g_free);
  }
 
  void v3270_trace_printf(GtkWidget *widget, const char *fmt, ... )

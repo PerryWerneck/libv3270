@@ -50,11 +50,14 @@
  typedef struct _v3270_traceClass	  v3270_traceClass;
 
  LIB3270_EXPORT	GtkWidget			* v3270_trace_new();
- LIB3270_EXPORT	GtkWidget			* v3270_trace_new_from_session(H3270 *hSession);
+
+ LIB3270_EXPORT	GtkWidget			* v3270_trace_new_from_session(H3270 *hSession, const gchar *header);
+
  LIB3270_EXPORT	void				  v3270_trace_set_session(GtkWidget *widget, H3270 *hSession);
  LIB3270_EXPORT	GType 				  v3270_trace_get_type(void);
  LIB3270_EXPORT void				  v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args);
  LIB3270_EXPORT void				  v3270_trace_printf(GtkWidget *widget, const char *fmt, ... );
+ LIB3270_EXPORT void				  v3270_trace_append_text(GtkWidget *widget, const gchar *text);
  LIB3270_EXPORT gchar				* v3270_trace_get_command(GtkWidget *widget);
  LIB3270_EXPORT void				  v3270_trace_set_destroy_on_close(GtkWidget *widget,gboolean on);
  LIB3270_EXPORT void				  v3270_trace_set_font_from_string(GtkWidget *widget, const gchar *name);

@@ -144,12 +144,11 @@ gpointer BgCall(struct bgParameter *p)
 
 static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void *parm)
 {
+//	return callback(hSession,parm);
+
 	struct bgParameter p = { TRUE, hSession, -1, callback, parm };
 
 	trace("%s starts -------------------------------------", __FUNCTION__);
-
-//	p.rc = callback(hSession,parm);
-
 
 	p.running = TRUE;
 
@@ -171,6 +170,7 @@ static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void
 	trace("%s ends ---------------------------------------", __FUNCTION__);
 
 	return p.rc;
+
 }
 
 void v3270_register_io_handlers(G_GNUC_UNUSED v3270Class *cls)
