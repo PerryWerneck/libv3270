@@ -48,7 +48,7 @@
  struct _V3270PrintOperation
  {
  	GtkPrintOperation	  parent;
-	GdkRGBA				  color[V3270_COLOR_COUNT];
+	GdkRGBA				  colors[V3270_COLOR_COUNT];
     LIB3270_PRINT_MODE	  mode;
     v3270				* widget;
     H3270				* session;
@@ -79,6 +79,32 @@
  }
 
 #ifndef _WIN32
+ static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA *colors, V3270PrintOperation *operation) {
+
+	debug("%s=%p",__FUNCTION__,colors);
+
+	int f;
+	for(f=0;f<V3270_COLOR_COUNT;f++)
+		operation->colors[f] = colors[f];
+
+ }
+
+ void font_name_changed(GtkComboBox *widget, V3270PrintOperation *operation)
+ {
+	GValue value = { 0, };
+	GtkTreeIter iter;
+
+	if(!gtk_combo_box_get_active_iter(widget,&iter))
+		return;
+
+	gtk_tree_model_get_value(gtk_combo_box_get_model(widget),&iter,0,&value);
+
+	g_free(operation->font.name);
+	operation->font.name = g_value_dup_string(&value);
+
+	debug("%s=%s",__FUNCTION__,operation->font.name);
+ }
+
  static GtkWidget * create_custom_widget(GtkPrintOperation *prt)
  {
 	static const gchar * text[] =
@@ -104,7 +130,9 @@
  	gtk_grid_set_row_spacing(grid,5);
  	gtk_grid_set_column_spacing(grid,5);
 
- 	v3270_color_scheme_set_rgba(color,operation->color);
+ 	v3270_color_scheme_set_rgba(color,operation->colors);
+	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),operation);
+	g_signal_connect(G_OBJECT(font),"changed",G_CALLBACK(font_name_changed),operation);
 
 	for(f=0;f<G_N_ELEMENTS(text);f++)
 	{
@@ -179,7 +207,7 @@
     widget->show_selection	= FALSE;
     widget->font.name		= g_strdup(v3270_default_font);
 
-	v3270_set_mono_color_table(widget->color,"#000000","#FFFFFF");
+	v3270_set_mono_color_table(widget->colors,"#000000","#FFFFFF");
 
  }
 

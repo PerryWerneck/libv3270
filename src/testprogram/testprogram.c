@@ -88,6 +88,7 @@ static void trace_window_destroy(G_GNUC_UNUSED GtkWidget *widget, H3270 *hSessio
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,0);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE,0);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,0);
+	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE,0);
 }
 
 static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA *colors, GtkWidget *terminal) {

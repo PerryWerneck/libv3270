@@ -100,12 +100,6 @@ static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidget
 {
 }
 
-/*
-static void toggle_ssl(GtkToggleButton *button, V3270HostSelectWidget *dialog)
-{
-}
-*/
-
 static void systype_changed(GtkComboBox *widget, V3270HostSelectWidget *dialog)
 {
 	GValue		value   = { 0, };
@@ -165,8 +159,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	// SSL checkbox
 	widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
 	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
-
-	//g_signal_connect(G_OBJECT(widget->input.ssl),"toggled",G_CALLBACK(toggle_ssl),widget);
 
 	// Extended options
 	GtkWidget * expander = gtk_expander_new_with_mnemonic(_( "_Host options"));
