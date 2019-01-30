@@ -252,6 +252,7 @@
  LIB3270_EXPORT const gchar		* v3270_get_ssl_status_icon(GtkWidget *widget);
  LIB3270_EXPORT const gchar		* v3270_get_ssl_status_text(GtkWidget *widget);
  LIB3270_EXPORT const gchar		* v3270_get_ssl_status_message(GtkWidget *widget);
+ LIB3270_EXPORT GtkWidget 		* v3270_security_dialog_new(GtkWidget *widget);
  LIB3270_EXPORT void			  v3270_popup_security_dialog(GtkWidget *widget);
 
  // File transfer

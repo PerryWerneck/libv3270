@@ -83,6 +83,24 @@ static gboolean popup_menu(GtkWidget *widget, G_GNUC_UNUSED gboolean selected, g
 
 }
 
+ static gboolean field_clicked(GtkWidget *widget, gboolean connected, V3270_OIA_FIELD field, GdkEventButton *event, GtkWidget *window)
+ {
+	trace("%s: %s field=%d event=%p window=%p",__FUNCTION__,connected ? "Connected" : "Disconnected", field, event, window);
+
+	if(!connected)
+		return FALSE;
+
+	if(field == V3270_OIA_SSL)
+	{
+		v3270_popup_security_dialog(widget);
+		trace("%s: Show SSL connection info dialog",__FUNCTION__);
+		return TRUE;
+	}
+
+
+	return FALSE;
+ }
+
 static void trace_window_destroy(G_GNUC_UNUSED GtkWidget *widget, H3270 *hSession) {
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,0);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,0);
@@ -128,6 +146,8 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget	* terminal	= v3270_new();
 //	gchar 		* filename	= NULL;
 	GValue 		  val		= G_VALUE_INIT;
+
+	g_signal_connect(terminal,"field_clicked",G_CALLBACK(field_clicked),window);
 
 	GtkWidget *trace = v3270_new_trace_window(terminal,NULL);
 	if(trace) {

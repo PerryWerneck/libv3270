@@ -52,6 +52,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/private.h" />
+		<Unit filename="src/dialogs/security.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/hostselect.h" />

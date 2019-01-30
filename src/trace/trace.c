@@ -459,7 +459,6 @@ static void destroy(GtkWidget *widget)
  static void append_text(v3270_trace *hwnd, const gchar *text)
  {
 	GtkTextIter	itr;
-
 	gtk_text_buffer_get_end_iter(hwnd->text,&itr);
 
 	if(g_utf8_validate(text,strlen(text),NULL))

@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como secoruty.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -296,7 +296,7 @@
 	return NULL;
  }
 
- const gchar	* v3270_get_ssl_status_icon(GtkWidget *widget)
+ const gchar * v3270_get_ssl_status_icon(GtkWidget *widget)
  {
  	g_return_val_if_fail(GTK_IS_V3270(widget),"");
 
@@ -354,77 +354,3 @@
 	return _( "Unexpected or unknown security status");
  }
 
- LIB3270_EXPORT	void v3270_popup_security_dialog(GtkWidget *widget)
- {
- 	GtkWidget	* dialog;
-
- 	g_return_if_fail(GTK_IS_V3270(widget));
-
-	gdk_window_set_cursor(gtk_widget_get_window(widget),v3270_cursor[GTK_V3270(widget)->pointer]);
-
-
-#ifdef HAVE_LIBSSL
-	if(lib3270_get_secure(GTK_V3270(widget)->host) == LIB3270_SSL_UNSECURE)
-#endif // HAVE_LIBSSL
-	{
-		// Connection is insecure, show simple dialog with host and info
-
-		dialog = gtk_message_dialog_new(
-							GTK_WINDOW(gtk_widget_get_toplevel(widget)),
-							GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-							GTK_MESSAGE_INFO,
-							GTK_BUTTONS_CLOSE,
-							"%s",v3270_get_hostname(widget)
-					);
-
-		gtk_message_dialog_format_secondary_markup(
-					GTK_MESSAGE_DIALOG(dialog),
-					"%s", _( "<b>Identity not verified</b>\nThe connection is insecure" ));
-
-	}
-#ifdef HAVE_LIBSSL
-	else
-	{
-		long 			  id		= lib3270_get_SSL_verify_result(GTK_V3270(widget)->host);
-		const gchar 	* title		= N_( "Unexpected SSL error");
-		const gchar		* text 		= NULL;
-		const gchar		* icon		= GTK_STOCK_DIALOG_ERROR;
-		int				  f;
-
-		for(f=0;ssl_status_msg[f].text;f++)
-		{
-			if(ssl_status_msg[f].id == id)
-			{
-				title	= ssl_status_msg[f].text;
-				icon	= ssl_status_msg[f].icon;
-				text	= ssl_status_msg[f].message;
-				break;
-			}
-		}
-
-		dialog = gtk_message_dialog_new(
-							GTK_WINDOW(gtk_widget_get_toplevel(widget)),
-							GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-							GTK_MESSAGE_OTHER,
-							GTK_BUTTONS_CLOSE,
-							"%s",gettext(title)
-					);
-
-		gtk_message_dialog_set_image(GTK_MESSAGE_DIALOG(dialog),gtk_image_new_from_stock(icon,GTK_ICON_SIZE_DIALOG));
-
-		if(text)
-			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog), "%s", gettext(text));
-		else
-			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),_( "Unexpected SSL error <b>%ld</b>" ),id);
-
-	}
-#endif // HAVE_LIBSSL
-
-	gtk_window_set_title(GTK_WINDOW(dialog),_("About security"));
-
-	gtk_widget_show_all(GTK_WIDGET(dialog));
-	gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(GTK_WIDGET(dialog));
-
-
- }
