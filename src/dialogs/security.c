@@ -42,9 +42,10 @@
 
  static GtkWidget * label_new(const char *text)
  {
- 	GtkWidget *widget = gtk_label_new(text);
-	gtk_label_set_xalign(GTK_LABEL(widget),0);
- 	return widget;
+ 	GtkLabel *widget = GTK_LABEL(gtk_label_new(""));
+ 	gtk_label_set_markup(widget,text);
+	gtk_label_set_xalign(widget,0);
+ 	return GTK_WIDGET(widget);
  }
 
  static GtkWidget * text_view_new(const char *contents)
@@ -92,9 +93,10 @@
 			2,2
 		);
 
+		g_autofree gchar * message = g_strdup_printf("<b>%s</b>",lib3270_get_ssl_state_message(hSession));
 		gtk_grid_attach(
 			grid,
-			label_new((lib3270_get_ssl_state_message(hSession))),
+			label_new(message),
 			3,0,
 			6,1
 		);
@@ -109,7 +111,10 @@
 		lib3270_autoptr(char) crl = lib3270_get_ssl_crl_text(hSession);
 		lib3270_autoptr(char) peer = lib3270_get_ssl_peer_certificate_text(hSession);
 
-		if(peer && crl)
+		if(!peer)
+			peer = g_strdup("");
+
+		if(crl)
 		{
 			GtkWidget * frame =	gtk_notebook_new();
 
@@ -136,7 +141,7 @@
 			);
 
 		}
-		else if(peer)
+		else
 		{
 			GtkWidget * frame = gtk_frame_new(_("Peer certificate"));
 			gtk_container_add(GTK_CONTAINER(frame),text_view_new(peer));
