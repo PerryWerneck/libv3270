@@ -27,47 +27,11 @@
  *
  */
 
- #include <v3270.h>
- #include <v3270/print.h>
- #include <lib3270/log.h>
- #include <lib3270/trace.h>
+ #include "private.h"
 
-/*--[ Widget definition ]----------------------------------------------------------------------------*/
+/*--[ Implement ]------------------------------------------------------------------------------------*/
 
- struct _V3270PrintOperationClass
+ void V3270PrintOperation_draw_page(GtkPrintOperation *prt, GtkPrintContext *context, gint page)
  {
- 	GtkPrintOperationClass parent_class;
 
- };
-
- struct _V3270PrintOperation
- {
- 	GtkPrintOperation	  parent;
-	GdkRGBA				  colors[V3270_COLOR_COUNT];
-    LIB3270_PRINT_MODE	  mode;
-    v3270				* widget;
-    H3270				* session;
-
-    struct
-	{
-		size_t			  width;	///< @brief Maximun text width (in characters)
-		size_t			  rows;		///< @brief Number of text rows.
-		size_t			  pages;	///< @brief Number of pages.
-	} text;
-
-    struct
-    {
-		gchar			* name;
-		v3270FontInfo	  info;
-    } font;
-
-    gboolean			  show_selection;
-
- };
-
-/*--[ Prototypes ]-----------------------------------------------------------------------------------*/
-
- G_GNUC_INTERNAL void V3270PrintOperation_begin_print(GtkPrintOperation *prt, GtkPrintContext *context);
- G_GNUC_INTERNAL void V3270PrintOperation_draw_page(GtkPrintOperation *prt, GtkPrintContext *context, gint page);
-
-
+ }

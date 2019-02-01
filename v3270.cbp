@@ -54,6 +54,9 @@
 		<Unit filename="src/dialogs/print/begin.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/print/draw.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/print/print.c">
 			<Option compilerVar="CC" />
 		</Unit>

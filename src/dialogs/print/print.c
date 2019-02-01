@@ -146,6 +146,7 @@
 	G_OBJECT_CLASS(klass)->dispose = dispose;
 	operation->done = done;
 	operation->begin_print = V3270PrintOperation_begin_print;
+	operation->draw_page = V3270PrintOperation_draw_page;
 
 #ifndef _WIN32
 	operation->create_custom_widget = create_custom_widget;
