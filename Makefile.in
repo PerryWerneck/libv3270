@@ -34,7 +34,8 @@ SOURCES= \
 	$(wildcard src/v3270/@OSNAME@/*.c) \
 	$(wildcard src/v3270ft/*.c) \
 	$(wildcard src/trace/*.c) \
-	$(wildcard src/dialogs/*.c)
+	$(wildcard src/dialogs/*.c) \
+	$(wildcard src/dialogs/print/*.c)
 
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.c)

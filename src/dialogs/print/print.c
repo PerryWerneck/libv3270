@@ -27,41 +27,10 @@
  *
  */
 
- #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
  #include "private.h"
- #include <v3270.h>
+ #include "../../v3270/private.h"	// Required for v3270 signal.
  #include <v3270/colorscheme.h>
- #include <v3270/print.h>
  #include <lib3270/selection.h>
- #include <lib3270/log.h>
- #include <lib3270/trace.h>
-
-/*--[ Widget definition ]----------------------------------------------------------------------------*/
-
- struct _V3270PrintOperationClass
- {
- 	GtkPrintOperationClass parent_class;
-
- };
-
- struct _V3270PrintOperation
- {
- 	GtkPrintOperation	  parent;
-	GdkRGBA				  colors[V3270_COLOR_COUNT];
-    LIB3270_PRINT_MODE	  mode;
-    v3270				* widget;
-    H3270				* session;
-
-    struct {
-		gchar			* name;
-		v3270FontInfo	  info;
-    } font;
-
-    gboolean			  show_selection;
-
-
- };
 
  G_DEFINE_TYPE(V3270PrintOperation, V3270PrintOperation, GTK_TYPE_PRINT_OPERATION);
 
@@ -113,7 +82,7 @@
 			N_( "C_olor scheme:" )
 	};
 
-	size_t 		  f;
+	size_t f;
 
  	V3270PrintOperation	* operation = GTK_V3270_PRINT_OPERATION(prt);
 
@@ -137,7 +106,7 @@
 	for(f=0;f<G_N_ELEMENTS(text);f++)
 	{
 		GtkWidget *label = gtk_label_new_with_mnemonic(gettext(text[f]));
-		gtk_misc_set_alignment(GTK_MISC(label),0,0.5);
+		gtk_label_set_xalign(GTK_LABEL(label),0);
 		gtk_grid_attach(grid,label,0,f,1,1);
 	}
 
@@ -176,20 +145,12 @@
 
 	G_OBJECT_CLASS(klass)->dispose = dispose;
 	operation->done = done;
+	operation->begin_print = V3270PrintOperation_begin_print;
 
 #ifndef _WIN32
 	operation->create_custom_widget = create_custom_widget;
 	operation->custom_widget_apply  = custom_widget_apply;
 #endif // _WIN32
- /*
-       // Common signals
-    g_signal_connect(print,"done",G_CALLBACK(done),*info);
-
-#if GTK_CHECK_VERSION(3,0,0) && !defined(WIN32)
-        g_signal_connect(print,"create-custom-widget",G_CALLBACK(create_custom_widget), *info);
-        g_signal_connect(print,"custom-widget-apply",G_CALLBACK(custom_widget_apply), *info);
-#endif // !WIN32
-*/
 
  }
 
@@ -206,6 +167,8 @@
     widget->mode 			= LIB3270_PRINT_ALL;
     widget->show_selection	= FALSE;
     widget->font.name		= g_strdup(v3270_default_font);
+
+    widget->text.width		= 80;
 
 	v3270_set_mono_color_table(widget->colors,"#000000","#FFFFFF");
 

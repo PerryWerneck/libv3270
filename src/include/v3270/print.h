@@ -38,6 +38,7 @@
 
 /*--[ Print Operation ]------------------------------------------------------------------------------*/
 
+
  #define GTK_TYPE_V3270_PRINT_OPERATION				(V3270PrintOperation_get_type())
  #define GTK_V3270_PRINT_OPERATION(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_PRINT_OPERATION, V3270PrintOperation))
  #define GTK_V3270_PRINT_OPERATION_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_PRINT_OPERATION, V3270PrintOperationClass))
@@ -51,8 +52,9 @@
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
  LIB3270_EXPORT V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT_MODE mode);
-
  LIB3270_EXPORT GtkWidget * v3270_font_selection_new(const gchar *fontname);
+
+ LIB3270_EXPORT GType				  V3270PrintOperation_get_type(void);
 
  G_END_DECLS
 

@@ -51,6 +51,13 @@
 		<Unit filename="src/dialogs/hostselect.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/print/begin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dialogs/print/print.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dialogs/print/private.h" />
 		<Unit filename="src/dialogs/private.h" />
 		<Unit filename="src/dialogs/security.c">
 			<Option compilerVar="CC" />
@@ -107,9 +114,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/v3270/oia.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/print.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/v3270/private.h" />
