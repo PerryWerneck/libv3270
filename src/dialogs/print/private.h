@@ -51,16 +51,17 @@
     struct
 	{
 		size_t			  width;	///< @brief Maximun text width (in characters)
-
+		size_t			  rows;		///< @brief Number of text rows.
+		size_t			  pages;	///< @brief Number of pages.
 	} text;
 
-    struct {
+    struct
+    {
 		gchar			* name;
 		v3270FontInfo	  info;
     } font;
 
     gboolean			  show_selection;
-
 
  };
 

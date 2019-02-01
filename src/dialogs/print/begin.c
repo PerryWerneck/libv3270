@@ -68,77 +68,7 @@
 	trace("Font size: %d",(int) valid);
 	cairo_set_font_size(cr,valid);
 
+	// Set view size
 
- 	/*
-
- 	gchar	* font	= get_string_from_config("print",FONT_CONFIG,DEFAULT_FONT);
-
-	trace("%s: operation=%p context=%p font=\"%s\"",__FUNCTION__,prt,context,font);
-
-	// Setup font
-	if(*font)
-	{
-		PangoFontDescription * descr = pango_font_description_from_string(font);
-		if(descr)
-		{
-			cairo_select_font_face(cr,	pango_font_description_get_family(descr),
-										CAIRO_FONT_SLANT_NORMAL,
-										pango_font_description_get_weight(descr) == PANGO_WEIGHT_BOLD ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL);
-
-#ifdef AUTO_FONT_SIZE
-            {
-                double                  width    = gtk_print_context_get_width(context);
-#if GTK_CHECK_VERSION(3,0,0)
-                double                  cols     = (double) info->cols;
-#else
-                double                  cols     = (double) (info->cols+5);
-#endif // GTK(3,0,0)
-                double                  current  = width / cols;
-                double                  valid    = current;
-
-                do
-                {
-                    valid   = current;
-                    current = valid +1.0;
-                    cairo_set_font_size(cr,current);
-                    cairo_font_extents(cr,&extents);
-                }
-                while(  (cols * extents.max_x_advance) < width );
-
-				trace("Font size: %d",(int) valid);
-				cairo_set_font_size(cr,valid);
-
-			}
-#endif // AUTO_FONT_SIZE
-
-			pango_font_description_free(descr);
-		}
-	}
-	g_free(font);
-
-	info->font.scaled = cairo_get_scaled_font(cr);
-	cairo_scaled_font_reference(info->font.scaled);
-	cairo_scaled_font_extents(info->font.scaled,&extents);
-
-	info->font.height		= extents.height;
-	info->font.descent		= extents.descent;
-	info->font.width		= extents.max_x_advance;
-
-	info->width  			= ((double) info->cols) * extents.max_x_advance;
-	info->height 			= ((double) info->rows) * (extents.height + extents.descent);
-
-	// Center image
-	info->left = (gtk_print_context_get_width(context)-info->width)/2;
-	if(info->left < 2)
-		info->left = 2;
-
-	// Setup page size
-	info->lpp	= (gtk_print_context_get_height(context) / (extents.height + extents.descent));
-	info->pages = (info->rows / info->lpp)+1;
-
-	trace("%d lines per page, %d pages to print",info->lpp,info->pages);
-
-	gtk_print_operation_set_n_pages(prt,info->pages);
-	*/
  }
 
