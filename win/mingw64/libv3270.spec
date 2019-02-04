@@ -31,21 +31,21 @@
 
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
-Summary:	3270 Virtual Terminal for GTK
+Summary:		3270 Virtual Terminal for GTK
 Name:           mingw64-libv3270-%{_libvrs}
 Version:        5.2
 Release:        0
 License:        GPL-2.0
 
-Source:			%{name}-%{version}.tar.xz
+Source:			libv3270-%{version}.tar.xz
 
-Url:		https://portal.softwarepublico.gov.br/social/pw3270/
+Url:			https://portal.softwarepublico.gov.br/social/pw3270/
 
-Group:		Development/Libraries/C and C++
-BuildRoot:	/var/tmp/%{name}-%{version}
+Group:			Development/Libraries/C and C++
+BuildRoot:		/var/tmp/%{name}-%{version}
 
-Provides:	mingw64-libv3270
-Conflicts:	otherproviders(mingw64-libv3270)
+Provides:		mingw64-libv3270
+Conflicts:		otherproviders(mingw64-libv3270)
 
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -116,7 +116,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup
+%setup -n libv3270-%{version}
 
 NOCONFIGURE=1 ./autogen.sh
 
