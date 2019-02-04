@@ -136,13 +136,22 @@
 
 	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(object);
 
-	if(operation->contents.text)
-		g_strfreev(operation->contents.text);
-
 	if(operation->font.info.scaled)
 		cairo_scaled_font_destroy(operation->font.info.scaled);
 
 	g_free(operation->font.name);
+
+	if(operation->contents.text)
+	{
+		size_t row;
+
+		for(row = 0; operation->contents.text[row]; row++)
+		{
+			g_free(operation->contents.text[row]);
+		}
+		g_free(operation->contents.text);
+
+	}
 
  }
 
@@ -191,7 +200,7 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 	operation->widget = GTK_V3270(widget);
 	operation->session = v3270_get_session(widget);
 
-	V3270PrintOperation_set_mode(operation, mode);
+	V3270PrintOperation_set_text_by_mode(operation, mode);
 
 	return operation;
 }
@@ -223,16 +232,33 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 	v3270_print(widget,LIB3270_PRINT_COPY);
  }
 
- void V3270PrintOperation_set_mode(V3270PrintOperation * operation, LIB3270_PRINT_MODE mode)
+ void V3270PrintOperation_set_text_by_mode(V3270PrintOperation * operation, LIB3270_PRINT_MODE mode)
  {
  	operation->mode = mode;
 
- 	// Text rectangle (in characters).
 	switch(mode)
 	{
 	case LIB3270_PRINT_ALL:
-		operation->contents.height = lib3270_get_height(operation->session);
-		operation->contents.width = lib3270_get_width(operation->session);
+		{
+			size_t row, col;
+			int baddr = 0;
+			column * text;
+
+			operation->contents.height = lib3270_get_height(operation->session);
+			operation->contents.width = lib3270_get_width(operation->session);
+
+			operation->contents.text = g_new0(column *, operation->contents.height+1);
+
+			for(row = 0; row < operation->contents.height; row++)
+			{
+				operation->contents.text[row] = text = g_new0(column, operation->contents.width);
+				for(col = 0; col < operation->contents.width; col++)
+				{
+					lib3270_get_element(operation->session,baddr++,&text[col].c,&text[col].attr);
+				}
+			}
+
+		}
 		break;
 
 	case LIB3270_PRINT_SELECTED:
@@ -260,27 +286,28 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 				}
 			}
 
-			operation->contents.height = rect.height;
-			operation->contents.width = rect.width;
+			operation->contents.height = rect.height - rect.y;
+			operation->contents.width = rect.width - rect.x;
 
 		}
 		break;
 
 	case LIB3270_PRINT_COPY:
 		{
-			lib3270_autoptr(char) text = v3270_get_copy(GTK_WIDGET(operation->widget));
-			if(text)
+			lib3270_autoptr(char) copy = v3270_get_copy(GTK_WIDGET(operation->widget));
+			if(copy)
 			{
 				size_t r;
-
-				operation->contents.text = g_strsplit(text,"\n",-1);
-				operation->contents.height = g_strv_length(operation->contents.text);
+				gchar ** text = g_strsplit(copy,"\n",-1);
+				operation->contents.height = g_strv_length(text);
 				operation->contents.width = 0;
 
 				for(r=0;r < operation->contents.height;r++)
 				{
-					operation->contents.width = MAX(operation->contents.width,strlen(operation->contents.text[r]));
+					operation->contents.width = MAX(operation->contents.width,strlen(text[r]));
 				}
+
+				g_strfreev(text);
 
 			}
 		}

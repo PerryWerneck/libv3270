@@ -40,6 +40,12 @@
 
  };
 
+ typedef struct _column
+ {
+	unsigned char	c;
+	unsigned short	attr;
+ } column;
+
  struct _V3270PrintOperation
  {
  	GtkPrintOperation	  parent;
@@ -55,7 +61,7 @@
 	{
 		size_t	  width;			///< @brief Width of the contents (in columns);
 		size_t	  height;			///< @brief Height of the contents (in rows);
-		gchar	**text;				///< @brief Text contents;
+		column 	**text;				///< @brief Report contents.
 	} contents;
 
     struct
