@@ -28,10 +28,81 @@
  */
 
  #include "private.h"
+ #include <string.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  void V3270PrintOperation_draw_page(GtkPrintOperation *prt, GtkPrintContext *context, gint page)
  {
+ 	cairo_t				* cr = gtk_print_context_get_cairo_context(context);
+	V3270PrintOperation	* operation	= GTK_V3270_PRINT_OPERATION(prt);
+
+    size_t from = page * operation->lpp;
+
+    if(from > operation->contents.height)
+		return;
+
+	// Create a rectangle with the size of 1 character.
+	GdkRectangle rect;
+	memset(&rect,0,sizeof(rect));
+	rect.y 		= 2;
+	rect.height	= operation->font.info.height + operation->font.info.descent;
+	rect.width	= operation->font.info.width;
+
+	// Draw "operation->lpp" lines starting from "from"
+
+	// Clear contents.
+	gdk_cairo_set_source_rgba(cr,operation->colors + V3270_COLOR_BACKGROUND);
+	cairo_rectangle(
+			cr,
+			operation->font.info.left-1,0,
+			(rect.width * operation->contents.width) + 4,
+			(rect.height * operation->contents.height) + 4
+	);
+
+	cairo_fill(cr);
+	cairo_stroke(cr);
+
+	// draw "lpp" lines starting from "from"
+    size_t r;
+
+	cairo_set_scaled_font(cr,operation->font.info.scaled);
+
+    for(r = 0; r < operation->lpp; r++)
+	{
+		rect.x = operation->font.info.left;
+
+		size_t row = r+from;
+		if(row > operation->contents.height || !operation->contents.text[row])
+			break;
+
+		size_t col;
+		column * columns = operation->contents.text[row];
+		for(col = 0; col < operation->contents.width; col++)
+		{
+			if(columns[col].c)
+			{
+				// Draw character
+				v3270_draw_element(
+					cr,
+					columns[col].c,
+					columns[col].attr,
+					operation->session,
+					&operation->font.info,
+					&rect,
+					operation->colors
+				);
+
+			}
+
+			// Advance to the next char
+			rect.x += (rect.width-1);
+
+		}
+
+		// Advance to the next row
+		rect.y += (rect.height-1);
+
+	}
 
  }

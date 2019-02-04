@@ -76,8 +76,12 @@
 	operation->font.info.descent	= extents.descent;
 	operation->font.info.width		= extents.max_x_advance;
 
+	operation->font.info.width++;
+
 	// Center text on page
-	operation->font.info.left = (gtk_print_context_get_width(context)-operation->font.info.width)/2;
+	// operation->font.info.left = 2;
+
+	operation->font.info.left = (gtk_print_context_get_width(context)- (operation->font.info.width * operation->contents.width))/2;
 	if(operation->font.info.left < 2)
 		operation->font.info.left = 2;
 
