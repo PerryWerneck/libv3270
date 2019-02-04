@@ -263,10 +263,11 @@
  LIB3270_EXPORT void			  v3270_select_host(GtkWidget *widget);
 
  // Print
- LIB3270_EXPORT void			  v3270_print(GtkWidget *widget, LIB3270_PRINT_MODE mode);
- LIB3270_EXPORT void			  v3270_print_all(GtkWidget *widget);
- LIB3270_EXPORT void			  v3270_print_selected(GtkWidget *widget);
- LIB3270_EXPORT void			  v3270_print_copy(GtkWidget *widget);
+ LIB3270_EXPORT int				  v3270_print(GtkWidget *widget, LIB3270_PRINT_MODE mode, GError **error);
+
+ LIB3270_EXPORT int				  v3270_print_all(GtkWidget *widget, GError **error);
+ LIB3270_EXPORT int				  v3270_print_selected(GtkWidget *widget, GError **error);
+ LIB3270_EXPORT int				  v3270_print_copy(GtkWidget *widget, GError **error);
 
  G_END_DECLS
 

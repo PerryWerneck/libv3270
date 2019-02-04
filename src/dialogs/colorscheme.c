@@ -316,6 +316,7 @@
 	{
 		if(!gdk_rgba_equal(colora+f,colorb+f))
 		{
+/*
 #ifdef DEBUG
 			g_autofree gchar * cla = gdk_rgba_to_string(colora+f);
 			g_autofree gchar * clb = gdk_rgba_to_string(colorb+f);
@@ -328,7 +329,7 @@
 					clb
 			);
 #endif // DEBUG
-
+*/
 			return FALSE;
 		}
 	}
@@ -378,7 +379,7 @@
 			gtk_tree_model_get_value(model,&iter,1,&value);
 			clr = g_value_get_pointer(&value);
 
-			debug("%p",clr);
+//			debug("%p",clr);
 
 			if(clr && compare_colors(clr,colors))
 			{

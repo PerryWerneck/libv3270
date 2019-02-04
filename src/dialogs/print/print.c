@@ -207,29 +207,42 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 
 /*--[ Convenience ]----------------------------------------------------------------------------------*/
 
- void v3270_print(GtkWidget *widget, LIB3270_PRINT_MODE mode)
+ int v3270_print(GtkWidget *widget, LIB3270_PRINT_MODE mode, GError **error)
  {
- 	g_autoptr(GError) err = NULL;
+ 	if(*error)
+	{
+		return -1;
+	}
 
-	V3270PrintOperation * operation = v3270_print_operation_new(widget, mode);
-	gtk_print_operation_run(GTK_PRINT_OPERATION(operation),GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,GTK_WINDOW(gtk_widget_get_toplevel(widget)),&err);
-	g_object_unref(operation);
+	lib3270_trace_event(v3270_get_session(widget),"print action activated (type=%d)",(int) mode);
+
+ 	if(v3270_is_connected(widget))
+	{
+		V3270PrintOperation * operation = v3270_print_operation_new(widget, mode);
+		gtk_print_operation_run(GTK_PRINT_OPERATION(operation),GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,GTK_WINDOW(gtk_widget_get_toplevel(widget)),error);
+		g_object_unref(operation);
+		return (*error != NULL);
+	}
+
+	*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,"%s",strerror(ENOTCONN));
+
+	return -1;
 
  }
 
- void v3270_print_all(GtkWidget *widget)
+ int v3270_print_all(GtkWidget *widget, GError **error)
  {
-	v3270_print(widget,LIB3270_PRINT_ALL);
+	return v3270_print(widget,LIB3270_PRINT_ALL,error);
  }
 
- void v3270_print_selected(GtkWidget *widget)
+ int v3270_print_selected(GtkWidget *widget, GError **error)
  {
-	v3270_print(widget,LIB3270_PRINT_SELECTED);
+	return v3270_print(widget,LIB3270_PRINT_SELECTED,error);
  }
 
- void v3270_print_copy(GtkWidget *widget)
+ int v3270_print_copy(GtkWidget *widget, GError **error)
  {
-	v3270_print(widget,LIB3270_PRINT_COPY);
+	return v3270_print(widget,LIB3270_PRINT_COPY,error);
  }
 
  void V3270PrintOperation_set_text_by_mode(V3270PrintOperation * operation, LIB3270_PRINT_MODE mode)

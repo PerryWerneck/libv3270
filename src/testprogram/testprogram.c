@@ -125,26 +125,13 @@ static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA
 
 static void print_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
-	debug("%s",__FUNCTION__);
-	v3270_print_all(terminal);
+	lib3270_print_all(v3270_get_session(terminal));
 }
 
 static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
-	/*
-	const gchar * search[]	= {
-
-		g_get_user_config_dir(),
- 		g_get_user_data_dir(),
- 		g_get_home_dir(),
- 		NULL
-
-	};
-	*/
-
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();
-//	gchar 		* filename	= NULL;
 	GValue 		  val		= G_VALUE_INIT;
 
 	g_signal_connect(terminal,"field_clicked",G_CALLBACK(field_clicked),window);
