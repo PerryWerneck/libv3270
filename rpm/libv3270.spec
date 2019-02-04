@@ -41,7 +41,7 @@ Name:		libv3270-%{_libvrs}
 Version:	5.2
 Release:	0
 License:        LGPL-3.0
-Source:		%{name}-%{version}.tar.xz
+Source:		libv3270-%{version}.tar.xz
 
 Url:		https://portal.softwarepublico.gov.br/social/pw3270/
 
@@ -113,7 +113,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup
+%setup -n libv3270-%{version}
 
 NOCONFIGURE=1 ./autogen.sh
 
