@@ -264,18 +264,20 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 	case LIB3270_PRINT_SELECTED:
 		{
 			int row, col;
+			int baddr = 0;
 
 			GdkRectangle rect;
 			memset(&rect,0,sizeof(rect));
 			rect.x = lib3270_get_width(operation->session);
 			rect.y = lib3270_get_height(operation->session);
 
-			int baddr = 0;
+			// Get regions
+
 			for(row = 0; row < lib3270_get_height(operation->session); row++)
 			{
 				for(col = 0; col < lib3270_get_width(operation->session); col++)
 				{
-					if(lib3270_is_selected(operation->session,baddr))
+					if(lib3270_is_selected(operation->session,baddr++))
 					{
 						rect.x = MIN(rect.x,col);
 						rect.width = MAX(rect.width,col);
@@ -288,6 +290,30 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 
 			operation->contents.height = rect.height - rect.y;
 			operation->contents.width = rect.width - rect.x;
+
+			// Get contents
+			int r = 0;
+			column * text;
+
+			operation->contents.text = g_new0(column *, operation->contents.height+1);
+
+			for(row = rect.y; row < rect.width; row++)
+			{
+				int c = 0;
+				operation->contents.text[r++] = text = g_new0(column, operation->contents.width);
+
+				for(col = rect.x; col < rect.height; col++)
+				{
+					lib3270_get_element(operation->session,lib3270_translate_to_address(operation->session,row,col),&text[c].c,&text[c].attr);
+					if(!(text[c].attr & LIB3270_ATTR_SELECTED))
+					{
+						text[c].c = 0;
+						text[c].attr = 0;
+					}
+                    c++;
+				}
+
+			}
 
 		}
 		break;
