@@ -48,12 +48,15 @@
     v3270				* widget;
     H3270				* session;
 
+	size_t				  lpp;		///< @brief Lines per page (in rows).
+	size_t				  pages;	///< @brief Number of pages.
+
     struct
 	{
-		size_t			  width;	///< @brief Maximun text width (in characters)
-		size_t			  rows;		///< @brief Number of text rows.
-		size_t			  pages;	///< @brief Number of pages.
-	} text;
+		size_t	  width;			///< @brief Width of the contents (in columns);
+		size_t	  height;			///< @brief Height of the contents (in rows);
+		gchar	**text;				///< @brief Text contents;
+	} contents;
 
     struct
     {

@@ -49,10 +49,9 @@
 	);
 
 	// Set font size based on text and context.
-
    	cairo_font_extents_t    extents;
 	double                  width    = gtk_print_context_get_width(context);
-	double                  cols     = (double) operation->text.width;
+	double                  cols     = (double) operation->contents.width;
 	double                  current  = width / cols;
 	double                  valid    = current;
 
@@ -68,7 +67,27 @@
 	trace("Font size: %d",(int) valid);
 	cairo_set_font_size(cr,valid);
 
-	// Set view size
+	// Store font data.
+	operation->font.info.scaled = cairo_get_scaled_font(cr);
+	cairo_scaled_font_reference(operation->font.info.scaled);
+	cairo_scaled_font_extents(operation->font.info.scaled,&extents);
+
+	operation->font.info.height		= extents.height;
+	operation->font.info.descent	= extents.descent;
+	operation->font.info.width		= extents.max_x_advance;
+
+	// Center text on page
+	operation->font.info.left = (gtk_print_context_get_width(context)-operation->font.info.width)/2;
+	if(operation->font.info.left < 2)
+		operation->font.info.left = 2;
+
+	// Setup page size
+	operation->lpp	= (gtk_print_context_get_height(context) / (extents.height + extents.descent));
+	operation->pages = (operation->contents.height / operation->lpp)+1;
+
+	trace("%d lines per page, %d pages to print",operation->lpp,operation->pages);
+
+	gtk_print_operation_set_n_pages(prt,operation->pages);
 
  }
 

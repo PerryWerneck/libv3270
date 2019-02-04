@@ -28,6 +28,7 @@
  */
 
  #include "private.h"
+ #include <sys/param.h>
  #include "../../v3270/private.h"	// Required for v3270 signal.
  #include <v3270/colorscheme.h>
  #include <lib3270/selection.h>
@@ -117,7 +118,7 @@
 	return GTK_WIDGET(grid);
  }
 
- static void custom_widget_apply(GtkPrintOperation *prt, GtkWidget *widget)
+ static void custom_widget_apply(GtkPrintOperation *prt, GtkWidget G_GNUC_UNUSED(*widget))
  {
  	V3270PrintOperation	* operation = GTK_V3270_PRINT_OPERATION(prt);
 
@@ -134,6 +135,12 @@
 	debug("%s",__FUNCTION__);
 
 	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(object);
+
+	if(operation->contents.text)
+		g_strfreev(operation->contents.text);
+
+	if(operation->font.info.scaled)
+		cairo_scaled_font_destroy(operation->font.info.scaled);
 
 	g_free(operation->font.name);
 
@@ -168,8 +175,7 @@
     widget->mode 			= LIB3270_PRINT_ALL;
     widget->show_selection	= FALSE;
     widget->font.name		= g_strdup(v3270_default_font);
-
-    widget->text.width		= 80;
+    widget->contents.width	= 80;
 
 	v3270_set_mono_color_table(widget->colors,"#000000","#FFFFFF");
 
@@ -184,6 +190,8 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 	operation->mode	= mode;
 	operation->widget = GTK_V3270(widget);
 	operation->session = v3270_get_session(widget);
+
+	V3270PrintOperation_set_mode(operation, mode);
 
 	return operation;
 }
@@ -213,4 +221,73 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
  void v3270_print_copy(GtkWidget *widget)
  {
 	v3270_print(widget,LIB3270_PRINT_COPY);
+ }
+
+ void V3270PrintOperation_set_mode(V3270PrintOperation * operation, LIB3270_PRINT_MODE mode)
+ {
+ 	operation->mode = mode;
+
+ 	// Text rectangle (in characters).
+	switch(mode)
+	{
+	case LIB3270_PRINT_ALL:
+		operation->contents.height = lib3270_get_height(operation->session);
+		operation->contents.width = lib3270_get_width(operation->session);
+		break;
+
+	case LIB3270_PRINT_SELECTED:
+		{
+			int row, col;
+
+			GdkRectangle rect;
+			memset(&rect,0,sizeof(rect));
+			rect.x = lib3270_get_width(operation->session);
+			rect.y = lib3270_get_height(operation->session);
+
+			int baddr = 0;
+			for(row = 0; row < lib3270_get_height(operation->session); row++)
+			{
+				for(col = 0; col < lib3270_get_width(operation->session); col++)
+				{
+					if(lib3270_is_selected(operation->session,baddr))
+					{
+						rect.x = MIN(rect.x,col);
+						rect.width = MAX(rect.width,col);
+
+						rect.y = MIN(rect.y,row);
+						rect.height = MAX(rect.height,row);
+					}
+				}
+			}
+
+			operation->contents.height = rect.height;
+			operation->contents.width = rect.width;
+
+		}
+		break;
+
+	case LIB3270_PRINT_COPY:
+		{
+			lib3270_autoptr(char) text = v3270_get_copy(GTK_WIDGET(operation->widget));
+			if(text)
+			{
+				size_t r;
+
+				operation->contents.text = g_strsplit(text,"\n",-1);
+				operation->contents.height = g_strv_length(operation->contents.text);
+				operation->contents.width = 0;
+
+				for(r=0;r < operation->contents.height;r++)
+				{
+					operation->contents.width = MAX(operation->contents.width,strlen(operation->contents.text[r]));
+				}
+
+			}
+		}
+		break;
+
+	}
+
+	debug("%s: width=%u height=%u",__FUNCTION__,(unsigned int) operation->contents.width, (unsigned int) operation->contents.height);
+
  }

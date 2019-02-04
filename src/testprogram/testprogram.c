@@ -201,6 +201,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget *grid		= gtk_grid_new();
 	GtkWidget *color	= v3270_color_scheme_new();
 	GtkWidget *print	= gtk_button_new_with_label("Print");
+	gtk_widget_set_focus_on_click(print,FALSE);
 
 	g_signal_connect(G_OBJECT(print),"clicked",G_CALLBACK(print_clicked),terminal);
 
