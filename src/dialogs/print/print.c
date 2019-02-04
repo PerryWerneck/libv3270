@@ -59,7 +59,7 @@
 
  }
 
- void font_name_changed(GtkComboBox *widget, V3270PrintOperation *operation)
+ static void font_name_changed(GtkComboBox *widget, V3270PrintOperation *operation)
  {
 	GValue value = { 0, };
 	GtkTreeIter iter;
@@ -73,6 +73,11 @@
 	operation->font.name = g_value_dup_string(&value);
 
 	debug("%s=%s",__FUNCTION__,operation->font.name);
+ }
+
+ static void toggle_show_selection(GtkToggleButton *widget, V3270PrintOperation *operation)
+ {
+ 	operation->show_selection = gtk_toggle_button_get_active(widget);
  }
 
  static GtkWidget * create_custom_widget(GtkPrintOperation *prt)
@@ -95,6 +100,7 @@
  	GtkGrid 			* grid = GTK_GRID(gtk_grid_new());
  	GtkWidget			* font = v3270_font_selection_new(operation->font.name);
  	GtkWidget			* color = v3270_color_scheme_new();
+	GtkWidget 			* selected = gtk_check_button_new_with_label( _("Print selection box") );
 
  	gtk_container_set_border_width(GTK_CONTAINER(grid),10);
  	gtk_grid_set_row_spacing(grid,5);
@@ -103,6 +109,8 @@
  	v3270_color_scheme_set_rgba(color,operation->colors);
 	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),operation);
 	g_signal_connect(G_OBJECT(font),"changed",G_CALLBACK(font_name_changed),operation);
+	g_signal_connect(G_OBJECT(selected),"toggled",G_CALLBACK(toggle_show_selection),operation);
+
 
 	for(f=0;f<G_N_ELEMENTS(text);f++)
 	{
@@ -113,6 +121,7 @@
 
 	gtk_grid_attach(grid,font,1,0,1,1);
 	gtk_grid_attach(grid,color,1,1,1,1);
+	gtk_grid_attach(grid,selected,1,2,1,1);
 
 	gtk_widget_show_all(GTK_WIDGET(grid));
 	return GTK_WIDGET(grid);
@@ -128,6 +137,7 @@
 		g_signal_emit(operation->widget, v3270_widget_signal[SIGNAL_PRINT_APPLY], 0, prt);
 
  }
+
 #endif // _WIN32
 
  static void dispose(GObject *object)

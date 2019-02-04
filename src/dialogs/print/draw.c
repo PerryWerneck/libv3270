@@ -83,6 +83,9 @@
 			if(columns[col].c)
 			{
 				// Draw character
+				if(!operation->show_selection)
+					columns[col].attr &= ~LIB3270_ATTR_SELECTED;
+
 				v3270_draw_element(
 					cr,
 					columns[col].c,

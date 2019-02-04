@@ -54,14 +54,15 @@
     v3270				* widget;
     H3270				* session;
 
-	size_t				  lpp;		///< @brief Lines per page (in rows).
-	size_t				  pages;	///< @brief Number of pages.
+	size_t				  lpp;					///< @brief Lines per page (in rows).
+	size_t				  pages;				///< @brief Number of pages.
+	gboolean			  show_selection;		///< @brief Print selection box?
 
     struct
 	{
-		size_t	  width;			///< @brief Width of the contents (in columns);
-		size_t	  height;			///< @brief Height of the contents (in rows);
-		column 	**text;				///< @brief Report contents.
+		size_t	  width;						///< @brief Width of the contents (in columns);
+		size_t	  height;						///< @brief Height of the contents (in rows);
+		column 	**text;							///< @brief Report contents.
 	} contents;
 
     struct
@@ -69,8 +70,6 @@
 		gchar			* name;
 		v3270FontInfo	  info;
     } font;
-
-    gboolean			  show_selection;
 
  };
 
