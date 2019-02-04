@@ -272,38 +272,49 @@
 	}
 
 	// Load color schemes.
-	g_autoptr(GKeyFile)	conf	= g_key_file_new();
-	g_autoptr(GError)	err		= NULL;
-	int					index	= 0;
-	gsize				len;
-	gsize				g;
+	GKeyFile	* conf	= g_key_file_new();
+	GError		* error	= NULL;
+	int			  index	= 0;
+	gsize		  len;
+	gsize		  g;
 
-	g_key_file_load_from_file(conf,filename,G_KEY_FILE_NONE,&err);
+	g_key_file_load_from_file(conf,filename,G_KEY_FILE_NONE,&error);
 
-	gchar **group = g_key_file_get_groups(conf,&len);
-	GTK_V3270_COLOR_SCHEME(widget)->schemes = g_new0(GdkRGBA,(len*V3270_COLOR_COUNT));
-
-	for(g=0;g<len;g++)
+	if(error)
 	{
-		// Setup colors for current entry
-		GtkTreeIter	  iter;
-		GdkRGBA		* clr	= GTK_V3270_COLOR_SCHEME(widget)->schemes+index;
-		const gchar	* label	= g_key_file_get_locale_string(conf,group[g],"label",NULL,NULL);
+		g_message("Can't load %s: %s",filename,error->message);
+		g_error_free(error);
+	}
+	else
+	{
+		gchar **group = g_key_file_get_groups(conf,&len);
+		GTK_V3270_COLOR_SCHEME(widget)->schemes = g_new0(GdkRGBA,(len*V3270_COLOR_COUNT));
 
-		load_color_scheme(conf,group[g],clr);
+		for(g=0;g<len;g++)
+		{
+			// Setup colors for current entry
+			GtkTreeIter	  iter;
+			GdkRGBA		* clr	= GTK_V3270_COLOR_SCHEME(widget)->schemes+index;
+			const gchar	* label	= g_key_file_get_locale_string(conf,group[g],"label",NULL,NULL);
 
-		// Set it in the combobox
-		gtk_list_store_append((GtkListStore *) model,&iter);
-		gtk_list_store_set((GtkListStore *) model, &iter,
-											0, label ? label : group[g],
-											1, clr,
-											-1);
+			load_color_scheme(conf,group[g],clr);
 
-		// move to next color list
-		index += V3270_COLOR_COUNT;
+			// Set it in the combobox
+			gtk_list_store_append((GtkListStore *) model,&iter);
+			gtk_list_store_set((GtkListStore *) model, &iter,
+												0, label ? label : group[g],
+												1, clr,
+												-1);
+
+			// move to next color list
+			index += V3270_COLOR_COUNT;
+		}
+
+		g_strfreev(group);
+
 	}
 
-	g_strfreev(group);
+	g_key_file_free(conf);
 
 	return widget;
  }

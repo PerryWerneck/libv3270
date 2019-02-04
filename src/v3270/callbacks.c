@@ -329,8 +329,8 @@ static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const
 
 static int print(H3270 *session, LIB3270_PRINT_MODE mode)
 {
-	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
-	g_autoptr(GError) error = NULL;
+	GtkWidget	* widget = GTK_WIDGET(lib3270_get_user_data(session));
+	GError		* error = NULL;
 
 	v3270_print(widget, mode, &error);
 
@@ -349,6 +349,7 @@ static int print(H3270 *session, LIB3270_PRINT_MODE mode)
 		gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_destroy(dialog);
 
+		g_error_free(error);
 		return -1;
 
 	}
