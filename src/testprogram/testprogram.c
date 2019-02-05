@@ -110,6 +110,7 @@ static void trace_window_destroy(G_GNUC_UNUSED GtkWidget *widget, H3270 *hSessio
 }
 
 
+/*
 static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA *colors, GtkWidget *terminal) {
 
 	debug("%s=%p",__FUNCTION__,colors);
@@ -122,6 +123,7 @@ static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA
 	gtk_widget_queue_draw(terminal);
 
 }
+*/
 
 static void print_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
@@ -133,6 +135,38 @@ static void host_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	v3270_select_host(terminal);
 }
 
+static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+{
+	GtkWidget * dialog = gtk_dialog_new_with_buttons (
+								_( "Color Setup" ),
+								NULL, // GTK_WINDOW(gtk_widget_get_toplevel(terminal)),
+								GTK_DIALOG_DESTROY_WITH_PARENT,
+								_( "Cancel" ),	GTK_RESPONSE_REJECT,
+								_( "Save" ),	GTK_RESPONSE_ACCEPT,
+								NULL );
+
+
+	GtkWidget * colors = v3270_color_selection_new(terminal);
+
+	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),10);
+
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),colors,TRUE,TRUE,2);
+
+	gtk_widget_show_all(dialog);
+
+	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		g_message("Accepted");
+	}
+	else
+	{
+		g_message("Cancel");
+	}
+
+	gtk_widget_destroy(dialog);
+
+
+}
 
 static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
@@ -192,7 +226,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	// Create box
 	GtkWidget *box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
 	GtkWidget *grid		= gtk_grid_new();
-	GtkWidget *color	= v3270_color_scheme_new();
+	GtkWidget *color	= gtk_button_new_with_label("Colors");
 	GtkWidget *print	= gtk_button_new_with_label("Print");
 	GtkWidget *host	= gtk_button_new_with_label("Host");
 
@@ -202,10 +236,13 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	gtk_widget_set_focus_on_click(host,FALSE);
 	g_signal_connect(G_OBJECT(host),"clicked",G_CALLBACK(host_clicked),terminal);
 
-	gtk_widget_set_can_focus(color,FALSE);
 	gtk_widget_set_focus_on_click(color,FALSE);
+	g_signal_connect(G_OBJECT(color),"clicked",G_CALLBACK(color_clicked),terminal);
+
+	/*
 	v3270_color_scheme_set_rgba(color,v3270_get_color_table(terminal));
 	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),terminal);
+	*/
 
 	gtk_grid_attach(GTK_GRID(grid),color,0,0,1,1);
 	gtk_grid_attach(GTK_GRID(grid),print,1,0,1,1);
