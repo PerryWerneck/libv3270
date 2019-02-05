@@ -55,11 +55,7 @@
 
  struct _V3270HostSelectWidget
  {
-#if GTK_CHECK_VERSION(3,0,0)
- 	GtkBin			  parent;
-#else
-	GtkVBox			  parent;
-#endif // GTK_CHECK_VERSION
+ 	GtkGrid parent;
 
 	LIB3270_HOST_TYPE	type;									/**< @brief Connect option */
 
@@ -78,11 +74,11 @@
 
  struct _V3270HostSelectWidgetClass
  {
-	GtkBinClass parent_class;
+	GtkGridClass parent_class;
  };
 
 
- G_DEFINE_TYPE(V3270HostSelectWidget, V3270HostSelectWidget, GTK_TYPE_BIN);
+ G_DEFINE_TYPE(V3270HostSelectWidget, V3270HostSelectWidget, GTK_TYPE_GRID);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -120,26 +116,21 @@ static void colortable_changed(GtkComboBox *widget, V3270HostSelectWidget *dialo
 
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
-	GtkGrid 	* grid = GTK_GRID(gtk_grid_new());
+	int f;
 
+ 	gtk_container_set_border_width(GTK_CONTAINER(widget),10);
+
+ 	gtk_grid_set_row_spacing(GTK_GRID(widget),5);
+ 	gtk_grid_set_column_spacing(GTK_GRID(widget),10);
+
+ 	// Entry fields
 	GtkWidget * label[ENTRY_COUNT] =
 	{
 		gtk_label_new_with_mnemonic( _( "_Host:" ) ),
 		gtk_label_new_with_mnemonic( _( "_Service:" ) )
 	};
 
-	int f;
-
- 	gtk_container_set_border_width(GTK_CONTAINER(grid),10);
-
- 	gtk_grid_set_row_spacing(grid,5);
- 	gtk_grid_set_column_spacing(grid,10);
-
-	gtk_grid_set_row_homogeneous(grid,FALSE);
-	gtk_grid_set_column_homogeneous(grid,FALSE);
-
-
-	for(f=0;f<ENTRY_COUNT;f++)
+ 	for(f=0;f<ENTRY_COUNT;f++)
 	{
 		widget->input.entry[f] = GTK_ENTRY(gtk_entry_new());
 		gtk_widget_set_halign(label[f],GTK_ALIGN_START);
@@ -149,12 +140,31 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),_("Address or name of the host to connect.") );
 	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.entry[ENTRY_SRVCNAME]),_("Port or service name (empty for \"telnet\").") );
 
-	// SSL checkbox
-	widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
-	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
+	gtk_entry_set_max_length(widget->input.entry[ENTRY_HOSTNAME],0xFF);
+	gtk_entry_set_width_chars(widget->input.entry[ENTRY_HOSTNAME],50);
 
-	// Extended options
-	GtkWidget * expander = gtk_expander_new_with_mnemonic(_( "_Host options"));
+	gtk_entry_set_max_length(widget->input.entry[ENTRY_SRVCNAME],6);
+	gtk_entry_set_width_chars(widget->input.entry[ENTRY_SRVCNAME],7);
+
+	gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
+
+	gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
+
+	gtk_grid_attach(GTK_GRID(widget),label[0],0,0,1,1);
+	gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),1,0,5,1);
+
+	gtk_grid_attach(GTK_GRID(widget),label[1],0,1,1,1);
+	gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.entry[ENTRY_SRVCNAME]),1,1,1,1);
+
+	// gtk_widget_set_hexpand(GTK_WIDGET(widget->input.ssl),TRUE);
+
+	// SSL checkbox
+	{
+		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
+		gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
+
+		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.ssl),3,1,1,1);
+	}
 
 	// Host type
 	{
@@ -199,49 +209,17 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	}
 
-	gtk_entry_set_max_length(widget->input.entry[ENTRY_HOSTNAME],0xFF);
-	gtk_entry_set_width_chars(widget->input.entry[ENTRY_HOSTNAME],50);
-
-	gtk_entry_set_max_length(widget->input.entry[ENTRY_SRVCNAME],6);
-	gtk_entry_set_width_chars(widget->input.entry[ENTRY_SRVCNAME],7);
-
-	gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
-
-	gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
-	gtk_widget_set_hexpand(GTK_WIDGET(widget->input.ssl),TRUE);
-	gtk_widget_set_hexpand(GTK_WIDGET(expander),TRUE);
-
-
-	gtk_grid_attach(grid,label[ENTRY_HOSTNAME],0,0,1,1);
-	gtk_grid_attach(grid,GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),1,0,3,1);
-
-	gtk_grid_attach(grid,label[ENTRY_SRVCNAME],4,0,1,1);
-	gtk_grid_attach(grid,GTK_WIDGET(widget->input.entry[ENTRY_SRVCNAME]),5,0,1,1);
-
-	gtk_grid_attach(grid,GTK_WIDGET(widget->input.ssl),1,1,3,1);
-
-
 	// Host options
+	for(f=0;f< (int) G_N_ELEMENTS(comboLabel);f++)
 	{
-		GtkGrid *opt = GTK_GRID(gtk_grid_new());
-
-		gtk_grid_set_column_spacing(opt,5);
-		gtk_grid_set_row_spacing(opt,5);
-
-		for(f=0;f< (int) G_N_ELEMENTS(comboLabel);f++)
-		{
-			GtkWidget *label = gtk_label_new_with_mnemonic(gettext(comboLabel[f]));
-			gtk_widget_set_halign(label,GTK_ALIGN_START);
-			gtk_grid_attach(opt,label,0,f+1,1,1);
-			gtk_grid_attach(opt,GTK_WIDGET(widget->input.combo[f]),1,f+1,2,1);
-		}
-
-		gtk_container_add(GTK_CONTAINER(expander),GTK_WIDGET(opt));
+		GtkWidget *label = gtk_label_new_with_mnemonic(gettext(comboLabel[f]));
+		gtk_widget_set_halign(label,GTK_ALIGN_START);
+		gtk_grid_attach(GTK_GRID(widget),label,0,f+2,1,1);
+		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.combo[f]),1,f+2,2,1);
 	}
-	gtk_grid_attach(grid,GTK_WIDGET(expander),1,2,5,2);
 
-	gtk_widget_show_all(GTK_WIDGET(grid));
-	gtk_container_add(GTK_CONTAINER(widget),GTK_WIDGET(grid));
+	gtk_widget_show_all(GTK_WIDGET(widget));
+
 }
 
 LIB3270_EXPORT GtkWidget * v3270_host_select_new(GtkWidget *widget)
