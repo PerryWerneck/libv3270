@@ -10,10 +10,46 @@
 	</service>
 
 	<!-- https://github.com/openSUSE/obs-service-extract_file -->
-	<!-- service name="extract_file">
+	<service name="extract_file">
 		<param name="archive">*.tar</param>
-		<param name="files">*/rpm/libv3270.spec</param>
-	</service -->
+		<param name="files">*/rpm/*.spec</param>
+	</service>
+  
+	<service name="extract_file">
+		<param name="archive">*.tar</param>
+		<param name="files">*/debian/changelog</param>
+		<param name="outfilename">debian.changelog</param>
+	</service>
+  
+	<service name="extract_file">
+		<param name="archive">*.tar</param>
+		<param name="files">*/debian/*.dsc</param>
+	</service>
+
+	<service name="extract_file">
+		<param name="archive">*.tar</param>
+		<param name="files">*/debian/control</param>
+		<param name="outfilename">debian.control</param>
+	</service>
+
+	<service name="extract_file">
+		<param name="archive">*.tar</param>
+		<param name="files">*/debian/rules</param>
+		<param name="outfilename">debian.rules</param>
+	</service>
+
+  	<service name="extract_file">
+		<param name="archive">*.tar</param>
+		<param name="files">*/debian/compat</param>
+		<param name="outfilename">debian.compat</param>
+	</service>
+
+    <service name="extract_file">
+		<param name="archive">*.tar</param>
+		<param name="files">*/debian/shlibs</param>
+		<param name="outfilename">debian.shlibs</param>
+	</service>
+  
 
 	<service name="recompress">
 		<param name="file">*.tar</param>
