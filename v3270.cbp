@@ -42,6 +42,9 @@
 			<Add option="`pkg-config --libs gtk+-3.0 lib3270`" />
 			<Add option="-fPIC" />
 		</Linker>
+		<Unit filename="src/dialogs/colors.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/colorscheme.c">
 			<Option compilerVar="CC" />
 		</Unit>

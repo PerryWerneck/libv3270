@@ -65,6 +65,7 @@
  LIB3270_EXPORT void		  v3270_color_scheme_set_text(GtkWidget *widget, const gchar *colors);
 
  LIB3270_EXPORT GtkWidget	* v3270_color_selection_new(GtkWidget *widget);
+ LIB3270_EXPORT void		  v3270_color_selection_reset(GtkWidget *widget);
 
  G_END_DECLS
 

@@ -128,6 +128,22 @@
 
  }
 
+ LIB3270_EXPORT void v3270_color_selection_reset(GtkWidget *widget)
+ {
+	V3270ColorSelection * sel = GTK_V3270_COLOR_SELECTION(widget);
+
+	int f;
+	for(f=0;f<V3270_COLOR_COUNT;f++)
+		v3270_set_color(sel->terminal,f,sel->saved+f);
+
+	update_color_chooser(sel,sel->selected);
+
+	v3270_reload(sel->terminal);
+	gtk_widget_queue_draw(sel->terminal);
+
+ }
+
+
 #if USE_GTK_COLOR_CHOOSER
  static void color_activated(GtkColorChooser *chooser, GdkRGBA *clr, V3270ColorSelection *widget)
  {

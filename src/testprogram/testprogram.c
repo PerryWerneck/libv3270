@@ -161,6 +161,7 @@ static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	else
 	{
 		g_message("Cancel");
+		v3270_color_selection_reset(colors);
 	}
 
 	gtk_widget_destroy(dialog);
