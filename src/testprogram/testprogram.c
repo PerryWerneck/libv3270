@@ -137,18 +137,9 @@ static void host_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 
 static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
-	GtkWidget * dialog = gtk_dialog_new_with_buttons (
-								_( "Color Setup" ),
-								NULL, // GTK_WINDOW(gtk_widget_get_toplevel(terminal)),
-								GTK_DIALOG_DESTROY_WITH_PARENT,
-								_( "Cancel" ),	GTK_RESPONSE_REJECT,
-								_( "Save" ),	GTK_RESPONSE_ACCEPT,
-								NULL );
-
+	GtkWidget * dialog	= v3270_dialog_new(_("Color setup"), NULL, _("_Save"));
 
 	GtkWidget * colors = v3270_color_selection_new(terminal);
-
-	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),10);
 
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),colors,TRUE,TRUE,2);
 

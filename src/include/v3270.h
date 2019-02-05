@@ -287,6 +287,8 @@
  LIB3270_EXPORT int				  v3270_print_selected(GtkWidget *widget, GError **error);
  LIB3270_EXPORT int				  v3270_print_copy(GtkWidget *widget, GError **error);
 
+ LIB3270_EXPORT GtkWidget		* v3270_dialog_new(const gchar *title, GtkWindow *parent, const gchar *apply);
+
  G_END_DECLS
 
 #endif // V3270_H_INCLUDED

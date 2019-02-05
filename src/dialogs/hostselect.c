@@ -328,14 +328,7 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 	g_return_if_fail(GTK_IS_V3270(widget));
 
 	GtkWidget * dialog	= v3270_host_select_new(widget);
-	GtkWidget * win		= gtk_dialog_new_with_buttons(
-								_( "Configure host" ),
-								GTK_WINDOW(gtk_widget_get_toplevel(widget)),
-								GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-								_( "_Cancel" ),		GTK_RESPONSE_REJECT,
-								_( "C_onnect" ),	GTK_RESPONSE_ACCEPT,
-								NULL	);
-
+	GtkWidget * win	= v3270_dialog_new(_("Configure host"), GTK_WINDOW(gtk_widget_get_toplevel(widget)), _("C_onnect"));
 
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(win))),dialog,FALSE,FALSE,2);
 	gtk_widget_show_all(dialog);
@@ -349,13 +342,13 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 
  		switch(gtk_dialog_run(GTK_DIALOG(win)))
  		{
-		case GTK_RESPONSE_ACCEPT:
+		case GTK_RESPONSE_APPLY:
 			gtk_widget_set_visible(win,FALSE);
 			gtk_widget_set_sensitive(win,FALSE);
 			again = v3270_host_select_apply(GTK_V3270HostSelectWidget(dialog)) != 0;
 			break;
 
-		case GTK_RESPONSE_REJECT:
+		case GTK_RESPONSE_CANCEL:
 			again = FALSE;
 			break;
  		}
