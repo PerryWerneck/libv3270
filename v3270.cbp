@@ -48,6 +48,9 @@
 		<Unit filename="src/dialogs/colorscheme.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/commondialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/fontselect.c">
 			<Option compilerVar="CC" />
 		</Unit>
