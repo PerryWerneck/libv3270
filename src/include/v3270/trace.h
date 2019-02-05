@@ -60,7 +60,6 @@
  LIB3270_EXPORT void				  v3270_trace_append_text(GtkWidget *widget, const gchar *text);
  LIB3270_EXPORT gchar				* v3270_trace_get_command(GtkWidget *widget);
  LIB3270_EXPORT void				  v3270_trace_set_destroy_on_close(GtkWidget *widget,gboolean on);
- LIB3270_EXPORT void				  v3270_trace_set_font_from_string(GtkWidget *widget, const gchar *name);
 
  G_END_DECLS
 

@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como hostdialog.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -29,8 +29,6 @@
 
  #include "private.h"
  #include <hostselect.h>
-
- #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
@@ -80,19 +78,11 @@
 
  struct _V3270HostSelectWidgetClass
  {
-#if GTK_CHECK_VERSION(3,0,0)
 	GtkBinClass parent_class;
-#else
-	GtkVBoxClass parent_class;
-#endif // GTK_CHECK_VERSION
  };
 
 
-#if GTK_CHECK_VERSION(3,0,0)
  G_DEFINE_TYPE(V3270HostSelectWidget, V3270HostSelectWidget, GTK_TYPE_BIN);
-#else
- G_DEFINE_TYPE(V3270HostSelectWidget, V3270HostSelectWidget, GTK_TYPE_VBOX);
-#endif // GTK_CHECK_VERSION
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -130,11 +120,7 @@ static void colortable_changed(GtkComboBox *widget, V3270HostSelectWidget *dialo
 
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
-#if GTK_CHECK_VERSION(3,0,0)
-	GtkGrid 	* grid	= GTK_GRID(gtk_grid_new());
-#else
-	GtkTable	* grid	= GTK_TABLE(gtk_table_new(3,4,FALSE));
-#endif // GTK_CHECK_VERSION
+	GtkGrid 	* grid = GTK_GRID(gtk_grid_new());
 
 	GtkWidget * label[ENTRY_COUNT] =
 	{
@@ -144,12 +130,19 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	int f;
 
-	gtk_container_set_border_width(GTK_CONTAINER(grid),3);
+ 	gtk_container_set_border_width(GTK_CONTAINER(grid),10);
+
+ 	gtk_grid_set_row_spacing(grid,5);
+ 	gtk_grid_set_column_spacing(grid,10);
+
+	gtk_grid_set_row_homogeneous(grid,FALSE);
+	gtk_grid_set_column_homogeneous(grid,FALSE);
+
 
 	for(f=0;f<ENTRY_COUNT;f++)
 	{
 		widget->input.entry[f] = GTK_ENTRY(gtk_entry_new());
-		gtk_misc_set_alignment(GTK_MISC(label[f]),0,0.5);
+		gtk_widget_set_halign(label[f],GTK_ALIGN_START);
 		gtk_label_set_mnemonic_widget(GTK_LABEL(label[f]),GTK_WIDGET(widget->input.entry[f]));
 	}
 
@@ -212,18 +205,12 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	gtk_entry_set_max_length(widget->input.entry[ENTRY_SRVCNAME],6);
 	gtk_entry_set_width_chars(widget->input.entry[ENTRY_SRVCNAME],7);
 
-#if GTK_CHECK_VERSION(3,0,0)
-
 	gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
 
 	gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
 	gtk_widget_set_hexpand(GTK_WIDGET(widget->input.ssl),TRUE);
 	gtk_widget_set_hexpand(GTK_WIDGET(expander),TRUE);
 
-	gtk_grid_set_row_homogeneous(grid,FALSE);
-	gtk_grid_set_column_homogeneous(grid,FALSE);
-	gtk_grid_set_column_spacing(grid,5);
-	gtk_grid_set_row_spacing(grid,5);
 
 	gtk_grid_attach(grid,label[ENTRY_HOSTNAME],0,0,1,1);
 	gtk_grid_attach(grid,GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),1,0,3,1);
@@ -237,13 +224,14 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	// Host options
 	{
 		GtkGrid *opt = GTK_GRID(gtk_grid_new());
+
 		gtk_grid_set_column_spacing(opt,5);
 		gtk_grid_set_row_spacing(opt,5);
 
 		for(f=0;f< (int) G_N_ELEMENTS(comboLabel);f++)
 		{
 			GtkWidget *label = gtk_label_new_with_mnemonic(gettext(comboLabel[f]));
-			gtk_misc_set_alignment(GTK_MISC(label),0,0.5);
+			gtk_widget_set_halign(label,GTK_ALIGN_START);
 			gtk_grid_attach(opt,label,0,f+1,1,1);
 			gtk_grid_attach(opt,GTK_WIDGET(widget->input.combo[f]),1,f+1,2,1);
 		}
@@ -251,42 +239,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		gtk_container_add(GTK_CONTAINER(expander),GTK_WIDGET(opt));
 	}
 	gtk_grid_attach(grid,GTK_WIDGET(expander),1,2,5,2);
-
-
-#else
-
-	gtk_table_set_row_spacings(grid,5);
-	gtk_table_set_col_spacings(grid,5);
-
-	gtk_table_attach(grid,label[ENTRY_HOSTNAME],0,1,0,1,GTK_FILL,GTK_FILL,0,0);
-	gtk_table_attach(grid,GTK_WIDGET(widget->entry[ENTRY_HOSTNAME]),1,2,0,1,GTK_EXPAND|GTK_FILL,GTK_EXPAND|GTK_FILL,0,0);
-
-	gtk_table_attach(grid,label[ENTRY_SRVCNAME],2,3,0,1,GTK_FILL,GTK_FILL,0,0);
-	gtk_table_attach(grid,GTK_WIDGET(widget->entry[ENTRY_SRVCNAME]),3,4,0,1,GTK_FILL,GTK_FILL,0,0);
-
-	gtk_table_attach(grid,GTK_WIDGET(widget->ssl),1,2,1,2,GTK_FILL,GTK_FILL,0,0);
-
-	{
-		GtkTable * opt	= GTK_TABLE(gtk_table_new(G_N_ELEMENTS(comboLabel),2,FALSE));
-		gtk_table_set_row_spacings(opt,5);
-		gtk_table_set_col_spacings(opt,5);
-
-		for(f=0;f<G_N_ELEMENTS(comboLabel);f++)
-		{
-			GtkWidget *label = gtk_label_new_with_mnemonic(gettext(comboLabel[f]));
-			gtk_misc_set_alignment(GTK_MISC(label),0,0.5);
-
-			gtk_table_attach(opt,label,0,1,f,f+1,GTK_FILL,GTK_FILL,0,0);
-			gtk_table_attach(opt,GTK_WIDGET(widget->combo[f]),1,2,f,f+1,GTK_FILL,GTK_FILL,0,0);
-		}
-
-		gtk_container_add(GTK_CONTAINER(expander),GTK_WIDGET(opt));
-	}
-	gtk_table_attach(grid,GTK_WIDGET(expander),1,2,2,3,GTK_FILL,GTK_FILL,0,0);
-
-
-#endif // GTK_CHECK_VERSION
-
 
 	gtk_widget_show_all(GTK_WIDGET(grid));
 	gtk_container_add(GTK_CONTAINER(widget),GTK_WIDGET(grid));
@@ -393,20 +345,12 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
  	{
  		gtk_widget_set_sensitive(win,TRUE);
 
-#if GTK_CHECK_VERSION(2,18,0)
 		gtk_widget_set_visible(win,TRUE);
-#else
-		gtk_widget_show(win);
-#endif
 
  		switch(gtk_dialog_run(GTK_DIALOG(win)))
  		{
 		case GTK_RESPONSE_ACCEPT:
-#if GTK_CHECK_VERSION(2,18,0)
 			gtk_widget_set_visible(win,FALSE);
-#else
-			gtk_widget_hide(win);
-#endif
 			gtk_widget_set_sensitive(win,FALSE);
 			again = v3270_host_select_apply(GTK_V3270HostSelectWidget(dialog)) != 0;
 			break;

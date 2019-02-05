@@ -43,7 +43,7 @@
  #include <syslog.h>
 #endif // HAVE_SYSLOG
 
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+//#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
@@ -175,8 +175,8 @@ static void destroy(GtkWidget *widget)
 	dialog = gtk_file_chooser_dialog_new( 	_( "Save trace file" ),
 											toplevel,
 											GTK_FILE_CHOOSER_ACTION_SAVE,
-											GTK_STOCK_CANCEL,	GTK_RESPONSE_CANCEL,
-											GTK_STOCK_SAVE,		GTK_RESPONSE_ACCEPT,
+											_( "Cancel" ),		GTK_RESPONSE_CANCEL,
+											_( "Save" ),		GTK_RESPONSE_ACCEPT,
 											NULL );
 
 	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
@@ -230,21 +230,21 @@ static void destroy(GtkWidget *widget)
 
  struct submenu
  {
-	const gchar * stock_id;
+	const gchar * label;
 	GCallback	  action;
  };
 
- static void build_menu(GtkWidget *menubar, v3270_trace *window, const gchar *name, const struct submenu *item, size_t sz)
+ static void build_menu(GtkWidget *menubar, v3270_trace *window, const gchar *label, const struct submenu *item, size_t sz)
  {
  	size_t		  f;
 	GtkWidget	* menu		= gtk_menu_new();
-	GtkWidget	* topitem	= gtk_image_menu_item_new_from_stock( name, NULL );
+	GtkWidget	* topitem	= gtk_menu_item_new_with_mnemonic(label);
 
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(topitem), menu);
 
 	for(f=0;f<sz;f++)
 	{
-		GtkWidget *widget = gtk_image_menu_item_new_from_stock( item[f].stock_id, NULL );
+		GtkWidget *widget = gtk_menu_item_new_with_mnemonic(gettext(item[f].label));
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu),widget);
 		g_signal_connect(G_OBJECT(widget), "activate",item[f].action,window);
 	}
@@ -317,37 +317,25 @@ static void destroy(GtkWidget *widget)
 
  }
 
- void v3270_trace_set_font_from_string(GtkWidget *widget, const gchar *name)
- {
-	PangoFontDescription* fontdesc	= pango_font_description_from_string(name);
-
-	gtk_widget_override_font(V3270_TRACE(widget)->view, fontdesc);
-
-	pango_font_description_free(fontdesc);
- }
-
  static void v3270_trace_init(v3270_trace *window)
 {
- 	GtkWidget				* widget;
-#if GTK_CHECK_VERSION(3,0,0)
- 	GtkWidget				* vbox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
-#else
- 	GtkWidget				* vbox		= gtk_vbox_new(FALSE,0);
-#endif // GTK_CHECK_VERSION
+ 	GtkWidget * widget;
+ 	GtkWidget * vbox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
 
 	// Top menu
 	{
 
+		// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
 		static const struct submenu filemenu[] =
 		{
-			{ GTK_STOCK_SAVE_AS,	G_CALLBACK(menu_save)	},
-			{ GTK_STOCK_QUIT,		G_CALLBACK(menu_close)	},
+			{ N_("_Save trace to file"),	G_CALLBACK(menu_save)	},
+			{ N_("_Close window"),			G_CALLBACK(menu_close)	},
 
 		};
 
 		widget = gtk_menu_bar_new();
 
-		build_menu(widget, window, GTK_STOCK_FILE, filemenu, G_N_ELEMENTS(filemenu));
+		build_menu(widget, window, _( "_File" ), filemenu, G_N_ELEMENTS(filemenu));
 
 		gtk_box_pack_start(GTK_BOX(vbox),widget,FALSE,TRUE,0);
 	}
@@ -359,7 +347,7 @@ static void destroy(GtkWidget *widget)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(window->scroll),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
 
 	window->view = gtk_text_view_new();
-	v3270_trace_set_font_from_string(GTK_WIDGET(window),v3270_get_default_font_name());
+	gtk_text_view_set_monospace(GTK_TEXT_VIEW(window->view),TRUE);
 
 	window->text = gtk_text_view_get_buffer(GTK_TEXT_VIEW(window->view));
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(window->view), TRUE);
@@ -375,7 +363,7 @@ static void destroy(GtkWidget *widget)
 	gtk_widget_set_sensitive(window->entry,FALSE);
 	g_signal_connect(G_OBJECT(window->entry),"activate",G_CALLBACK(activate),window);
 
-	window->button = gtk_button_new_from_stock(GTK_STOCK_OK);
+	window->button = gtk_button_new_from_icon_name("system-run",GTK_ICON_SIZE_BUTTON);
 	gtk_box_pack_end(GTK_BOX(widget),window->button,FALSE,FALSE,4);
 	gtk_widget_set_sensitive(window->button,FALSE);
 	gtk_widget_set_focus_on_click(GTK_WIDGET(window->button),FALSE);

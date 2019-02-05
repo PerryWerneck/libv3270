@@ -128,6 +128,12 @@ static void print_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	lib3270_print_all(v3270_get_session(terminal));
 }
 
+static void host_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+{
+	v3270_select_host(terminal);
+}
+
+
 static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
@@ -188,9 +194,13 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget *grid		= gtk_grid_new();
 	GtkWidget *color	= v3270_color_scheme_new();
 	GtkWidget *print	= gtk_button_new_with_label("Print");
-	gtk_widget_set_focus_on_click(print,FALSE);
+	GtkWidget *host	= gtk_button_new_with_label("Host");
 
+	gtk_widget_set_focus_on_click(print,FALSE);
 	g_signal_connect(G_OBJECT(print),"clicked",G_CALLBACK(print_clicked),terminal);
+
+	gtk_widget_set_focus_on_click(host,FALSE);
+	g_signal_connect(G_OBJECT(host),"clicked",G_CALLBACK(host_clicked),terminal);
 
 	gtk_widget_set_can_focus(color,FALSE);
 	gtk_widget_set_focus_on_click(color,FALSE);
@@ -199,6 +209,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	gtk_grid_attach(GTK_GRID(grid),color,0,0,1,1);
 	gtk_grid_attach(GTK_GRID(grid),print,1,0,1,1);
+	gtk_grid_attach(GTK_GRID(grid),host,2,0,1,1);
 
 	gtk_box_pack_start(GTK_BOX(box),grid,FALSE,TRUE,0);
 	gtk_box_pack_start(GTK_BOX(box),terminal,TRUE,TRUE,0);
