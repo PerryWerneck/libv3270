@@ -288,12 +288,13 @@
 	else
 	{
 		gchar **group = g_key_file_get_groups(conf,&len);
+		GtkTreeIter	  iter;
+
 		GTK_V3270_COLOR_SCHEME(widget)->schemes = g_new0(GdkRGBA,(len*V3270_COLOR_COUNT));
 
 		for(g=0;g<len;g++)
 		{
 			// Setup colors for current entry
-			GtkTreeIter	  iter;
 			GdkRGBA		* clr	= GTK_V3270_COLOR_SCHEME(widget)->schemes+index;
 			const gchar	* label	= g_key_file_get_locale_string(conf,group[g],"label",NULL,NULL);
 
@@ -327,6 +328,7 @@
 	{
 		if(!gdk_rgba_equal(colora+f,colorb+f))
 		{
+/*
 #ifdef DEBUG
 			v3270_autofree gchar * cla = gdk_rgba_to_string(colora+f);
 			v3270_autofree gchar * clb = gdk_rgba_to_string(colorb+f);
@@ -339,6 +341,7 @@
 					clb
 			);
 #endif // DEBUG
+*/
 			return FALSE;
 		}
 	}
@@ -358,6 +361,8 @@
 
 	gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget)),&iter,1,&value);
 	clr = g_value_get_pointer(&value);
+	if(!clr)
+		return g_strdup("");
 
 	GString *str = g_string_new("");
 	for(f=0;f<V3270_COLOR_COUNT;f++)
@@ -388,17 +393,17 @@
 			gtk_tree_model_get_value(model,&iter,1,&value);
 			clr = g_value_get_pointer(&value);
 
-//			debug("%p",clr);
-
 			if(clr && compare_colors(clr,colors))
 			{
 				gtk_combo_box_set_active_iter(GTK_COMBO_BOX(widget),&iter);
-				break;
+				return;
 			}
 
 		} while(gtk_tree_model_iter_next(model,&iter));
 	}
 
+	debug("%s: Can't identify color scheme", __FUNCTION__);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(widget),-1);
 
  }
 
