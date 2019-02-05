@@ -93,7 +93,7 @@
 			2,2
 		);
 
-		g_autofree gchar * message = g_strdup_printf("<b>%s</b>",lib3270_get_ssl_state_message(hSession));
+		v3270_autofree gchar * message = g_strdup_printf("<b>%s</b>",lib3270_get_ssl_state_message(hSession));
 		gtk_grid_attach(
 			grid,
 			label_new(message),

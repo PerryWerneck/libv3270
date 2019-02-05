@@ -327,10 +327,9 @@
 	{
 		if(!gdk_rgba_equal(colora+f,colorb+f))
 		{
-/*
 #ifdef DEBUG
-			g_autofree gchar * cla = gdk_rgba_to_string(colora+f);
-			g_autofree gchar * clb = gdk_rgba_to_string(colorb+f);
+			v3270_autofree gchar * cla = gdk_rgba_to_string(colora+f);
+			v3270_autofree gchar * clb = gdk_rgba_to_string(colorb+f);
 
 			debug(
 				"diff on %d of %d %s - %s",
@@ -340,7 +339,6 @@
 					clb
 			);
 #endif // DEBUG
-*/
 			return FALSE;
 		}
 	}
@@ -367,7 +365,7 @@
 		if(f)
 			g_string_append_c(str,';');
 
-		g_autofree gchar * color = gdk_rgba_to_string(clr+f);
+		v3270_autofree gchar * color = gdk_rgba_to_string(clr+f);
 		g_string_append_printf(str,"%s",color);
 	}
 
