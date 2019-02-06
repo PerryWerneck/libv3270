@@ -285,8 +285,6 @@ LIB3270_EXPORT void v3270_host_select_set_session(GtkWidget *w, GtkWidget *sessi
 
 				gtk_tree_model_get_value(model,&iter,1,&value);
 
-				g_message("%d - %d",g_value_get_int(&value),colors);
-
 				if(g_value_get_int(&value) == colors)
 				{
 					gtk_combo_box_set_active_iter(widget->input.combo[1],&iter);

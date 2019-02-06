@@ -135,6 +135,16 @@ static void host_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	v3270_select_host(terminal);
 }
 
+static void connect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+{
+	lib3270_reconnect(v3270_get_session(terminal),0);
+}
+
+static void disconnect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+{
+	lib3270_disconnect(v3270_get_session(terminal));
+}
+
 static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
 	GtkWidget * dialog	= v3270_dialog_new(_("Color setup"), NULL, _("_Save"));
@@ -165,8 +175,10 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();
 	GValue 		  val		= G_VALUE_INIT;
+	size_t		  f;
 
 	v3270_set_url(terminal,NULL);
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,TRUE);
 
 	// v3270_set_font_family(terminal,"Droid Sans Mono");
 	g_signal_connect(terminal,"field_clicked",G_CALLBACK(field_clicked),window);
@@ -219,10 +231,33 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	// Create box
 	GtkWidget *box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
-	GtkWidget *grid		= gtk_grid_new();
+
+	// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+	static const struct _buttons {
+		const gchar * icon;
+		GCallback	  callback;
+		const gchar * tooltip;
+	} buttons[] = {
+		{ "gtk-connect",		G_CALLBACK(connect_clicked),	"Connect to host"  				},
+		{ "gtk-disconnect",		G_CALLBACK(disconnect_clicked),	"Disconnect from host"  		},
+		{ "gtk-select-color",	G_CALLBACK(color_clicked),		"Edit or change color scheme"	},
+		{ "gtk-home",			G_CALLBACK(host_clicked),		"Configure host"				},
+		{ "gtk-print",			G_CALLBACK(print_clicked),		"Print screen contents"			}
+	};
+
+	GtkWidget * toolbar = gtk_toolbar_new();
+	for(f = 0; f < G_N_ELEMENTS(buttons); f++)
+	{
+		GtkWidget * button = gtk_tool_button_new_from_stock(buttons[f].icon);
+		gtk_widget_set_tooltip_markup(button,buttons[f].tooltip);
+		g_signal_connect(G_OBJECT(button),"clicked",buttons[f].callback,terminal);
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(button),-1);
+	}
+
+	/*
 	GtkWidget *color	= gtk_button_new_with_label("Colors");
 	GtkWidget *print	= gtk_button_new_with_label("Print");
-	GtkWidget *host	= gtk_button_new_with_label("Host");
+	GtkWidget *host		= gtk_button_new_with_label("Host");
 
 	gtk_widget_set_focus_on_click(print,FALSE);
 	g_signal_connect(G_OBJECT(print),"clicked",G_CALLBACK(print_clicked),terminal);
@@ -232,17 +267,20 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	gtk_widget_set_focus_on_click(color,FALSE);
 	g_signal_connect(G_OBJECT(color),"clicked",G_CALLBACK(color_clicked),terminal);
+	*/
 
 	/*
 	v3270_color_scheme_set_rgba(color,v3270_get_color_table(terminal));
 	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),terminal);
 	*/
 
+	/*
 	gtk_grid_attach(GTK_GRID(grid),color,0,0,1,1);
 	gtk_grid_attach(GTK_GRID(grid),print,1,0,1,1);
 	gtk_grid_attach(GTK_GRID(grid),host,2,0,1,1);
+	*/
 
-	gtk_box_pack_start(GTK_BOX(box),grid,FALSE,TRUE,0);
+	gtk_box_pack_start(GTK_BOX(box),toolbar,FALSE,TRUE,0);
 	gtk_box_pack_start(GTK_BOX(box),terminal,TRUE,TRUE,0);
 
 	// Setup and show window
