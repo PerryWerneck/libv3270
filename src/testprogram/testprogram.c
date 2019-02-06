@@ -42,6 +42,7 @@
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
+	/*
 static gboolean popup_menu(GtkWidget *widget, G_GNUC_UNUSED gboolean selected, gboolean online, G_GNUC_UNUSED GdkEventButton *event, G_GNUC_UNUSED gpointer user_data) {
 
 	if(!online)
@@ -82,6 +83,7 @@ static gboolean popup_menu(GtkWidget *widget, G_GNUC_UNUSED gboolean selected, g
 	return TRUE;
 
 }
+	*/
 
  static gboolean field_clicked(GtkWidget *widget, gboolean connected, V3270_OIA_FIELD field, GdkEventButton *event, GtkWidget *window)
  {
@@ -143,6 +145,15 @@ static void connect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *termina
 static void disconnect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
 	lib3270_disconnect(v3270_get_session(terminal));
+}
+
+static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+{
+	GtkWidget * dialog = v3270ft_new();
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
+	gtk_widget_show_all(dialog);
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
 }
 
 static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
@@ -227,7 +238,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	g_message("width=%d",(int) g_value_get_int(&val));
 	g_value_unset(&val);
 
-	g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);
+	// g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);
 
 	// Create box
 	GtkWidget *box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
@@ -242,7 +253,8 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 		{ "gtk-disconnect",		G_CALLBACK(disconnect_clicked),	"Disconnect from host"  		},
 		{ "gtk-select-color",	G_CALLBACK(color_clicked),		"Edit or change color scheme"	},
 		{ "gtk-home",			G_CALLBACK(host_clicked),		"Configure host"				},
-		{ "gtk-print",			G_CALLBACK(print_clicked),		"Print screen contents"			}
+		{ "gtk-print",			G_CALLBACK(print_clicked),		"Print screen contents"			},
+		{ "gtk-harddisk",		G_CALLBACK(ft_clicked),			"Open file transfer dialog"		}
 	};
 
 	GtkWidget * toolbar = gtk_toolbar_new();

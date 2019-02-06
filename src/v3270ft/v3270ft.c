@@ -83,9 +83,11 @@ static void v3270ft_class_init(v3270ftClass *klass) {
 
 GtkGrid * v3270ft_new_grid(void) {
 	GtkGrid * grid = GTK_GRID(gtk_grid_new());
-    gtk_grid_set_column_spacing(grid,4);
-	gtk_grid_set_row_spacing(grid,4);
-	gtk_container_set_border_width(GTK_CONTAINER(grid),3);
+
+	// https://developer.gnome.org/hig/stable/visual-layout.html.en
+ 	gtk_grid_set_row_spacing(GTK_GRID(grid),6);
+ 	gtk_grid_set_column_spacing(GTK_GRID(grid),12);
+
 	return grid;
 }
 
@@ -351,6 +353,7 @@ static void v3270ft_init(v3270ft *dialog) {
 	GtkWidget		* entry[G_N_ELEMENTS(label)];
 
 	// Initialize
+	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),18);
 	gtk_window_set_title(GTK_WINDOW(dialog),_( "3270 File transfer"));
 	gtk_window_set_resizable(GTK_WINDOW(dialog),FALSE);
 	gtk_container_set_border_width(GTK_CONTAINER(box),3);
