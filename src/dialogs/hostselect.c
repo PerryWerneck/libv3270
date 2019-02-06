@@ -51,7 +51,7 @@
  	ENTRY_COUNT
  };
 
- static const gchar *comboLabel[] = { N_("System _type:"), N_("_Color table:")  };
+ static const gchar *comboLabel[] = { N_("System _type"), N_("_Color table")  };
 
  struct _V3270HostSelectWidget
  {
@@ -118,22 +118,22 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
 	int f;
 
- 	gtk_container_set_border_width(GTK_CONTAINER(widget),10);
-
- 	gtk_grid_set_row_spacing(GTK_GRID(widget),5);
- 	gtk_grid_set_column_spacing(GTK_GRID(widget),10);
+	// https://developer.gnome.org/hig/stable/visual-layout.html.en
+ 	gtk_container_set_border_width(GTK_CONTAINER(widget),18);
+ 	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
+ 	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
 
  	// Entry fields
 	GtkWidget * label[ENTRY_COUNT] =
 	{
-		gtk_label_new_with_mnemonic( _( "_Host:" ) ),
-		gtk_label_new_with_mnemonic( _( "_Service:" ) )
+		gtk_label_new_with_mnemonic( _( "_Host" ) ),
+		gtk_label_new_with_mnemonic( _( "_Service" ) )
 	};
 
  	for(f=0;f<ENTRY_COUNT;f++)
 	{
 		widget->input.entry[f] = GTK_ENTRY(gtk_entry_new());
-		gtk_widget_set_halign(label[f],GTK_ALIGN_START);
+		gtk_widget_set_halign(label[f],GTK_ALIGN_END);
 		gtk_label_set_mnemonic_widget(GTK_LABEL(label[f]),GTK_WIDGET(widget->input.entry[f]));
 	}
 
@@ -213,7 +213,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	for(f=0;f< (int) G_N_ELEMENTS(comboLabel);f++)
 	{
 		GtkWidget *label = gtk_label_new_with_mnemonic(gettext(comboLabel[f]));
-		gtk_widget_set_halign(label,GTK_ALIGN_START);
+		gtk_widget_set_halign(label,GTK_ALIGN_END);
 		gtk_grid_attach(GTK_GRID(widget),label,0,f+2,1,1);
 		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.combo[f]),1,f+2,2,1);
 	}

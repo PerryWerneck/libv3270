@@ -84,8 +84,8 @@
  {
 	static const gchar * text[] =
 	{
-			N_( "_Font:" ),
-			N_( "C_olor scheme:" )
+			N_( "_Font" ),
+			N_( "C_olor scheme" )
 	};
 
 	size_t f;
@@ -102,9 +102,10 @@
  	GtkWidget			* color = v3270_color_scheme_new();
 	GtkWidget 			* selected = gtk_check_button_new_with_label( _("Print selection box") );
 
- 	gtk_container_set_border_width(GTK_CONTAINER(grid),10);
- 	gtk_grid_set_row_spacing(grid,5);
- 	gtk_grid_set_column_spacing(grid,5);
+	// https://developer.gnome.org/hig/stable/visual-layout.html.en
+ 	gtk_container_set_border_width(GTK_CONTAINER(grid),18);
+ 	gtk_grid_set_row_spacing(grid,6);
+ 	gtk_grid_set_column_spacing(grid,12);
 
  	v3270_color_scheme_set_rgba(color,operation->colors);
 	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),operation);
@@ -115,7 +116,7 @@
 	for(f=0;f<G_N_ELEMENTS(text);f++)
 	{
 		GtkWidget *label = gtk_label_new_with_mnemonic(gettext(text[f]));
-		gtk_label_set_xalign(GTK_LABEL(label),0);
+		gtk_widget_set_halign(label,GTK_ALIGN_END);
 		gtk_grid_attach(grid,label,0,f,1,1);
 	}
 

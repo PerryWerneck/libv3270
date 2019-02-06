@@ -52,16 +52,21 @@ static GtkWidget * create_button(GtkWidget *dialog, const gchar *mnemonic, GCall
 
 LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *parent, const gchar *apply)
 {
+	gboolean use_header;
+	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
+
 	GtkWidget * dialog =
 		GTK_WIDGET(g_object_new(
 			GTK_TYPE_DIALOG,
-			"use-header-bar", 1,
+			"use-header-bar", (use_header ? 1 : 0),
 			NULL
 		));
 
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
 	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),10);
+
+	// https://developer.gnome.org/hig/stable/visual-layout.html.en
+	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),18);
 
 	if(parent)
 	{
@@ -72,9 +77,20 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *paren
 
 	GtkWidget * header = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
 
-	// Cancel button
-	gtk_header_bar_pack_start(GTK_HEADER_BAR(header),create_button(dialog,_("_Cancel"),G_CALLBACK(cancel_clicked)));
-	gtk_header_bar_pack_end(GTK_HEADER_BAR(header),create_button(dialog,apply,G_CALLBACK(apply_clicked)));
+	if(header)
+	{
+		gtk_header_bar_pack_start(GTK_HEADER_BAR(header),create_button(dialog,_("_Cancel"),G_CALLBACK(cancel_clicked)));
+		gtk_header_bar_pack_end(GTK_HEADER_BAR(header),create_button(dialog,apply,G_CALLBACK(apply_clicked)));
+	}
+	else
+	{
+		gtk_dialog_add_buttons(
+			GTK_DIALOG (dialog),
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			apply, GTK_RESPONSE_APPLY,
+			NULL
+		);
+	}
 
 	return dialog;
 }

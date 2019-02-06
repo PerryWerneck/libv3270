@@ -194,8 +194,9 @@
 
  static void V3270ColorSelection_init(V3270ColorSelection *widget)
  {
- 	gtk_grid_set_row_spacing(GTK_GRID(widget),5);
- 	gtk_grid_set_column_spacing(GTK_GRID(widget),5);
+	// https://developer.gnome.org/hig/stable/visual-layout.html.en
+ 	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
+ 	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
 
 	{
 		// Create colors list view.
