@@ -39,6 +39,8 @@
 
 	G_BEGIN_DECLS
 
+	// Old version (will be deprecated)
+
 	#define GTK_TYPE_V3270FT			(v3270ft_get_type ())
 	#define GTK_V3270FT(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270FT, v3270ft))
 	#define GTK_V3270FT_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270FT, v3270ftClass))
@@ -78,6 +80,19 @@
 	gchar				* v3270ft_select_file(v3270ft *dialog, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, const gchar *filter, ... ) G_GNUC_NULL_TERMINATED;
 
 	gint				  v3270ft_transfer(GtkWidget *dialog, H3270 *session);
+
+	// FT Settings widget
+	#define GTK_TYPE_V3270_FT_SETTINGS				(V3270FTSettings_get_type ())
+	#define GTK_V3270_FT_SETTINGS(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_FT_SETTINGS, V3270FTSettings))
+	#define GTK_V3270_FT_SETTINGS_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_FT_SETTINGS, V3270FTSettingsClass))
+	#define GTK_IS_V3270_FT_SETTINGS(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_FT_SETTINGS))
+	#define GTK_IS_V3270_FT_SETTINGS_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_FT_SETTINGS))
+	#define GTK_V3270_FT_SETTINGS_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_FT_SETTINGS, V3270FTSettingsClass))
+
+	typedef struct _V3270FTSettings			V3270FTSettings;
+	typedef struct _V3270FTSettingsClass	V3270FTSettingsClass;
+
+	LIB3270_EXPORT GtkWidget	* v3270_ft_settings_new();
 
 	G_END_DECLS
 
