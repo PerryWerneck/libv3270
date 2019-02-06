@@ -168,6 +168,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	v3270_set_url(terminal,NULL);
 
+	// v3270_set_font_family(terminal,"Droid Sans Mono");
 	g_signal_connect(terminal,"field_clicked",G_CALLBACK(field_clicked),window);
 
 	GtkWidget *trace = v3270_new_trace_window(terminal,NULL);

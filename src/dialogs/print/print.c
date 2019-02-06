@@ -84,8 +84,8 @@
  {
 	static const gchar * text[] =
 	{
-			N_( "_Font" ),
-			N_( "C_olor scheme" )
+			N_( "_Font:" ),
+			N_( "C_olor scheme:" )
 	};
 
 	size_t f;
@@ -97,13 +97,27 @@
 
 	// Create dialog
 
+	GtkWidget			* frame = gtk_frame_new("");
  	GtkGrid 			* grid = GTK_GRID(gtk_grid_new());
  	GtkWidget			* font = v3270_font_selection_new(operation->font.name);
  	GtkWidget			* color = v3270_color_scheme_new();
 	GtkWidget 			* selected = gtk_check_button_new_with_label( _("Print selection box") );
 
-	// https://developer.gnome.org/hig/stable/visual-layout.html.en
- 	gtk_container_set_border_width(GTK_CONTAINER(grid),18);
+	// The print dialog doesn't follow the guidelines from https://developer.gnome.org/hig/stable/visual-layout.html.en )-:
+
+	gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_NONE);
+
+	GtkWidget *label = gtk_label_new(NULL);
+
+	gtk_label_set_markup(GTK_LABEL(label),_("<b>Text options</b>"));
+	gtk_frame_set_label_widget(GTK_FRAME(frame),label);
+
+ 	gtk_container_set_border_width(GTK_CONTAINER(frame),12);
+
+ 	gtk_container_set_border_width(GTK_CONTAINER(grid),6);
+
+ 	g_object_set(G_OBJECT(grid),"margin-start",8,NULL);
+
  	gtk_grid_set_row_spacing(grid,6);
  	gtk_grid_set_column_spacing(grid,12);
 
@@ -116,7 +130,7 @@
 	for(f=0;f<G_N_ELEMENTS(text);f++)
 	{
 		GtkWidget *label = gtk_label_new_with_mnemonic(gettext(text[f]));
-		gtk_widget_set_halign(label,GTK_ALIGN_END);
+		gtk_widget_set_halign(label,GTK_ALIGN_START);
 		gtk_grid_attach(grid,label,0,f,1,1);
 	}
 
@@ -124,8 +138,10 @@
 	gtk_grid_attach(grid,color,1,1,1,1);
 	gtk_grid_attach(grid,selected,1,2,1,1);
 
-	gtk_widget_show_all(GTK_WIDGET(grid));
-	return GTK_WIDGET(grid);
+	gtk_container_add(GTK_CONTAINER(frame),GTK_WIDGET(grid));
+
+	gtk_widget_show_all(GTK_WIDGET(frame));
+	return frame;
  }
 
  static void custom_widget_apply(GtkPrintOperation *prt, GtkWidget G_GNUC_UNUSED(*widget))
@@ -194,7 +210,7 @@
  	// Setup defaults
     widget->mode 			= LIB3270_PRINT_ALL;
     widget->show_selection	= FALSE;
-    widget->font.name		= g_strdup(v3270_default_font);
+    widget->font.name		= NULL; // g_strdup(v3270_default_font);
     widget->contents.width	= 80;
 
 	v3270_set_mono_color_table(widget->colors,"#000000","#FFFFFF");
@@ -210,6 +226,7 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 	operation->mode	= mode;
 	operation->widget = GTK_V3270(widget);
 	operation->session = v3270_get_session(widget);
+	operation->font.name = g_strdup(v3270_get_font_family(widget));
 
 	V3270PrintOperation_set_text_by_mode(operation, mode);
 
