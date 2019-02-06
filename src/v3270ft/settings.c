@@ -143,7 +143,7 @@
 
 	// Options box
 	GtkWidget * options = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
-	gtk_box_set_homogeneous(GTK_BOX(options),FALSE);
+	gtk_box_set_homogeneous(GTK_BOX(options),TRUE);
 	g_object_set(G_OBJECT(options),"margin-top",8,NULL);
 	gtk_widget_set_hexpand(options,TRUE);
 	gtk_grid_attach(GTK_GRID(widget),options,0,3,10,5);

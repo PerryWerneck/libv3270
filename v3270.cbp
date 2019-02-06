@@ -163,6 +163,9 @@
 		<Unit filename="src/v3270ft/set.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/v3270ft/settings.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/v3270ft/tables.c">
 			<Option compilerVar="CC" />
 		</Unit>
