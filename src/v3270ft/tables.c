@@ -46,7 +46,7 @@ const struct v3270ft_option ft_option[NUM_OPTIONS_WIDGETS] = {
 	{
 		LIB3270_FT_OPTION_CRLF,
 		"crlf",
-		N_("Follow the convention for _ASCII text files."),
+		N_("_ASCII text"),
 #ifdef _WIN32
 		N_( "Following the convention for ASCII text files, CR/LF pairs are used to terminate records in the PC file, and a CTRL-Z (x'1A') marks the end of file.")
 #else

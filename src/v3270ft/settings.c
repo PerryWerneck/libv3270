@@ -79,24 +79,22 @@
 	return entry;
  }
 
- static GtkWidget * create_frame(V3270FTSettings *widget, const gchar *title, GtkWidget *box, gint left, gint top, gint width, gint height, gint margin_top)
+ static GtkWidget * create_frame(GtkWidget *container, const gchar *title, GtkWidget *box, GtkAlign align)
  {
 	GtkFrame			* frame		= GTK_FRAME(gtk_frame_new(""));
 	g_autofree gchar	* markup	= g_strdup_printf("<b>%s</b>",title);
 	GtkWidget			* label		= gtk_label_new(NULL);
-
-	if(margin_top)
-		g_object_set(G_OBJECT(frame),"margin-top",margin_top,NULL);
 
 	gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_NONE);
 	gtk_label_set_markup(GTK_LABEL(label),markup);
 	gtk_frame_set_label_widget(GTK_FRAME(frame),label);
 
 	gtk_container_add(GTK_CONTAINER(frame),GTK_WIDGET(box));
+	gtk_widget_set_halign(GTK_WIDGET(frame),align);
 
-	gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(frame),left,top,width,height);
+	g_object_set(G_OBJECT(frame),"margin-top",6,NULL);
 
-	g_object_set(G_OBJECT(box),"margin-top",6,NULL);
+	gtk_box_pack_start(GTK_BOX(container),GTK_WIDGET(frame),TRUE,TRUE,0);
 
 	return box;
  }
@@ -112,7 +110,7 @@
  	// Operation type
  	{
  		GtkTreeModel	* model = GTK_TREE_MODEL(gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_ULONG));
-		GtkWidget		* entry = create_entry(widget,"_Operation",gtk_combo_box_new_with_model(model),0,0,10);
+		GtkWidget		* entry = create_entry(widget,"_Operation",gtk_combo_box_new_with_model(model),0,0,9);
 		GtkCellRenderer	* renderer = gtk_cell_renderer_text_new();
 
 		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(entry), renderer, TRUE);
@@ -131,7 +129,7 @@
  	// Local and remote file names.
 	{
 		// Local file name
-		widget->file.local = GTK_ENTRY(create_entry(widget,"_Local file",gtk_entry_new(),0,1,10));
+		widget->file.local = GTK_ENTRY(create_entry(widget,"_Local file",gtk_entry_new(),0,1,9));
 		gtk_entry_set_icon_from_icon_name(widget->file.local,GTK_ENTRY_ICON_SECONDARY,"document-open");
 		gtk_entry_set_icon_activatable(widget->file.local,GTK_ENTRY_ICON_SECONDARY,TRUE);
 		gtk_entry_set_icon_tooltip_text(widget->file.local,GTK_ENTRY_ICON_SECONDARY,_("Select file"));
@@ -139,15 +137,20 @@
 		// g_signal_connect(G_OBJECT(widget->file.local),"icon-press",G_CALLBACK(open_select_file_dialog),dialog);
 
 		// Remote file name
-		widget->file.remote = GTK_ENTRY(create_entry(widget,"_Remote file",gtk_entry_new(),0,2,10));
-
-
+		widget->file.remote = GTK_ENTRY(create_entry(widget,"_Remote file",gtk_entry_new(),0,2,9));
 
 	}
 
+	// Options box
+	GtkWidget * options = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
+	gtk_box_set_homogeneous(GTK_BOX(options),FALSE);
+	g_object_set(G_OBJECT(options),"margin-top",8,NULL);
+	gtk_widget_set_hexpand(options,TRUE);
+	gtk_grid_attach(GTK_GRID(widget),options,0,3,10,5);
+
 	// Transfer options
 	{
-		GtkWidget * box = create_frame(widget, _("Transfer options"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6), 0, 3, 5, 5, 8);
+		GtkWidget * box = create_frame(options, _("Transfer options"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_START);
 
 		for(ix=0;ix<4;ix++)
 		{
@@ -158,6 +161,38 @@
 		}
 
 
+	}
+
+	// Record format
+	{
+		GtkWidget	* box = create_frame(options, _("Record format"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_CENTER);
+		GSList 		* group = NULL;
+
+		for(ix=4;ix<8;ix++)
+		{
+			widget->options[ix] = gtk_radio_button_new_with_label(group,gettext(ft_option[ix].label));
+			gtk_widget_set_tooltip_markup(widget->options[ix],gettext(ft_option[ix].tooltip));
+			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(widget->options[ix]));
+			// g_signal_connect(G_OBJECT(widget->options[ix]),"toggled",G_CALLBACK(option_toggled),widget);
+			gtk_box_pack_start(GTK_BOX(box),widget->options[ix],FALSE,TRUE,0);
+
+		}
+	}
+
+	// Space allocation units
+	{
+		GtkWidget	* box = create_frame(options, _("Space allocation units"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_END);
+		GSList 		* group = NULL;
+
+		for(ix=8;ix<12;ix++)
+		{
+			widget->options[ix] = gtk_radio_button_new_with_label(group,gettext(ft_option[ix].label));
+			gtk_widget_set_tooltip_markup(widget->options[ix],gettext(ft_option[ix].tooltip));
+			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(widget->options[ix]));
+			// g_signal_connect(G_OBJECT(widget->options[ix]),"toggled",G_CALLBACK(option_toggled),widget);
+			gtk_box_pack_start(GTK_BOX(box),widget->options[ix],FALSE,TRUE,0);
+
+		}
 	}
 
 	gtk_widget_show_all(GTK_WIDGET(widget));
