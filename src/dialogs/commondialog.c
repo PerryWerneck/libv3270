@@ -41,6 +41,15 @@ static void cancel_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *dialog)
 	gtk_dialog_response(GTK_DIALOG(dialog),GTK_RESPONSE_CANCEL);
 }
 
+static GtkWidget * create_button(GtkWidget *dialog, const gchar *mnemonic, GCallback callback)
+{
+	GtkWidget * button = gtk_button_new_with_mnemonic(mnemonic);
+	gtk_button_set_use_underline(GTK_BUTTON (button), TRUE);
+	g_signal_connect(button,"clicked",callback,dialog);
+	gtk_widget_show(button);
+	return button;
+}
+
 LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *parent, const gchar *apply)
 {
 	GtkWidget * dialog =
@@ -62,20 +71,10 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *paren
 	}
 
 	GtkWidget * header = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
-	GtkWidget * button;
 
 	// Cancel button
-	button = gtk_button_new_with_mnemonic(_("_Cancel"));
-	gtk_header_bar_pack_start(GTK_HEADER_BAR(header),button);
-	gtk_button_set_use_underline(GTK_BUTTON (button), TRUE);
-	g_signal_connect(button,"clicked",G_CALLBACK(cancel_clicked),dialog);
-	gtk_widget_show(button);
-
-	button = gtk_button_new_with_mnemonic(apply);
-	gtk_header_bar_pack_end(GTK_HEADER_BAR(header),button);
-	gtk_button_set_use_underline(GTK_BUTTON (button), TRUE);
-	g_signal_connect(button,"clicked",G_CALLBACK(apply_clicked),dialog);
-	gtk_widget_show(button);
+	gtk_header_bar_pack_start(GTK_HEADER_BAR(header),create_button(dialog,_("_Cancel"),G_CALLBACK(cancel_clicked)));
+	gtk_header_bar_pack_end(GTK_HEADER_BAR(header),create_button(dialog,apply,G_CALLBACK(apply_clicked)));
 
 	return dialog;
 }

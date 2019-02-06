@@ -226,18 +226,19 @@ LIB3270_EXPORT GtkWidget * v3270_host_select_new(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
-	V3270HostSelectWidget * selector = GTK_V3270HostSelectWidget(g_object_new(GTK_TYPE_V3270HostSelectWidget, NULL));
+	GtkWidget * selector = GTK_WIDGET(g_object_new(GTK_TYPE_V3270HostSelectWidget, NULL));
 
 	v3270_host_select_set_session(selector,widget);
 
-	return GTK_WIDGET(selector);
+	return selector;
 }
 
-LIB3270_EXPORT void v3270_host_select_set_session(V3270HostSelectWidget *widget, GtkWidget *session)
+LIB3270_EXPORT void v3270_host_select_set_session(GtkWidget *w, GtkWidget *session)
 {
 	g_return_if_fail(GTK_IS_V3270(session));
-	g_return_if_fail(GTK_IS_V3270HostSelectWidget(widget));
+	g_return_if_fail(GTK_IS_V3270HostSelectWidget(w));
 
+	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
 	widget->hSession = v3270_get_session(session);
 
 	gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],lib3270_get_hostname(widget->hSession));
@@ -305,8 +306,16 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
+	if(v3270_is_connected(widget))
+	{
+		gdk_display_beep(gdk_display_get_default());
+		return;
+	}
+
 	GtkWidget * dialog	= v3270_host_select_new(widget);
 	GtkWidget * win	= v3270_dialog_new(_("Configure host"), GTK_WINDOW(gtk_widget_get_toplevel(widget)), _("C_onnect"));
+
+	gtk_window_set_default_size(GTK_WINDOW(win), 700, 150);
 
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(win))),dialog,FALSE,FALSE,2);
 	gtk_widget_show_all(dialog);
@@ -323,7 +332,7 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 		case GTK_RESPONSE_APPLY:
 			gtk_widget_set_visible(win,FALSE);
 			gtk_widget_set_sensitive(win,FALSE);
-			again = v3270_host_select_apply(GTK_V3270HostSelectWidget(dialog)) != 0;
+			again = v3270_host_select_apply(dialog) != 0;
 			break;
 
 		case GTK_RESPONSE_CANCEL:
@@ -336,13 +345,14 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 
 }
 
-int v3270_host_select_apply(V3270HostSelectWidget *widget)
+int v3270_host_select_apply(GtkWidget *w)
 {
-	g_return_val_if_fail(GTK_IS_V3270HostSelectWidget(widget),0);
+	g_return_val_if_fail(GTK_IS_V3270HostSelectWidget(w),EINVAL);
+
+	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
 
 	lib3270_set_hostname(widget->hSession,gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]));
 	lib3270_set_srvcname(widget->hSession,gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]));
-
 	lib3270_set_host_type(widget->hSession,widget->type);
 
 	return lib3270_reconnect(widget->hSession,0);

@@ -166,6 +166,8 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget	* terminal	= v3270_new();
 	GValue 		  val		= G_VALUE_INIT;
 
+	v3270_set_url(terminal,NULL);
+
 	g_signal_connect(terminal,"field_clicked",G_CALLBACK(field_clicked),window);
 
 	GtkWidget *trace = v3270_new_trace_window(terminal,NULL);
@@ -177,7 +179,6 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	}
 
 	/*
-	v3270_set_url(terminal,url);
 	v3270_connect(terminal);
 	*/
 
