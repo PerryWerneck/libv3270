@@ -50,6 +50,7 @@
  	} file;
 
  	GtkWidget * options[NUM_OPTIONS_WIDGETS];
+ 	GtkWidget * spins[LIB3270_FT_VALUE_COUNT];
  };
 
  G_DEFINE_TYPE(V3270FTSettings, V3270FTSettings, GTK_TYPE_GRID);
@@ -99,6 +100,78 @@
 	return box;
  }
 
+ static GtkWidget * create_grid(GtkWidget *container, GtkAlign align)
+ {
+ 	GtkWidget * grid = gtk_grid_new();
+
+ 	gtk_grid_set_row_spacing(GTK_GRID(grid),6);
+ 	gtk_grid_set_column_spacing(GTK_GRID(grid),12);
+
+	g_object_set(G_OBJECT(grid),"margin-top",6,NULL);
+	gtk_widget_set_halign(GTK_WIDGET(grid),align);
+	gtk_box_pack_start(GTK_BOX(container),GTK_WIDGET(grid),TRUE,TRUE,0);
+
+ 	return grid;
+ }
+
+ GtkWidget * create_spin_button(V3270FTSettings *widget, GtkWidget *grid, size_t row, LIB3270_FT_VALUE id)
+ {
+	GtkWidget * label = gtk_label_new_with_mnemonic(gettext(ft_value[id].label));
+	gtk_widget_set_halign(label,GTK_ALIGN_END);
+
+	gtk_grid_attach(GTK_GRID(grid),label,0,row,1,1);
+
+	GtkWidget * button = gtk_spin_button_new_with_range(ft_value[id].minval,ft_value[id].maxval,1);
+	// g_signal_connect(G_OBJECT(button),"value-changed",G_CALLBACK(spin_changed),dialog);
+	// g_signal_connect(G_OBJECT(button),"output",G_CALLBACK(spin_format),dialog);
+
+	gtk_widget_set_tooltip_markup(button,gettext(ft_value[id].tooltip));
+	gtk_widget_set_tooltip_markup(label,gettext(ft_value[id].tooltip));
+
+	gtk_label_set_mnemonic_widget(GTK_LABEL(label),button);
+
+	gtk_grid_attach(GTK_GRID(grid),button,1,row,1,1);
+
+	widget->spins[id] = button;
+
+	return button;
+
+ }
+
+static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, GtkWidget *widget)
+{
+	gchar *filename = v3270ft_select_file(
+								gtk_widget_get_toplevel(widget),
+								_("Select local file"),
+								_("Select"),
+								GTK_FILE_CHOOSER_ACTION_OPEN,
+								gtk_entry_get_text(entry),
+								N_("All files"), "*.*",
+								N_("Text files"), "*.txt",
+								NULL );
+
+	if(filename) {
+
+		gtk_entry_set_text(entry,filename);
+
+		/*
+		const gchar *remote = gtk_entry_get_text(dialog->remote);
+
+		gtk_entry_set_text(dialog->local,filename);
+
+		if(!*remote) {
+			gchar * text = g_path_get_basename(filename);
+			gtk_entry_set_text(dialog->remote,text);
+			g_free(text);
+		}
+
+		g_free(filename);
+		*/
+
+	}
+
+}
+
  static void V3270FTSettings_init(V3270FTSettings *widget)
  {
  	size_t ix;
@@ -134,10 +207,11 @@
 		gtk_entry_set_icon_activatable(widget->file.local,GTK_ENTRY_ICON_SECONDARY,TRUE);
 		gtk_entry_set_icon_tooltip_text(widget->file.local,GTK_ENTRY_ICON_SECONDARY,_("Select file"));
 
-		// g_signal_connect(G_OBJECT(widget->file.local),"icon-press",G_CALLBACK(open_select_file_dialog),dialog);
+		g_signal_connect(G_OBJECT(widget->file.local),"icon-press",G_CALLBACK(open_select_file_dialog),widget);
 
 		// Remote file name
 		widget->file.remote = GTK_ENTRY(create_entry(widget,"_Remote file",gtk_entry_new(),0,2,9));
+		gtk_entry_set_max_length(widget->file.remote,PATH_MAX);
 
 	}
 
@@ -195,10 +269,39 @@
 		}
 	}
 
+	// Values box
+	GtkWidget * values = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
+	gtk_box_set_homogeneous(GTK_BOX(values),TRUE);
+	g_object_set(G_OBJECT(values),"margin-top",8,NULL);
+	gtk_widget_set_hexpand(values,TRUE);
+	gtk_grid_attach(GTK_GRID(widget),values,0,8,10,2);
+
 	gtk_widget_show_all(GTK_WIDGET(widget));
 
- }
+	// Values
+	{
+		GtkWidget * box = create_grid(values,GTK_ALIGN_START);
 
+		create_spin_button(widget, box, 0, LIB3270_FT_VALUE_LRECL);
+		create_spin_button(widget, box, 1, LIB3270_FT_VALUE_BLKSIZE);
+
+	}
+
+	{
+		GtkWidget * box = create_grid(values,GTK_ALIGN_CENTER);
+
+		create_spin_button(widget, box, 0, LIB3270_FT_VALUE_PRIMSPACE);
+		create_spin_button(widget, box, 1, LIB3270_FT_VALUE_SECSPACE);
+
+	}
+
+	{
+		GtkWidget * box = create_grid(values,GTK_ALIGN_END);
+		create_spin_button(widget, box, 0, LIB3270_FT_VALUE_DFT);
+
+	}
+
+ }
 
  LIB3270_EXPORT GtkWidget * v3270_ft_settings_new()
  {

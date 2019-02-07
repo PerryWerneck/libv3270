@@ -151,6 +151,7 @@ const struct v3270ft_type ft_type[] = {
 
 const struct v3270ft_value ft_value[] = {
 	{
+		// LIB3270_FT_VALUE_LRECL
 		"lrecl",
 		0, 32760,
 		N_( "Record Length:" ),
@@ -159,6 +160,7 @@ const struct v3270ft_value ft_value[] = {
 
 
 	{
+		// LIB3270_FT_VALUE_BLKSIZE
 		"primary",
 		0,99999,
 		N_( "Primary space:" ),
@@ -166,6 +168,7 @@ const struct v3270ft_value ft_value[] = {
 	},
 
 	{
+		// LIB3270_FT_VALUE_PRIMSPACE
 		"blksize",
 		0,32760,
 		N_( "Block size:" ),
@@ -177,6 +180,7 @@ const struct v3270ft_value ft_value[] = {
 	},
 
 	{
+		// LIB3270_FT_VALUE_SECSPACE
 		"secondary",
 		0,99999,
 		N_( "Secondary space:" ),
@@ -184,6 +188,7 @@ const struct v3270ft_value ft_value[] = {
 	},
 
 	{
+		// LIB3270_FT_VALUE_DFT
 		"dft",
 		0,99999,
 		N_( "DFT B_uffer size:" ),
