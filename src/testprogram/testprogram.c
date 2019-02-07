@@ -149,20 +149,7 @@ static void disconnect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *term
 
 static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
- 	GtkWidget * dialog = gtk_dialog_new_with_buttons(
-								_("FT Settings"),
-								GTK_WINDOW(gtk_widget_get_toplevel(terminal)),
-								GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-								_( "_Close" ), GTK_RESPONSE_ACCEPT,
-								NULL
-						);
-
-	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),v3270_ft_settings_new(),TRUE,TRUE,2);
-
-	/*
-	GtkWidget * dialog = v3270ft_new();
-	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
-	*/
+	GtkWidget * dialog = v3270_ft_dialog_new(terminal);
 
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));

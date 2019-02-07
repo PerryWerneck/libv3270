@@ -141,6 +141,9 @@
 		<Unit filename="src/v3270/windows/iosource.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/v3270ft/dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/v3270ft/filelist.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -94,6 +94,20 @@
 
 	LIB3270_EXPORT GtkWidget	* v3270_ft_settings_new();
 
+	// FT Dialog widget
+	#define GTK_TYPE_V3270_FT_DIALOG				(V3270FTDialog_get_type ())
+	#define GTK_V3270_FT_DIALOG(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_FT_DIALOG, V3270FTDialog))
+	#define GTK_V3270_FT_DIALOG_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_FT_DIALOG, V3270FTDialogClass))
+	#define GTK_IS_V3270_FT_DIALOG(obj)				(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_FT_DIALOG))
+	#define GTK_IS_V3270_FT_DIALOG_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_FT_DIALOG))
+	#define GTK_V3270_FT_DIALOG_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_FT_DIALOG, V3270FTDialogClass))
+
+	typedef struct _V3270FTDialog		V3270FTDialog;
+	typedef struct _V3270FTDialogClass	V3270FTDialogClass;
+
+	LIB3270_EXPORT GtkWidget * v3270_ft_dialog_new(GtkWidget *parent);
+
+
 	G_END_DECLS
 
 #endif // V3270FT_H_INCLUDED

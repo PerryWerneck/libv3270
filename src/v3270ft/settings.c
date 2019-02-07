@@ -180,6 +180,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	}
 	else
 	{
+
 		debug("%s option selected","LIB3270_FT_OPTION_SEND");
 
 		gtk_widget_set_sensitive(widget->recordFormatBox,TRUE);
@@ -199,6 +200,9 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget->options[ix]),(options & ft_option[ix].opt) == ft_option[ix].opt);
 	}
 
+	gtk_widget_set_sensitive(GTK_WIDGET(widget->file.local),TRUE);
+	gtk_widget_set_sensitive(GTK_WIDGET(widget->file.remote),TRUE);
+
  }
 
  static void transfer_type_changed(GtkComboBox *widget, V3270FTSettings *dialog)
@@ -208,7 +212,14 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	debug("Transfer type=%u", (unsigned int) selected);
 
 	if(selected >= 0)
+	{
 		set_options(dialog,ft_type[selected].opt);
+	}
+	else
+	{
+		gtk_widget_set_sensitive(GTK_WIDGET(dialog->file.local),FALSE);
+		gtk_widget_set_sensitive(GTK_WIDGET(dialog->file.remote),FALSE);
+	}
 
  }
 
@@ -342,6 +353,9 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 		create_spin_button(widget, box, 0, LIB3270_FT_VALUE_DFT);
 
 	}
+
+	gtk_widget_set_sensitive(GTK_WIDGET(widget->file.local),FALSE);
+	gtk_widget_set_sensitive(GTK_WIDGET(widget->file.remote),FALSE);
 
  }
 
