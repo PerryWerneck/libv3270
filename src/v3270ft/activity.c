@@ -42,6 +42,8 @@
  {
  	GObject parent;
 
+ 	LIB3270_FT_OPTION	options;
+
  	struct {
  		gchar * local;
  		gchar * remote;
@@ -158,6 +160,16 @@
 
 	g_free(*ptr);
 	*ptr = g_strdup(filename);
+ }
+
+ LIB3270_EXPORT void v3270_ft_activity_set_options(GObject * object, LIB3270_FT_OPTION options)
+ {
+	G_V3270_FT_ACTIVITY(object)->options = options;
+ }
+
+ LIB3270_EXPORT LIB3270_FT_OPTION v3270_ft_activity_get_options(GObject *object)
+ {
+	return G_V3270_FT_ACTIVITY(object)->options;
  }
 
  static void render_local(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)

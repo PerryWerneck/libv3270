@@ -395,3 +395,9 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	gtk_entry_set_text(settings->file.remote,v3270_ft_activity_get_remote_filename(activity));
 
  }
+
+ LIB3270_EXPORT void v3270_ft_settings_set_options(GtkWidget *widget, LIB3270_FT_OPTION options)
+ {
+	V3270FTSettings * settings = GTK_V3270_FT_SETTINGS(widget);
+
+ }
