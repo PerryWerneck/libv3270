@@ -27,7 +27,7 @@
  *
  */
 
- #include <v3270.h>
+ #include <internals.h>
  #include <v3270/filetransfer.h>
  #include "private.h"
 
@@ -107,6 +107,8 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		gtk_widget_set_tooltip_markup(files,_("Files to transfer"));
 
 		gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(files),TRUE);
+		gtk_tree_view_set_reorderable(GTK_TREE_VIEW(files),TRUE);
+
 		gtk_tree_view_insert_column_with_attributes(
 			GTK_TREE_VIEW(files),
 			-1,

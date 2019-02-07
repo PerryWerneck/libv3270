@@ -94,6 +94,25 @@
 
 	LIB3270_EXPORT GtkWidget	* v3270_ft_settings_new();
 
+	// FT Activity widget
+	#define G_TYPE_V3270_FT_ACTIVITY				(V3270FTActivity_get_type ())
+	#define G_V3270_FT_ACTIVITY(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), G_TYPE_V3270_FT_ACTIVITY, V3270FTActivity))
+	#define G_V3270_FT_ACTIVITY_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), G_TYPE_V3270_FT_ACTIVITY, V3270FTActivityClass))
+	#define G_IS_V3270_FT_ACTIVITY(obj)				(G_TYPE_CHECK_INSTANCE_TYPE ((obj), G_TYPE_V3270_FT_ACTIVITY))
+	#define G_IS_V3270_FT_ACTIVITY_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((klass), G_TYPE_V3270_FT_ACTIVITY))
+	#define G_V3270_FT_ACTIVITY_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), G_TYPE_V3270_FT_ACTIVITY, V3270FTActivityClass))
+
+	typedef struct _V3270FTActivity			V3270FTActivity;
+	typedef struct _V3270FTActivityClass	V3270FTActivityClass;
+
+	LIB3270_EXPORT GObject		* v3270_ft_activity_new();
+
+	LIB3270_EXPORT const gchar	* v3270_ft_activity_get_local_filename(GObject *object);
+	LIB3270_EXPORT const gchar	* v3270_ft_activity_get_remote_filename(GObject *object);
+
+	LIB3270_EXPORT void			 v3270_ft_activity_set_local_filename(GObject *object, const gchar *filename);
+	LIB3270_EXPORT void			 v3270_ft_activity_set_remote_filename(GObject *object, const gchar *filename);
+
 	// FT Dialog widget
 	#define GTK_TYPE_V3270_FT_DIALOG				(V3270FTDialog_get_type ())
 	#define GTK_V3270_FT_DIALOG(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_FT_DIALOG, V3270FTDialog))
