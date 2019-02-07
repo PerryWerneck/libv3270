@@ -122,7 +122,9 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		gtk_widget_set_vexpand(scrolled,TRUE);
 		gtk_widget_set_hexpand(scrolled,TRUE);
 
-		gtk_box_pack_start(GTK_BOX(container),scrolled,TRUE,TRUE,0);
+		GtkWidget * frame = v3270_dialog_create_frame(scrolled,_("Transfer queue"));
+
+		gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
 	}
 
 

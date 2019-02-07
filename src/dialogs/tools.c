@@ -44,7 +44,7 @@
 	return grid;
  }
 
- GtkWidget * v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding)
+ GtkWidget * v3270_dialog_create_frame(GtkWidget * child, const gchar *title)
  {
 	GtkFrame			* frame		= GTK_FRAME(gtk_frame_new(""));
 	g_autofree gchar	* markup	= g_strdup_printf("<b>%s</b>",title);
@@ -55,12 +55,17 @@
 	gtk_frame_set_label_widget(GTK_FRAME(frame),label);
 
 	gtk_container_add(GTK_CONTAINER(frame),GTK_WIDGET(child));
-	gtk_widget_set_halign(GTK_WIDGET(frame),align);
 
 	g_object_set(G_OBJECT(frame),"margin-top",6,NULL);
 
-	gtk_box_pack_start(GTK_BOX(box),GTK_WIDGET(frame),expand,fill,padding);
+	return GTK_WIDGET(frame);
+ }
 
+ GtkWidget * v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding)
+ {
+	GtkWidget * frame = v3270_dialog_create_frame(child,title);
+	gtk_widget_set_halign(GTK_WIDGET(frame),align);
+	gtk_box_pack_start(GTK_BOX(box),frame,expand,fill,padding);
 	return child;
  }
 

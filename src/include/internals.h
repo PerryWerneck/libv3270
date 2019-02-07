@@ -59,8 +59,8 @@
  }
 
  G_GNUC_INTERNAL GtkWidget * v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding);
+ G_GNUC_INTERNAL GtkWidget * v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding);
  G_GNUC_INTERNAL GtkWidget * v3270_dialog_create_grid(GtkAlign align);
-
 
  G_END_DECLS
 
