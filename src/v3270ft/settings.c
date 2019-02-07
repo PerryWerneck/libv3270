@@ -28,9 +28,9 @@
  */
 
  #include <string.h>
- #include <v3270.h>
- #include <v3270/filetransfer.h>
+ #include <internals.h>
  #include "private.h"
+ #include <v3270/filetransfer.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
@@ -83,8 +83,11 @@
 	return entry;
  }
 
+	/*
  static GtkWidget * create_frame(GtkWidget *container, const gchar *title, GtkWidget *box, GtkAlign align)
  {
+	gtk_box_pack_start(GTK_BOX(container),v3270_dialog_create_frame(title,box,align),TRUE,TRUE,0);
+
 	GtkFrame			* frame		= GTK_FRAME(gtk_frame_new(""));
 	g_autofree gchar	* markup	= g_strdup_printf("<b>%s</b>",title);
 	GtkWidget			* label		= gtk_label_new(NULL);
@@ -102,19 +105,11 @@
 
 	return box;
  }
+	*/
 
  static GtkWidget * create_grid(GtkWidget *container, GtkAlign align)
  {
- 	GtkWidget * grid = gtk_grid_new();
-
- 	gtk_grid_set_row_spacing(GTK_GRID(grid),6);
- 	gtk_grid_set_column_spacing(GTK_GRID(grid),12);
-
-	g_object_set(G_OBJECT(grid),"margin-top",6,NULL);
-	gtk_widget_set_halign(GTK_WIDGET(grid),align);
-	gtk_box_pack_start(GTK_BOX(container),GTK_WIDGET(grid),TRUE,TRUE,0);
-
- 	return grid;
+ 	return v3270_box_pack_start(container,v3270_dialog_create_grid(align),TRUE,TRUE,0);
  }
 
  GtkWidget * create_spin_button(V3270FTSettings *widget, GtkWidget *grid, size_t row, LIB3270_FT_VALUE id)
@@ -277,7 +272,16 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 	// Transfer options
 	{
-		GtkWidget * box = create_frame(options, _("Transfer options"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_START);
+		GtkWidget * box =
+			v3270_box_pack_frame(
+				options,
+				gtk_box_new(GTK_ORIENTATION_VERTICAL,6),
+				_("Transfer options"),
+				GTK_ALIGN_START,
+				FALSE,
+				FALSE,
+				0
+			);
 
 		for(ix=0;ix<4;ix++)
 		{
@@ -293,7 +297,17 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	// Record format
 	{
 		GSList * group = NULL;
-		widget->recordFormatBox = create_frame(options, _("Record format"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_CENTER);
+
+		widget->recordFormatBox =
+			v3270_box_pack_frame(
+				options,
+				gtk_box_new(GTK_ORIENTATION_VERTICAL,6),
+				_("Record format"),
+				GTK_ALIGN_CENTER,
+				FALSE,
+				FALSE,
+				0
+			);
 
 		for(ix=4;ix<8;ix++)
 		{
@@ -309,7 +323,16 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	// Space allocation units
 	{
 		GSList * group = NULL;
-		widget->spaceAllocationBox = create_frame(options, _("Space allocation units"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_END);
+		widget->spaceAllocationBox =
+			v3270_box_pack_frame(
+			options,
+			gtk_box_new(GTK_ORIENTATION_VERTICAL,6),
+			_("Space allocation units"),
+			GTK_ALIGN_END,
+			FALSE,
+			FALSE,
+			0
+		);
 
 		for(ix=8;ix<12;ix++)
 		{

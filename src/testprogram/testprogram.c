@@ -260,7 +260,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	GtkWidget * toolbar = gtk_toolbar_new();
 	for(f = 0; f < G_N_ELEMENTS(buttons); f++)
 	{
-		GtkWidget * button = gtk_tool_button_new_from_stock(buttons[f].icon);
+		GtkWidget * button = GTK_WIDGET(gtk_tool_button_new_from_stock(buttons[f].icon));
 		gtk_widget_set_tooltip_markup(button,buttons[f].tooltip);
 		g_signal_connect(G_OBJECT(button),"clicked",buttons[f].callback,terminal);
 		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(button),-1);

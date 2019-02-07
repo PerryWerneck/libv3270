@@ -43,6 +43,7 @@
 	#include <v3270/filetransfer.h>
 	#include <v3270/ftprogress.h>
 	#include <lib3270.h>
+	#include <lib3270/log.h>
 	#include <lib3270/filetransfer.h>
 
 	#define NUM_OPTIONS_WIDGETS 12
@@ -178,17 +179,6 @@
 		void 		(*failed)(GtkWidget *widget);
 
 	};
-
-	#ifdef DEBUG
-
-		#define debug(fmt, ...) g_message( "%s(%d) " fmt , __FILE__, (int) __LINE__, __VA_ARGS__ )
-
-	#else
-
-		#define debug(fmt, ...) /* */
-
-	#endif // DEBUG
-
 
 	G_GNUC_INTERNAL guint	  v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_COUNT];
 
