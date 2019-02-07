@@ -93,6 +93,7 @@
 	typedef struct _V3270FTSettingsClass	V3270FTSettingsClass;
 
 	LIB3270_EXPORT GtkWidget	* v3270_ft_settings_new();
+	LIB3270_EXPORT void			  v3270_ft_settings_set_activity(GtkWidget *widget, GObject *activity);
 
 	// FT Activity widget
 	#define G_TYPE_V3270_FT_ACTIVITY				(V3270FTActivity_get_type ())

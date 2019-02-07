@@ -159,3 +159,54 @@
 	g_free(*ptr);
 	*ptr = g_strdup(filename);
  }
+
+ static void render_local(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)
+ {
+	V3270FTActivity * activity;
+	gtk_tree_model_get(tree_model, iter, 0, &activity, -1);
+	g_object_set(G_OBJECT(cell),"text",activity->file.local,NULL);
+ }
+
+ static void render_remote(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)
+ {
+	V3270FTActivity * activity;
+	gtk_tree_model_get(tree_model, iter, 0, &activity, -1);
+	g_object_set(G_OBJECT(cell),"text",activity->file.remote,NULL);
+ }
+
+ GtkWidget * v3270_activity_list_new()
+ {
+	GtkTreeModel * model = GTK_TREE_MODEL(gtk_list_store_new(1,G_TYPE_OBJECT));
+	GtkWidget	 * widget = gtk_tree_view_new_with_model(model);
+
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(widget),TRUE);
+	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(widget),TRUE);
+
+	gtk_tree_view_insert_column_with_data_func(
+		GTK_TREE_VIEW(widget),
+		-1,
+		_( "Local file" ),
+		gtk_cell_renderer_text_new(),
+		render_local,
+		0, NULL
+	);
+
+	gtk_tree_view_insert_column_with_data_func(
+		GTK_TREE_VIEW(widget),
+		-1,
+		_( "Remote file" ),
+		gtk_cell_renderer_text_new(),
+		render_remote,
+		0, NULL
+	);
+
+	return widget;
+ }
+
+ void v3270_activity_list_append(GtkWidget *widget, GObject *activity)
+ {
+ 	GtkTreeModel * model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
+	GtkTreeIter iter;
+	gtk_list_store_append((GtkListStore *) model,&iter);
+	gtk_list_store_set((GtkListStore *) model, &iter, 0, activity, -1);
+ }

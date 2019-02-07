@@ -58,10 +58,13 @@
 	return child;
  }
 
- G_GNUC_INTERNAL GtkWidget * v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding);
- G_GNUC_INTERNAL GtkWidget * v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding);
- G_GNUC_INTERNAL GtkWidget * v3270_dialog_create_grid(GtkAlign align);
- G_GNUC_INTERNAL GtkWidget * v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
+ G_GNUC_INTERNAL GtkWidget	* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding);
+ G_GNUC_INTERNAL GtkWidget	* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding);
+ G_GNUC_INTERNAL GtkWidget	* v3270_dialog_create_grid(GtkAlign align);
+ G_GNUC_INTERNAL GtkWidget	* v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
+
+ G_GNUC_INTERNAL GtkWidget	* v3270_activity_list_new();
+ G_GNUC_INTERNAL void		  v3270_activity_list_append(GtkWidget *widget, GObject *activity);
 
  G_END_DECLS
 
