@@ -49,6 +49,9 @@
  		GtkEntry * remote;
  	} file;
 
+	GtkWidget * recordFormatBox;
+	GtkWidget * spaceAllocationBox;
+
  	GtkWidget * options[NUM_OPTIONS_WIDGETS];
  	GtkWidget * spins[LIB3270_FT_VALUE_COUNT];
  };
@@ -140,37 +143,74 @@
 
 static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, GtkWidget *widget)
 {
-	gchar *filename = v3270ft_select_file(
-								gtk_widget_get_toplevel(widget),
-								_("Select local file"),
-								_("Select"),
-								GTK_FILE_CHOOSER_ACTION_OPEN,
-								gtk_entry_get_text(entry),
-								N_("All files"), "*.*",
-								N_("Text files"), "*.txt",
-								NULL );
+	v3270_autofree gchar *filename =
+		v3270ft_select_file(
+			gtk_widget_get_toplevel(widget),
+			_("Select local file"),
+			_("Select"),
+			GTK_FILE_CHOOSER_ACTION_OPEN,
+			gtk_entry_get_text(entry),
+			N_("All files"), "*.*",
+			N_("Text files"), "*.txt",
+			NULL
+		);
 
 	if(filename) {
-
 		gtk_entry_set_text(entry,filename);
+	}
 
-		/*
-		const gchar *remote = gtk_entry_get_text(dialog->remote);
+ }
 
-		gtk_entry_set_text(dialog->local,filename);
+ static void set_options(V3270FTSettings *widget, LIB3270_FT_OPTION options)
+ {
+ 	size_t ix;
 
-		if(!*remote) {
-			gchar * text = g_path_get_basename(filename);
-			gtk_entry_set_text(dialog->remote,text);
-			g_free(text);
+	if(options & LIB3270_FT_OPTION_RECEIVE)
+	{
+		debug("%s option selected","LIB3270_FT_OPTION_RECEIVE");
+
+		gtk_widget_set_sensitive(widget->recordFormatBox,FALSE);
+		gtk_widget_set_sensitive(widget->spaceAllocationBox,FALSE);
+
+		for(ix = 0; ix < 4; ix++) {
+			gtk_widget_set_sensitive(widget->spins[ix],FALSE);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget->spins[ix]),0);
 		}
 
-		g_free(filename);
-		*/
+	}
+	else
+	{
+		debug("%s option selected","LIB3270_FT_OPTION_SEND");
+
+		gtk_widget_set_sensitive(widget->recordFormatBox,TRUE);
+		gtk_widget_set_sensitive(widget->spaceAllocationBox,TRUE);
+
+		for(ix = 0; ix < 4; ix++) {
+			gtk_widget_set_sensitive(widget->spins[ix],TRUE);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget->spins[ix]),0);
+		}
 
 	}
 
-}
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget->options[4]),TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget->options[8]),TRUE);
+
+	for(ix=0;ix<NUM_OPTIONS_WIDGETS;ix++) {
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget->options[ix]),(options & ft_option[ix].opt) == ft_option[ix].opt);
+	}
+
+ }
+
+ static void transfer_type_changed(GtkComboBox *widget, V3270FTSettings *dialog)
+ {
+	gint selected = gtk_combo_box_get_active(widget);
+
+	debug("Transfer type=%u", (unsigned int) selected);
+
+	if(selected >= 0)
+		set_options(dialog,ft_type[selected].opt);
+
+ }
 
  static void V3270FTSettings_init(V3270FTSettings *widget)
  {
@@ -182,9 +222,11 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
  	// Operation type
  	{
- 		GtkTreeModel	* model = GTK_TREE_MODEL(gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_ULONG));
+ 		GtkTreeModel	* model = GTK_TREE_MODEL(gtk_list_store_new(1,G_TYPE_STRING));
 		GtkWidget		* entry = create_entry(widget,"_Operation",gtk_combo_box_new_with_model(model),0,0,9);
 		GtkCellRenderer	* renderer = gtk_cell_renderer_text_new();
+
+		g_signal_connect(G_OBJECT(entry),"changed",G_CALLBACK(transfer_type_changed),widget);
 
 		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(entry), renderer, TRUE);
 		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(entry), renderer, "text", 0, NULL);
@@ -193,7 +235,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 		{
 			GtkTreeIter iter;
 			gtk_list_store_append((GtkListStore *) model,&iter);
-			gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(ft_type[ix].label),-1);
+			gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(ft_type[ix].label), -1);
 		}
 
 
@@ -239,8 +281,8 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 	// Record format
 	{
-		GtkWidget	* box = create_frame(options, _("Record format"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_CENTER);
-		GSList 		* group = NULL;
+		GSList * group = NULL;
+		widget->recordFormatBox = create_frame(options, _("Record format"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_CENTER);
 
 		for(ix=4;ix<8;ix++)
 		{
@@ -248,15 +290,15 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 			gtk_widget_set_tooltip_markup(widget->options[ix],gettext(ft_option[ix].tooltip));
 			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(widget->options[ix]));
 			// g_signal_connect(G_OBJECT(widget->options[ix]),"toggled",G_CALLBACK(option_toggled),widget);
-			gtk_box_pack_start(GTK_BOX(box),widget->options[ix],FALSE,TRUE,0);
+			gtk_box_pack_start(GTK_BOX(widget->recordFormatBox),widget->options[ix],FALSE,TRUE,0);
 
 		}
 	}
 
 	// Space allocation units
 	{
-		GtkWidget	* box = create_frame(options, _("Space allocation units"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_END);
-		GSList 		* group = NULL;
+		GSList * group = NULL;
+		widget->spaceAllocationBox = create_frame(options, _("Space allocation units"), gtk_box_new(GTK_ORIENTATION_VERTICAL,6),GTK_ALIGN_END);
 
 		for(ix=8;ix<12;ix++)
 		{
@@ -264,7 +306,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 			gtk_widget_set_tooltip_markup(widget->options[ix],gettext(ft_option[ix].tooltip));
 			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(widget->options[ix]));
 			// g_signal_connect(G_OBJECT(widget->options[ix]),"toggled",G_CALLBACK(option_toggled),widget);
-			gtk_box_pack_start(GTK_BOX(box),widget->options[ix],FALSE,TRUE,0);
+			gtk_box_pack_start(GTK_BOX(widget->spaceAllocationBox),widget->options[ix],FALSE,TRUE,0);
 
 		}
 	}
