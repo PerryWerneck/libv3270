@@ -71,9 +71,13 @@
 		<Unit filename="src/dialogs/security.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/tools.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/hostselect.h" />
+		<Unit filename="src/include/internals.h" />
 		<Unit filename="src/include/v3270.h" />
 		<Unit filename="src/include/v3270/colorscheme.h" />
 		<Unit filename="src/include/v3270/filetransfer.h" />
@@ -139,6 +143,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/v3270/windows/iosource.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/v3270ft/activity.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/v3270ft/dialog.c">
