@@ -79,6 +79,20 @@ static GtkWidget * create_button(V3270FTDialog *widget, FT_BUTTON id, const gcha
 }
 */
 
+static void render_local(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)
+{
+	GObject * activity;
+	gtk_tree_model_get(tree_model, iter, 0, &activity, -1);
+	g_object_set(G_OBJECT(cell),"text",v3270_ft_activity_get_local_filename(activity),NULL);
+}
+
+static void render_remote(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)
+{
+	GObject * activity;
+	gtk_tree_model_get(tree_model, iter, 0, &activity, -1);
+	g_object_set(G_OBJECT(cell),"text",v3270_ft_activity_get_remote_filename(activity),NULL);
+}
+
 static void V3270FTDialog_init(V3270FTDialog *widget)
 {
 	widget->settings = v3270_ft_settings_new();
@@ -101,7 +115,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 	// Create file list view
 	{
-		GtkTreeModel * model = GTK_TREE_MODEL(gtk_tree_store_new(1,G_TYPE_STRING));
+		GtkTreeModel * model = GTK_TREE_MODEL(gtk_list_store_new(1,G_TYPE_OBJECT));
 		GtkWidget	 * files = gtk_tree_view_new_with_model(model);
 
 		gtk_widget_set_tooltip_markup(files,_("Files to transfer"));
@@ -109,10 +123,21 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(files),TRUE);
 		gtk_tree_view_set_reorderable(GTK_TREE_VIEW(files),TRUE);
 
-		gtk_tree_view_insert_column_with_attributes(
+		gtk_tree_view_insert_column_with_data_func(
 			GTK_TREE_VIEW(files),
 			-1,
-			_( "Local file name" ),gtk_cell_renderer_text_new(),"text",
+			_( "Local file" ),
+			gtk_cell_renderer_text_new(),
+			render_local,
+			0, NULL
+		);
+
+		gtk_tree_view_insert_column_with_data_func(
+			GTK_TREE_VIEW(files),
+			-1,
+			_( "Remote file" ),
+			gtk_cell_renderer_text_new(),
+			render_remote,
 			0, NULL
 		);
 
@@ -127,6 +152,17 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		GtkWidget * frame = v3270_dialog_create_frame(scrolled,_("Transfer queue"));
 
 		gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
+
+		/*
+		GObject * activity = v3270_ft_activity_new();
+		v3270_ft_activity_set_local_filename(activity,"local---");
+		v3270_ft_activity_set_remote_filename(activity,"remote---");
+
+		GtkTreeIter iter;
+		gtk_list_store_append((GtkListStore *) model,&iter);
+		gtk_list_store_set((GtkListStore *) model, &iter, 0, activity, -1);
+		*/
+
 	}
 
 
