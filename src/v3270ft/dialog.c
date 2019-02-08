@@ -38,6 +38,7 @@
  	GtkDialog parent;
 
  	GtkWidget * settings;
+ 	GtkWidget * queue;
 
  	struct {
  		GtkWidget * valid;
@@ -109,6 +110,22 @@ static void validity_changed(GtkWidget G_GNUC_UNUSED(*settings), gboolean valid,
 	gtk_widget_set_sensitive(widget->button.valid,valid);
 }
 
+static void reset_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+{
+	v3270_ft_settings_reset(widget->settings);
+}
+
+static void update_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+{
+	v3270_ft_settings_update(widget->settings);
+	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(widget->queue));
+	//gtk_widget_queue_draw(widget->queue);
+}
+
+static void insert_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+{
+}
+
 static void V3270FTDialog_init(V3270FTDialog *widget)
 {
 	widget->settings = v3270_ft_settings_new();
@@ -136,8 +153,13 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		g_object_set(G_OBJECT(widget->button.valid),"margin-top",6,NULL);
 
 		widget->button.reset = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Reset"),FALSE,FALSE,0);
+		g_signal_connect(widget->button.reset,"clicked",reset_clicked,widget);
+
 		widget->button.update = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Update"),FALSE,FALSE,0);
+		g_signal_connect(widget->button.update,"clicked",update_clicked,widget);
+
 		widget->button.insert = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Insert"),FALSE,FALSE,0);
+		g_signal_connect(widget->button.insert,"clicked",insert_clicked,widget);
 
 		gtk_widget_set_sensitive(widget->button.update,FALSE);
 		gtk_widget_set_sensitive(widget->button.reset,FALSE);
@@ -149,14 +171,14 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 	// Create file list view
 	{
-		GtkWidget * files = v3270_activity_list_new();
-		gtk_widget_set_tooltip_markup(files,_("Files to transfer"));
-		g_signal_connect(G_OBJECT(files),"row-activated",G_CALLBACK(activity_selected),widget);
+		widget->queue = v3270_activity_list_new();
+		gtk_widget_set_tooltip_markup(widget->queue,_("Files to transfer"));
+		g_signal_connect(G_OBJECT(widget->queue),"row-activated",G_CALLBACK(activity_selected),widget);
 
 		// Put the view inside a scrolled window.
 		GtkWidget * scrolled = gtk_scrolled_window_new(NULL,NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
-		gtk_container_add(GTK_CONTAINER(scrolled),files);
+		gtk_container_add(GTK_CONTAINER(scrolled),widget->queue);
 
 		gtk_widget_set_vexpand(scrolled,TRUE);
 		gtk_widget_set_hexpand(scrolled,TRUE);
@@ -172,7 +194,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		v3270_ft_activity_set_remote_filename(activity,"remote---");
 		v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_SEND|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP|LIB3270_FT_OPTION_APPEND|LIB3270_FT_RECORD_FORMAT_VARIABLE);
 
-		v3270_activity_list_append(files,activity);
+		v3270_activity_list_append(widget->queue,activity);
 #endif // DEBUG
 
 	}

@@ -71,6 +71,8 @@
 		VALIDITY_TYPE		invalid;
  	} transfer;
 
+	GObject				* activity;
+
  	GtkComboBox			* type;
 	GtkWidget			* recordFormatBox;
 	GtkWidget			* spaceAllocationBox;
@@ -523,19 +525,57 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
  LIB3270_EXPORT void v3270_ft_settings_set_activity(GtkWidget *widget, GObject *activity)
  {
+ 	GTK_V3270_FT_SETTINGS(widget)->activity = activity;
+ 	v3270_ft_settings_reset(widget);
+ }
+
+ LIB3270_EXPORT void v3270_ft_settings_reset(GtkWidget *widget)
+ {
  	int ix;
 	V3270FTSettings * settings = GTK_V3270_FT_SETTINGS(widget);
 
-	gtk_entry_set_text(settings->file.local,v3270_ft_activity_get_local_filename(activity));
-	gtk_entry_set_text(settings->file.remote,v3270_ft_activity_get_remote_filename(activity));
-
-	v3270_ft_settings_set_options(widget,v3270_ft_activity_get_options(activity));
-
-	for(ix = 0; ix < LIB3270_FT_VALUE_COUNT; ix++)
+	if(settings->activity)
 	{
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(settings->spins[ix]), v3270_ft_activity_get_value(activity,(LIB3270_FT_VALUE) ix));
+		gtk_entry_set_text(settings->file.local,v3270_ft_activity_get_local_filename(settings->activity));
+		gtk_entry_set_text(settings->file.remote,v3270_ft_activity_get_remote_filename(settings->activity));
+
+		v3270_ft_settings_set_options(widget,v3270_ft_activity_get_options(settings->activity));
+
+		for(ix = 0; ix < LIB3270_FT_VALUE_COUNT; ix++)
+		{
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(settings->spins[ix]), v3270_ft_activity_get_value(settings->activity,(LIB3270_FT_VALUE) ix));
+		}
 	}
 
+ }
+
+ LIB3270_EXPORT void v3270_ft_settings_update(GtkWidget *widget)
+ {
+ 	int ix;
+	V3270FTSettings * settings = GTK_V3270_FT_SETTINGS(widget);
+
+	debug("%s: widget=%p activity=%p",__FUNCTION__,settings,settings->activity);
+
+	if(settings->activity)
+	{
+		v3270_ft_activity_set_local_filename(settings->activity,gtk_entry_get_text(settings->file.local));
+		v3270_ft_activity_set_remote_filename(settings->activity,gtk_entry_get_text(settings->file.remote));
+
+		LIB3270_FT_OPTION options = 0;
+
+		for(ix=0;ix<NUM_OPTIONS_WIDGETS;ix++) {
+			if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(settings->options[ix])))
+				options |= ft_option[ix].opt;
+		}
+
+		v3270_ft_activity_set_options(settings->activity,options);
+
+		for(ix = 0; ix < LIB3270_FT_VALUE_COUNT; ix++)
+		{
+			v3270_ft_activity_set_value(settings->activity,(LIB3270_FT_VALUE) ix, (guint) gtk_spin_button_get_value(GTK_SPIN_BUTTON(settings->spins[ix])));
+		}
+
+	}
  }
 
  LIB3270_EXPORT void v3270_ft_settings_set_options(GtkWidget *widget, LIB3270_FT_OPTION options)
