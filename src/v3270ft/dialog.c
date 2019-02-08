@@ -120,6 +120,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 		v3270_ft_activity_set_local_filename(activity,"local---");
 		v3270_ft_activity_set_remote_filename(activity,"remote---");
+		v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_SEND|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP|LIB3270_FT_OPTION_APPEND|LIB3270_FT_RECORD_FORMAT_VARIABLE);
 
 		v3270_activity_list_append(files,activity);
 		v3270_ft_settings_set_activity(widget->settings,activity);

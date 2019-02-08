@@ -49,11 +49,12 @@
  		GtkEntry * remote;
  	} file;
 
-	GtkWidget * recordFormatBox;
-	GtkWidget * spaceAllocationBox;
+ 	GtkComboBox	* type;
+	GtkWidget	* recordFormatBox;
+	GtkWidget	* spaceAllocationBox;
 
- 	GtkWidget * options[NUM_OPTIONS_WIDGETS];
- 	GtkWidget * spins[LIB3270_FT_VALUE_COUNT];
+ 	GtkWidget	* options[NUM_OPTIONS_WIDGETS];
+ 	GtkWidget	* spins[LIB3270_FT_VALUE_COUNT];
  };
 
  G_DEFINE_TYPE(V3270FTSettings, V3270FTSettings, GTK_TYPE_GRID);
@@ -83,34 +84,25 @@
 	return entry;
  }
 
-	/*
- static GtkWidget * create_frame(GtkWidget *container, const gchar *title, GtkWidget *box, GtkAlign align)
- {
-	gtk_box_pack_start(GTK_BOX(container),v3270_dialog_create_frame(title,box,align),TRUE,TRUE,0);
-
-	GtkFrame			* frame		= GTK_FRAME(gtk_frame_new(""));
-	g_autofree gchar	* markup	= g_strdup_printf("<b>%s</b>",title);
-	GtkWidget			* label		= gtk_label_new(NULL);
-
-	gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_NONE);
-	gtk_label_set_markup(GTK_LABEL(label),markup);
-	gtk_frame_set_label_widget(GTK_FRAME(frame),label);
-
-	gtk_container_add(GTK_CONTAINER(frame),GTK_WIDGET(box));
-	gtk_widget_set_halign(GTK_WIDGET(frame),align);
-
-	g_object_set(G_OBJECT(frame),"margin-top",6,NULL);
-
-	gtk_box_pack_start(GTK_BOX(container),GTK_WIDGET(frame),TRUE,TRUE,0);
-
-	return box;
- }
-	*/
-
  static GtkWidget * create_grid(GtkWidget *container, GtkAlign align)
  {
  	return v3270_box_pack_start(container,v3270_dialog_create_grid(align),TRUE,TRUE,0);
  }
+
+static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
+
+	GtkAdjustment	* adjustment = gtk_spin_button_get_adjustment (spin);
+	guint			  value = (guint) gtk_adjustment_get_value(adjustment);
+
+	if(value < 1) {
+		gtk_entry_set_text(GTK_ENTRY(spin), "");
+	} else {
+		g_autofree gchar * text = g_strdup_printf ("%d", value);
+		gtk_entry_set_text(GTK_ENTRY(spin), text);
+	}
+
+	return TRUE;
+}
 
  GtkWidget * create_spin_button(V3270FTSettings *widget, GtkWidget *grid, size_t row, LIB3270_FT_VALUE id)
  {
@@ -121,7 +113,7 @@
 
 	GtkWidget * button = gtk_spin_button_new_with_range(ft_value[id].minval,ft_value[id].maxval,1);
 	// g_signal_connect(G_OBJECT(button),"value-changed",G_CALLBACK(spin_changed),dialog);
-	// g_signal_connect(G_OBJECT(button),"output",G_CALLBACK(spin_format),dialog);
+	g_signal_connect(G_OBJECT(button),"output",G_CALLBACK(spin_format),widget);
 
 	gtk_widget_set_tooltip_markup(button,gettext(ft_value[id].tooltip));
 	gtk_widget_set_tooltip_markup(label,gettext(ft_value[id].tooltip));
@@ -169,7 +161,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 		for(ix = 0; ix < 4; ix++) {
 			gtk_widget_set_sensitive(widget->spins[ix],FALSE);
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget->spins[ix]),0);
+			gtk_entry_set_text(GTK_ENTRY(widget->spins[ix]), "");
 		}
 
 	}
@@ -183,7 +175,6 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 		for(ix = 0; ix < 4; ix++) {
 			gtk_widget_set_sensitive(widget->spins[ix],TRUE);
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget->spins[ix]),0);
 		}
 
 	}
@@ -229,13 +220,14 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
  	// Operation type
  	{
  		GtkTreeModel	* model = GTK_TREE_MODEL(gtk_list_store_new(1,G_TYPE_STRING));
-		GtkWidget		* entry = create_entry(widget,"_Operation",gtk_combo_box_new_with_model(model),0,0,9);
 		GtkCellRenderer	* renderer = gtk_cell_renderer_text_new();
 
-		g_signal_connect(G_OBJECT(entry),"changed",G_CALLBACK(transfer_type_changed),widget);
+		widget->type = GTK_COMBO_BOX(create_entry(widget,"_Operation",gtk_combo_box_new_with_model(model),0,0,9));
 
-		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(entry), renderer, TRUE);
-		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(entry), renderer, "text", 0, NULL);
+		g_signal_connect(G_OBJECT(widget->type),"changed",G_CALLBACK(transfer_type_changed),widget);
+
+		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->type), renderer, TRUE);
+		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->type), renderer, "text", 0, NULL);
 
 		for(ix=0;ix < NUM_TYPES;ix++)
 		{
@@ -389,15 +381,36 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
  LIB3270_EXPORT void v3270_ft_settings_set_activity(GtkWidget *widget, GObject *activity)
  {
+ 	int ix;
 	V3270FTSettings * settings = GTK_V3270_FT_SETTINGS(widget);
 
 	gtk_entry_set_text(settings->file.local,v3270_ft_activity_get_local_filename(activity));
 	gtk_entry_set_text(settings->file.remote,v3270_ft_activity_get_remote_filename(activity));
 
+	v3270_ft_settings_set_options(widget,v3270_ft_activity_get_options(activity));
+
+	for(ix = 0; ix < LIB3270_FT_VALUE_COUNT; ix++)
+	{
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(settings->spins[ix]), v3270_ft_activity_get_value(activity,(LIB3270_FT_VALUE) ix));
+	}
+
  }
 
  LIB3270_EXPORT void v3270_ft_settings_set_options(GtkWidget *widget, LIB3270_FT_OPTION options)
  {
-	V3270FTSettings * settings = GTK_V3270_FT_SETTINGS(widget);
+ 	int ix;
+
+	for(ix=0;ix < NUM_TYPES;ix++)
+	{
+		if(ft_type[ix].opt == (options & LIB3270_FT_TYPE_OPTIONS))
+		{
+			debug("Selecting option %s",ft_type[ix].label);
+			gtk_combo_box_set_active(GTK_COMBO_BOX(GTK_V3270_FT_SETTINGS(widget)->type),ix);
+			break;
+		}
+	}
+
+	set_options(GTK_V3270_FT_SETTINGS(widget),options);
+
 
  }

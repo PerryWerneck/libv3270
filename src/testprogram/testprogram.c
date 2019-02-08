@@ -189,7 +189,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	size_t		  f;
 
 	v3270_set_url(terminal,NULL);
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,TRUE);
+	// v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,TRUE);
 
 	// v3270_set_font_family(terminal,"Droid Sans Mono");
 	g_signal_connect(terminal,"field_clicked",G_CALLBACK(field_clicked),window);

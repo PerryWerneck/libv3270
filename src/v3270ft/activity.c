@@ -42,8 +42,13 @@
  {
  	GObject parent;
 
- 	LIB3270_FT_OPTION	options;
+ 	/// @brief Transfer options.
+ 	LIB3270_FT_OPTION options;
 
+ 	/// @brief Values.
+	guint values[LIB3270_FT_VALUE_COUNT];
+
+	/// @brief File names
  	struct {
  		gchar * local;
  		gchar * remote;
@@ -127,6 +132,11 @@
 
  static void V3270FTActivity_init(V3270FTActivity *widget)
  {
+ 	widget->values[LIB3270_FT_VALUE_LRECL] = 0;
+ 	widget->values[LIB3270_FT_VALUE_BLKSIZE] = 0;
+ 	widget->values[LIB3270_FT_VALUE_PRIMSPACE] = 0;
+ 	widget->values[LIB3270_FT_VALUE_SECSPACE] = 0;
+ 	widget->values[LIB3270_FT_VALUE_DFT] = 4096;
  }
 
  LIB3270_EXPORT GObject * v3270_ft_activity_new()
@@ -222,3 +232,14 @@
 	gtk_list_store_append((GtkListStore *) model,&iter);
 	gtk_list_store_set((GtkListStore *) model, &iter, 0, activity, -1);
  }
+
+guint v3270_ft_activity_get_value(GObject * object,  LIB3270_FT_VALUE id)
+{
+	return G_V3270_FT_ACTIVITY(object)->values[id];
+}
+
+void v3270_ft_activity_set_value(GObject * object, LIB3270_FT_VALUE id, guint value)
+{
+	G_V3270_FT_ACTIVITY(object)->values[id] = value;
+}
+
