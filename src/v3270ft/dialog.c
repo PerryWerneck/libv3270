@@ -38,7 +38,12 @@
  	GtkDialog parent;
 
  	GtkWidget * settings;
- 	// GtkWidget * buttons[FT_BUTTON_COUNT];
+
+ 	struct {
+ 		GtkWidget * insert;
+ 		GtkWidget * update;
+ 		GtkWidget * reset;
+ 	} button;
 
  };
 
@@ -79,6 +84,24 @@ static GtkWidget * create_button(V3270FTDialog *widget, FT_BUTTON id, const gcha
 }
 */
 
+void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G_GNUC_UNUSED(*column), V3270FTDialog *widget)
+{
+	GtkTreeIter iter;
+	GtkTreeModel * model = gtk_tree_view_get_model(view);
+
+	if(gtk_tree_model_get_iter(model, &iter, path))
+	{
+		GObject * activity = NULL;
+		gtk_tree_model_get(model, &iter, 0, &activity, -1);
+		v3270_ft_settings_set_activity(widget->settings,activity);
+
+		gtk_widget_set_sensitive(widget->button.update,TRUE);
+		gtk_widget_set_sensitive(widget->button.reset,TRUE);
+
+	}
+
+}
+
 static void V3270FTDialog_init(V3270FTDialog *widget)
 {
 	widget->settings = v3270_ft_settings_new();
@@ -98,10 +121,28 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 	gtk_widget_set_vexpand(GTK_WIDGET(widget->settings),FALSE);
 	gtk_box_pack_start(GTK_BOX(container),widget->settings,FALSE,FALSE,0);
 
+	// Create action buttons
+	{
+		GtkWidget * buttons = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
+
+		g_object_set(G_OBJECT(buttons),"margin-top",6,NULL);
+
+		widget->button.reset = v3270_box_pack_end(buttons,gtk_button_new_with_mnemonic("_Reset"),FALSE,FALSE,0);
+		widget->button.update = v3270_box_pack_end(buttons,gtk_button_new_with_mnemonic("_Update"),FALSE,FALSE,0);
+		widget->button.insert = v3270_box_pack_end(buttons,gtk_button_new_with_mnemonic("_Insert"),FALSE,FALSE,0);
+
+		gtk_widget_set_sensitive(widget->button.update,FALSE);
+		gtk_widget_set_sensitive(widget->button.reset,FALSE);
+
+		gtk_box_pack_start(GTK_BOX(container),buttons,FALSE,FALSE,0);
+
+	}
+
 	// Create file list view
 	{
 		GtkWidget * files = v3270_activity_list_new();
 		gtk_widget_set_tooltip_markup(files,_("Files to transfer"));
+		g_signal_connect(G_OBJECT(files),"row-activated",G_CALLBACK(activity_selected),widget);
 
 		// Put the view inside a scrolled window.
 		GtkWidget * scrolled = gtk_scrolled_window_new(NULL,NULL);
@@ -123,11 +164,9 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_SEND|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP|LIB3270_FT_OPTION_APPEND|LIB3270_FT_RECORD_FORMAT_VARIABLE);
 
 		v3270_activity_list_append(files,activity);
-		v3270_ft_settings_set_activity(widget->settings,activity);
 #endif // DEBUG
 
 	}
-
 
 }
 
