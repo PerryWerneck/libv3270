@@ -99,6 +99,7 @@
 	LIB3270_EXPORT void			  v3270_ft_settings_update(GtkWidget *widget);
 
 	LIB3270_EXPORT void			  v3270_ft_settings_set_options(GtkWidget *widget, LIB3270_FT_OPTION options);
+	LIB3270_EXPORT gboolean		  v3270_ft_settings_equals(GtkWidget *widget, GObject *activity);
 
 	// FT Activity widget
 	#define G_TYPE_V3270_FT_ACTIVITY				(V3270FTActivity_get_type ())

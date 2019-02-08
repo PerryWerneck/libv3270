@@ -549,6 +549,19 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
  }
 
+ LIB3270_EXPORT gboolean v3270_ft_settings_equals(GtkWidget *widget, GObject *activity)
+ {
+	V3270FTSettings * settings = GTK_V3270_FT_SETTINGS(widget);
+
+ 	if(strcmp(gtk_entry_get_text(settings->file.local),v3270_ft_activity_get_local_filename(activity)))
+		return FALSE;
+
+ 	if(strcmp(gtk_entry_get_text(settings->file.remote),v3270_ft_activity_get_remote_filename(activity)))
+		return FALSE;
+
+ 	return TRUE;
+ }
+
  LIB3270_EXPORT void v3270_ft_settings_update(GtkWidget *widget)
  {
  	int ix;

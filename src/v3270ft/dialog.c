@@ -124,6 +124,28 @@ static void update_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widg
 
 static void insert_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
 {
+	GtkTreeIter		  iter;
+	GtkTreeModel	* model	= gtk_tree_view_get_model(widget->queue);
+
+	if(gtk_tree_model_get_iter_first(model,&iter))
+	{
+		do
+		{
+			GObject * activity = NULL;
+			gtk_tree_model_get(model, &iter, 0, &activity, -1);
+
+			if(activity && v3270_ft_settings_equals(widget->settings,activity))
+			{
+				debug("%s: Activity already inserted",__FUNCTION__);
+				return;
+			}
+
+		}
+		while(gtk_tree_model_iter_next(model,&iter));
+	}
+
+	// Not found, insert it.
+
 }
 
 static void V3270FTDialog_init(V3270FTDialog *widget)
