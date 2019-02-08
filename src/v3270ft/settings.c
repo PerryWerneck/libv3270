@@ -30,6 +30,7 @@
  #include <string.h>
  #include <internals.h>
  #include "private.h"
+ #include "marshal.h"
  #include <v3270/filetransfer.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
@@ -38,31 +39,82 @@
  {
  	GtkGridClass parent_class;
 
+ 	struct
+ 	{
+		void (*validity)(GtkWidget *, gboolean);
+ 	} signal;
+
  };
+
+ typedef enum _invalid
+ {
+ 	VALIDITY_TRANSFER_TYPE		= 0x0001,
+	VALIDITY_LOCAL_FILENAME		= 0x0002,
+	VALIDITY_REMOTE_FILENAME	= 0x0004,
+ } VALIDITY_TYPE;
 
  struct _V3270FTSettings
  {
  	GtkGrid parent;
 
- 	struct {
+ 	struct
+ 	{
  		GtkEntry * local;
  		GtkEntry * remote;
  	} file;
 
- 	GtkComboBox	* type;
-	GtkWidget	* recordFormatBox;
-	GtkWidget	* spaceAllocationBox;
 
- 	GtkWidget	* options[NUM_OPTIONS_WIDGETS];
- 	GtkWidget	* spins[LIB3270_FT_VALUE_COUNT];
+ 	struct
+ 	{
+		LIB3270_FT_OPTION	options;
+		gboolean			is_valid;
+		VALIDITY_TYPE		invalid;
+ 	} transfer;
+
+ 	GtkComboBox			* type;
+	GtkWidget			* recordFormatBox;
+	GtkWidget			* spaceAllocationBox;
+
+ 	GtkWidget			* options[NUM_OPTIONS_WIDGETS];
+ 	GtkWidget			* spins[LIB3270_FT_VALUE_COUNT];
+
  };
 
  G_DEFINE_TYPE(V3270FTSettings, V3270FTSettings, GTK_TYPE_GRID);
 
+/*--[ Globals ]--------------------------------------------------------------------------------------*/
+
+ enum _SIGNALS
+ {
+ 	V3270_FT_SETTINGS_VALIDITY_SIGNAL,	///< @brief Indicates if the dialog contents is valid.
+
+ 	V3270_FT_SETTINGS_LAST_SIGNAL
+ };
+
+ static guint v3270_ft_settings_signals[V3270_FT_SETTINGS_LAST_SIGNAL] = { 0 };
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
+
+ static void V3270FTSettings_validity(GtkWidget G_GNUC_UNUSED(*widget), gboolean G_GNUC_UNUSED(is_valid))
+ {
+ 	debug("%s",__FUNCTION__);
+ }
+
 
  static void V3270FTSettings_class_init(G_GNUC_UNUSED V3270FTSettingsClass *klass)
  {
+	GObjectClass * gobject_class	= G_OBJECT_CLASS(klass);
+
+	klass->signal.validity = V3270FTSettings_validity;
+
+	v3270_ft_settings_signals[V3270_FT_SETTINGS_VALIDITY_SIGNAL] =
+		g_signal_new(	"validity",
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_FIRST,
+						G_STRUCT_OFFSET (V3270FTSettingsClass, signal.validity),
+						NULL, NULL,
+						v3270ft_VOID__VOID_BOOLEAN,
+						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
 
  }
@@ -152,6 +204,8 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
  {
  	size_t ix;
 
+ 	widget->transfer.options = options;
+
 	if(options & LIB3270_FT_OPTION_RECEIVE)
 	{
 		debug("%s option selected","LIB3270_FT_OPTION_RECEIVE");
@@ -191,6 +245,34 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
  }
 
+ static void check_for_validity_signal(V3270FTSettings *widget)
+ {
+ 	gboolean is_valid = (widget->transfer.invalid == 0) ? TRUE : FALSE;
+
+ 	if(is_valid == widget->transfer.is_valid)
+		return;
+
+	widget->transfer.is_valid = is_valid;
+
+	debug("Transfer is now \"%s\"", is_valid ? "valid" : "invalid");
+	g_signal_emit(widget, v3270_ft_settings_signals[V3270_FT_SETTINGS_VALIDITY_SIGNAL], 0, widget->transfer.is_valid);
+
+ }
+
+ static void set_invalid(V3270FTSettings *widget, VALIDITY_TYPE option)
+ {
+ 	widget->transfer.invalid |= option;
+ 	debug("Invalid: %08lx", (unsigned int) widget->transfer.invalid);
+ 	check_for_validity_signal(widget);
+ }
+
+ static void set_valid(V3270FTSettings *widget, VALIDITY_TYPE option)
+ {
+ 	widget->transfer.invalid &= ~option;
+ 	debug("Invalid: %08lx", (unsigned int) widget->transfer.invalid);
+ 	check_for_validity_signal(widget);
+ }
+
  static void transfer_type_changed(GtkComboBox *widget, V3270FTSettings *dialog)
  {
 	gint selected = gtk_combo_box_get_active(widget);
@@ -199,19 +281,77 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 	if(selected >= 0)
 	{
+		set_valid(dialog, VALIDITY_TRANSFER_TYPE);
 		set_options(dialog,ft_type[selected].opt);
 	}
 	else
 	{
+		set_invalid(dialog, VALIDITY_TRANSFER_TYPE);
 		gtk_widget_set_sensitive(GTK_WIDGET(dialog->file.local),FALSE);
 		gtk_widget_set_sensitive(GTK_WIDGET(dialog->file.remote),FALSE);
 	}
 
  }
 
+
+ static void local_file_changed(GtkEntry *entry, V3270FTSettings *widget) {
+
+	const gchar * text = gtk_entry_get_text(entry);
+
+	if(!text)
+	{
+		set_invalid(widget, VALIDITY_LOCAL_FILENAME);
+		return;
+	}
+
+	if(widget->transfer.options & LIB3270_FT_OPTION_RECEIVE)
+	{
+		// Check for file receive options.
+		g_autofree gchar * dir = g_path_get_dirname(text);
+
+		if(*dir && !g_file_test(dir,G_FILE_TEST_IS_DIR))
+		{
+			debug("Folder \"%s\" is invalid",dir);
+			set_invalid(widget, VALIDITY_LOCAL_FILENAME);
+			return;
+		}
+
+	}
+	else
+	{
+		// Check for file send options.
+		if(!g_file_test(text,G_FILE_TEST_IS_REGULAR))
+		{
+			debug("File \"%s\" is invalid",text);
+			set_valid(widget, VALIDITY_LOCAL_FILENAME);
+			return;
+		}
+
+	}
+
+	set_valid(widget, VALIDITY_LOCAL_FILENAME);
+ }
+
+ static void remote_file_changed(GtkEntry *entry, V3270FTSettings *widget) {
+
+	const gchar * text = gtk_entry_get_text(entry);
+
+	if(!*text)
+	{
+		set_invalid(widget, VALIDITY_REMOTE_FILENAME);
+		return;
+	}
+
+	set_valid(widget, VALIDITY_REMOTE_FILENAME);
+
+ }
+
  static void V3270FTSettings_init(V3270FTSettings *widget)
  {
  	size_t ix;
+
+ 	// Begin with all invalid options set.
+ 	widget->transfer.invalid = VALIDITY_TRANSFER_TYPE|VALIDITY_LOCAL_FILENAME|VALIDITY_REMOTE_FILENAME;
 
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
  	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
@@ -248,10 +388,12 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 		gtk_entry_set_icon_tooltip_text(widget->file.local,GTK_ENTRY_ICON_SECONDARY,_("Select file"));
 
 		g_signal_connect(G_OBJECT(widget->file.local),"icon-press",G_CALLBACK(open_select_file_dialog),widget);
+		g_signal_connect(G_OBJECT(widget->file.local),"changed",G_CALLBACK(local_file_changed),widget);
 
 		// Remote file name
 		widget->file.remote = GTK_ENTRY(create_entry(widget,"_Remote file",gtk_entry_new(),0,2,9));
 		gtk_entry_set_max_length(widget->file.remote,PATH_MAX);
+		g_signal_connect(G_OBJECT(widget->file.remote),"changed",G_CALLBACK(remote_file_changed),widget);
 
 	}
 

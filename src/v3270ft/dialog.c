@@ -40,6 +40,7 @@
  	GtkWidget * settings;
 
  	struct {
+ 		GtkWidget * valid;
  		GtkWidget * insert;
  		GtkWidget * update;
  		GtkWidget * reset;
@@ -102,9 +103,16 @@ void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G
 
 }
 
+static void validity_changed(GtkWidget G_GNUC_UNUSED(*settings), gboolean valid, V3270FTDialog *widget)
+{
+	debug("The file transfer settings are now %s",valid ? "valid" : "invalid");
+	gtk_widget_set_sensitive(widget->button.valid,valid);
+}
+
 static void V3270FTDialog_init(V3270FTDialog *widget)
 {
 	widget->settings = v3270_ft_settings_new();
+	g_signal_connect(G_OBJECT(widget->settings),"validity",G_CALLBACK(validity_changed),widget);
 
 	gtk_window_set_title(GTK_WINDOW(widget),_( "3270 File transfer"));
 
@@ -123,18 +131,19 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 	// Create action buttons
 	{
-		GtkWidget * buttons = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
+		widget->button.valid = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
 
-		g_object_set(G_OBJECT(buttons),"margin-top",6,NULL);
+		g_object_set(G_OBJECT(widget->button.valid),"margin-top",6,NULL);
 
-		widget->button.reset = v3270_box_pack_end(buttons,gtk_button_new_with_mnemonic("_Reset"),FALSE,FALSE,0);
-		widget->button.update = v3270_box_pack_end(buttons,gtk_button_new_with_mnemonic("_Update"),FALSE,FALSE,0);
-		widget->button.insert = v3270_box_pack_end(buttons,gtk_button_new_with_mnemonic("_Insert"),FALSE,FALSE,0);
+		widget->button.reset = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Reset"),FALSE,FALSE,0);
+		widget->button.update = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Update"),FALSE,FALSE,0);
+		widget->button.insert = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Insert"),FALSE,FALSE,0);
 
 		gtk_widget_set_sensitive(widget->button.update,FALSE);
 		gtk_widget_set_sensitive(widget->button.reset,FALSE);
 
-		gtk_box_pack_start(GTK_BOX(container),buttons,FALSE,FALSE,0);
+		gtk_box_pack_start(GTK_BOX(container),widget->button.valid,FALSE,FALSE,0);
+		gtk_widget_set_sensitive(widget->button.valid,FALSE);
 
 	}
 
