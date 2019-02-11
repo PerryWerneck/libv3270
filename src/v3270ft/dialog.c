@@ -192,7 +192,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 	g_signal_connect(G_OBJECT(widget->settings),"has-activity",G_CALLBACK(has_activity_changed),widget);
 
 	// Does the dialog have header bar?
-	GtkHeaderBar * header = GTK_HEADER_BAR(gtk_dialog_get_header_bar(GTK_DIALOG(widget)));
+	GtkHeaderBar * header = v3270_dialog_get_header_bar(GTK_WIDGET(widget));
 
 	if(header)
 		gtk_header_bar_set_title(header,_( "3270 File transfer"));
@@ -239,35 +239,8 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 	}
 
-	// Create file list view
+	// Create Transfer queue buttons
 	{
-		widget->queue.view = v3270_activity_list_new();
-		gtk_widget_set_tooltip_markup(widget->queue.view,_("Files to transfer"));
-		g_signal_connect(G_OBJECT(widget->queue.view),"row-activated",G_CALLBACK(activity_selected),widget);
-
-		// Put the view inside a scrolled window.
-		GtkWidget * scrolled = gtk_scrolled_window_new(NULL,NULL);
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
-		gtk_container_add(GTK_CONTAINER(scrolled),widget->queue.view);
-
-		gtk_widget_set_vexpand(scrolled,TRUE);
-		gtk_widget_set_hexpand(scrolled,TRUE);
-
-		GtkWidget * frame = v3270_dialog_create_frame(scrolled,_("Transfer queue"));
-
-		gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
-
-#ifdef DEBUG
-		GObject * activity = v3270_ft_activity_new();
-
-		v3270_ft_activity_set_local_filename(activity,"local---");
-		v3270_ft_activity_set_remote_filename(activity,"remote---");
-		v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_SEND|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP|LIB3270_FT_OPTION_APPEND|LIB3270_FT_RECORD_FORMAT_VARIABLE);
-
-		v3270_activity_list_append(widget->queue.view,activity);
-#endif // DEBUG
-
-		// Create Transfer queue buttons
 		// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
 		widget->queue.load = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_SMALL_TOOLBAR);
 		gtk_widget_set_tooltip_markup(widget->queue.load,_("Get transfer queue from file"));
@@ -283,28 +256,64 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		gtk_widget_set_tooltip_markup(widget->queue.saveAs,_("Save transfer queue to file"));
 		g_signal_connect(widget->queue.saveAs,"clicked",G_CALLBACK(save_queue_as_clicked),widget);
 
+	}
+
+	// Create file list view
+	{
+		widget->queue.view = v3270_activity_list_new();
+		gtk_widget_set_tooltip_markup(widget->queue.view,_("Files to transfer"));
+		g_signal_connect(G_OBJECT(widget->queue.view),"row-activated",G_CALLBACK(activity_selected),widget);
+
+		// Put the view inside a scrolled window.
+		GtkWidget * scrolled = gtk_scrolled_window_new(NULL,NULL);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
+		gtk_container_add(GTK_CONTAINER(scrolled),widget->queue.view);
+
+		gtk_widget_set_vexpand(scrolled,TRUE);
+		gtk_widget_set_hexpand(scrolled,TRUE);
+
 		if(header)
 		{
-
 			debug("Dialog %s header bar","have");
+
+			GtkWidget * frame = v3270_dialog_create_frame(scrolled,_("Transfer queue"));
+			gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
+
 			gtk_header_bar_pack_start(header,widget->queue.load);
 			gtk_header_bar_pack_start(header,widget->queue.save);
 			gtk_header_bar_pack_start(header,widget->queue.saveAs);
-
-			gtk_widget_show_all(widget->queue.load);
 		}
 		else
 		{
 			debug("Dialog %s header bar","don't have");
 
-			GtkBox * box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6));
-			gtk_box_pack_start(GTK_BOX(container),GTK_WIDGET(box),FALSE,FALSE,0);
+			GtkWidget * hBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
+			GtkWidget * frame = v3270_dialog_create_frame(hBox,_("Transfer queue"));
+			gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
 
-			gtk_box_pack_end(box,widget->queue.load,FALSE,FALSE,0);
-			gtk_box_pack_end(box,widget->queue.save,FALSE,FALSE,0);
-			gtk_box_pack_end(box,widget->queue.saveAs,FALSE,FALSE,0);
+			g_object_set(G_OBJECT(hBox),"margin-start",6,NULL);
+			g_object_set(G_OBJECT(hBox),"margin-end",6,NULL);
+
+			GtkBox * box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL,6));
+			gtk_box_pack_start(GTK_BOX(hBox),GTK_WIDGET(box),FALSE,FALSE,0);
+
+			gtk_box_pack_start(box,widget->queue.load,FALSE,FALSE,0);
+			gtk_box_pack_start(box,widget->queue.save,FALSE,FALSE,0);
+			gtk_box_pack_start(box,widget->queue.saveAs,FALSE,FALSE,0);
+
+			gtk_box_pack_start(GTK_BOX(hBox),GTK_WIDGET(scrolled),TRUE,TRUE,0);
 
 		}
+
+#ifdef DEBUG
+		GObject * activity = v3270_ft_activity_new();
+
+		v3270_ft_activity_set_local_filename(activity,"local---");
+		v3270_ft_activity_set_remote_filename(activity,"remote---");
+		v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_SEND|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP|LIB3270_FT_OPTION_APPEND|LIB3270_FT_RECORD_FORMAT_VARIABLE);
+
+		v3270_activity_list_append(widget->queue.view,activity);
+#endif // DEBUG
 
 	}
 

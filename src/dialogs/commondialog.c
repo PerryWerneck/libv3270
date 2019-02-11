@@ -96,3 +96,15 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *paren
 
 	return dialog;
 }
+
+GtkHeaderBar * v3270_dialog_get_header_bar(GtkWidget * widget)
+{
+	gboolean use_header = FALSE;
+
+	g_object_get(G_OBJECT(widget), "use-header-bar", &use_header, NULL);
+
+	if(use_header)
+		return GTK_HEADER_BAR(gtk_dialog_get_header_bar(GTK_DIALOG(widget)));
+
+	return NULL;
+}
