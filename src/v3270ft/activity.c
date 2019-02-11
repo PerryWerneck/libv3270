@@ -192,3 +192,78 @@
 	G_V3270_FT_ACTIVITY(object)->values[id] = value;
  }
 
+ static void element_start(GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, V3270FTActivity *activity, GError **error)
+ {
+	if(!g_ascii_strcasecmp(element_name,"file"))
+	{
+		const gchar *type;
+		const gchar *path;
+
+		if(!g_markup_collect_attributes(
+				element_name,names,values,error,
+				G_MARKUP_COLLECT_STRING, "type", &type,
+				G_MARKUP_COLLECT_STRING, "path", &path,
+				G_MARKUP_COLLECT_INVALID
+				)) {
+
+			return;
+
+		}
+
+		if(g_ascii_strcasecmp(type,"local") == 0)
+			v3270_ft_activity_set_local_filename(G_OBJECT(activity),path);
+		else if(g_ascii_strcasecmp(type,"remote") == 0)
+			v3270_ft_activity_set_remote_filename(G_OBJECT(activity),path);
+
+	}
+	else if(!g_ascii_strcasecmp(element_name,"option"))
+	{
+		const gchar *name;
+		const gchar *value;
+
+		if(!g_markup_collect_attributes(
+				element_name,names,values,error,
+				G_MARKUP_COLLECT_STRING, "name", &name,
+				G_MARKUP_COLLECT_STRING, "value", &value,
+				G_MARKUP_COLLECT_INVALID
+				)) {
+
+			return;
+
+		}
+
+
+	}
+	else if(!g_ascii_strcasecmp(element_name,"parameter"))
+	{
+		const gchar *name;
+		const gchar *value;
+
+		if(!g_markup_collect_attributes(
+				element_name,names,values,error,
+				G_MARKUP_COLLECT_STRING, "name", &name,
+				G_MARKUP_COLLECT_STRING, "value", &value,
+				G_MARKUP_COLLECT_INVALID
+				)) {
+
+			return;
+
+		}
+
+	}
+
+ }
+
+ void v3270_ft_activity_set_from_context(GObject * activity, GMarkupParseContext * context)
+ {
+	static const GMarkupParser parser = {
+		(void (*)(GMarkupParseContext *, const gchar *, const gchar **, const gchar **, gpointer, GError **)) element_start,
+		(void (*)(GMarkupParseContext *, const gchar *, gpointer, GError **)) NULL,
+		(void (*)(GMarkupParseContext *, const gchar *, gsize, gpointer, GError **)) NULL,
+		(void (*)(GMarkupParseContext *, const gchar *, gsize,  gpointer, GError **)) NULL,
+		(void (*)(GMarkupParseContext *, GError *, gpointer)) NULL
+	};
+
+	g_markup_parse_context_push(context,&parser,activity);
+
+ }

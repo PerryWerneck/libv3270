@@ -197,3 +197,24 @@ const struct v3270ft_value ft_value[] = {
 
 };
 
+const  struct v3270_activity_list_option v3270_activity_list_options[] =
+{
+
+	{ LIB3270_FT_OPTION_SEND,					"type",				"send"				},
+	{ LIB3270_FT_OPTION_RECEIVE,				"type",				"receive"			},
+	{ LIB3270_FT_OPTION_ASCII,					"format",			"ascii"				},
+	{ LIB3270_FT_OPTION_CRLF,					"format",			"crlf"				},
+	{ LIB3270_FT_OPTION_APPEND,					"format",			"append"			},
+	{ LIB3270_FT_OPTION_REMAP,					"format",			"remap"				},
+	{ LIB3270_FT_OPTION_UNIX,					"file-format",		"unix"				},
+	{ LIB3270_FT_RECORD_FORMAT_DEFAULT,			"record-format",	"default"			},
+	{ LIB3270_FT_RECORD_FORMAT_FIXED,			"record-format",	"fixed"				},
+	{ LIB3270_FT_RECORD_FORMAT_VARIABLE,		"record-format",	"variable"			},
+	{ LIB3270_FT_RECORD_FORMAT_UNDEFINED,		"record-format",	"undefined"			},
+	{ LIB3270_FT_ALLOCATION_UNITS_DEFAULT,		"units",			"default"			},
+	{ LIB3270_FT_ALLOCATION_UNITS_TRACKS,		"units",			"tracks"			},
+	{ LIB3270_FT_ALLOCATION_UNITS_CYLINDERS,	"units",			"cylinders"			},
+	{ LIB3270_FT_ALLOCATION_UNITS_AVBLOCK,		"units",			"avblock"			},
+	{ 0,										NULL,				NULL				}
+};
+

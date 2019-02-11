@@ -63,32 +63,6 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- static const struct _option_list
- {
- 	LIB3270_FT_OPTION	  option;
- 	const gchar			* name;
- 	const gchar			* value;
- }
- option_list[] =
- {
-
-	{ LIB3270_FT_OPTION_SEND,					"type",				"send",				},
-	{ LIB3270_FT_OPTION_RECEIVE,				"type",				"receive",			},
-	{ LIB3270_FT_OPTION_ASCII,					"format",			"ascii",			},
-	{ LIB3270_FT_OPTION_CRLF,					"format",			"crlf",				},
-	{ LIB3270_FT_OPTION_APPEND,					"format",			"append",			},
-	{ LIB3270_FT_OPTION_REMAP,					"format",			"remap",			},
-	{ LIB3270_FT_OPTION_UNIX,					"file-format",		"unix",				},
-	{ LIB3270_FT_RECORD_FORMAT_DEFAULT,			"record-format",	"default",			},
-	{ LIB3270_FT_RECORD_FORMAT_FIXED,			"record-format",	"fixed",			},
-	{ LIB3270_FT_RECORD_FORMAT_VARIABLE,		"record-format",	"variable",			},
-	{ LIB3270_FT_RECORD_FORMAT_UNDEFINED,		"record-format",	"undefined",		},
-	{ LIB3270_FT_ALLOCATION_UNITS_DEFAULT,		"units",			"default",			},
-	{ LIB3270_FT_ALLOCATION_UNITS_TRACKS,		"units",			"tracks",			},
-	{ LIB3270_FT_ALLOCATION_UNITS_CYLINDERS,	"units",			"cylinders",		},
-	{ LIB3270_FT_ALLOCATION_UNITS_AVBLOCK,		"units",			"avblock",			},
- };
-
  static void dispose(GObject *object)
  {
 	debug("%s",__FUNCTION__);
@@ -183,6 +157,59 @@
 	gtk_list_store_set((GtkListStore *) model, &iter, 0, activity, -1);
  }
 
+ static void element_start(GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, V3270FTActivityList *widget, GError **error)
+ {
+	if(!g_ascii_strcasecmp(element_name,"entry"))
+	{
+		// Create new activity
+		GObject * activity = v3270_ft_activity_new();
+		v3270_ft_activity_set_from_context(activity,context);
+		v3270_activity_list_append(GTK_WIDGET(widget), activity);
+	}
+
+ }
+
+ static void element_end(GMarkupParseContext *context, const gchar *element_name, G_GNUC_UNUSED void *info,G_GNUC_UNUSED  GError **error)
+ {
+	if(!g_ascii_strcasecmp(element_name,"entry"))
+	{
+		g_markup_parse_context_pop(context);
+	}
+ }
+
+ static void reload(GtkWidget *widget)
+ {
+	static const GMarkupParser parser = {
+		(void (*)(GMarkupParseContext *, const gchar *, const gchar **, const gchar **, gpointer, GError **)) element_start,
+		(void (*)(GMarkupParseContext *, const gchar *, gpointer, GError **)) element_end,
+		(void (*)(GMarkupParseContext *, const gchar *, gsize, gpointer, GError **)) NULL,
+		(void (*)(GMarkupParseContext *, const gchar *, gsize,  gpointer, GError **)) NULL,
+		(void (*)(GMarkupParseContext *, GError *, gpointer)) NULL
+	};
+
+	GError				* error	= NULL;
+	g_autofree gchar	* text	= NULL;
+
+	if(g_file_get_contents(GTK_V3270_FT_ACTIVITY_LIST(widget)->filename,&text,NULL,&error)) {
+
+		GMarkupParseContext	* context =
+			g_markup_parse_context_new(
+				&parser,
+				G_MARKUP_TREAT_CDATA_AS_TEXT|G_MARKUP_PREFIX_ERROR_POSITION,
+				widget,
+				NULL
+			);
+
+		/*
+		GMarkupParseContext	* context = g_markup_parse_context_new(&parser,G_MARKUP_TREAT_CDATA_AS_TEXT|G_MARKUP_PREFIX_ERROR_POSITION,GTK_V3270FT(widget),NULL);
+		g_markup_parse_context_parse(context,text,strlen(text),&error);
+		g_markup_parse_context_free(context);
+		*/
+
+	}
+
+ }
+
  void v3270_activity_list_load(GtkWidget *widget)
  {
 	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(widget);
@@ -200,7 +227,10 @@
 		list->filename = filename;
 	}
 
+	reload(widget);
+
 	g_signal_emit(widget, v3270_activity_list_signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL], 0, (list->filename == NULL ? FALSE : TRUE));
+
 
  }
 
@@ -232,10 +262,10 @@
 				g_string_append_printf(str,"\t\t<file type=\'remote\' path=\'%s\' />\n",v3270_ft_activity_get_remote_filename(activity));
 
 				LIB3270_FT_OPTION options = v3270_ft_activity_get_options(activity);
-				for(ix = 0; ix < G_N_ELEMENTS(option_list);ix++)
+				for(ix = 0; ix < v3270_activity_list_options[ix].name;ix++)
 				{
-					if(options & option_list[ix].option)
-						g_string_append_printf(str,"\t\t<option name=\'%s\' value=\'%s\' />\n",option_list[ix].name,option_list[ix].value);
+					if(options & v3270_activity_list_options[ix].option)
+						g_string_append_printf(str,"\t\t<option name=\'%s\' value=\'%s\' />\n",v3270_activity_list_options[ix].name,v3270_activity_list_options[ix].value);
 				}
 
 				for(ix=0;ix<LIB3270_FT_VALUE_COUNT;ix++) {

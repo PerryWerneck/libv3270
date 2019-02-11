@@ -97,9 +97,17 @@
 
 	};
 
-	extern const struct v3270ft_option	ft_option[];
-	extern const struct v3270ft_type	ft_type[];
-	extern const struct v3270ft_value	ft_value[];
+	struct v3270_activity_list_option
+	{
+		LIB3270_FT_OPTION	  option;
+		const gchar			* name;
+		const gchar			* value;
+	};
+
+	G_GNUC_INTERNAL extern const struct v3270ft_option	ft_option[];
+	G_GNUC_INTERNAL extern const struct v3270ft_type	ft_type[];
+	G_GNUC_INTERNAL extern const struct v3270ft_value	ft_value[];
+	G_GNUC_INTERNAL extern const struct v3270_activity_list_option v3270_activity_list_options[];
 
 	#define ENTRY_FILENAME_LENGTH FILENAME_MAX
 	struct v3270ft_entry {

@@ -116,6 +116,8 @@
 
 	LIB3270_EXPORT GObject				* v3270_ft_activity_new();
 
+	LIB3270_EXPORT void					  v3270_ft_activity_set_from_context(GObject * activity, GMarkupParseContext * context);
+
 	LIB3270_EXPORT const gchar			* v3270_ft_activity_get_local_filename(GObject *object);
 	LIB3270_EXPORT const gchar			* v3270_ft_activity_get_remote_filename(GObject *object);
 	LIB3270_EXPORT LIB3270_FT_OPTION	  v3270_ft_activity_get_options(GObject *object);
