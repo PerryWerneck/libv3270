@@ -53,6 +53,7 @@
 	gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_NONE);
 	gtk_label_set_markup(GTK_LABEL(label),markup);
 	gtk_frame_set_label_widget(GTK_FRAME(frame),label);
+ 	gtk_container_set_border_width(GTK_CONTAINER(child),12);
 
 	gtk_container_add(GTK_CONTAINER(frame),GTK_WIDGET(child));
 

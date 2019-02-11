@@ -217,7 +217,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
 
 		g_object_set(G_OBJECT(box),"margin-top",6,NULL);
-		g_object_set(G_OBJECT(box),"margin-end",18,NULL);
+		g_object_set(G_OBJECT(box),"margin-end",6,NULL);
 
 		widget->button.reset = v3270_box_pack_end(box,gtk_button_new_with_mnemonic("_Reset"),FALSE,FALSE,0);
 		g_signal_connect(widget->button.reset,"clicked",G_CALLBACK(reset_clicked),widget);
@@ -280,10 +280,6 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 			GtkWidget * frame = v3270_dialog_create_frame(scrolled,_("Transfer queue"));
 			gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
 
-			// https://developer.gnome.org/hig/stable/visual-layout.html.en
-			g_object_set(G_OBJECT(scrolled),"margin-start",18,NULL);
-			g_object_set(G_OBJECT(scrolled),"margin-end",18,NULL);
-
 			gtk_header_bar_pack_start(header,widget->queue.load);
 			gtk_header_bar_pack_start(header,widget->queue.save);
 			gtk_header_bar_pack_start(header,widget->queue.saveAs);
@@ -295,10 +291,6 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 			GtkWidget * hBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
 			GtkWidget * frame = v3270_dialog_create_frame(hBox,_("Transfer queue"));
 			gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
-
-			// https://developer.gnome.org/hig/stable/visual-layout.html.en
-			g_object_set(G_OBJECT(hBox),"margin-start",18,NULL);
-			g_object_set(G_OBJECT(hBox),"margin-end",18,NULL);
 
 			GtkBox * box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL,6));
 			gtk_box_pack_start(GTK_BOX(hBox),GTK_WIDGET(box),FALSE,FALSE,0);
