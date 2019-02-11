@@ -55,7 +55,6 @@
  {
  	GtkTreeView parent;
  	gchar * filename;
-
  };
 
  G_DEFINE_TYPE(V3270FTActivityList, V3270FTActivityList, GTK_TYPE_TREE_VIEW);
@@ -64,13 +63,41 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+ static const struct _option_list
+ {
+ 	LIB3270_FT_OPTION	  option;
+ 	const gchar			* name;
+ 	const gchar			* value;
+ }
+ option_list[] =
+ {
+
+	{ LIB3270_FT_OPTION_SEND,					"type",				"send",				},
+	{ LIB3270_FT_OPTION_RECEIVE,				"type",				"receive",			},
+	{ LIB3270_FT_OPTION_ASCII,					"format",			"ascii",			},
+	{ LIB3270_FT_OPTION_CRLF,					"format",			"crlf",				},
+	{ LIB3270_FT_OPTION_APPEND,					"format",			"append",			},
+	{ LIB3270_FT_OPTION_REMAP,					"format",			"remap",			},
+	{ LIB3270_FT_OPTION_UNIX,					"file-format",		"unix",				},
+	{ LIB3270_FT_RECORD_FORMAT_DEFAULT,			"record-format",	"default",			},
+	{ LIB3270_FT_RECORD_FORMAT_FIXED,			"record-format",	"fixed",			},
+	{ LIB3270_FT_RECORD_FORMAT_VARIABLE,		"record-format",	"variable",			},
+	{ LIB3270_FT_RECORD_FORMAT_UNDEFINED,		"record-format",	"undefined",		},
+	{ LIB3270_FT_ALLOCATION_UNITS_DEFAULT,		"units",			"default",			},
+	{ LIB3270_FT_ALLOCATION_UNITS_TRACKS,		"units",			"tracks",			},
+	{ LIB3270_FT_ALLOCATION_UNITS_CYLINDERS,	"units",			"cylinders",		},
+	{ LIB3270_FT_ALLOCATION_UNITS_AVBLOCK,		"units",			"avblock",			},
+ };
+
  static void dispose(GObject *object)
  {
 	debug("%s",__FUNCTION__);
 
 	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(object);
 
+	debug("Freeing %s",list->filename);
 	g_free(list->filename);
+	list->filename = NULL;
 
  }
 
@@ -148,16 +175,117 @@
 	return g_object_new(GTK_TYPE_V3270_FT_ACTIVITY_LIST, NULL);
  }
 
- void v3270_activity_list_load(GtkWidget *widget)
- {
-
- }
-
  void v3270_activity_list_append(GtkWidget *widget, GObject *activity)
  {
  	GtkTreeModel * model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
 	GtkTreeIter iter;
 	gtk_list_store_append((GtkListStore *) model,&iter);
 	gtk_list_store_set((GtkListStore *) model, &iter, 0, activity, -1);
+ }
+
+ void v3270_activity_list_load(GtkWidget *widget)
+ {
+	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(widget);
+
+	gchar * filename = v3270ft_select_file(
+								widget,
+								_("Load queue from file"),
+								_("Load"), GTK_FILE_CHOOSER_ACTION_OPEN,
+								"",
+								N_("XML file"), "*.xml",
+								NULL );
+
+	if(filename) {
+		g_free(list->filename);
+		list->filename = filename;
+	}
+
+ }
+
+ void v3270_activity_list_save(GtkWidget *widget)
+ {
+	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(widget);
+	GString * str	= g_string_new("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<filelist>\n");
+	GError	* error	= NULL;
+	size_t	  ix;
+
+	// Serialize activities.
+	GtkTreeIter		  iter;
+	GtkTreeModel	* model	= gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
+
+	if(gtk_tree_model_get_iter_first(model,&iter))
+	{
+		do
+		{
+			GObject * activity = NULL;
+			gtk_tree_model_get(model, &iter, 0, &activity, -1);
+
+			if(activity)
+			{
+				g_string_append(str,"\t<entry>\n");
+
+				g_string_append_printf(str,"\t\t<file type=\'local\' path=\'%s\' />\n",v3270_ft_activity_get_local_filename(activity));
+				g_string_append_printf(str,"\t\t<file type=\'remote\' path=\'%s\' />\n",v3270_ft_activity_get_remote_filename(activity));
+
+				LIB3270_FT_OPTION options = v3270_ft_activity_get_options(activity);
+				for(ix = 0; ix < G_N_ELEMENTS(option_list);ix++)
+				{
+					if(options & option_list[ix].option)
+						g_string_append_printf(str,"\t\t<option name=\'%s\' value=\'%s\' />\n",option_list[ix].name,option_list[ix].value);
+				}
+
+				g_string_append(str,"\t</entry>\n");
+			}
+
+		}
+		while(gtk_tree_model_iter_next(model,&iter));
+	}
+
+	g_string_append(str,"</filelist>\n");
+
+
+	// Save activity list
+	g_autofree gchar * text = g_string_free(str,FALSE);
+
+	if(!g_file_set_contents(list->filename,text,-1,&error)) {
+
+		GtkWidget *popup = gtk_message_dialog_new_with_markup(
+			GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+			GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
+			_("Can't save %s"),list->filename
+		);
+
+		gtk_window_set_title(GTK_WINDOW(popup),_("Operation has failed"));
+
+		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",error->message);
+		g_error_free(error);
+
+		gtk_dialog_run(GTK_DIALOG(popup));
+		gtk_widget_destroy(popup);
+
+	}
+
+
+ }
+
+ void v3270_activity_list_save_as(GtkWidget *widget)
+ {
+	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(widget);
+
+	gchar * filename = v3270ft_select_file(
+								widget,
+								_("Save queue to file"),
+								_("Save"),
+								GTK_FILE_CHOOSER_ACTION_SAVE,
+								"",
+								N_("XML file"), "*.xml",
+								NULL );
+
+	if(filename) {
+		g_free(list->filename);
+		list->filename = filename;
+		v3270_activity_list_save(widget);
+	}
  }
 

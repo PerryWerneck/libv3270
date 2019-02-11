@@ -68,30 +68,6 @@ static void V3270FTDialog_class_init(G_GNUC_UNUSED V3270FTDialogClass *klass)
 {
 }
 
-/*
-static void apply_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *dialog)
-{
-	gtk_dialog_response(GTK_DIALOG(dialog),GTK_RESPONSE_APPLY);
-}
-
-static void cancel_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *dialog)
-{
-	gtk_dialog_response(GTK_DIALOG(dialog),GTK_RESPONSE_CANCEL);
-}
-*/
-
-/*
-static GtkWidget * create_button(V3270FTDialog *widget, FT_BUTTON id, const gchar *icon, const gchar *tooltip, GCallback callback)
-{
-	widget->buttons[id] = gtk_button_new_from_icon_name(icon,GTK_ICON_SIZE_BUTTON);
-	gtk_widget_set_tooltip_markup(widget->buttons[id],tooltip);
-
-	// g_signal_connect(widget->buttons[id],"clicked",callback,widget);
-
-	return widget->buttons[id];
-}
-*/
-
 void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G_GNUC_UNUSED(*column), V3270FTDialog *widget)
 {
 	GtkTreeIter iter;
@@ -125,6 +101,21 @@ static void update_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widg
 {
 	v3270_ft_settings_update(widget->settings);
 	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(widget->queue.view));
+}
+
+static void load_queue_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+{
+	v3270_activity_list_load(widget->queue.view);
+}
+
+static void save_queue_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+{
+	v3270_activity_list_save(widget->queue.view);
+}
+
+static void save_queue_as_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+{
+	v3270_activity_list_save_as(widget->queue.view);
 }
 
 static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
@@ -254,13 +245,16 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
 		widget->queue.load = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_SMALL_TOOLBAR);
 		gtk_widget_set_tooltip_markup(widget->queue.load,_("Get transfer queue from file"));
+		g_signal_connect(widget->queue.load,"clicked",G_CALLBACK(load_queue_clicked),widget);
 
 		widget->queue.save = gtk_button_new_from_icon_name("document-save",GTK_ICON_SIZE_SMALL_TOOLBAR);
 		gtk_widget_set_tooltip_markup(widget->queue.save,_("Save transfer queue"));
+		g_signal_connect(widget->queue.load,"clicked",G_CALLBACK(save_queue_clicked),widget);
 		gtk_widget_set_sensitive(widget->queue.save,FALSE);
 
 		widget->queue.saveAs = gtk_button_new_from_icon_name("document-save-as",GTK_ICON_SIZE_SMALL_TOOLBAR);
 		gtk_widget_set_tooltip_markup(widget->queue.saveAs,_("Save transfer queue to file"));
+		g_signal_connect(widget->queue.saveAs,"clicked",G_CALLBACK(save_queue_as_clicked),widget);
 
 		if(header)
 		{

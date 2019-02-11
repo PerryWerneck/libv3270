@@ -77,12 +77,14 @@ gchar * v3270ft_select_file(GtkWidget *dialog, const gchar *title, const gchar *
 
 	gchar *rc = NULL;
 
+	debug("%s",__FUNCTION__);
+
 #if GTK_CHECK_VERSION(3,20,0)
 
 	GtkFileChooserNative *native =	gtk_file_chooser_native_new
 									(
 										title,
-										GTK_WINDOW(dialog),
+										GTK_WINDOW(gtk_widget_get_toplevel(dialog)),
 										action,
 										button,
 										_( "_Cancel" )
@@ -173,7 +175,7 @@ gchar * v3270ft_select_file(GtkWidget *dialog, const gchar *title, const gchar *
 	GtkWidget * chooser = gtk_file_chooser_dialog_new
 	(
 		title,
-		GTK_WINDOW(dialog),
+		GTK_WINDOW(gtk_widget_get_toplevel(dialog)),
 		action,
 		_("_Cancel" ),	GTK_RESPONSE_CANCEL,
 		button, GTK_RESPONSE_ACCEPT,
@@ -191,6 +193,8 @@ gchar * v3270ft_select_file(GtkWidget *dialog, const gchar *title, const gchar *
 
 
 #endif // WIN32
+
+	debug("%s=%p",__FUNCTION__,rc);
 
 	return rc;
 
