@@ -200,6 +200,8 @@
 		list->filename = filename;
 	}
 
+	g_signal_emit(widget, v3270_activity_list_signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL], 0, (list->filename == NULL ? FALSE : TRUE));
+
  }
 
  void v3270_activity_list_save(GtkWidget *widget)
@@ -208,6 +210,8 @@
 	GString * str	= g_string_new("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<filelist>\n");
 	GError	* error	= NULL;
 	size_t	  ix;
+
+	debug("%s",__FUNCTION__);
 
 	// Serialize activities.
 	GtkTreeIter		  iter;
@@ -234,6 +238,10 @@
 						g_string_append_printf(str,"\t\t<option name=\'%s\' value=\'%s\' />\n",option_list[ix].name,option_list[ix].value);
 				}
 
+				for(ix=0;ix<LIB3270_FT_VALUE_COUNT;ix++) {
+					g_string_append_printf(str,"\t\t<parameter name=\"%s\" value=\"%u\"/>\n",ft_value[ix].name,v3270_ft_activity_get_value(activity,(LIB3270_FT_VALUE) ix));
+				}
+
 				g_string_append(str,"\t</entry>\n");
 			}
 
@@ -246,6 +254,8 @@
 
 	// Save activity list
 	g_autofree gchar * text = g_string_free(str,FALSE);
+
+	debug("Saving %s",list->filename);
 
 	if(!g_file_set_contents(list->filename,text,-1,&error)) {
 
@@ -287,5 +297,8 @@
 		list->filename = filename;
 		v3270_activity_list_save(widget);
 	}
+
+	g_signal_emit(widget, v3270_activity_list_signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL], 0, (list->filename == NULL ? FALSE : TRUE));
+
  }
 

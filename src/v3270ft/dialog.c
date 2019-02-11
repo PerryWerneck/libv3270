@@ -110,6 +110,7 @@ static void load_queue_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *
 
 static void save_queue_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
 {
+	debug("%s",__FUNCTION__);
 	v3270_activity_list_save(widget->queue.view);
 }
 
@@ -162,6 +163,11 @@ static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
 	// Not found, insert it.
 	v3270_activity_list_append(widget->queue.view,v3270_ft_settings_create_activity(widget->settings));
 
+}
+
+static void enable_queue_save(GtkWidget G_GNUC_UNUSED(*save), gboolean enabled, GtkWidget *button)
+{
+	gtk_widget_set_sensitive(button,enabled);
 }
 
 static void V3270FTDialog_init(V3270FTDialog *widget)
@@ -249,8 +255,9 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 		widget->queue.save = gtk_button_new_from_icon_name("document-save",GTK_ICON_SIZE_SMALL_TOOLBAR);
 		gtk_widget_set_tooltip_markup(widget->queue.save,_("Save transfer queue"));
-		g_signal_connect(widget->queue.load,"clicked",G_CALLBACK(save_queue_clicked),widget);
+		g_signal_connect(widget->queue.save,"clicked",G_CALLBACK(save_queue_clicked),widget);
 		gtk_widget_set_sensitive(widget->queue.save,FALSE);
+		g_signal_connect(widget->queue.view,"has-file",G_CALLBACK(enable_queue_save),widget->queue.save);
 
 		widget->queue.saveAs = gtk_button_new_from_icon_name("document-save-as",GTK_ICON_SIZE_SMALL_TOOLBAR);
 		gtk_widget_set_tooltip_markup(widget->queue.saveAs,_("Save transfer queue to file"));
