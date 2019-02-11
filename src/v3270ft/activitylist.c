@@ -157,8 +157,38 @@
 	gtk_list_store_set((GtkListStore *) model, &iter, 0, activity, -1);
  }
 
+ void v3270_activity_list_remove(GtkWidget *widget, GObject *activity)
+ {
+ 	if(!activity)
+		return;
+
+ 	GtkTreeModel * model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
+	GtkTreeIter iter;
+
+	if(gtk_tree_model_get_iter_first(model,&iter))
+	{
+		do
+		{
+			GObject * stored = NULL;
+			gtk_tree_model_get(model, &iter, 0, &stored, -1);
+
+			if(stored == activity)
+			{
+				gtk_list_store_remove(GTK_LIST_STORE(model),&iter);
+				return;
+			}
+
+
+		}
+		while(gtk_tree_model_iter_next(model,&iter));
+	}
+
+ }
+
+
  static void element_start(GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, V3270FTActivityList *widget, GError **error)
  {
+ 	debug("%s(%s)",__FUNCTION__, element_name);
 	if(!g_ascii_strcasecmp(element_name,"entry"))
 	{
 		// Create new activity
@@ -171,6 +201,7 @@
 
  static void element_end(GMarkupParseContext *context, const gchar *element_name, G_GNUC_UNUSED void *info,G_GNUC_UNUSED  GError **error)
  {
+ 	debug("%s(%s)",__FUNCTION__, element_name);
 	if(!g_ascii_strcasecmp(element_name,"entry"))
 	{
 		g_markup_parse_context_pop(context);
@@ -200,11 +231,8 @@
 				NULL
 			);
 
-		/*
-		GMarkupParseContext	* context = g_markup_parse_context_new(&parser,G_MARKUP_TREAT_CDATA_AS_TEXT|G_MARKUP_PREFIX_ERROR_POSITION,GTK_V3270FT(widget),NULL);
 		g_markup_parse_context_parse(context,text,strlen(text),&error);
 		g_markup_parse_context_free(context);
-		*/
 
 	}
 
@@ -262,13 +290,14 @@
 				g_string_append_printf(str,"\t\t<file type=\'remote\' path=\'%s\' />\n",v3270_ft_activity_get_remote_filename(activity));
 
 				LIB3270_FT_OPTION options = v3270_ft_activity_get_options(activity);
-				for(ix = 0; ix < v3270_activity_list_options[ix].name;ix++)
+				for(ix = 0; v3270_activity_list_options[ix].name; ix++)
 				{
-					if(options & v3270_activity_list_options[ix].option)
+					if((options & v3270_activity_list_options[ix].option) == v3270_activity_list_options[ix].option)
 						g_string_append_printf(str,"\t\t<option name=\'%s\' value=\'%s\' />\n",v3270_activity_list_options[ix].name,v3270_activity_list_options[ix].value);
 				}
 
-				for(ix=0;ix<LIB3270_FT_VALUE_COUNT;ix++) {
+				for(ix=0;ix<LIB3270_FT_VALUE_COUNT;ix++)
+				{
 					g_string_append_printf(str,"\t\t<parameter name=\"%s\" value=\"%u\"/>\n",ft_value[ix].name,v3270_ft_activity_get_value(activity,(LIB3270_FT_VALUE) ix));
 				}
 

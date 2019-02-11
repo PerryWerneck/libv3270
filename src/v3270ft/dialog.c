@@ -43,6 +43,7 @@
  		GtkWidget * valid;
  		GtkWidget * insert;
  		GtkWidget * update;
+ 		GtkWidget * remove;
  		GtkWidget * reset;
  	} button;
 
@@ -80,6 +81,7 @@ void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G
 		v3270_ft_settings_set_activity(widget->settings,activity);
 
 		gtk_widget_set_sensitive(widget->button.update,TRUE);
+		gtk_widget_set_sensitive(widget->button.remove,TRUE);
 		gtk_widget_set_sensitive(widget->button.reset,TRUE);
 
 	}
@@ -165,6 +167,12 @@ static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
 
 }
 
+static void remove_clicked(GtkWidget G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+{
+	v3270_activity_list_remove(widget->queue.view,v3270_ft_settings_get_activity(widget->settings));
+	v3270_ft_settings_set_activity(widget->settings,NULL);
+}
+
 static void enable_queue_save(GtkWidget G_GNUC_UNUSED(*save), gboolean enabled, GtkWidget *button)
 {
 	gtk_widget_set_sensitive(button,enabled);
@@ -208,10 +216,14 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		widget->button.update = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Update"),FALSE,FALSE,0);
 		g_signal_connect(widget->button.update,"clicked",G_CALLBACK(update_clicked),widget);
 
+		widget->button.insert = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Delete"),FALSE,FALSE,0);
+		g_signal_connect(widget->button.insert,"clicked",G_CALLBACK(remove_clicked),widget);
+
 		widget->button.insert = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Insert"),FALSE,FALSE,0);
 		g_signal_connect(widget->button.insert,"clicked",G_CALLBACK(insert_clicked),widget);
 
 		gtk_widget_set_sensitive(widget->button.update,FALSE);
+		gtk_widget_set_sensitive(widget->button.remove,FALSE);
 		gtk_widget_set_sensitive(widget->button.reset,FALSE);
 
 		gtk_box_pack_start(GTK_BOX(container),widget->button.valid,FALSE,FALSE,0);

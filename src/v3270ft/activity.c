@@ -28,6 +28,8 @@
  */
 
  #include <internals.h>
+ #include <stdlib.h>
+ #include "private.h"
  #include <v3270/filetransfer.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
@@ -192,8 +194,11 @@
 	G_V3270_FT_ACTIVITY(object)->values[id] = value;
  }
 
- static void element_start(GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, V3270FTActivity *activity, GError **error)
+ static void element_start(GMarkupParseContext G_GNUC_UNUSED(*context), const gchar *element_name, const gchar **names,const gchar **values, V3270FTActivity *activity, GError **error)
  {
+ 	size_t ix;
+
+ 	debug("%s(%s)",__FUNCTION__, element_name);
 	if(!g_ascii_strcasecmp(element_name,"file"))
 	{
 		const gchar *type;
@@ -232,6 +237,17 @@
 
 		}
 
+		debug("%s.%s(%s,%s)",__FUNCTION__, element_name, name, value);
+
+		for(ix = 0; v3270_activity_list_options[ix].name; ix++)
+		{
+			if(! (g_ascii_strcasecmp(name,v3270_activity_list_options[ix].name) || g_ascii_strcasecmp(value,v3270_activity_list_options[ix].value)) )
+			{
+				activity->options |= v3270_activity_list_options[ix].option;
+				debug("Setting option %s.%s(%08lx) =%08lx", v3270_activity_list_options[ix].name, v3270_activity_list_options[ix].value, (unsigned int) v3270_activity_list_options[ix].option,(unsigned int) activity->options)
+				break;
+			}
+		}
 
 	}
 	else if(!g_ascii_strcasecmp(element_name,"parameter"))
@@ -250,6 +266,17 @@
 
 		}
 
+		debug("%s.%s(%s)",__FUNCTION__, element_name, name, value);
+
+		for(ix=0;ix<LIB3270_FT_VALUE_COUNT;ix++)
+		{
+			if(!g_ascii_strcasecmp(ft_value[ix].name,name))
+			{
+				activity->values[ix] = atoi(value);
+				break;
+			}
+		}
+
 	}
 
  }
@@ -263,6 +290,8 @@
 		(void (*)(GMarkupParseContext *, const gchar *, gsize,  gpointer, GError **)) NULL,
 		(void (*)(GMarkupParseContext *, GError *, gpointer)) NULL
 	};
+
+	G_V3270_FT_ACTIVITY(activity)->options = 0;
 
 	g_markup_parse_context_push(context,&parser,activity);
 
