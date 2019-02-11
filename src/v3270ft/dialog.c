@@ -40,7 +40,6 @@
  	GtkWidget * settings;
 
  	struct {
- 		GtkWidget * valid;
  		GtkWidget * insert;
  		GtkWidget * update;
  		GtkWidget * remove;
@@ -91,7 +90,15 @@ void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G
 static void validity_changed(GtkWidget G_GNUC_UNUSED(*settings), gboolean valid, V3270FTDialog *widget)
 {
 	debug("The file transfer settings are now %s",valid ? "valid" : "invalid");
-	gtk_widget_set_sensitive(widget->button.valid,valid);
+	gtk_widget_set_sensitive(widget->button.insert,valid);
+	gtk_widget_set_sensitive(widget->button.update,valid);
+}
+
+static void has_activity_changed(GtkWidget G_GNUC_UNUSED(*settings), gboolean have_activity, V3270FTDialog *widget)
+{
+	gtk_widget_set_sensitive(widget->button.reset,have_activity);
+	gtk_widget_set_sensitive(widget->button.update,have_activity);
+	gtk_widget_set_sensitive(widget->button.remove,have_activity);
 }
 
 static void reset_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
@@ -182,6 +189,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 {
 	widget->settings = v3270_ft_settings_new();
 	g_signal_connect(G_OBJECT(widget->settings),"validity",G_CALLBACK(validity_changed),widget);
+	g_signal_connect(G_OBJECT(widget->settings),"has-activity",G_CALLBACK(has_activity_changed),widget);
 
 	// Does the dialog have header bar?
 	GtkHeaderBar * header = GTK_HEADER_BAR(gtk_dialog_get_header_bar(GTK_DIALOG(widget)));
@@ -206,28 +214,28 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 	// Create action buttons
 	{
-		widget->button.valid = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
+		GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
 
-		g_object_set(G_OBJECT(widget->button.valid),"margin-top",6,NULL);
+		g_object_set(G_OBJECT(box),"margin-top",6,NULL);
 
-		widget->button.reset = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Reset"),FALSE,FALSE,0);
+		widget->button.reset = v3270_box_pack_end(box,gtk_button_new_with_mnemonic("_Reset"),FALSE,FALSE,0);
 		g_signal_connect(widget->button.reset,"clicked",G_CALLBACK(reset_clicked),widget);
 
-		widget->button.update = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Update"),FALSE,FALSE,0);
+		widget->button.update = v3270_box_pack_end(box,gtk_button_new_with_mnemonic("_Update"),FALSE,FALSE,0);
 		g_signal_connect(widget->button.update,"clicked",G_CALLBACK(update_clicked),widget);
 
-		widget->button.insert = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Delete"),FALSE,FALSE,0);
-		g_signal_connect(widget->button.insert,"clicked",G_CALLBACK(remove_clicked),widget);
+		widget->button.remove = v3270_box_pack_end(box,gtk_button_new_with_mnemonic("_Delete"),FALSE,FALSE,0);
+		g_signal_connect(widget->button.remove,"clicked",G_CALLBACK(remove_clicked),widget);
 
-		widget->button.insert = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Insert"),FALSE,FALSE,0);
+		widget->button.insert = v3270_box_pack_end(box,gtk_button_new_with_mnemonic("_Insert"),FALSE,FALSE,0);
 		g_signal_connect(widget->button.insert,"clicked",G_CALLBACK(insert_clicked),widget);
 
 		gtk_widget_set_sensitive(widget->button.update,FALSE);
 		gtk_widget_set_sensitive(widget->button.remove,FALSE);
+		gtk_widget_set_sensitive(widget->button.insert,FALSE);
 		gtk_widget_set_sensitive(widget->button.reset,FALSE);
 
-		gtk_box_pack_start(GTK_BOX(container),widget->button.valid,FALSE,FALSE,0);
-		gtk_widget_set_sensitive(widget->button.valid,FALSE);
+		gtk_box_pack_start(GTK_BOX(container),box,FALSE,FALSE,0);
 
 	}
 

@@ -42,6 +42,7 @@
  	struct
  	{
 		void (*validity)(GtkWidget *, gboolean);
+		void (*has_activity)(GtkWidget *, gboolean);
  	} signal;
 
  };
@@ -88,7 +89,8 @@
 
  enum _SIGNALS
  {
- 	V3270_FT_SETTINGS_VALIDITY_SIGNAL,	///< @brief Indicates if the dialog contents is valid.
+ 	V3270_FT_SETTINGS_VALIDITY_SIGNAL,			///< @brief Indicates if the dialog contents is valid.
+ 	V3270_FT_SETTINGS_HAS_ACTIVITY_SIGNAL,		///< @brief Indicates fi the dialog has an activity.
 
  	V3270_FT_SETTINGS_LAST_SIGNAL
  };
@@ -102,11 +104,17 @@
  	debug("%s",__FUNCTION__);
  }
 
+static void V3270FTSettings_has_activity(GtkWidget G_GNUC_UNUSED(*widget), gboolean G_GNUC_UNUSED(is_valid))
+ {
+ 	debug("%s",__FUNCTION__);
+ }
+
  static void V3270FTSettings_class_init(G_GNUC_UNUSED V3270FTSettingsClass *klass)
  {
 	GObjectClass * gobject_class	= G_OBJECT_CLASS(klass);
 
 	klass->signal.validity = V3270FTSettings_validity;
+	klass->signal.has_activity = V3270FTSettings_has_activity;
 
 	v3270_ft_settings_signals[V3270_FT_SETTINGS_VALIDITY_SIGNAL] =
 		g_signal_new(	"validity",
@@ -116,6 +124,17 @@
 						NULL, NULL,
 						v3270ft_VOID__VOID_BOOLEAN,
 						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+
+
+	v3270_ft_settings_signals[V3270_FT_SETTINGS_HAS_ACTIVITY_SIGNAL] =
+		g_signal_new(	"has-activity",
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_FIRST,
+						G_STRUCT_OFFSET (V3270FTSettingsClass, signal.has_activity),
+						NULL, NULL,
+						v3270ft_VOID__VOID_BOOLEAN,
+						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+
 
 
  }
@@ -526,6 +545,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
  {
  	GTK_V3270_FT_SETTINGS(widget)->activity = activity;
  	v3270_ft_settings_reset(widget);
+	g_signal_emit(widget, v3270_ft_settings_signals[V3270_FT_SETTINGS_HAS_ACTIVITY_SIGNAL], 0, (activity == NULL ? FALSE : TRUE));
  }
 
  LIB3270_EXPORT GObject * v3270_ft_settings_get_activity(GtkWidget *widget)
