@@ -102,7 +102,6 @@
  	debug("%s",__FUNCTION__);
  }
 
-
  static void V3270FTSettings_class_init(G_GNUC_UNUSED V3270FTSettingsClass *klass)
  {
 	GObjectClass * gobject_class	= G_OBJECT_CLASS(klass);

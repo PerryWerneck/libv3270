@@ -38,7 +38,6 @@
  	GtkDialog parent;
 
  	GtkWidget * settings;
- 	GtkWidget * queue;
 
  	struct {
  		GtkWidget * valid;
@@ -46,6 +45,13 @@
  		GtkWidget * update;
  		GtkWidget * reset;
  	} button;
+
+ 	struct {
+		GtkWidget * view;
+		GtkWidget * load;
+		GtkWidget * save;
+		GtkWidget * saveAs;
+ 	} queue;
 
  };
 
@@ -118,14 +124,13 @@ static void reset_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widge
 static void update_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
 {
 	v3270_ft_settings_update(widget->settings);
-	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(widget->queue));
-	//gtk_widget_queue_draw(widget->queue);
+	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(widget->queue.view));
 }
 
 static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
 {
 	GtkTreeIter		  iter;
-	GtkTreeModel	* model	= gtk_tree_view_get_model(GTK_TREE_VIEW(widget->queue));
+	GtkTreeModel	* model	= gtk_tree_view_get_model(GTK_TREE_VIEW(widget->queue.view));
 
 	if(gtk_tree_model_get_iter_first(model,&iter))
 	{
@@ -164,7 +169,7 @@ static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
 	}
 
 	// Not found, insert it.
-	v3270_activity_list_append(widget->queue,v3270_ft_settings_create_activity(widget->settings));
+	v3270_activity_list_append(widget->queue.view,v3270_ft_settings_create_activity(widget->settings));
 
 }
 
@@ -173,7 +178,13 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 	widget->settings = v3270_ft_settings_new();
 	g_signal_connect(G_OBJECT(widget->settings),"validity",G_CALLBACK(validity_changed),widget);
 
-	gtk_window_set_title(GTK_WINDOW(widget),_( "3270 File transfer"));
+	// Does the dialog have header bar?
+	GtkHeaderBar * header = GTK_HEADER_BAR(gtk_dialog_get_header_bar(GTK_DIALOG(widget)));
+
+	if(header)
+		gtk_header_bar_set_title(header,_( "3270 File transfer"));
+	else
+		gtk_window_set_title(GTK_WINDOW(widget),_( "3270 File transfer"));
 
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(widget))),18);
@@ -213,14 +224,14 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 	// Create file list view
 	{
-		widget->queue = v3270_activity_list_new();
-		gtk_widget_set_tooltip_markup(widget->queue,_("Files to transfer"));
-		g_signal_connect(G_OBJECT(widget->queue),"row-activated",G_CALLBACK(activity_selected),widget);
+		widget->queue.view = v3270_activity_list_new();
+		gtk_widget_set_tooltip_markup(widget->queue.view,_("Files to transfer"));
+		g_signal_connect(G_OBJECT(widget->queue.view),"row-activated",G_CALLBACK(activity_selected),widget);
 
 		// Put the view inside a scrolled window.
 		GtkWidget * scrolled = gtk_scrolled_window_new(NULL,NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
-		gtk_container_add(GTK_CONTAINER(scrolled),widget->queue);
+		gtk_container_add(GTK_CONTAINER(scrolled),widget->queue.view);
 
 		gtk_widget_set_vexpand(scrolled,TRUE);
 		gtk_widget_set_hexpand(scrolled,TRUE);
@@ -236,10 +247,46 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		v3270_ft_activity_set_remote_filename(activity,"remote---");
 		v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_SEND|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP|LIB3270_FT_OPTION_APPEND|LIB3270_FT_RECORD_FORMAT_VARIABLE);
 
-		v3270_activity_list_append(widget->queue,activity);
+		v3270_activity_list_append(widget->queue.view,activity);
 #endif // DEBUG
 
+		// Create Transfer queue buttons
+		// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+		widget->queue.load = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_SMALL_TOOLBAR);
+		gtk_widget_set_tooltip_markup(widget->queue.load,_("Get transfer queue from file"));
+
+		widget->queue.save = gtk_button_new_from_icon_name("document-save",GTK_ICON_SIZE_SMALL_TOOLBAR);
+		gtk_widget_set_tooltip_markup(widget->queue.save,_("Save transfer queue"));
+		gtk_widget_set_sensitive(widget->queue.save,FALSE);
+
+		widget->queue.saveAs = gtk_button_new_from_icon_name("document-save-as",GTK_ICON_SIZE_SMALL_TOOLBAR);
+		gtk_widget_set_tooltip_markup(widget->queue.saveAs,_("Save transfer queue to file"));
+
+		if(header)
+		{
+
+			debug("Dialog %s header bar","have");
+			gtk_header_bar_pack_start(header,widget->queue.load);
+			gtk_header_bar_pack_start(header,widget->queue.save);
+			gtk_header_bar_pack_start(header,widget->queue.saveAs);
+
+			gtk_widget_show_all(widget->queue.load);
+		}
+		else
+		{
+			debug("Dialog %s header bar","don't have");
+
+			GtkBox * box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6));
+			gtk_box_pack_start(GTK_BOX(container),GTK_WIDGET(box),FALSE,FALSE,0);
+
+			gtk_box_pack_end(box,widget->queue.load,FALSE,FALSE,0);
+			gtk_box_pack_end(box,widget->queue.save,FALSE,FALSE,0);
+			gtk_box_pack_end(box,widget->queue.saveAs,FALSE,FALSE,0);
+
+		}
+
 	}
+
 
 }
 
@@ -251,7 +298,7 @@ LIB3270_EXPORT GtkWidget * v3270_ft_dialog_new(GtkWidget *parent)
 	GtkWidget * dialog =
 		GTK_WIDGET(g_object_new(
 			GTK_TYPE_V3270_FT_DIALOG,
-			"use-header-bar", 0, // (use_header ? 1 : 0),
+			"use-header-bar", (use_header ? 1 : 0),
 			NULL
 		));
 

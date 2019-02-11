@@ -62,7 +62,6 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *paren
 			NULL
 		));
 
-	gtk_window_set_title(GTK_WINDOW(dialog), title);
 	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
 
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
@@ -79,11 +78,14 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *paren
 
 	if(header)
 	{
+		gtk_header_bar_set_title(GTK_HEADER_BAR(header),title);
 		gtk_header_bar_pack_start(GTK_HEADER_BAR(header),create_button(dialog,_("_Cancel"),G_CALLBACK(cancel_clicked)));
 		gtk_header_bar_pack_end(GTK_HEADER_BAR(header),create_button(dialog,apply,G_CALLBACK(apply_clicked)));
 	}
 	else
 	{
+		gtk_window_set_title(GTK_WINDOW(dialog), title);
+
 		gtk_dialog_add_buttons(
 			GTK_DIALOG (dialog),
 			_("_Cancel"), GTK_RESPONSE_CANCEL,

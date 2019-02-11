@@ -148,6 +148,9 @@
 		<Unit filename="src/v3270ft/activity.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/v3270ft/activitylist.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/v3270ft/dialog.c">
 			<Option compilerVar="CC" />
 		</Unit>

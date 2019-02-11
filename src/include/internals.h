@@ -69,8 +69,20 @@
  G_GNUC_INTERNAL GtkWidget	* v3270_dialog_create_grid(GtkAlign align);
  G_GNUC_INTERNAL GtkWidget	* v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
 
+ // Activity list widget.
+ #define GTK_TYPE_V3270_FT_ACTIVITY_LIST				(V3270FTActivityList_get_type ())
+ #define GTK_V3270_FT_ACTIVITY_LIST(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_FT_ACTIVITY_LIST, V3270FTActivityList))
+ #define GTK_V3270_FT_ACTIVITY_LIST_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_FT_ACTIVITY_LIST, V3270FTActivityListClass))
+ #define GTK_IS_V3270_FT_ACTIVITY_LIST(obj)				(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_FT_ACTIVITY_LIST))
+ #define GTK_IS_V3270_FT_ACTIVITY_LIST_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_FT_ACTIVITY_LIST))
+ #define GTK_V3270_FT_ACTIVITY_LIST_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_FT_ACTIVITY_LIST, V3270FTActivityListClass))
+
+ typedef struct _V3270FTActivityList		V3270FTActivityList;
+ typedef struct _V3270FTActivityListClass	V3270FTActivityListClass;
+
  G_GNUC_INTERNAL GtkWidget	* v3270_activity_list_new();
  G_GNUC_INTERNAL void		  v3270_activity_list_append(GtkWidget *widget, GObject *activity);
+ G_GNUC_INTERNAL void		  v3270_activity_list_load(GtkWidget *widget);
 
  G_END_DECLS
 
