@@ -93,7 +93,9 @@
 	typedef struct _V3270FTSettingsClass	V3270FTSettingsClass;
 
 	LIB3270_EXPORT GtkWidget	* v3270_ft_settings_new();
+
 	LIB3270_EXPORT void			  v3270_ft_settings_set_activity(GtkWidget *widget, GObject *activity);
+	LIB3270_EXPORT GObject 		* v3270_ft_settings_create_activity(GtkWidget *widget);
 
 	LIB3270_EXPORT void			  v3270_ft_settings_reset(GtkWidget *widget);
 	LIB3270_EXPORT void			  v3270_ft_settings_update(GtkWidget *widget);

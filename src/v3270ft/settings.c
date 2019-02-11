@@ -591,6 +591,14 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	}
  }
 
+ LIB3270_EXPORT GObject * v3270_ft_settings_create_activity(GtkWidget *widget)
+ {
+	V3270FTSettings * settings = GTK_V3270_FT_SETTINGS(widget);
+	settings->activity = v3270_ft_activity_new();
+	v3270_ft_settings_update(widget);
+	return settings->activity;
+ }
+
  LIB3270_EXPORT void v3270_ft_settings_set_options(GtkWidget *widget, LIB3270_FT_OPTION options)
  {
  	int ix;

@@ -122,10 +122,10 @@ static void update_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widg
 	//gtk_widget_queue_draw(widget->queue);
 }
 
-static void insert_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
 {
 	GtkTreeIter		  iter;
-	GtkTreeModel	* model	= gtk_tree_view_get_model(widget->queue);
+	GtkTreeModel	* model	= gtk_tree_view_get_model(GTK_TREE_VIEW(widget->queue));
 
 	if(gtk_tree_model_get_iter_first(model,&iter))
 	{
@@ -136,7 +136,26 @@ static void insert_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widg
 
 			if(activity && v3270_ft_settings_equals(widget->settings,activity))
 			{
-				debug("%s: Activity already inserted",__FUNCTION__);
+				// Activity already exist
+				GtkWidget * dialog =
+					gtk_message_dialog_new(
+						GTK_WINDOW(gtk_widget_get_toplevel(button)),
+						GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_CLOSE,
+						_("Activity already on the queue")
+					);
+
+				gtk_message_dialog_format_secondary_text(
+					GTK_MESSAGE_DIALOG(dialog),
+					_( "You can't add more than one acitivity with the same files.")
+				);
+
+				gtk_window_set_title(GTK_WINDOW(dialog),_("Can't add activity"));
+
+				gtk_dialog_run(GTK_DIALOG(dialog));
+				gtk_widget_destroy(dialog);
+
 				return;
 			}
 
@@ -145,6 +164,7 @@ static void insert_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widg
 	}
 
 	// Not found, insert it.
+	v3270_activity_list_append(widget->queue,v3270_ft_settings_create_activity(widget->settings));
 
 }
 
@@ -175,13 +195,13 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		g_object_set(G_OBJECT(widget->button.valid),"margin-top",6,NULL);
 
 		widget->button.reset = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Reset"),FALSE,FALSE,0);
-		g_signal_connect(widget->button.reset,"clicked",reset_clicked,widget);
+		g_signal_connect(widget->button.reset,"clicked",G_CALLBACK(reset_clicked),widget);
 
 		widget->button.update = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Update"),FALSE,FALSE,0);
-		g_signal_connect(widget->button.update,"clicked",update_clicked,widget);
+		g_signal_connect(widget->button.update,"clicked",G_CALLBACK(update_clicked),widget);
 
 		widget->button.insert = v3270_box_pack_end(widget->button.valid,gtk_button_new_with_mnemonic("_Insert"),FALSE,FALSE,0);
-		g_signal_connect(widget->button.insert,"clicked",insert_clicked,widget);
+		g_signal_connect(widget->button.insert,"clicked",G_CALLBACK(insert_clicked),widget);
 
 		gtk_widget_set_sensitive(widget->button.update,FALSE);
 		gtk_widget_set_sensitive(widget->button.reset,FALSE);
