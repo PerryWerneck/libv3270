@@ -279,6 +279,9 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 			GtkWidget * frame = v3270_dialog_create_frame(scrolled,_("Transfer queue"));
 			gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
 
+			g_object_set(G_OBJECT(scrolled),"margin-start",6,NULL);
+			g_object_set(G_OBJECT(scrolled),"margin-end",6,NULL);
+
 			gtk_header_bar_pack_start(header,widget->queue.load);
 			gtk_header_bar_pack_start(header,widget->queue.save);
 			gtk_header_bar_pack_start(header,widget->queue.saveAs);
