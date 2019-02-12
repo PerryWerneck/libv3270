@@ -35,9 +35,21 @@
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
+ enum _SIGNALS
+ {
+ 	V3270_WORKER_ACTIVITY_SIGNAL,	///< @brief Indicates if the list has an activity set.
+
+ 	V3270_WORKER_LAST_SIGNAL
+ };
+
  struct _V3270FTWorkerClass
  {
  	GtkGridClass parent_class;
+
+	struct
+	{
+		void (*activity)(GtkWidget *, GObject *);
+	} signal;
 
  };
 
@@ -46,22 +58,51 @@
  	GtkGrid parent;
 
 	GtkProgressBar	* pbar;						///< @brief Progress bar.
-	GObject 		* activity;					///< @brief File transfer activity;
+	GObject 		* activity;					///< @brief File transfer activity.
+	GSource			* pulse;					///< @brief Process pulse.
 
 	GtkEntry * field[PROGRESS_FIELD_COUNT];		///< @brief Transfer information widgets.
-
 
  };
 
  G_DEFINE_TYPE(V3270FTWorker, V3270FTWorker, GTK_TYPE_GRID);
 
+ static guint v3270_worker_signals[V3270_WORKER_LAST_SIGNAL] = { 0 };
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
+
+ static gboolean do_pulse(V3270FTWorker *worker) {
+ 	gtk_progress_bar_pulse(worker->pbar);
+	return TRUE;
+ }
+
+ static void pulse_start(V3270FTWorker *worker)
+ {
+ 	debug("%s(%p)",__FUNCTION__,worker->pulse);
+	if(!worker->pulse)
+	{
+		worker->pulse = g_timeout_source_new(100);
+		g_source_set_callback(worker->pulse,(GSourceFunc) do_pulse,worker,NULL);
+		g_source_attach(worker->pulse,NULL);
+	}
+ }
+
+ static void pulse_stop(V3270FTWorker *worker)
+ {
+	if(worker->pulse)
+	{
+		g_source_destroy(worker->pulse);
+		worker->pulse = NULL;
+	}
+ }
 
  static void finalize(GObject *object)
  {
 	debug("%s",__FUNCTION__);
 
 	V3270FTWorker * worker = GTK_V3270_FT_WORKER(object);
+
+	pulse_stop(worker);
 
 	if(worker->activity)
 	{
@@ -73,9 +114,28 @@
 
  }
 
+ static void V3270FTWorker_activity(GtkWidget G_GNUC_UNUSED(*widget), GObject G_GNUC_UNUSED(*activity))
+ {
+ 	debug("%s",__FUNCTION__);
+ }
+
  static void V3270FTWorker_class_init(G_GNUC_UNUSED V3270FTWorkerClass *klass)
  {
-	G_OBJECT_CLASS(klass)->finalize = finalize;
+	GObjectClass * gobject_class = G_OBJECT_CLASS(klass);
+
+	gobject_class->finalize = finalize;
+
+	klass->signal.activity = V3270FTWorker_activity;
+
+	v3270_worker_signals[V3270_WORKER_ACTIVITY_SIGNAL] =
+	g_signal_new(	"activity",
+					G_OBJECT_CLASS_TYPE (gobject_class),
+					G_SIGNAL_RUN_FIRST,
+					G_STRUCT_OFFSET (V3270FTWorkerClass, signal.activity),
+					NULL, NULL,
+					v3270ft_VOID__VOID_OBJECT,
+					G_TYPE_NONE, 1, G_TYPE_OBJECT);
+
  }
 
  static GtkWidget * create_label(V3270FTWorker *widget, const gchar *text, gint left, gint top)
@@ -205,6 +265,11 @@
 	{
 		gtk_entry_set_text(worker->field[ix],"");
 	}
+
+	gtk_progress_bar_set_text(worker->pbar,_("Starting transfer"));
+	pulse_start(worker);
+
+	g_signal_emit(widget, v3270_worker_signals[V3270_WORKER_ACTIVITY_SIGNAL], 0, worker->activity);
 
  }
 
