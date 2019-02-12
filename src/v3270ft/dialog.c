@@ -44,6 +44,7 @@
  		GtkWidget * update;
  		GtkWidget * remove;
  		GtkWidget * reset;
+ 		GtkWidget * begin;
  	} button;
 
  	struct {
@@ -126,6 +127,11 @@ static void save_queue_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *
 static void save_queue_as_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
 {
 	v3270_activity_list_save_as(widget->queue.view);
+}
+
+static void begin_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+{
+	gtk_dialog_response(GTK_DIALOG(widget),GTK_RESPONSE_ACCEPT);
 }
 
 static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
@@ -281,9 +287,15 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 			GtkWidget * frame = v3270_dialog_create_frame(scrolled,_("Transfer queue"));
 			gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
 
+			widget->button.begin = gtk_button_new_from_icon_name("network-transmit",GTK_ICON_SIZE_SMALL_TOOLBAR);
+			g_object_set(G_OBJECT(widget->button.begin),"margin-end",12,NULL);
+			g_signal_connect(widget->button.begin,"clicked",G_CALLBACK(begin_clicked),widget);
+
+			gtk_header_bar_pack_start(header,widget->button.begin);
 			gtk_header_bar_pack_start(header,widget->queue.load);
 			gtk_header_bar_pack_start(header,widget->queue.save);
 			gtk_header_bar_pack_start(header,widget->queue.saveAs);
+
 		}
 		else
 		{
@@ -302,7 +314,14 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 			gtk_box_pack_start(GTK_BOX(hBox),GTK_WIDGET(scrolled),TRUE,TRUE,0);
 
+			gtk_dialog_add_button(GTK_DIALOG (widget),_("_Cancel"),GTK_RESPONSE_CANCEL);
+			widget->button.begin = gtk_dialog_add_button(GTK_DIALOG (widget),_("B_egin transfer"),GTK_RESPONSE_ACCEPT);
+
 		}
+
+		// gtk_widget_set_sensitive(widget->button.begin,FALSE);
+		gtk_widget_set_tooltip_markup(widget->button.begin,_("Start transfer"));
+
 
 #ifdef DEBUG
 		GObject * activity = v3270_ft_activity_new();
