@@ -69,15 +69,15 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *paren
 
 	if(parent)
 	{
-		gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
+		gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(parent)));
 		gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 	}
 
-	GtkWidget * header = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
-
-	if(header)
+	if(use_header)
 	{
+		GtkWidget * header = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
+
 		gtk_header_bar_set_title(GTK_HEADER_BAR(header),title);
 		gtk_header_bar_pack_start(GTK_HEADER_BAR(header),create_button(dialog,_("_Cancel"),G_CALLBACK(cancel_clicked)));
 		gtk_header_bar_pack_end(GTK_HEADER_BAR(header),create_button(dialog,apply,G_CALLBACK(apply_clicked)));

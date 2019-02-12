@@ -322,7 +322,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		// gtk_widget_set_sensitive(widget->button.begin,FALSE);
 		gtk_widget_set_tooltip_markup(widget->button.begin,_("Start transfer"));
 
-
+/*
 #ifdef DEBUG
 		GObject * activity = v3270_ft_activity_new();
 
@@ -332,6 +332,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 		v3270_activity_list_append(widget->queue.view,activity);
 #endif // DEBUG
+*/
 
 	}
 
