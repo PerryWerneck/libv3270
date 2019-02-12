@@ -158,8 +158,7 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 
 static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
-	GtkWidget * dialog	= v3270_dialog_new(_("Color setup"), NULL, _("_Save"));
-
+	GtkWidget * dialog	= v3270_dialog_new(terminal, _("Color setup"), _("_Save"));
 	GtkWidget * colors = v3270_color_selection_new(terminal);
 
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),colors,TRUE,TRUE,2);

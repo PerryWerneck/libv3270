@@ -311,7 +311,7 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 	}
 
 	GtkWidget * dialog	= v3270_host_select_new(widget);
-	GtkWidget * win	= v3270_dialog_new(_("Configure host"), GTK_WINDOW(gtk_widget_get_toplevel(widget)), _("C_onnect"));
+	GtkWidget * win	= v3270_dialog_new(widget, _("Configure host"), _("C_onnect"));
 
 	gtk_window_set_default_size(GTK_WINDOW(win), 700, 150);
 

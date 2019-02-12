@@ -70,5 +70,17 @@
 	return child;
  }
 
+ GtkWidget * v3270_box_pack_start(GtkWidget *box, GtkWidget *child, gboolean expand, gboolean fill, guint padding)
+ {
+	gtk_box_pack_start(GTK_BOX(box),child,expand,fill,padding);
+	return child;
+ }
+
+ GtkWidget * v3270_box_pack_end(GtkWidget *box, GtkWidget *child, gboolean expand, gboolean fill, guint padding)
+ {
+	gtk_box_pack_end(GTK_BOX(box),child,expand,fill,padding);
+ 	return child;
+ }
+
 
 

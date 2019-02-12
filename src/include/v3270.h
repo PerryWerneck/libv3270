@@ -289,7 +289,7 @@
 
  LIB3270_EXPORT int				  v3270_exec_command(GtkWidget *widget, const gchar *cmdline);
 
- LIB3270_EXPORT GtkWidget		* v3270_dialog_new(const gchar *title, GtkWindow *parent, const gchar *apply);
+ LIB3270_EXPORT GtkWidget		* v3270_dialog_new(GtkWidget *widget, const gchar *title, const gchar *apply);
 
  G_END_DECLS
 

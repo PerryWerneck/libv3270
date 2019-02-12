@@ -50,7 +50,7 @@ static GtkWidget * create_button(GtkWidget *dialog, const gchar *mnemonic, GCall
 	return button;
 }
 
-LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *parent, const gchar *apply)
+LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *title, const gchar *apply)
 {
 	gboolean use_header;
 	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
@@ -67,9 +67,9 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(const gchar *title, GtkWindow *paren
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),18);
 
-	if(parent)
+	if(widget)
 	{
-		gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(parent)));
+		gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(widget)));
 		gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 	}
