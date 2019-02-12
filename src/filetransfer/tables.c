@@ -214,3 +214,12 @@ const  struct v3270_activity_list_option v3270_activity_list_options[] =
 	{ 0,										NULL,				NULL				}
 };
 
+const struct v3270_ft_worker_field v3270_ft_worker_fields[PROGRESS_FIELD_COUNT] =
+{
+	{ N_("Local:"),		N_("Path and name of the local file")	},
+	{ N_("Remote:"),	N_("The name of the file in the host")	},
+	{ N_("Total:"),		N_("Total bytes to transfer")			},
+	{ N_("Current:"),	N_("Current transfer position")			},
+	{ N_("Speed:"),		N_("Transfer speed")					},
+	{ N_("ETA:"),		N_("Estimated transfer arrival")		}
+};

@@ -48,45 +48,6 @@
 
 guint v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_COUNT] = { 0 };
 
-static const struct _field {
-
-	const gchar *label;
-	const gchar *tooltip;
-
-} field[PROGRESS_FIELD_COUNT] = {
-
-	{
-		N_("Local:"),
-		N_("Path and name of the local file")
-	},
-
-	{
-		N_("Remote:"),
-		N_("The name of the file in the host")
-	},
-
-	{
-		N_("Total:"),
-		N_("Total bytes to transfer")
-	},
-
-	{
-		N_("Current:"),
-		N_("Current transfer position")
-	},
-
-	{
-		N_("Speed:"),
-		N_("Transfer speed")
-	},
-
-	{
-		N_("ETA:"),
-		N_("Estimated transfer arrival")
-	},
-
-};
-
 // http://www3.rocketsoftware.com/bluezone/help/v42/en/bz/DISPLAY/IND$FILE/IND$FILE_Technical_Reference.htm
 
 static const struct _ftmsg {
@@ -390,10 +351,10 @@ static GtkWidget * create_text(guint width) {
 
 static GtkWidget * create_label(int id, GtkWidget *entry) {
 
-	GtkWidget * widget = gtk_label_new(gettext(field[id].label));
+	GtkWidget * widget = gtk_label_new(gettext(v3270_ft_worker_fields[id].label));
 
-	gtk_widget_set_tooltip_markup(widget,field[id].tooltip);
-	gtk_widget_set_tooltip_markup(entry,field[id].tooltip);
+	gtk_widget_set_tooltip_markup(widget,v3270_ft_worker_fields[id].tooltip);
+	gtk_widget_set_tooltip_markup(entry,v3270_ft_worker_fields[id].tooltip);
 
 	gtk_widget_set_halign(widget,GTK_ALIGN_START);
 	gtk_widget_set_valign(widget,GTK_ALIGN_CENTER);

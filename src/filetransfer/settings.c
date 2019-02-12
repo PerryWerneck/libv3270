@@ -64,7 +64,6 @@
  		GtkEntry * remote;
  	} file;
 
-
  	struct
  	{
 		LIB3270_FT_OPTION	options;

@@ -104,10 +104,30 @@
 		const gchar			* value;
 	};
 
-	G_GNUC_INTERNAL extern const struct v3270ft_option	ft_option[];
-	G_GNUC_INTERNAL extern const struct v3270ft_type	ft_type[];
-	G_GNUC_INTERNAL extern const struct v3270ft_value	ft_value[];
-	G_GNUC_INTERNAL extern const struct v3270_activity_list_option v3270_activity_list_options[];
+	struct v3270_ft_worker_field
+	{
+		const gchar *label;
+		const gchar *tooltip;
+	};
+
+	typedef enum progress_field {
+
+		PROGRESS_FIELD_LOCAL,
+		PROGRESS_FIELD_REMOTE,
+		PROGRESS_FIELD_TOTAL,
+		PROGRESS_FIELD_CURRENT,
+		PROGRESS_FIELD_SPEED,
+		PROGRESS_FIELD_ETA,
+
+		PROGRESS_FIELD_COUNT
+
+	} PROGRESS_FIELD;
+
+	G_GNUC_INTERNAL extern const struct v3270ft_option				ft_option[];
+	G_GNUC_INTERNAL extern const struct v3270ft_type				ft_type[];
+	G_GNUC_INTERNAL extern const struct v3270ft_value				ft_value[];
+	G_GNUC_INTERNAL extern const struct v3270_activity_list_option	v3270_activity_list_options[];
+	G_GNUC_INTERNAL extern const struct v3270_ft_worker_field		v3270_ft_worker_fields[PROGRESS_FIELD_COUNT];
 
 	#define ENTRY_FILENAME_LENGTH FILENAME_MAX
 	struct v3270ft_entry {
@@ -135,19 +155,6 @@
 		GList				* active;							/// Active element.
 
 	};
-
-	typedef enum progress_field {
-
-		PROGRESS_FIELD_LOCAL,
-		PROGRESS_FIELD_REMOTE,
-		PROGRESS_FIELD_TOTAL,
-		PROGRESS_FIELD_CURRENT,
-		PROGRESS_FIELD_SPEED,
-		PROGRESS_FIELD_ETA,
-
-		PROGRESS_FIELD_COUNT
-
-	} PROGRESS_FIELD;
 
 	enum V3270FTPROGRESS_SIGNAL {
 

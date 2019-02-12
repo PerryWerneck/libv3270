@@ -149,7 +149,12 @@ static void disconnect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *term
 
 static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
-	GtkWidget * dialog = v3270_ft_dialog_new(terminal);
+	GtkWidget * dialog	= v3270_dialog_new(terminal, _("test"), _("test"));
+	GtkWidget * worker = v3270_ft_worker_new();
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),worker,TRUE,TRUE,2);
+
+	// GtkWidget * dialog = v3270ftprogress_new();
+	// GtkWidget * dialog = v3270_ft_dialog_new(terminal);
 
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));

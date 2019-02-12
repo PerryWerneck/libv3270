@@ -146,4 +146,17 @@
 
 	G_END_DECLS
 
+	// File transfer widget
+	#define GTK_TYPE_V3270_FT_WORKER				(V3270FTWorker_get_type ())
+	#define GTK_V3270_FT_WORKER(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_FT_WORKER, V3270FTWorker))
+	#define GTK_V3270_FT_WORKER_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_FT_WORKER, V3270FTWorkerClass))
+	#define GTK_IS_V3270_FT_WORKER(obj)				(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_FT_WORKER))
+	#define GTK_IS_V3270_FT_WORKER_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_FT_WORKER))
+	#define GTK_V3270_FT_WORKER_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_FT_WORKER, V3270FTWorkerClass))
+
+	typedef struct _V3270FTWorker		V3270FTWorker;
+	typedef struct _V3270FTWorkerClass	V3270FTWorkerClass;
+
+	LIB3270_EXPORT GtkWidget			* v3270_ft_worker_new();
+
 #endif // V3270FT_H_INCLUDED
