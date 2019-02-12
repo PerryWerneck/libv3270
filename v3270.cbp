@@ -121,6 +121,9 @@
 		<Unit filename="src/filetransfer/v3270ftprogress.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/filetransfer/worker.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/hostselect.h" />

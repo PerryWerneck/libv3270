@@ -71,7 +71,7 @@
 
  static void dispose(GObject *object)
  {
-	debug("%s",__FUNCTION__);
+	debug("activity::%s(%p)",__FUNCTION__,object);
 
 	V3270FTActivity * activity = G_V3270_FT_ACTIVITY(object);
 

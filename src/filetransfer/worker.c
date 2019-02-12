@@ -45,9 +45,10 @@
  {
  	GtkGrid parent;
 
-	GtkProgressBar * pbar;	///< @brief Progress bar.
+	GtkProgressBar	* pbar;						///< @brief Progress bar.
+	GObject 		* activity;					///< @brief File transfer activity;
 
-	GtkEntry * field[PROGRESS_FIELD_COUNT];	///< @brief Transfer information widgets.
+	GtkEntry * field[PROGRESS_FIELD_COUNT];		///< @brief Transfer information widgets.
 
 
  };
@@ -60,8 +61,13 @@
  {
 	debug("%s",__FUNCTION__);
 
-	// V3270FTWorker * worker = GTK_V3270_FT_WORKER(object);
+	V3270FTWorker * worker = GTK_V3270_FT_WORKER(object);
 
+	if(worker->activity)
+	{
+		g_object_unref(worker->activity);
+		worker->activity = NULL;
+	}
 
 	G_OBJECT_CLASS(V3270FTWorker_parent_class)->finalize(object);
 
@@ -115,7 +121,7 @@
 	gtk_box_set_homogeneous(GTK_BOX(views),TRUE);
 	gtk_grid_attach(GTK_GRID(widget),views,0,2,10,1);
 	g_object_set(G_OBJECT(views),"margin-top",8,NULL);
-	g_object_set(G_OBJECT(views),"margin-botton",8,NULL);
+	g_object_set(G_OBJECT(views),"margin-bottom",8,NULL);
 
 	{
 		// Left options
@@ -166,5 +172,39 @@
  LIB3270_EXPORT GtkWidget * v3270_ft_worker_new()
  {
 	return GTK_WIDGET(g_object_new(GTK_TYPE_V3270_FT_WORKER, NULL));
+ }
+
+ LIB3270_EXPORT void v3270_ft_worker_set_activity(GtkWidget *widget, GObject *activity)
+ {
+ 	size_t ix;
+
+	V3270FTWorker * worker = GTK_V3270_FT_WORKER(widget);
+
+	if(worker->activity)
+	{
+		g_object_unref(worker->activity);
+		worker->activity = NULL;
+	}
+
+	if(activity)
+	{
+		worker->activity = activity;
+		g_object_ref(worker->activity);
+
+		gtk_entry_set_text(worker->field[PROGRESS_FIELD_LOCAL],v3270_ft_activity_get_local_filename(activity));
+		gtk_entry_set_text(worker->field[PROGRESS_FIELD_REMOTE],v3270_ft_activity_get_remote_filename(activity));
+
+	}
+	else
+	{
+		gtk_entry_set_text(worker->field[PROGRESS_FIELD_LOCAL],"");
+		gtk_entry_set_text(worker->field[PROGRESS_FIELD_REMOTE],"");
+	}
+
+	for(ix = PROGRESS_FIELD_TOTAL; ix < PROGRESS_FIELD_COUNT; ix++)
+	{
+		gtk_entry_set_text(worker->field[ix],"");
+	}
+
  }
 

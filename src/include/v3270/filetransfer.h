@@ -158,5 +158,6 @@
 	typedef struct _V3270FTWorkerClass	V3270FTWorkerClass;
 
 	LIB3270_EXPORT GtkWidget			* v3270_ft_worker_new();
+	LIB3270_EXPORT void			  		  v3270_ft_worker_set_activity(GtkWidget *widget, GObject *activity);
 
 #endif // V3270FT_H_INCLUDED
