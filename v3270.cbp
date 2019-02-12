@@ -74,123 +74,126 @@
 		<Unit filename="src/dialogs/tools.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/filetransfer/activity.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/activitylist.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/filelist.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/get.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/load.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/marshal.h" />
+		<Unit filename="src/filetransfer/misc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/private.h" />
+		<Unit filename="src/filetransfer/save.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/select.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/set.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/settings.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/tables.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/transfer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/v3270ft.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/filetransfer/v3270ftprogress.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/hostselect.h" />
 		<Unit filename="src/include/internals.h" />
 		<Unit filename="src/include/v3270.h" />
+		<Unit filename="src/include/v3270/accessible.h" />
 		<Unit filename="src/include/v3270/colorscheme.h" />
 		<Unit filename="src/include/v3270/filetransfer.h" />
 		<Unit filename="src/include/v3270/ftprogress.h" />
 		<Unit filename="src/include/v3270/print.h" />
 		<Unit filename="src/include/v3270/trace.h" />
+		<Unit filename="src/terminal/accessible.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/blink.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/callbacks.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/charset.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/colors.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/draw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/font.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/iocallback.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/keyboard.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/linux/iosource.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/marshal.h" />
+		<Unit filename="src/terminal/oia.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/private.h" />
+		<Unit filename="src/terminal/properties.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/security.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/selection.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/widget.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/windows/iosource.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/windows/resources.rc" />
 		<Unit filename="src/testprogram/testprogram.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/trace/exec.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/trace/trace.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/v3270/accessible.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/blink.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/callbacks.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/charset.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/colors.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/draw.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/font.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/iocallback.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/keyboard.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/linux/iosource.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/macros.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/mouse.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/oia.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/v3270/private.h" />
-		<Unit filename="src/v3270/properties.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/security.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/selection.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/widget.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270/windows/iosource.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/activity.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/activitylist.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/dialog.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/filelist.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/get.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/load.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/misc.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/v3270ft/private.h" />
-		<Unit filename="src/v3270ft/save.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/select.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/set.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/settings.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/tables.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/transfer.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/v3270ft.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/v3270ft/v3270ftprogress.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

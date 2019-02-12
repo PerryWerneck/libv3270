@@ -34,6 +34,7 @@
 
  #include <libintl.h>
  #include <glib/gi18n.h>
+ #include <stdlib.h>
 
  #include <lib3270.h>
  #include <lib3270/log.h>
@@ -58,53 +59,92 @@
  	return rc;
  }
 
- static void set_property(H3270 *hSession, gchar *ptr)
+ static int set_property(H3270 *hSession, const gchar *name, const gchar * value)
  {
  	size_t ix;
 
- 	const gchar * name = get_word(&ptr);
-
- 	debug("property_name: \"%s\"",name);
+ 	debug("%s=%s",name,value);
 
  	// Check toggles
  	for(ix = 0; ix < (size_t) LIB3270_TOGGLE_COUNT; ix++)
 	{
-		debug("%s %s %d",name,lib3270_get_toggle_name((LIB3270_TOGGLE) ix),g_ascii_strcasecmp(name,lib3270_get_toggle_name((LIB3270_TOGGLE) ix)));
 		if(g_ascii_strcasecmp(name,lib3270_get_toggle_name((LIB3270_TOGGLE) ix)) == 0)
-		{
-			lib3270_set_toggle(hSession,(LIB3270_TOGGLE) ix, 1);
-			return;
-		}
+			return lib3270_set_toggle(hSession,(LIB3270_TOGGLE) ix, atoi(value));
+
 	}
 
  	// Check boolean properties
- 	const LIB3270_INT_PROPERTY * iProp = lib3270_get_boolean_properties_list();
- 	for(ix = 0; iProp[ix].name; ix++)
+ 	const LIB3270_INT_PROPERTY * bProp = lib3270_get_boolean_properties_list();
+ 	for(ix = 0; bProp[ix].name; ix++)
 	{
-		debug("%s %s %d",name,iProp[ix].name,g_ascii_strcasecmp(name,iProp[ix].name));
-		if(g_ascii_strcasecmp(name,iProp[ix].name) == 0 && iProp[ix].set)
-		{
-			iProp[ix].set(hSession,1);
-			return;
-		}
+		if(g_ascii_strcasecmp(name,bProp[ix].name) == 0 && bProp[ix].set)
+			return bProp[ix].set(hSession,atoi(value));
+
 	}
 
+	// Check integer properties
+ 	const LIB3270_INT_PROPERTY * iProp = lib3270_get_int_properties_list();
+ 	for(ix = 0; iProp[ix].name; ix++)
+	{
+		if(g_ascii_strcasecmp(name,iProp[ix].name) == 0 && iProp[ix].set)
+			return iProp[ix].set(hSession,atoi(value));
 
+	}
+
+	// Check string properties
+	const LIB3270_STRING_PROPERTY * sProp = lib3270_get_string_properties_list();
+ 	for(ix = 0; sProp[ix].name; ix++)
+	{
+		if(g_ascii_strcasecmp(name,sProp[ix].name) == 0 && sProp[ix].set)
+			return sProp[ix].set(hSession,value);
+
+	}
+
+	return errno = ENOENT;
 
  }
 
- void v3270_exec_command(GtkWidget *widget, const gchar *text)
+ int v3270_exec_command(GtkWidget *widget, const gchar *text)
  {
+ 	H3270 *hSession = v3270_get_session(widget);
 	g_autofree gchar * cmdline = g_strdup(text);
 
  	g_strstrip(cmdline);
 
  	debug("cmdline: \"%s\"",cmdline);
 
- 	if(g_str_has_prefix(cmdline,"set "))
+ 	if(g_str_has_prefix(cmdline,"connect"))
 	{
-		set_property(v3270_get_session(widget), cmdline+3);
-		return;
+		return lib3270_reconnect(hSession,0);
 	}
 
+ 	if(g_str_has_prefix(cmdline,"disconnect"))
+	{
+		return lib3270_disconnect(hSession);
+	}
+
+ 	if(g_str_has_prefix(cmdline,"set"))
+	{
+		gchar *txtptr = cmdline+3;
+		const gchar * name = get_word(&txtptr);
+		g_strstrip(txtptr);
+		return set_property(hSession,name,(*txtptr ? txtptr : "1"));
+	}
+
+ 	if(g_str_has_prefix(cmdline,"reset"))
+	{
+		gchar *txtptr = cmdline+3;
+		const gchar * name = get_word(&txtptr);
+		g_strstrip(txtptr);
+		return set_property(hSession,name,(*txtptr ? txtptr : "0"));
+	}
+
+	gchar * sep = strchr(cmdline,'=');
+	if(sep)
+	{
+		*(sep++) = 0;
+		set_property(hSession,g_strstrip(cmdline),g_strstrip(sep));
+	}
+
+	return errno = ENOENT;
  }

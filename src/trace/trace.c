@@ -166,7 +166,11 @@ static void destroy(GtkWidget *widget)
 
  static void activate(G_GNUC_UNUSED GtkButton *button, v3270_trace *window)
  {
-	v3270_exec_command(GTK_WIDGET(window),gtk_entry_get_text(GTK_ENTRY(window->entry)));
+	GtkWidget * terminal = GTK_WIDGET(lib3270_get_user_data(window->hSession));
+
+	int rc = v3270_exec_command(terminal,gtk_entry_get_text(GTK_ENTRY(window->entry)));
+
+	v3270_trace_printf(GTK_WIDGET(window),"exec(\"%s\") exits with rc=%d (%s)\n",gtk_entry_get_text(GTK_ENTRY(window->entry)),rc,strerror(rc));
 	gtk_entry_set_text(GTK_ENTRY(window->entry),"");
  }
 
