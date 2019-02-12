@@ -190,49 +190,28 @@ gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, G_GNUC_UNUSED g
 
 		if(x >= rect[V3270_OIA_SSL].x && x <= (rect[V3270_OIA_SSL].x + rect[V3270_OIA_SSL].width))
 		{
-			if(!lib3270_connected(GTK_V3270(widget)->host))
+			H3270 *hSession = GTK_V3270(widget)->host;
+
+			if(!lib3270_connected(hSession))
 			{
 #ifndef _WIN32
-				gtk_tooltip_set_icon_from_icon_name(tooltip,"gtk-disconnect",GTK_ICON_SIZE_MENU);
+				gtk_tooltip_set_icon_from_icon_name(tooltip,"gtk-disconnect",GTK_ICON_SIZE_DIALOG);
 #endif // GTK_CHECK_VERSION
 				gtk_tooltip_set_markup(tooltip,_( "<b>Identity not verified</b>\nDisconnected from host" ) );
 			}
-			else if(lib3270_get_secure(GTK_V3270(widget)->host) == LIB3270_SSL_UNSECURE)
-			{
-#ifndef _WIN32
-				gtk_tooltip_set_icon_from_icon_name(tooltip,"dialog-information",GTK_ICON_SIZE_MENU);
-#endif
-				gtk_tooltip_set_markup(tooltip,_( "<b>Identity not verified</b>\nThe connection is insecure" ) );
-			}
-			else if(!lib3270_get_SSL_verify_result(GTK_V3270(widget)->host))
-			{
-#ifndef _WIN32
-				gtk_tooltip_set_icon_from_icon_name(tooltip,"gtk-dialog-authentication",GTK_ICON_SIZE_MENU);
-#endif
-				gtk_tooltip_set_markup(tooltip,_( "<b>Identity verified</b>\nThe connection is secure" ) );
-			}
 			else
 			{
-				const struct v3270_ssl_status_msg *msg = v3270_get_ssl_status_msg(widget);
-
-				if(msg)
-				{
-					gchar *text = g_strdup_printf("<b>%s</b>\n%s",_("Identity not verified"),gettext(msg->text));
 #ifndef _WIN32
-					gtk_tooltip_set_icon_from_icon_name(tooltip,msg->icon,GTK_ICON_SIZE_MENU);
+				gtk_tooltip_set_icon_from_icon_name(tooltip,lib3270_get_ssl_state_icon_name(hSession),GTK_ICON_SIZE_DIALOG);
 #endif
-					gtk_tooltip_set_markup(tooltip,text);
-					g_free(text);
-				}
-				else
-				{
-					gchar *text = g_strdup_printf(_("<b>SSL state is undefined</b>Unexpected SSL status %ld"),lib3270_get_SSL_verify_result(GTK_V3270(widget)->host));
-#ifndef _WIN32
-					gtk_tooltip_set_icon_from_icon_name(tooltip,"dialog-error",GTK_ICON_SIZE_MENU);
-#endif // GTK_CHECK_VERSION
-					gtk_tooltip_set_markup(tooltip,text);
-					g_free(text);
-				}
+				v3270_autofree gchar * message =
+						g_strdup_printf(
+							"<b>%s</b>\n%s",
+								lib3270_get_ssl_state_message(hSession),
+								lib3270_get_ssl_state_description(hSession)
+						);
+				gtk_tooltip_set_markup(tooltip,message);
+
 			}
 
 			return TRUE;

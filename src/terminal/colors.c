@@ -30,8 +30,6 @@
  #include <config.h>
  #include "private.h"
 
- #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
  #include <lib3270.h>
  #include <lib3270/log.h>
 

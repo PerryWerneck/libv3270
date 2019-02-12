@@ -51,7 +51,6 @@ BuildRoot:	/var/tmp/%{name}-%{version}
 Provides:	libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
 Conflicts:	otherproviders(libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
 
-BuildRequires:  pkgconfig(openssl)
 BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
 BuildRequires:  autoconf >= 2.61

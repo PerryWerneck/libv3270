@@ -339,8 +339,6 @@ G_GNUC_INTERNAL void			v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton
 G_GNUC_INTERNAL gint			v3270_get_offset_at_point(v3270 *widget, gint x, gint y);
 G_GNUC_INTERNAL gboolean		v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event);
 
-G_GNUC_INTERNAL const struct	v3270_ssl_status_msg * v3270_get_ssl_status_msg(GtkWidget *widget);
-
 // I/O Callbacks
 G_GNUC_INTERNAL GSource			* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
 G_GNUC_INTERNAL void			  IO_source_set_state(GSource *source, gboolean enable);

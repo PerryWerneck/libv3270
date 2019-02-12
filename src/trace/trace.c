@@ -45,8 +45,6 @@
  #include <syslog.h>
 #endif // HAVE_SYSLOG
 
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
  G_BEGIN_DECLS

@@ -57,8 +57,6 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
 static void set_timer(H3270 *session, unsigned char on)
 {
 	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
