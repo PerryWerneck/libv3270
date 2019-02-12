@@ -180,9 +180,10 @@ static void remove_clicked(GtkWidget G_GNUC_UNUSED(*button), V3270FTDialog *widg
 	v3270_ft_settings_set_activity(widget->settings,NULL);
 }
 
-static void enable_queue_save(GtkWidget G_GNUC_UNUSED(*save), gboolean enabled, GtkWidget *button)
+static void enable_queue_save(GtkWidget G_GNUC_UNUSED(*save), gboolean enabled, V3270FTDialog *widget)
 {
-	gtk_widget_set_sensitive(button,enabled);
+	debug("%s: %s",__FUNCTION__,(enabled ? "Enable" : "Disable"));
+	gtk_widget_set_sensitive(widget->queue.save,enabled);
 }
 
 static void V3270FTDialog_init(V3270FTDialog *widget)
@@ -251,7 +252,6 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		gtk_widget_set_tooltip_markup(widget->queue.save,_("Save transfer queue"));
 		g_signal_connect(widget->queue.save,"clicked",G_CALLBACK(save_queue_clicked),widget);
 		gtk_widget_set_sensitive(widget->queue.save,FALSE);
-		g_signal_connect(widget->queue.view,"has-file",G_CALLBACK(enable_queue_save),widget->queue.save);
 
 		widget->queue.saveAs = gtk_button_new_from_icon_name("document-save-as",GTK_ICON_SIZE_SMALL_TOOLBAR);
 		gtk_widget_set_tooltip_markup(widget->queue.saveAs,_("Save transfer queue to file"));
@@ -264,6 +264,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		widget->queue.view = v3270_activity_list_new();
 		gtk_widget_set_tooltip_markup(widget->queue.view,_("Files to transfer"));
 		g_signal_connect(G_OBJECT(widget->queue.view),"row-activated",G_CALLBACK(activity_selected),widget);
+		g_signal_connect(G_OBJECT(widget->queue.view),"has-file",G_CALLBACK(enable_queue_save),widget);
 
 		// Put the view inside a scrolled window.
 		GtkWidget * scrolled = gtk_scrolled_window_new(NULL,NULL);

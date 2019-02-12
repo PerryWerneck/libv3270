@@ -347,7 +347,7 @@
 								_("Save queue to file"),
 								_("Save"),
 								GTK_FILE_CHOOSER_ACTION_SAVE,
-								"",
+								list->filename,
 								N_("XML file"), "*.xml",
 								NULL );
 
