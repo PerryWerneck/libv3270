@@ -180,6 +180,8 @@
 
 	}
 
+	G_OBJECT_CLASS(V3270PrintOperation_parent_class)->dispose(object);
+
  }
 
  static void V3270PrintOperation_class_init(V3270PrintOperationClass *klass)

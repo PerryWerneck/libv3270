@@ -73,6 +73,8 @@
 	g_free(list->filename);
 	list->filename = NULL;
 
+	G_OBJECT_CLASS(V3270FTActivityList_parent_class)->dispose(object);
+
  }
 
  static void V3270FTActivityList_has_file(GtkWidget G_GNUC_UNUSED(*widget), gboolean G_GNUC_UNUSED(has_file))
@@ -186,7 +188,7 @@
  }
 
 
- static void element_start(GMarkupParseContext *context, const gchar *element_name, const gchar **names,const gchar **values, V3270FTActivityList *widget, GError **error)
+ static void element_start(GMarkupParseContext *context, const gchar *element_name, const gchar G_GNUC_UNUSED(**names),const gchar G_GNUC_UNUSED(**values), V3270FTActivityList *widget, GError G_GNUC_UNUSED(**error))
  {
  	debug("%s(%s)",__FUNCTION__, element_name);
 	if(!g_ascii_strcasecmp(element_name,"entry"))

@@ -141,6 +141,9 @@
 	typedef struct _V3270FTDialog		V3270FTDialog;
 	typedef struct _V3270FTDialogClass	V3270FTDialogClass;
 
+	LIB3270_EXPORT GtkWidget			* v3270_ft_dialog_new(GtkWidget *parent);
+	LIB3270_EXPORT void					  v3270_ft_dialog_set_session(GtkWidget *widget, H3270 *hSession);
+
 	G_END_DECLS
 
 #endif // V3270FT_H_INCLUDED

@@ -78,6 +78,8 @@
 	g_free(activity->file.local);
 	g_free(activity->file.remote);
 
+	G_OBJECT_CLASS(V3270FTActivity_parent_class)->dispose(object);
+
  }
 
  static void set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec G_GNUC_UNUSED(*pspec))

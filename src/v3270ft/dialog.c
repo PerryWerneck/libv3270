@@ -37,9 +37,13 @@
  {
  	GtkDialog parent;
 
- 	GtkWidget * settings;
+ 	GtkWidget	* settings;
 
- 	struct {
+ 	H3270		* hSession;
+ 	const void	* stHandle;
+
+ 	struct
+ 	{
  		GtkWidget * insert;
  		GtkWidget * update;
  		GtkWidget * remove;
@@ -47,7 +51,8 @@
  		GtkWidget * begin;
  	} button;
 
- 	struct {
+ 	struct
+ 	{
 		GtkWidget * view;
 		GtkWidget * load;
 		GtkWidget * save;
@@ -65,8 +70,24 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+static void finalize(GObject *object)
+{
+	debug("%s",__FUNCTION__);
+
+	V3270FTDialog * dialog = GTK_V3270_FT_DIALOG(object);
+
+	if(dialog->hSession && dialog->stHandle)
+	{
+		lib3270_unregister_schange(dialog->hSession,LIB3270_STATE_CONNECT,dialog->stHandle);
+		dialog->stHandle = NULL;
+	}
+
+	G_OBJECT_CLASS(V3270FTDialog_parent_class)->finalize(object);
+}
+
 static void V3270FTDialog_class_init(G_GNUC_UNUSED V3270FTDialogClass *klass)
 {
+	G_OBJECT_CLASS(klass)->finalize = finalize;
 }
 
 void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G_GNUC_UNUSED(*column), V3270FTDialog *widget)
@@ -276,6 +297,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 		GtkWidget * scrolled = gtk_scrolled_window_new(NULL,NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
 		gtk_container_add(GTK_CONTAINER(scrolled),widget->queue.view);
+		gtk_widget_set_size_request(scrolled,50,150);
 
 		gtk_widget_set_vexpand(scrolled,TRUE);
 		gtk_widget_set_hexpand(scrolled,TRUE);
@@ -321,6 +343,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 		// gtk_widget_set_sensitive(widget->button.begin,FALSE);
 		gtk_widget_set_tooltip_markup(widget->button.begin,_("Start transfer"));
+		gtk_widget_set_sensitive(widget->button.begin,FALSE);
 
 /*
 #ifdef DEBUG
@@ -358,6 +381,31 @@ LIB3270_EXPORT GtkWidget * v3270_ft_dialog_new(GtkWidget *parent)
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 	}
 
+	if(GTK_IS_V3270(parent))
+		v3270_ft_dialog_set_session(dialog,v3270_get_session(parent));
+
 	return dialog;
 }
 
+static void connect_changed(H3270 G_GNUC_UNUSED(*hSession), int state, void *widget)
+{
+	V3270FTDialog * dialog = GTK_V3270_FT_DIALOG( ((GtkWidget *) widget) );
+	gtk_widget_set_sensitive(dialog->button.begin,state ? TRUE : FALSE);
+}
+
+LIB3270_EXPORT void v3270_ft_dialog_set_session(GtkWidget *widget, H3270 *hSession)
+{
+	V3270FTDialog * dialog = GTK_V3270_FT_DIALOG(widget);
+
+	if(dialog->hSession && dialog->stHandle)
+	{
+		lib3270_unregister_schange(dialog->hSession,LIB3270_STATE_CONNECT,dialog->stHandle);
+		dialog->stHandle = NULL;
+	}
+
+	dialog->hSession = hSession;
+	dialog->stHandle = lib3270_register_schange(hSession,LIB3270_STATE_CONNECT,connect_changed,(void *) widget);
+
+	gtk_widget_set_sensitive(dialog->button.begin,lib3270_is_connected(hSession) ? TRUE : FALSE);
+
+}
