@@ -29,7 +29,7 @@
 
  #include "private.h"
  #include <sys/param.h>
- #include "../../v3270/private.h"	// Required for v3270 signal.
+ #include "../../terminal/private.h"	// Required for v3270 signal.
  #include <v3270/colorscheme.h>
  #include <lib3270/selection.h>
 

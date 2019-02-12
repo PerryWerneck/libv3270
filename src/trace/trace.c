@@ -36,7 +36,9 @@
  #include <glib/gi18n.h>
 
  #include <lib3270.h>
+ #include <lib3270/log.h>
  #include <lib3270/trace.h>
+ #include <lib3270/properties.h>
  #include <v3270/trace.h>
 
 #if defined( HAVE_SYSLOG )
@@ -162,9 +164,10 @@ static void destroy(GtkWidget *widget)
 
  }
 
- static void activate(G_GNUC_UNUSED GtkButton *button, GtkWindow *window)
+ static void activate(G_GNUC_UNUSED GtkButton *button, v3270_trace *window)
  {
- 	activate_default(window);
+	v3270_exec_command(GTK_WIDGET(window),gtk_entry_get_text(GTK_ENTRY(window->entry)));
+	gtk_entry_set_text(GTK_ENTRY(window->entry),"");
  }
 
  static void menu_save(G_GNUC_UNUSED GtkWidget *button, v3270_trace *window)
@@ -360,14 +363,12 @@ static void destroy(GtkWidget *widget)
 	gtk_box_pack_start(GTK_BOX(widget),gtk_label_new( _( "Command:" )),FALSE,TRUE,4);
 	window->entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(widget),window->entry,TRUE,TRUE,4);
-	gtk_widget_set_sensitive(window->entry,FALSE);
+	//gtk_widget_set_sensitive(window->entry,FALSE);
 	g_signal_connect(G_OBJECT(window->entry),"activate",G_CALLBACK(activate),window);
 
 	window->button = gtk_button_new_from_icon_name("system-run",GTK_ICON_SIZE_BUTTON);
 	gtk_box_pack_end(GTK_BOX(widget),window->button,FALSE,FALSE,4);
-	gtk_widget_set_sensitive(window->button,FALSE);
 	gtk_widget_set_focus_on_click(GTK_WIDGET(window->button),FALSE);
-
 	g_signal_connect(G_OBJECT(window->button),"clicked",G_CALLBACK(activate),window);
 
 	gtk_box_pack_start(GTK_BOX(vbox),widget,FALSE,TRUE,0);

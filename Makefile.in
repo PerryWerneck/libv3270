@@ -29,10 +29,10 @@
 LIBNAME=libv@LIB3270_NAME@
 
 SOURCES= \
-	$(wildcard src/v3270/*.c) \
-	$(wildcard src/v3270/@OSNAME@/*.rc) \
-	$(wildcard src/v3270/@OSNAME@/*.c) \
-	$(wildcard src/v3270ft/*.c) \
+	$(wildcard src/terminal/*.c) \
+	$(wildcard src/terminal/@OSNAME@/*.rc) \
+	$(wildcard src/terminal/@OSNAME@/*.c) \
+	$(wildcard src/filetransfer/*.c) \
 	$(wildcard src/trace/*.c) \
 	$(wildcard src/dialogs/*.c) \
 	$(wildcard src/dialogs/print/*.c)
@@ -90,10 +90,10 @@ DEPENDS= \
 	Makefile \
 	src/include/*.h \
 	src/include/v3270/*.h \
-	src/v3270/*.h \
-	src/v3270ft/*.h \
-	src/v3270/marshal.h \
-	src/v3270ft/marshal.h
+	src/filetransfer/marshal.h \
+	src/filetransfer/private.h \
+	src/terminal/marshal.h \
+	src/terminal/private.h
 
 CFLAGS= \
 	@CFLAGS@ \
@@ -182,8 +182,8 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 
 #---[ Marshal Targets ]------------------------------------------------------------------
 
-src/v3270/marshal.h: \
-	src/v3270/marshal
+src/terminal/marshal.h: \
+	src/terminal/marshal
 
 	@echo $@ ...
 	@$(MKDIR) `dirname $@`
@@ -191,7 +191,7 @@ src/v3270/marshal.h: \
 	@$(GENMARSHAL) --prefix=v3270 --header $< > $@
 
 $(OBJDIR)/marshal/v3270.c: \
-	src/v3270/marshal
+	src/terminal/marshal
 
 	@echo $@ ...
 	@$(MKDIR) `dirname $@`
@@ -199,8 +199,8 @@ $(OBJDIR)/marshal/v3270.c: \
 	@$(GENMARSHAL) --prefix=v3270 --body $< > $@
 
 
-src/v3270ft/marshal.h: \
-	src/v3270ft/marshal
+src/filetransfer/marshal.h: \
+	src/filetransfer/marshal
 
 	@echo $@ ...
 	@$(MKDIR) `dirname $@`
@@ -208,7 +208,7 @@ src/v3270ft/marshal.h: \
 	@$(GENMARSHAL) --prefix=v3270ft --header $< > $@
 
 $(OBJDIR)/marshal/v3270ft.c: \
-	src/v3270ft/marshal
+	src/filetransfer/marshal
 
 	@echo $@ ...
 	@$(MKDIR) `dirname $@`
@@ -480,8 +480,8 @@ cleanDebug:
 	@rm -fr $(OBJDBG)
 	@rm -fr $(BINDBG)
 	@rm -fr $(OBJDIR)/marshal
-	@rm -f src/v3270/marshal.h
-	@rm -f src/v3270ft/marshal.h
+	@rm -f src/terminal/marshal.h
+	@rm -f src/filetransfer/marshal.h
 
 cleanRelease:
 
@@ -489,8 +489,8 @@ cleanRelease:
 	@rm -fr $(BINRLS)
 	@rm -fr $(POTDIR)
 	@rm -fr $(OBJDIR)/marshal
-	@rm -f src/v3270/marshal.h
-	@rm -f src/v3270ft/marshal.h
+	@rm -f src/terminal/marshal.h
+	@rm -f src/filetransfer/marshal.h
 	@rm -f lib$(LIBNAME).pot
 
 clean: \
