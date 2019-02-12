@@ -102,8 +102,7 @@ CFLAGS= \
 	-DBUILD_DATE=`date +%Y%m%d` \
 	@LIB3270_CFLAGS@ \
 	@GTK_CFLAGS@ \
-	@GLIB_CFLAGS@ \
-	@LIBSSL_CFLAGS@
+	@GLIB_CFLAGS@
 
 LIBS= \
 	@LIBS@ \
@@ -111,8 +110,7 @@ LIBS= \
 	@GLIB_LIBS@ \
 	@LIBICONV@ \
 	@INTL_LIBS@ \
-	@LIB3270_LIBS@ \
-	@LIBSSL_LIBS@
+	@LIB3270_LIBS@
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
