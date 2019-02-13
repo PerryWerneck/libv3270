@@ -70,7 +70,7 @@
 
  static void dispose(GObject *object)
  {
-	debug("%s (model=%p)",__FUNCTION__,gtk_tree_view_get_model(GTK_TREE_VIEW(object)));
+	debug("activityList::%s(%p)",__FUNCTION__,object);
 
 	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(object);
 

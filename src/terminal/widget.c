@@ -27,8 +27,6 @@
  *
  */
 
- #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
  #include <config.h>
  #include "private.h"
  #include "marshal.h"
@@ -241,6 +239,7 @@ static void v3270_class_init(v3270Class *klass)
 
 	lib3270_set_log_handler(loghandler);
 
+	// Widget methods
 	widget_class->realize 							= v3270_realize;
 	widget_class->size_allocate						= v3270_size_allocate;
 	widget_class->key_press_event					= v3270_key_press_event;
@@ -254,7 +253,13 @@ static void v3270_class_init(v3270Class *klass)
 	widget_class->scroll_event						= v3270_scroll_event;
 	widget_class->query_tooltip						= v3270_query_tooltip;
 
-	/* Accessibility support */
+	widget_class->get_preferred_height				= get_preferred_height;
+	widget_class->get_preferred_width				= get_preferred_width;
+
+	widget_class->destroy 							= v3270_destroy;
+	widget_class->draw 								= v3270_draw;
+
+	// Accessibility support
 	widget_class->get_accessible 					= v3270_get_accessible;
 
 	klass->activate									= v3270_activate;
@@ -262,27 +267,7 @@ static void v3270_class_init(v3270Class *klass)
 	klass->message_changed 							= v3270_update_message;
 	klass->popup_message							= v3270_popup_message;
 
-#if GTK_CHECK_VERSION(3,0,0)
-
-	widget_class->get_preferred_height				= get_preferred_height;
-	widget_class->get_preferred_width				= get_preferred_width;
-
-	widget_class->destroy 							= v3270_destroy;
-	widget_class->draw 								= v3270_draw;
-
-#else
-
-	{
-		GtkObjectClass *object_class = (GtkObjectClass*) klass;
-
-		object_class->destroy = v3270_destroy;
-	}
-
-	widget_class->expose_event = v3270_expose;
-
-
-#endif // GTK3
-
+	// Register I/O Handlers
 	v3270_register_io_handlers(klass);
 
 	// Cursors
@@ -331,11 +316,11 @@ static void v3270_class_init(v3270Class *klass)
 
 		for(f=0;f<LIB3270_POINTER_COUNT;f++)
 		{
-	#ifdef WIN32
+#ifdef WIN32
 			v3270_cursor[f] = gdk_cursor_new_from_name(gdk_display_get_default(),cr[f]);
-	#else
-			v3270_cursor[f] = gdk_cursor_new(cr[f]);
-	#endif
+#else
+			v3270_cursor[f] = gdk_cursor_new_for_display(gdk_display_get_default(),cr[f]);
+#endif
 		}
 	}
 
@@ -573,6 +558,8 @@ static void v3270_destroy(GtkWidget *widget)
 {
 	v3270 * terminal = GTK_V3270(widget);
 
+	debug("%s",__FUNCTION__);
+
 	if(terminal->host)
 	{
 		// Cleanup
@@ -657,11 +644,7 @@ static void v3270_destroy(GtkWidget *widget)
 		terminal->session_name = NULL;
 	}
 
-#if GTK_CHECK_VERSION(3,0,0)
 	GTK_WIDGET_CLASS(v3270_parent_class)->destroy(widget);
-#else
-	GTK_OBJECT_CLASS(v3270_parent_class)->destroy(widget);
-#endif // GTK3
 
 }
 

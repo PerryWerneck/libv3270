@@ -133,14 +133,6 @@
 
 	g_clear_object(&worker->activity);
 
-	/*
-	if(worker->activity)
-	{
-		g_object_unref(worker->activity);
-		worker->activity = NULL;
-	}
-	*/
-
 	G_OBJECT_CLASS(V3270FTWorker_parent_class)->finalize(object);
 
  }
