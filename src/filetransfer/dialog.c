@@ -155,6 +155,50 @@ static void begin_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widge
 	gtk_dialog_response(GTK_DIALOG(widget),GTK_RESPONSE_ACCEPT);
 }
 
+static gboolean v3270_activity_compare_filenames(const GObject *a, const GObject *b)
+{
+ 	if(strcmp(v3270_ft_activity_get_local_filename(a),v3270_ft_activity_get_local_filename(b)))
+		return FALSE;
+
+ 	if(strcmp(v3270_ft_activity_get_remote_filename(a),v3270_ft_activity_get_remote_filename(b)))
+		return FALSE;
+
+	return TRUE;
+}
+
+int v3270_ft_dialog_append_activity(GtkWidget *widget, GObject *activity, GError **error)
+{
+	V3270FTDialog *dialog = GTK_V3270_FT_DIALOG(widget);
+
+	GtkTreeIter		  iter;
+	GtkTreeModel	* model	= gtk_tree_view_get_model(GTK_TREE_VIEW(dialog->queue.view));
+
+	if(gtk_tree_model_get_iter_first(model,&iter))
+	{
+		do
+		{
+			GObject * a = NULL;
+			gtk_tree_model_get(model, &iter, 0, &a, -1);
+
+			if(a && v3270_activity_compare_filenames(activity, a))
+			{
+				// Activity already exist
+				if(error && !*error)
+					*error = g_error_new_literal(g_quark_from_static_string(PACKAGE_NAME),EPERM,_("Activity already on the queue"));
+
+				return -1;
+			}
+
+		}
+		while(gtk_tree_model_iter_next(model,&iter));
+	}
+
+	// Not found, insert it.
+	v3270_activity_list_append(dialog->queue.view,activity);
+
+	return 0;
+}
+
 static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
 {
 	GtkTreeIter		  iter;

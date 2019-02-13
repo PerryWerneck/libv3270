@@ -65,7 +65,7 @@
   PROP_REMOTE
  };
 
- G_DEFINE_TYPE(V3270FTActivity, V3270FTActivity, G_TYPE_OBJECT);
+ G_DEFINE_TYPE(V3270FTActivity, V3270FTActivity, G_TYPE_INITIALLY_UNOWNED);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -148,16 +148,16 @@
 	return g_object_new(G_TYPE_V3270_FT_ACTIVITY, NULL);
  }
 
- LIB3270_EXPORT const gchar * v3270_ft_activity_get_local_filename(GObject *object)
+ LIB3270_EXPORT const gchar * v3270_ft_activity_get_local_filename(const GObject *object)
  {
-	gchar **ptr = & G_V3270_FT_ACTIVITY(object)->file.local;
-	return(*ptr ? *ptr : "");
+	const gchar *ptr = G_V3270_FT_ACTIVITY(object)->file.local;
+	return (ptr ? ptr : "");
  }
 
- LIB3270_EXPORT const gchar * v3270_ft_activity_get_remote_filename(GObject *object)
+ LIB3270_EXPORT const gchar * v3270_ft_activity_get_remote_filename(const GObject *object)
  {
-	gchar **ptr = & G_V3270_FT_ACTIVITY(object)->file.remote;
-	return(*ptr ? *ptr : "");
+	const gchar *ptr = G_V3270_FT_ACTIVITY(object)->file.remote;
+	return(ptr ? ptr : "");
  }
 
  LIB3270_EXPORT void v3270_ft_activity_set_local_filename(GObject *object, const gchar *filename)
@@ -181,12 +181,12 @@
 	G_V3270_FT_ACTIVITY(object)->options = options;
  }
 
- LIB3270_EXPORT LIB3270_FT_OPTION v3270_ft_activity_get_options(GObject *object)
+ LIB3270_EXPORT LIB3270_FT_OPTION v3270_ft_activity_get_options(const GObject *object)
  {
 	return G_V3270_FT_ACTIVITY(object)->options;
  }
 
- guint v3270_ft_activity_get_value(GObject * object,  LIB3270_FT_VALUE id)
+ guint v3270_ft_activity_get_value(const GObject * object,  LIB3270_FT_VALUE id)
  {
 	return G_V3270_FT_ACTIVITY(object)->values[id];
  }

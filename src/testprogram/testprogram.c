@@ -149,23 +149,32 @@ static void disconnect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *term
 
 static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
-	GtkWidget * dialog	= v3270_dialog_new(terminal, _("test"), _("test"));
-	GtkWidget * worker = v3270_ft_worker_new();
-	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),worker,TRUE,TRUE,2);
-
-	v3270_ft_worker_set_session(worker,v3270_get_session(terminal));
-
+	//
+	// Test activity
+	//
 	GObject * activity = v3270_ft_activity_new();
+ 	debug("Activity %p is %s",activity,(g_object_is_floating(activity) ? "floating" : "non floating"));
 	v3270_ft_activity_set_local_filename(activity,"/tmp/test.txt");
 	v3270_ft_activity_set_remote_filename(activity,"remote_file");
 	v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP);
+
+ 	/*
+ 	//
+ 	// Test settings dialog
+ 	//
+	GtkWidget * dialog = v3270_ft_dialog_new(terminal);
+	v3270_ft_dialog_append_activity(dialog,activity,NULL);
+	*/
+
+	//
+	// Test worker widget
+	//
+	GtkWidget * dialog	= v3270_dialog_new(terminal, _("test"), _("test"));
+	GtkWidget * worker = v3270_ft_worker_new();
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),worker,TRUE,TRUE,2);
+	v3270_ft_worker_set_session(worker,v3270_get_session(terminal));
 	v3270_ft_worker_set_activity(worker,activity);
-	g_object_unref(activity);
-
 	v3270_ft_worker_start(worker);
-
-	// GtkWidget * dialog = v3270ftprogress_new();
-	// GtkWidget * dialog = v3270_ft_dialog_new(terminal);
 
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));

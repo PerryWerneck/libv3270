@@ -131,11 +131,15 @@
 	pulse_stop(worker);
 	timer_stop(worker);
 
+	g_clear_object(&worker->activity);
+
+	/*
 	if(worker->activity)
 	{
 		g_object_unref(worker->activity);
 		worker->activity = NULL;
 	}
+	*/
 
 	G_OBJECT_CLASS(V3270FTWorker_parent_class)->finalize(object);
 
@@ -294,16 +298,12 @@
 		lib3270_ft_destroy(worker->hSession,NULL);
 	}
 
-	if(worker->activity)
-	{
-		g_object_unref(worker->activity);
-		worker->activity = NULL;
-	}
+	g_clear_object(&worker->activity);
 
 	if(activity)
 	{
 		worker->activity = activity;
-		g_object_ref(worker->activity);
+		g_object_ref_sink(activity);
 
 		gtk_entry_set_text(worker->field[PROGRESS_FIELD_LOCAL],v3270_ft_activity_get_local_filename(activity));
 		gtk_entry_set_text(worker->field[PROGRESS_FIELD_REMOTE],v3270_ft_activity_get_remote_filename(activity));

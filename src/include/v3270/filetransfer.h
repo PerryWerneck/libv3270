@@ -120,10 +120,10 @@
 
 	LIB3270_EXPORT void					  v3270_ft_activity_set_from_context(GObject * activity, GMarkupParseContext * context);
 
-	LIB3270_EXPORT const gchar			* v3270_ft_activity_get_local_filename(GObject *object);
-	LIB3270_EXPORT const gchar			* v3270_ft_activity_get_remote_filename(GObject *object);
-	LIB3270_EXPORT LIB3270_FT_OPTION	  v3270_ft_activity_get_options(GObject *object);
-	LIB3270_EXPORT guint				  v3270_ft_activity_get_value(GObject * object,  LIB3270_FT_VALUE id);
+	LIB3270_EXPORT const gchar			* v3270_ft_activity_get_local_filename(const GObject *object);
+	LIB3270_EXPORT const gchar			* v3270_ft_activity_get_remote_filename(const GObject *object);
+	LIB3270_EXPORT LIB3270_FT_OPTION	  v3270_ft_activity_get_options(const GObject *object);
+	LIB3270_EXPORT guint				  v3270_ft_activity_get_value(const GObject * object, LIB3270_FT_VALUE id);
 
 	LIB3270_EXPORT void			 		  v3270_ft_activity_set_local_filename(GObject *object, const gchar *filename);
 	LIB3270_EXPORT void			 		  v3270_ft_activity_set_remote_filename(GObject *object, const gchar *filename);
@@ -144,6 +144,7 @@
 
 	LIB3270_EXPORT GtkWidget			* v3270_ft_dialog_new(GtkWidget *parent);
 	LIB3270_EXPORT void					  v3270_ft_dialog_set_session(GtkWidget *widget, H3270 *hSession);
+	LIB3270_EXPORT int					  v3270_ft_dialog_append_activity(GtkWidget *widget, GObject *activity, GError **error);
 
 	G_END_DECLS
 

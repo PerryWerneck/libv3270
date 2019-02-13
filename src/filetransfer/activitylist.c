@@ -40,6 +40,11 @@
  	V3270_ACTIVITY_LIST_LAST_SIGNAL
  };
 
+ typedef struct _activities
+ {
+
+ }  Activities;
+
  struct _V3270FTActivityListClass
  {
  	GtkTreeViewClass parent_class;
@@ -65,13 +70,30 @@
 
  static void dispose(GObject *object)
  {
-	debug("%s",__FUNCTION__);
+	debug("%s (model=%p)",__FUNCTION__,gtk_tree_view_get_model(GTK_TREE_VIEW(object)));
 
 	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(object);
 
+	// Release filename
 	debug("Freeing %s",list->filename);
 	g_free(list->filename);
 	list->filename = NULL;
+
+	GtkTreeIter		  iter;
+	GtkTreeModel	* model	= gtk_tree_view_get_model(GTK_TREE_VIEW(object));
+
+	while(model && gtk_tree_model_get_iter_first(model,&iter))
+	{
+		GObject * activity = NULL;
+		gtk_tree_model_get(model, &iter, 0, &activity, -1);
+
+		gtk_list_store_remove(GTK_LIST_STORE(model),&iter);
+		debug("Disposing activity %p",activity);
+
+		g_clear_object(&activity);
+
+	}
+
 
 	G_OBJECT_CLASS(V3270FTActivityList_parent_class)->dispose(object);
 
@@ -118,7 +140,7 @@
 
  static void V3270FTActivityList_init(V3270FTActivityList *widget)
  {
-	GtkTreeModel * model = GTK_TREE_MODEL(gtk_list_store_new(1,G_TYPE_OBJECT));
+	GtkTreeModel * model = GTK_TREE_MODEL(gtk_list_store_new(1,G_TYPE_POINTER));	// Using pointer type because I take care of refcounts.
 
 	widget->filename = NULL;
 
@@ -157,6 +179,8 @@
 	GtkTreeIter iter;
 	gtk_list_store_append((GtkListStore *) model,&iter);
 	gtk_list_store_set((GtkListStore *) model, &iter, 0, activity, -1);
+	g_object_ref_sink(activity);
+
  }
 
  void v3270_activity_list_remove(GtkWidget *widget, GObject *activity)
@@ -176,7 +200,9 @@
 
 			if(stored == activity)
 			{
+				debug("Removing activity %p",activity);
 				gtk_list_store_remove(GTK_LIST_STORE(model),&iter);
+				g_object_unref(stored);
 				return;
 			}
 
