@@ -122,6 +122,7 @@
 
 	if(worker->hSession)
 	{
+		lib3270_reset_ft_callbacks(worker->hSession);
 		lib3270_ft_set_user_data(worker->hSession,NULL);
 		lib3270_ft_destroy(worker->hSession,NULL);
 		worker->hSession = NULL;
