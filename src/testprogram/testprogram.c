@@ -153,11 +153,16 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	GtkWidget * worker = v3270_ft_worker_new();
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),worker,TRUE,TRUE,2);
 
+	v3270_ft_worker_set_session(worker,v3270_get_session(terminal));
+
 	GObject * activity = v3270_ft_activity_new();
-	v3270_ft_activity_set_local_filename(activity,"local_file");
-	v3270_ft_activity_set_remote_filename(activity,"remove_file");
+	v3270_ft_activity_set_local_filename(activity,"/tmp/test.txt");
+	v3270_ft_activity_set_remote_filename(activity,"remote_file");
+	v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP);
 	v3270_ft_worker_set_activity(worker,activity);
 	g_object_unref(activity);
+
+	v3270_ft_worker_start(worker);
 
 	// GtkWidget * dialog = v3270ftprogress_new();
 	// GtkWidget * dialog = v3270_ft_dialog_new(terminal);

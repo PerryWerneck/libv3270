@@ -298,3 +298,22 @@
 	g_markup_parse_context_push(context,&parser,activity);
 
  }
+
+ LIB3270_EXPORT H3270FT * v3270_ft_activity_begin_transfer(GObject * object, H3270 *hSession, const char **message)
+ {
+	V3270FTActivity * activity = G_V3270_FT_ACTIVITY(object);
+
+	return lib3270_ft_new(
+				hSession,
+				activity->options,
+				activity->file.local,
+				activity->file.remote,
+				activity->values[LIB3270_FT_VALUE_LRECL],
+				activity->values[LIB3270_FT_VALUE_BLKSIZE],
+				activity->values[LIB3270_FT_VALUE_PRIMSPACE],
+				activity->values[LIB3270_FT_VALUE_SECSPACE],
+				activity->values[LIB3270_FT_VALUE_DFT],
+				message
+	);
+
+ }

@@ -182,7 +182,7 @@ void v3270ftprogress_set_session(GtkWidget *widget, H3270 *session) {
 	v3270ftprogress * dialog = GTK_V3270FTPROGRESS(widget);
 
 	if(dialog->session) {
-		lib3270_ft_destroy(dialog->session);
+		lib3270_ft_destroy(dialog->session,NULL);
 	}
 
 	dialog->session = session;

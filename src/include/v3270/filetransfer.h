@@ -129,6 +129,7 @@
 	LIB3270_EXPORT void			 		  v3270_ft_activity_set_remote_filename(GObject *object, const gchar *filename);
 	LIB3270_EXPORT void					  v3270_ft_activity_set_options(GObject * object, LIB3270_FT_OPTION options);
 	LIB3270_EXPORT void 				  v3270_ft_activity_set_value(GObject * object, LIB3270_FT_VALUE id, guint value);
+	LIB3270_EXPORT H3270FT 				* v3270_ft_activity_begin_transfer(GObject * object, H3270 *hSession, const char **message);
 
 	// FT Dialog widget
 	#define GTK_TYPE_V3270_FT_DIALOG				(V3270FTDialog_get_type ())
@@ -159,5 +160,7 @@
 
 	LIB3270_EXPORT GtkWidget			* v3270_ft_worker_new();
 	LIB3270_EXPORT void			  		  v3270_ft_worker_set_activity(GtkWidget *widget, GObject *activity);
+	LIB3270_EXPORT void					  v3270_ft_worker_set_session(GtkWidget *widget, H3270 *hSession);
+	LIB3270_EXPORT int					  v3270_ft_worker_start(GtkWidget *widget);
 
 #endif // V3270FT_H_INCLUDED

@@ -82,5 +82,16 @@
  	return child;
  }
 
+ void gtk_entry_set_text_printf(GtkEntry *entry, const gchar *fmt, ...)
+ {
+ 	va_list arg_ptr;
+	va_start(arg_ptr, fmt);
+	gchar *text = g_strdup_vprintf(fmt,arg_ptr);
+	va_end(arg_ptr);
 
+	gtk_entry_set_text(entry,text);
+
+	g_free(text);
+
+ }
 

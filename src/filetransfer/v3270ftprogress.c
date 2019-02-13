@@ -247,7 +247,7 @@ gboolean v3270ftprogress_cleanup(v3270ftprogress * dialog) {
 	if(dialog->session) {
 		debug("%s: FT session was destroyed",__FUNCTION__);
 		lib3270_ft_set_user_data(dialog->session,NULL);
-		lib3270_ft_destroy(dialog->session);
+		lib3270_ft_destroy(dialog->session,NULL);
 	}
 
 	return FALSE;
@@ -282,7 +282,7 @@ static void dialog_response(GtkDialog *widget, gint response_id) {
 
 		// Removo do objeto para evitar a geração de sinais e destruo.
 		lib3270_ft_set_user_data(dialog->session,NULL);
-		lib3270_ft_destroy(dialog->session);
+		lib3270_ft_destroy(dialog->session,NULL);
 
 	}
 
@@ -298,7 +298,7 @@ static void dialog_close(GtkDialog *object) {
 	debug("%s",__FUNCTION__);
 
 	// Se tem sessão e conseguiu cancelar.
-	if(dialog->session && lib3270_ft_cancel(dialog->session,0) == 0)
+	if(dialog->session && lib3270_ft_cancel(dialog->session,0,NULL) == 0)
 		return;
 
 	GTK_DIALOG_CLASS(v3270ftprogress_parent_class)->close(object);
@@ -367,7 +367,7 @@ static void cancel_clicked(G_GNUC_UNUSED GtkButton *button,v3270ftprogress *dial
 	debug("%s",__FUNCTION__);
 
 	if(dialog->session) {
-		lib3270_ft_cancel(dialog->session,1);
+		lib3270_ft_cancel(dialog->session,1,NULL);
 	}
 }
 
@@ -540,7 +540,7 @@ gboolean send_delayed_signal(struct delayed_signal *sig) {
 	void * userdata = lib3270_ft_get_user_data(sig->hSession);
 
 	lib3270_ft_set_user_data(sig->hSession,NULL);
-	lib3270_ft_destroy(sig->hSession);
+	lib3270_ft_destroy(sig->hSession,NULL);
 
 	if(userdata) {
 		g_signal_emit(GTK_WIDGET(userdata),v3270ftprogress_signal[sig->signal], 0, sig->msg, sig->text);
@@ -679,10 +679,10 @@ static void ft_running(G_GNUC_UNUSED H3270 *hSession, G_GNUC_UNUSED int is_cut, 
 	GTK_V3270FTPROGRESS(widget)->timeout = time(NULL)+10;
 }
 
-static void ft_aborting(G_GNUC_UNUSED H3270 *hSession, void *widget) {
+static void ft_aborting(G_GNUC_UNUSED H3270 *hSession, const char *reason, void *widget) {
 
 	if(widget) {
-		v3270ftprogress_set_header(GTK_WIDGET(widget),_("Aborting transfer"));
+		v3270ftprogress_set_header(GTK_WIDGET(widget),reason);
 	}
 
 }
@@ -714,7 +714,7 @@ static gboolean do_timer(v3270ftprogress *dialog) {
 
 		if(dialog->session) {
 			lib3270_ft_set_user_data(dialog->session,NULL);
-			lib3270_ft_destroy(dialog->session);
+			lib3270_ft_destroy(dialog->session,NULL);
 		}
 
 		g_signal_emit(GTK_WIDGET(dialog),v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED], 0, _( "Transfer failed" ), strerror(ETIMEDOUT));
@@ -768,7 +768,7 @@ void v3270ftprogress_start_transfer(GtkWidget *widget) {
 
 	if(!cbk) {
 
-		lib3270_ft_destroy(dialog->session);
+		lib3270_ft_destroy(dialog->session,NULL);
 		g_signal_emit(GTK_WIDGET(widget),v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED], 0, _( "Can't set callback table" ), NULL);
 
 		return;
