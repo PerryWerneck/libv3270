@@ -39,12 +39,7 @@
 
  #if ! GLIB_CHECK_VERSION(2,44,0)
 
-	// Reference: https://github.com/ImageMagick/glib/blob/master/glib/glib-autocleanups.h
-	static inline void v3270_autoptr_cleanup_generic_gfree(void *p)
-	{
-		void **pp = (void**)p;
-		g_free (*pp);
-	}
+	G_GNUC_INTERNAL void v3270_autoptr_cleanup_generic_gfree(void *p);
 
 	#define g_autofree __attribute__((cleanup(v3270_autoptr_cleanup_generic_gfree)))
 

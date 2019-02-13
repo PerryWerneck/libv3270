@@ -95,3 +95,14 @@
 
  }
 
+ #if ! GLIB_CHECK_VERSION(2,44,0)
+
+ // Reference: https://github.com/ImageMagick/glib/blob/master/glib/glib-autocleanups.h
+ void v3270_autoptr_cleanup_generic_gfree(void *p)
+ {
+	void **pp = (void**)p;
+	g_free (*pp);
+ }
+
+ #endif // ! GLIB(2,44,0)
+
