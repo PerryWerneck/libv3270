@@ -291,6 +291,10 @@
 
  LIB3270_EXPORT GtkWidget		* v3270_dialog_new(GtkWidget *widget, const gchar *title, const gchar *apply);
 
+ // Convenience
+ LIB3270_EXPORT void			  gtk_entry_set_printf(GtkEntry *entry, const gchar *fmt, ...) G_GNUC_PRINTF(2,3);
+
+
  G_END_DECLS
 
 #endif // V3270_H_INCLUDED

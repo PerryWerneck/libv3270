@@ -73,8 +73,6 @@
  G_GNUC_INTERNAL void		  v3270_activity_list_save(GtkWidget *widget);
  G_GNUC_INTERNAL void		  v3270_activity_list_save_as(GtkWidget *widget);
 
- G_GNUC_INTERNAL void		  gtk_entry_set_text_printf(GtkEntry *entry, const gchar *fmt, ...);
-
  G_END_DECLS
 
 #endif // V3270_INTERNALS_H_INCLUDED

@@ -82,7 +82,7 @@
  	return child;
  }
 
- void gtk_entry_set_text_printf(GtkEntry *entry, const gchar *fmt, ...)
+ LIB3270_EXPORT void gtk_entry_set_printf(GtkEntry *entry, const gchar *fmt, ...)
  {
  	va_list arg_ptr;
 	va_start(arg_ptr, fmt);

@@ -344,7 +344,7 @@
 
 	if(cfg->length)
 	{
-		gtk_entry_set_text_printf(cfg->worker->field[PROGRESS_FIELD_TOTAL],"%lu",cfg->length);
+		gtk_entry_set_printf(cfg->worker->field[PROGRESS_FIELD_TOTAL],"%lu",cfg->length);
 	}
 	else
 	{
@@ -432,8 +432,8 @@
  static gboolean bg_emit_update(struct bg_update * update)
  {
 	// Update values
-	gtk_entry_set_text_printf(update->worker->field[PROGRESS_FIELD_CURRENT],"%lu",update->current);
-	gtk_entry_set_text_printf(update->worker->field[PROGRESS_FIELD_TOTAL],"%lu",update->total);
+	gtk_entry_set_printf(update->worker->field[PROGRESS_FIELD_CURRENT],"%lu",update->current);
+	gtk_entry_set_printf(update->worker->field[PROGRESS_FIELD_TOTAL],"%lu",update->total);
 
 	if(update->total)
 	{
@@ -462,7 +462,7 @@
 			gtk_progress_bar_set_fraction(update->worker->pbar, ((gdouble) update->current) / ((gdouble) update->total));
 		}
 
-		gtk_entry_set_text_printf(update->worker->field[PROGRESS_FIELD_ETA],"%lu",update->total);
+		gtk_entry_set_printf(update->worker->field[PROGRESS_FIELD_ETA],"%lu",update->total);
 
 	}
 
