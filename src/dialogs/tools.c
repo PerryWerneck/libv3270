@@ -106,3 +106,11 @@
 
  #endif // ! GLIB(2,44,0)
 
+ #if ! GTK_CHECK_VERSION(3,16,0)
+
+ void gtk_text_view_set_monospace(GtkTextView *text_view, gboolean monospace)
+ {
+
+ }
+
+ #endif //! GTK 3.16

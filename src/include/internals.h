@@ -80,6 +80,12 @@
 
  G_GNUC_INTERNAL gchar		* v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, const gchar *filter, ... ) G_GNUC_NULL_TERMINATED;
 
+ #if ! GTK_CHECK_VERSION(3,16,0)
+
+ G_GNUC_INTERNAL void gtk_text_view_set_monospace (GtkTextView *text_view, gboolean monospace);
+
+ #endif //! GTK 3.16
+
  G_END_DECLS
 
 #endif // V3270_INTERNALS_H_INCLUDED
