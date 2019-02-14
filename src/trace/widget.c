@@ -68,11 +68,13 @@
  struct _V3270Trace
  {
  	GtkGrid			  parent;
- 	H3270			* hSession;	/// @brief TN3270 Session.
- 	GtkWidget		* terminal;	/// @brief V3270 Widget.
+ 	H3270			* hSession;		///< @brief TN3270 Session.
+ 	GtkWidget		* terminal;		///< @brief V3270 Widget.
 
-	GtkTextBuffer	* text;		/// @brief Trace window contents.
-	GtkEntry		* entry;	/// @brief Command line entry.
+	GtkTextBuffer	* text;			///< @brief Trace window contents.
+	GtkEntry		* entry;		///< @brief Command line entry.
+
+	guint 			  log_handler;	///< @brief GTK Log Handler.
 
 	/// @brief lib3270's saved trace handler.
 	struct {
@@ -122,6 +124,12 @@
 
  	V3270Trace *trace = GTK_V3270_TRACE(object);
 
+	if(trace->log_handler)
+	{
+		g_log_remove_handler(NULL,trace->log_handler);
+		trace->log_handler = 0;
+	}
+
 	set_session(trace,NULL);
 	g_clear_object(&trace->terminal);
 
@@ -165,6 +173,63 @@
  static void entry_activated(GtkEntry *entry, GtkWidget *widget)
  {
  	v3270_trace_execute(widget, gtk_entry_get_text(entry));
+ }
+
+ static void log_handler(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, GtkWidget *widget)
+ {
+	#ifndef LOG_INFO
+		#define LOG_INFO 0
+	#endif // LOG_INFO
+
+	#ifndef LOG_ERR
+		#define LOG_ERR 0
+	#endif // LOG_ERR
+
+	#ifndef LOG_DEBUG
+		#define LOG_DEBUG 0
+	#endif // LOG_DEBUG
+
+ 	static const struct _logtype
+ 	{
+ 		GLogLevelFlags	  log_level;
+ 		const gchar		* msg;
+ 	} logtype[] =
+ 	{
+		{ G_LOG_FLAG_RECURSION,			"recursion"			},
+		{ G_LOG_FLAG_FATAL,				"fatal error"		},
+
+		/* GLib log levels */
+		{ G_LOG_LEVEL_ERROR,			"error"				},
+		{ G_LOG_LEVEL_CRITICAL,			"critical error"	},
+		{ G_LOG_LEVEL_WARNING,			"warning"			},
+		{ G_LOG_LEVEL_MESSAGE,			"message"			},
+		{ G_LOG_LEVEL_INFO,				"info"				},
+		{ G_LOG_LEVEL_DEBUG,			"debug"				},
+ 	};
+
+	size_t f;
+
+	for(f=0;f<G_N_ELEMENTS(logtype);f++)
+	{
+		if(logtype[f].log_level == log_level)
+		{
+			g_autofree gchar *text = g_strdup_printf("%s: %s %s",logtype[f].msg,log_domain ? log_domain : "",message);
+
+			gchar *ptr;
+			for(ptr = text;*ptr;ptr++)
+			{
+				if(*ptr < ' ')
+					*ptr = ' ';
+			}
+
+			v3270_trace_printf(widget,"%s\n",text);
+
+			return;
+		}
+	}
+
+	v3270_trace_printf(widget,"%s %s\n",log_domain ? log_domain : "", message);
+
  }
 
  static void V3270Trace_init(V3270Trace *widget)
@@ -214,6 +279,8 @@
 
 	}
 
+	// Grab GTK messages.
+	widget->log_handler = g_log_set_handler(NULL,G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,(GLogFunc) log_handler, widget);
 
  }
 
@@ -331,7 +398,19 @@
  	GtkWidget 	* vbox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
  	V3270Trace	* trace		= v3270_trace_new(widget);
 
-	gtk_window_set_default_size(GTK_WINDOW(widget),590,430);
+ 	// Set window title and default size
+ 	{
+		const gchar 		* url 	= lib3270_get_url(v3270_get_session(widget));
+		g_autofree gchar 	* title = NULL;
+
+		if(url)
+			title = g_strdup_printf("%s - %s - Trace", v3270_get_session_name(widget), url);
+		else
+			title = g_strdup_printf("%s - Trace", v3270_get_session_name(widget), url);
+
+		gtk_window_set_title(GTK_WINDOW(window), title);
+		gtk_window_set_default_size(GTK_WINDOW(widget),590,430);
+ 	}
 
 	// Top menu
 	{
