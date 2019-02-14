@@ -328,17 +328,25 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 
 	// Create Transfer queue buttons
 	{
+#if GTK_CHECK_VERSION(3,10,0)
 		// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
 		widget->queue.load = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_SMALL_TOOLBAR);
+		widget->queue.save = gtk_button_new_from_icon_name("document-save",GTK_ICON_SIZE_SMALL_TOOLBAR);
+		widget->queue.saveAs = gtk_button_new_from_icon_name("document-save-as",GTK_ICON_SIZE_SMALL_TOOLBAR);
+#else
+		// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+		widget->queue.load = gtk_button_new_from_stock(GTK_STOCK_OPEN,GTK_ICON_SIZE_SMALL_TOOLBAR);
+		widget->queue.save = gtk_button_new_from_stock(GTK_STOCK_SAVE,GTK_ICON_SIZE_SMALL_TOOLBAR);
+		widget->queue.saveAs = gtk_button_new_from_stock(GTK_STOCK_SAVE_AS,GTK_ICON_SIZE_SMALL_TOOLBAR);
+#endif // GTK_CHECK_VERSION
+
 		gtk_widget_set_tooltip_markup(widget->queue.load,_("Get transfer queue from file"));
 		g_signal_connect(widget->queue.load,"clicked",G_CALLBACK(load_queue_clicked),widget);
 
-		widget->queue.save = gtk_button_new_from_icon_name("document-save",GTK_ICON_SIZE_SMALL_TOOLBAR);
 		gtk_widget_set_tooltip_markup(widget->queue.save,_("Save transfer queue"));
 		g_signal_connect(widget->queue.save,"clicked",G_CALLBACK(save_queue_clicked),widget);
 		gtk_widget_set_sensitive(widget->queue.save,FALSE);
 
-		widget->queue.saveAs = gtk_button_new_from_icon_name("document-save-as",GTK_ICON_SIZE_SMALL_TOOLBAR);
 		gtk_widget_set_tooltip_markup(widget->queue.saveAs,_("Save transfer queue to file"));
 		g_signal_connect(widget->queue.saveAs,"clicked",G_CALLBACK(save_queue_as_clicked),widget);
 
@@ -360,6 +368,7 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 		gtk_widget_set_vexpand(scrolled,TRUE);
 		gtk_widget_set_hexpand(scrolled,TRUE);
 
+#if GTK_CHECK_VERSION(3,12,0)
 		if(header)
 		{
 			debug("Dialog %s header bar","have");
@@ -368,6 +377,7 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 			gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
 
 			widget->button.begin = gtk_button_new_from_icon_name("network-transmit",GTK_ICON_SIZE_SMALL_TOOLBAR);
+
 			g_object_set(G_OBJECT(widget->button.begin),"margin-end",12,NULL);
 			g_signal_connect(widget->button.begin,"clicked",G_CALLBACK(begin_clicked),widget);
 
@@ -398,6 +408,25 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 			widget->button.begin = gtk_dialog_add_button(GTK_DIALOG (widget),_("B_egin transfer"),GTK_RESPONSE_ACCEPT);
 
 		}
+#else
+
+		GtkWidget * hBox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
+		GtkWidget * frame = v3270_dialog_create_frame(hBox,_("Transfer queue"));
+		gtk_box_pack_start(GTK_BOX(container),frame,TRUE,TRUE,0);
+
+		GtkBox * box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL,6));
+		gtk_box_pack_start(GTK_BOX(hBox),GTK_WIDGET(box),FALSE,FALSE,0);
+
+		gtk_box_pack_start(box,widget->queue.load,FALSE,FALSE,0);
+		gtk_box_pack_start(box,widget->queue.save,FALSE,FALSE,0);
+		gtk_box_pack_start(box,widget->queue.saveAs,FALSE,FALSE,0);
+
+		gtk_box_pack_start(GTK_BOX(hBox),GTK_WIDGET(scrolled),TRUE,TRUE,0);
+
+		gtk_dialog_add_button(GTK_DIALOG (widget),_("_Cancel"),GTK_RESPONSE_CANCEL);
+		widget->button.begin = gtk_dialog_add_button(GTK_DIALOG (widget),_("B_egin transfer"),GTK_RESPONSE_ACCEPT);
+
+#endif // GTK_CHECK_VERSION(3,12,0)
 
 		// gtk_widget_set_sensitive(widget->button.begin,FALSE);
 		gtk_widget_set_tooltip_markup(widget->button.begin,_("Start transfer"));
