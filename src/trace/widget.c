@@ -69,10 +69,10 @@
  {
  	GtkGrid			  parent;
  	H3270			* hSession;	/// @brief TN3270 Session.
+ 	GtkWidget		* terminal;	/// @brief V3270 Widget.
 
 	GtkTextBuffer	* text;		/// @brief Trace window contents.
-	GtkWidget		* entry;	/// @brief Command line entry.
-	GtkWidget		* run;		/// @brief "exec" button.
+	GtkEntry		* entry;	/// @brief Command line entry.
 
 	/// @brief lib3270's saved trace handler.
 	struct {
@@ -99,6 +99,10 @@
 
  static void set_session(V3270Trace *widget, H3270 *hSession)
  {
+ 	// Return if it's the same session.
+ 	if(widget->hSession == hSession)
+		return;
+
 	if(widget->hSession) {
 		lib3270_set_trace_handler(widget->hSession,widget->trace.handler,widget->trace.userdata);
 	}
@@ -116,7 +120,10 @@
  {
 	debug("V3270Trace::%s",__FUNCTION__);
 
-	set_session(GTK_V3270_TRACE(object),NULL);
+ 	V3270Trace *trace = GTK_V3270_TRACE(object);
+
+	set_session(trace,NULL);
+	g_clear_object(&trace->terminal);
 
 	G_OBJECT_CLASS(V3270Trace_parent_class)->finalize(object);
  }
@@ -126,8 +133,44 @@
 	G_OBJECT_CLASS(klass)->finalize = finalize;
  }
 
+ static void v3270_trace_execute(GtkWidget *widget, const gchar *cmd)
+ {
+ 	if(!*cmd)
+		return;
+
+	v3270_trace_printf(widget, "%s\n",cmd);
+
+	V3270Trace *trace = GTK_V3270_TRACE(widget);
+
+	if(trace->terminal)
+	{
+		int rc = v3270_exec_command(trace->terminal,cmd);
+		if(rc)
+			v3270_trace_printf(widget, "rc=%d (%s)\n",rc,strerror(rc));
+	}
+	else
+	{
+		v3270_trace_append_text(widget, "Can't execute command without an associated terminal");
+	}
+
+	gtk_entry_set_text(trace->entry, "");
+
+ }
+
+ static void execute_command(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, GtkWidget *widget)
+ {
+ 	v3270_trace_execute(widget, gtk_entry_get_text(entry));
+ }
+
+ static void entry_activated(GtkEntry *entry, GtkWidget *widget)
+ {
+ 	v3270_trace_execute(widget, gtk_entry_get_text(entry));
+ }
+
  static void V3270Trace_init(V3270Trace *widget)
  {
+	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
+	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
 
 	// Create text view
 	{
@@ -145,20 +188,53 @@
 
 		gtk_container_add(GTK_CONTAINER(scrolled),view);
 
+		gtk_widget_set_can_default(view,FALSE);
+
 	}
 
 	// Create command line
 	{
-		widget->entry = gtk_entry_new();
-		gtk_grid_attach(GTK_GRID(widget),widget->entry,0,1,8,1);
-		gtk_widget_set_sensitive(widget->entry,FALSE);
+		widget->entry = GTK_ENTRY(gtk_entry_new());
 
-		widget->run = gtk_button_new_from_icon_name("system-run",GTK_ICON_SIZE_BUTTON);
-		gtk_grid_attach(GTK_GRID(widget),widget->run,9,1,1,1);
-		gtk_widget_set_sensitive(widget->run,FALSE);
+		gtk_widget_set_can_default(GTK_WIDGET(widget->entry),TRUE);
+		gtk_widget_grab_focus(GTK_WIDGET(widget->entry));
+
+		gtk_entry_set_activates_default(widget->entry,TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(widget->entry),FALSE);
+		gtk_widget_set_vexpand(GTK_WIDGET(widget->entry),FALSE);
+		gtk_widget_set_hexpand(GTK_WIDGET(widget->entry),TRUE);
+
+		gtk_entry_set_icon_from_icon_name(widget->entry,GTK_ENTRY_ICON_SECONDARY,"system-run");
+		gtk_entry_set_placeholder_text(widget->entry,_("Command to execute"));
+
+		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->entry),0,1,10,1);
+
+		g_signal_connect(G_OBJECT(widget->entry),"icon-press",G_CALLBACK(execute_command),widget);
+		g_signal_connect(G_OBJECT(widget->entry),"activate",G_CALLBACK(entry_activated),widget);
 
 	}
 
+
+ }
+
+ LIB3270_EXPORT	void v3270_trace_set_terminal(GtkWidget *widget, GtkWidget *terminal)
+ {
+	V3270Trace * trace = GTK_V3270_TRACE(widget);
+
+	if(trace->terminal == terminal)
+		return;
+
+	g_clear_object(&trace->terminal);
+
+	if(terminal)
+	{
+		trace->terminal = terminal;
+		g_object_ref_sink(G_OBJECT(terminal));
+	}
+
+	set_session(trace, v3270_get_session(trace->terminal));
+
+	gtk_widget_set_sensitive(GTK_WIDGET(trace->entry),trace->terminal != NULL);
 
  }
 
@@ -168,7 +244,7 @@
 
 	V3270Trace * widget = GTK_V3270_TRACE(g_object_new(GTK_TYPE_V3270_TRACE, NULL));
 
-	set_session(widget, v3270_get_session(terminal));
+	v3270_trace_set_terminal(GTK_WIDGET(widget),terminal);
 
 	return GTK_WIDGET(widget);
  }
@@ -203,17 +279,21 @@
 
  LIB3270_EXPORT void v3270_trace_append_text(GtkWidget *widget, const gchar *text)
  {
+ 	debug("widget=%p text=\"%s\"",widget,text);
+
 	g_return_if_fail(GTK_IS_V3270_TRACE(widget));
 
 	// Enqueue update.
  	struct _append_text * cfg = g_malloc0(sizeof(struct _append_text)+strlen(text)+1);
+ 	cfg->widget = GTK_V3270_TRACE(widget);
+ 	strcpy(cfg->text,text);
 	gdk_threads_add_idle_full(G_PRIORITY_LOW,(GSourceFunc) bg_append_text,cfg,g_free);
 
  }
 
  LIB3270_EXPORT void v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args)
  {
- 	g_autofree * text = g_strdup_vprintf(fmt,args);
+ 	g_autofree gchar * text = g_strdup_vprintf(fmt,args);
  	v3270_trace_append_text(widget,text);
  }
 
@@ -223,5 +303,56 @@
 	va_start(arg_ptr, fmt);
 	v3270_trace_vprintf(widget,fmt,arg_ptr);
 	va_end(arg_ptr);
+ }
+
+ static void menu_item_new(GtkWidget *menu, const gchar *label, GCallback callback, gpointer data)
+ {
+	GtkWidget *widget = gtk_menu_item_new_with_mnemonic(label);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu),widget);
+	g_signal_connect(G_OBJECT(widget), "activate", callback, data);
+ }
+
+ static void menu_save_as(G_GNUC_UNUSED GtkWidget *button, V3270Trace *trace)
+ {
+	debug("%s",__FUNCTION__);
+ }
+
+ static void menu_close(G_GNUC_UNUSED GtkWidget *button, GtkWidget *window)
+ {
+	debug("%s",__FUNCTION__);
+	gtk_widget_destroy(window);
+ }
+
+ LIB3270_EXPORT GtkWidget * v3270_new_trace_window(GtkWidget *widget)
+ {
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+
+ 	GtkWidget 	* window	= gtk_window_new(GTK_WINDOW_TOPLEVEL);
+ 	GtkWidget 	* vbox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+ 	V3270Trace	* trace		= v3270_trace_new(widget);
+
+	gtk_window_set_default_size(GTK_WINDOW(widget),590,430);
+
+	// Top menu
+	{
+		GtkWidget * menubar = gtk_menu_bar_new();
+		GtkWidget * topitem	= gtk_menu_item_new_with_mnemonic(_("_File"));
+		GtkWidget * submenu	= gtk_menu_new();
+
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(topitem), submenu);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menubar), topitem);
+
+		menu_item_new(submenu,_("Save _As"),G_CALLBACK(menu_save_as),trace);
+		menu_item_new(submenu,_("_Close"),G_CALLBACK(menu_close),window);
+
+		gtk_box_pack_start(GTK_BOX(vbox),menubar,FALSE,TRUE,0);
+	}
+
+	// Trace window
+	gtk_box_pack_start(GTK_BOX(vbox),GTK_WIDGET(trace),TRUE,TRUE,0);
+
+	gtk_container_add(GTK_CONTAINER(window),vbox);
+	gtk_widget_show_all(window);
+ 	return window;
  }
 

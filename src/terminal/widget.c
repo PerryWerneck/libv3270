@@ -228,6 +228,12 @@ static void v3270_toggle_changed(G_GNUC_UNUSED v3270 *widget, G_GNUC_UNUSED LIB3
 {
 }
 
+static void finalize(GObject *object)
+ {
+	debug("V3270::%s",__FUNCTION__);
+	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);
+ }
+
 static void v3270_class_init(v3270Class *klass)
 {
 	GObjectClass	* gobject_class	= G_OBJECT_CLASS(klass);
@@ -238,6 +244,9 @@ static void v3270_class_init(v3270Class *klass)
 	gtk_binding_entry_skip(binding,GDK_F10,0);
 
 	lib3270_set_log_handler(loghandler);
+
+	// Object methods
+	gobject_class->finalize							= finalize;
 
 	// Widget methods
 	widget_class->realize 							= v3270_realize;

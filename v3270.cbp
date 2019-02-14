@@ -195,7 +195,7 @@
 		<Unit filename="src/trace/exec.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/trace/trace.c">
+		<Unit filename="src/trace/widget.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/v3270/private.h" />

@@ -40,9 +40,9 @@
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
  #include <lib3270/properties.h>
+ #include <v3270.h>
  #include <v3270/trace.h>
 
- /*
  static const gchar * get_word(gchar **ptr)
  {
 	gchar *rc = g_strstrip(*ptr);
@@ -59,9 +59,7 @@
 
  	return rc;
  }
- */
 
- /*
  static int set_property(H3270 *hSession, const gchar *name, const gchar * value)
  {
  	size_t ix;
@@ -106,11 +104,11 @@
 	return errno = ENOENT;
 
  }
- */
 
  int v3270_exec_command(GtkWidget *widget, const gchar *text)
  {
- 	/*
+ 	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
+
  	H3270 *hSession = v3270_get_session(widget);
 	g_autofree gchar * cmdline = g_strdup(text);
 
@@ -150,7 +148,6 @@
 		*(sep++) = 0;
 		set_property(hSession,g_strstrip(cmdline),g_strstrip(sep));
 	}
-	*/
 
 	return errno = ENOENT;
  }
