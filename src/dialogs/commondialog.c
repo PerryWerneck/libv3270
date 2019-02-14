@@ -31,6 +31,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+#if GTK_CHECK_VERSION(3,12,0)
 static void apply_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *dialog)
 {
 	gtk_dialog_response(GTK_DIALOG(dialog),GTK_RESPONSE_APPLY);
@@ -49,6 +50,7 @@ static GtkWidget * create_button(GtkWidget *dialog, const gchar *mnemonic, GCall
 	gtk_widget_show(button);
 	return button;
 }
+#endif // GTK 3.12
 
 LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *title, const gchar *apply)
 {
@@ -66,7 +68,6 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *titl
 
 #else
 
-	gboolean use_header = FALSE;
 	GtkWidget * dialog = gtk_dialog_new();
 
 #endif	// GTK 3.12
