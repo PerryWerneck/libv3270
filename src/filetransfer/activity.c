@@ -27,6 +27,16 @@
  *
  */
 
+/**
+ * SECTION:V3270FTActivity
+ * @Short_description: A file transfer activity.
+ * @Title: V3270FTActivity
+ *
+ * The #V3270FTActivity object represents a single file transfer operation
+ * and contens the file names and the settings used for transfer.
+ *
+ */
+
  #include <internals.h>
  #include <stdlib.h>
  #include "private.h"
@@ -143,17 +153,40 @@
  	widget->values[LIB3270_FT_VALUE_DFT] = 4096;
  }
 
+ /**
+ * v3270_ft_activity_new:
+ *
+ * Creates an empty file transfer activity.
+ *
+ * Returns: a new #V3270FTActivity.
+ */
  LIB3270_EXPORT GObject * v3270_ft_activity_new()
  {
 	return g_object_new(G_TYPE_V3270_FT_ACTIVITY, NULL);
  }
 
+ /**
+ * v3270_ft_activity_get_local_filename:
+ * @object: a #V3270FTActivity
+ *
+ * Get the full  path of the local file.
+ *
+ * Returns: the local file path.
+ */
  LIB3270_EXPORT const gchar * v3270_ft_activity_get_local_filename(const GObject *object)
  {
 	const gchar *ptr = G_V3270_FT_ACTIVITY(object)->file.local;
 	return (ptr ? ptr : "");
  }
 
+ /**
+ * v3270_ft_activity_get_remote_filename:
+ * @object: a #V3270FTActivity
+ *
+ * Get the host file name.
+ *
+ * Returns: the host file name.
+ */
  LIB3270_EXPORT const gchar * v3270_ft_activity_get_remote_filename(const GObject *object)
  {
 	const gchar *ptr = G_V3270_FT_ACTIVITY(object)->file.remote;

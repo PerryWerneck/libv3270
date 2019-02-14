@@ -6,6 +6,8 @@ test -n "$srcdir" || srcdir=.
 olddir=`pwd`
 cd "$srcdir"
 
+mkdir -p m4
+
 aclocal
 if test $? != 0 ; then
 	echo "aclocal failed."

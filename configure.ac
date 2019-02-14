@@ -36,6 +36,9 @@ AC_INIT([libv3270], [5.2], [perry.werneck@gmail.com])
 dnl Place auxilliary scripts here.
 AC_CONFIG_AUX_DIR([scripts])
 
+dnl Recommended for gtk-doc (https://developer.gnome.org/gtk-doc-manual/stable/settingup_autoconf.html.en)
+AC_CONFIG_MACRO_DIR(m4)
+
 dnl Compute the canonical host-system type
 AC_CANONICAL_HOST
 
@@ -234,36 +237,16 @@ AC_SUBST(GLIB_LIBS)
 AC_SUBST(GLIB_CFLAGS)
 
 dnl ---------------------------------------------------------------------------
-dnl Check for doxygen
+dnl Check for GTK DOC
 dnl ---------------------------------------------------------------------------
 
-AC_PATH_TOOL([DOXYGEN], [doxygen])
+dnl https://developer.gnome.org/gtk-doc-manual/stable/settingup_autoconf.html.en
 
-dnl Help line for graphviz (optionally used by doxygen)
-AC_ARG_ENABLE(graphviz,
-	AS_HELP_STRING([--disable-graphviz], [prevent doxygen from using dot]),
-	[wantgraphviz=$enableval], [wantgraphviz=yes])
-
-AC_CHECK_PROGS([GRAPHVIZDOT], [dot])
-AC_MSG_CHECKING([whether doxygen should use graphviz])
-if test "x$wantgraphviz" = "xyes" ; then
-	if test $GRAPHVIZDOT ; then
-		AC_MSG_RESULT([yes])
-		usegraphviz=yes
-	else
-		AC_MSG_RESULT([no, graphviz missing])
-		usegraphviz=no
-	fi
-else
-	AC_MSG_RESULT([no, disabled by configure])
-	usegraphviz=no
-fi
-
-AC_SUBST(HAVE_DOT,`echo $usegraphviz | tr yesno YESNO`)
-
-if test "x$DOXYGEN" != "x"; then
-	AC_CONFIG_FILES(doxygen/doxyfile)
-fi
+m4_ifdef([GTK_DOC_CHECK], [
+GTK_DOC_CHECK([1.14],[--flavour no-tmpl])
+],[
+AM_CONDITIONAL([ENABLE_GTK_DOC], false)
+])
 
 dnl ---------------------------------------------------------------------------
 dnl Check for pic

@@ -2,6 +2,7 @@
 .tmp
 .obj
 .pot
+m4
 *~
 *.log
 *.status
