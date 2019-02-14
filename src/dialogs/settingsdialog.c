@@ -27,13 +27,23 @@
  *
  */
 
+/**
+ * SECTION:V3270FTSettingsDialog
+ * @Short_description: A dialog for define/edit file transfer.
+ * @Title: V3270FTSettingsDialog
+ *
+ * The #V3270FTSettingsDialog is a complete dialog box for managing a V3270
+ * file transfer queue.
+ *
+ */
+
  #include <internals.h>
  #include <v3270/filetransfer.h>
  #include "private.h"
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
- struct _V3270FTDialog
+ struct _V3270FTSettingsDialog
  {
  	GtkDialog parent;
 
@@ -61,12 +71,12 @@
 
  };
 
- struct _V3270FTDialogClass
+ struct _V3270FTSettingsDialogClass
  {
 	GtkDialogClass parent_class;
  };
 
- G_DEFINE_TYPE(V3270FTDialog, V3270FTDialog, GTK_TYPE_DIALOG);
+ G_DEFINE_TYPE(V3270FTSettingsDialog, V3270FTSettingsDialog, GTK_TYPE_DIALOG);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -74,7 +84,7 @@ static void finalize(GObject *object)
 {
 	debug("%s",__FUNCTION__);
 
-	V3270FTDialog * dialog = GTK_V3270_FT_DIALOG(object);
+	V3270FTSettingsDialog * dialog = GTK_V3270_FT_DIALOG(object);
 
 	if(dialog->hSession && dialog->stHandle)
 	{
@@ -82,15 +92,15 @@ static void finalize(GObject *object)
 		dialog->stHandle = NULL;
 	}
 
-	G_OBJECT_CLASS(V3270FTDialog_parent_class)->finalize(object);
+	G_OBJECT_CLASS(V3270FTSettingsDialog_parent_class)->finalize(object);
 }
 
-static void V3270FTDialog_class_init(G_GNUC_UNUSED V3270FTDialogClass *klass)
+static void V3270FTSettingsDialog_class_init(G_GNUC_UNUSED V3270FTSettingsDialogClass *klass)
 {
 	G_OBJECT_CLASS(klass)->finalize = finalize;
 }
 
-void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G_GNUC_UNUSED(*column), V3270FTDialog *widget)
+void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G_GNUC_UNUSED(*column), V3270FTSettingsDialog *widget)
 {
 	GtkTreeIter iter;
 	GtkTreeModel * model = gtk_tree_view_get_model(view);
@@ -109,48 +119,48 @@ void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G
 
 }
 
-static void validity_changed(GtkWidget G_GNUC_UNUSED(*settings), gboolean valid, V3270FTDialog *widget)
+static void validity_changed(GtkWidget G_GNUC_UNUSED(*settings), gboolean valid, V3270FTSettingsDialog *widget)
 {
 	debug("The file transfer settings are now %s",valid ? "valid" : "invalid");
 	gtk_widget_set_sensitive(widget->button.insert,valid);
 	gtk_widget_set_sensitive(widget->button.update,valid);
 }
 
-static void has_activity_changed(GtkWidget G_GNUC_UNUSED(*settings), gboolean have_activity, V3270FTDialog *widget)
+static void has_activity_changed(GtkWidget G_GNUC_UNUSED(*settings), gboolean have_activity, V3270FTSettingsDialog *widget)
 {
 	gtk_widget_set_sensitive(widget->button.reset,have_activity);
 	gtk_widget_set_sensitive(widget->button.update,have_activity);
 	gtk_widget_set_sensitive(widget->button.remove,have_activity);
 }
 
-static void reset_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+static void reset_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTSettingsDialog *widget)
 {
 	v3270_ft_settings_reset(widget->settings);
 }
 
-static void update_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+static void update_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTSettingsDialog *widget)
 {
 	v3270_ft_settings_update(widget->settings);
 	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(widget->queue.view));
 }
 
-static void load_queue_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+static void load_queue_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTSettingsDialog *widget)
 {
 	v3270_activity_list_load(widget->queue.view);
 }
 
-static void save_queue_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+static void save_queue_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTSettingsDialog *widget)
 {
 	debug("%s",__FUNCTION__);
 	v3270_activity_list_save(widget->queue.view);
 }
 
-static void save_queue_as_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+static void save_queue_as_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTSettingsDialog *widget)
 {
 	v3270_activity_list_save_as(widget->queue.view);
 }
 
-static void begin_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+static void begin_clicked(GtkButton G_GNUC_UNUSED(*button), V3270FTSettingsDialog *widget)
 {
 	gtk_dialog_response(GTK_DIALOG(widget),GTK_RESPONSE_ACCEPT);
 }
@@ -166,9 +176,9 @@ static gboolean v3270_activity_compare_filenames(const GObject *a, const GObject
 	return TRUE;
 }
 
-int v3270_ft_dialog_append_activity(GtkWidget *widget, GObject *activity, GError **error)
+int v3270_ft_settings_dialog_append_activity(GtkWidget *widget, GObject *activity, GError **error)
 {
-	V3270FTDialog *dialog = GTK_V3270_FT_DIALOG(widget);
+	V3270FTSettingsDialog *dialog = GTK_V3270_FT_DIALOG(widget);
 
 	GtkTreeIter		  iter;
 	GtkTreeModel	* model	= gtk_tree_view_get_model(GTK_TREE_VIEW(dialog->queue.view));
@@ -199,7 +209,7 @@ int v3270_ft_dialog_append_activity(GtkWidget *widget, GObject *activity, GError
 	return 0;
 }
 
-static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
+static void insert_clicked(GtkWidget *button, V3270FTSettingsDialog *widget)
 {
 	GtkTreeIter		  iter;
 	GtkTreeModel	* model	= gtk_tree_view_get_model(GTK_TREE_VIEW(widget->queue.view));
@@ -245,19 +255,19 @@ static void insert_clicked(GtkWidget *button, V3270FTDialog *widget)
 
 }
 
-static void remove_clicked(GtkWidget G_GNUC_UNUSED(*button), V3270FTDialog *widget)
+static void remove_clicked(GtkWidget G_GNUC_UNUSED(*button), V3270FTSettingsDialog *widget)
 {
 	v3270_activity_list_remove(widget->queue.view,v3270_ft_settings_get_activity(widget->settings));
 	v3270_ft_settings_set_activity(widget->settings,NULL);
 }
 
-static void enable_queue_save(GtkWidget G_GNUC_UNUSED(*save), gboolean enabled, V3270FTDialog *widget)
+static void enable_queue_save(GtkWidget G_GNUC_UNUSED(*save), gboolean enabled, V3270FTSettingsDialog *widget)
 {
 	debug("%s: %s",__FUNCTION__,(enabled ? "Enable" : "Disable"));
 	gtk_widget_set_sensitive(widget->queue.save,enabled);
 }
 
-static void V3270FTDialog_init(V3270FTDialog *widget)
+static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 {
 	widget->settings = v3270_ft_settings_new();
 	g_signal_connect(G_OBJECT(widget->settings),"validity",G_CALLBACK(validity_changed),widget);
@@ -406,7 +416,7 @@ static void V3270FTDialog_init(V3270FTDialog *widget)
 
 }
 
-LIB3270_EXPORT GtkWidget * v3270_ft_dialog_new(GtkWidget *parent)
+LIB3270_EXPORT GtkWidget * v3270_ft_settings_dialog_new(GtkWidget *parent)
 {
 	gboolean use_header;
 	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
@@ -426,20 +436,20 @@ LIB3270_EXPORT GtkWidget * v3270_ft_dialog_new(GtkWidget *parent)
 	}
 
 	if(GTK_IS_V3270(parent))
-		v3270_ft_dialog_set_session(dialog,v3270_get_session(parent));
+		v3270_ft_settings_dialog_set_session(dialog,v3270_get_session(parent));
 
 	return dialog;
 }
 
 static void connect_changed(H3270 G_GNUC_UNUSED(*hSession), int state, void *widget)
 {
-	V3270FTDialog * dialog = GTK_V3270_FT_DIALOG( ((GtkWidget *) widget) );
+	V3270FTSettingsDialog * dialog = GTK_V3270_FT_DIALOG( ((GtkWidget *) widget) );
 	gtk_widget_set_sensitive(dialog->button.begin,state ? TRUE : FALSE);
 }
 
-LIB3270_EXPORT void v3270_ft_dialog_set_session(GtkWidget *widget, H3270 *hSession)
+LIB3270_EXPORT void v3270_ft_settings_dialog_set_session(GtkWidget *widget, H3270 *hSession)
 {
-	V3270FTDialog * dialog = GTK_V3270_FT_DIALOG(widget);
+	V3270FTSettingsDialog * dialog = GTK_V3270_FT_DIALOG(widget);
 
 	if(dialog->hSession && dialog->stHandle)
 	{

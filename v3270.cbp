@@ -72,6 +72,9 @@
 		<Unit filename="src/dialogs/security.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/settingsdialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/tools.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -79,9 +82,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/filetransfer/activitylist.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/filetransfer/dialog.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/filetransfer/filelist.c">

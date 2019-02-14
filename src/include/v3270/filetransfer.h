@@ -132,19 +132,19 @@
 	LIB3270_EXPORT H3270FT 					* v3270_ft_activity_begin_transfer(GObject * object, H3270 *hSession, const char **message);
 
 	// FT Dialog widget
-	#define GTK_TYPE_V3270_FT_DIALOG				(V3270FTDialog_get_type ())
-	#define GTK_V3270_FT_DIALOG(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_FT_DIALOG, V3270FTDialog))
-	#define GTK_V3270_FT_DIALOG_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_FT_DIALOG, V3270FTDialogClass))
+	#define GTK_TYPE_V3270_FT_DIALOG				(V3270FTSettingsDialog_get_type ())
+	#define GTK_V3270_FT_DIALOG(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_FT_DIALOG, V3270FTSettingsDialog))
+	#define GTK_v3270_ft_settings_dialog_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_FT_DIALOG, V3270FTSettingsDialogClass))
 	#define GTK_IS_V3270_FT_DIALOG(obj)				(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_FT_DIALOG))
-	#define GTK_IS_V3270_FT_DIALOG_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_FT_DIALOG))
-	#define GTK_V3270_FT_DIALOG_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_FT_DIALOG, V3270FTDialogClass))
+	#define GTK_IS_v3270_ft_settings_dialog_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_FT_DIALOG))
+	#define GTK_v3270_ft_settings_dialog_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_FT_DIALOG, V3270FTSettingsDialogClass))
 
-	typedef struct _V3270FTDialog		V3270FTDialog;
-	typedef struct _V3270FTDialogClass	V3270FTDialogClass;
+	typedef struct _V3270FTSettingsDialog		V3270FTSettingsDialog;
+	typedef struct _V3270FTSettingsDialogClass	V3270FTSettingsDialogClass;
 
-	LIB3270_EXPORT GtkWidget			* v3270_ft_dialog_new(GtkWidget *parent);
-	LIB3270_EXPORT void					  v3270_ft_dialog_set_session(GtkWidget *widget, H3270 *hSession);
-	LIB3270_EXPORT int					  v3270_ft_dialog_append_activity(GtkWidget *widget, GObject *activity, GError **error);
+	LIB3270_EXPORT GtkWidget			* v3270_ft_settings_dialog_new(GtkWidget *parent);
+	LIB3270_EXPORT void					  v3270_ft_settings_dialog_set_session(GtkWidget *widget, H3270 *hSession);
+	LIB3270_EXPORT int					  v3270_ft_settings_dialog_append_activity(GtkWidget *widget, GObject *activity, GError **error);
 
 	G_END_DECLS
 

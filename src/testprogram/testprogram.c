@@ -162,8 +162,8 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  	//
  	// Test settings dialog
  	//
-	GtkWidget * dialog = v3270_ft_dialog_new(terminal);
-	v3270_ft_dialog_append_activity(dialog,activity,NULL);
+	GtkWidget * dialog = v3270_ft_settings_dialog_new(terminal);
+	v3270_ft_settings_dialog_append_activity(dialog,activity,NULL);
 	*/
 
 	//
