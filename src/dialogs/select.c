@@ -88,7 +88,7 @@ gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *bu
 		gtk_file_chooser_dialog_new
 		(
 			title,
-			GTK_WINDOW(gtk_widget_get_toplevel(dialog)),
+			GTK_WINDOW(gtk_widget_get_toplevel(widget)),
 			action,
 			_("_Cancel" ),	GTK_RESPONSE_CANCEL,
 			button, GTK_RESPONSE_ACCEPT,
