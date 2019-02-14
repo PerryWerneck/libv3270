@@ -119,7 +119,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	int f;
 
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
- 	gtk_container_set_border_width(GTK_CONTAINER(widget),18);
  	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
  	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
 
@@ -311,7 +310,7 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 	}
 
 	GtkWidget * dialog	= v3270_host_select_new(widget);
-	GtkWidget * win	= v3270_dialog_new(widget, _("Configure host"), _("C_onnect"));
+	GtkWidget * win	= v3270_dialog_new(widget, _("Setup host"), _("C_onnect"));
 
 	gtk_window_set_default_size(GTK_WINDOW(win), 700, 150);
 

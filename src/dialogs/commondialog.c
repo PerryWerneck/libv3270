@@ -86,6 +86,11 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *titl
 	{
 		gtk_window_set_title(GTK_WINDOW(dialog), title);
 
+		gtk_box_set_spacing(
+			GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+			18
+		);
+
 		gtk_dialog_add_buttons(
 			GTK_DIALOG (dialog),
 			_("_Cancel"), GTK_RESPONSE_CANCEL,
