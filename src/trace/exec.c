@@ -42,6 +42,7 @@
  #include <lib3270/properties.h>
  #include <v3270.h>
  #include <v3270/trace.h>
+ #include <internals.h>
 
  static const gchar * get_word(gchar **ptr)
  {
