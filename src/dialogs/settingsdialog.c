@@ -335,9 +335,9 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 		widget->queue.saveAs = gtk_button_new_from_icon_name("document-save-as",GTK_ICON_SIZE_SMALL_TOOLBAR);
 #else
 		// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
-		widget->queue.load = gtk_button_new_from_stock(GTK_STOCK_OPEN,GTK_ICON_SIZE_SMALL_TOOLBAR);
-		widget->queue.save = gtk_button_new_from_stock(GTK_STOCK_SAVE,GTK_ICON_SIZE_SMALL_TOOLBAR);
-		widget->queue.saveAs = gtk_button_new_from_stock(GTK_STOCK_SAVE_AS,GTK_ICON_SIZE_SMALL_TOOLBAR);
+		widget->queue.load = gtk_button_new_from_stock(GTK_STOCK_OPEN);
+		widget->queue.save = gtk_button_new_from_stock(GTK_STOCK_SAVE);
+		widget->queue.saveAs = gtk_button_new_from_stock(GTK_STOCK_SAVE_AS);
 #endif // GTK_CHECK_VERSION
 
 		gtk_widget_set_tooltip_markup(widget->queue.load,_("Get transfer queue from file"));
