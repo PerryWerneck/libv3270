@@ -39,23 +39,6 @@
  #include <lib3270/popup.h>
  #include <lib3270/filetransfer.h>
 
- #if GLIB_CHECK_VERSION(2,44,0)
-
-	#define v3270_autofree	g_autofree
-
- #else
-
-	// Reference: https://github.com/ImageMagick/glib/blob/master/glib/glib-autocleanups.h
-	static inline void v3270_autoptr_cleanup_generic_gfree(void *p)
-	{
-		void **pp = (void**)p;
-		g_free (*pp);
-	}
-
-	#define v3270_autofree __attribute__((cleanup(v3270_autoptr_cleanup_generic_gfree)))
-
- #endif // GLIB(2,44,0)
-
  G_BEGIN_DECLS
 
  #define GTK_TYPE_V3270				(v3270_get_type ())

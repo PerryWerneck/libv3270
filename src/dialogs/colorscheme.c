@@ -39,6 +39,7 @@
 
  #include <v3270.h>
  #include <lib3270/log.h>
+ #include <internals.h>
  #include <v3270/colorscheme.h>
  #include "../terminal/marshal.h"
 
@@ -370,7 +371,7 @@
 		if(f)
 			g_string_append_c(str,';');
 
-		v3270_autofree gchar * color = gdk_rgba_to_string(clr+f);
+		g_autofree gchar * color = gdk_rgba_to_string(clr+f);
 		g_string_append_printf(str,"%s",color);
 	}
 

@@ -34,6 +34,7 @@
  #include <lib3270.h>
  #include <lib3270/log.h>
  #include <lib3270/actions.h>
+ #include <internals.h>
 
  #if GTK_CHECK_VERSION(3,0,0)
 	#include <gdk/gdkkeysyms-compat.h>
@@ -202,7 +203,7 @@ gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, G_GNUC_UNUSED g
 #ifndef _WIN32
 				gtk_tooltip_set_icon_from_icon_name(tooltip,lib3270_get_ssl_state_icon_name(hSession),GTK_ICON_SIZE_DIALOG);
 #endif
-				v3270_autofree gchar * message =
+				g_autofree gchar * message =
 						g_strdup_printf(
 							"<b>%s</b>\n%s",
 								lib3270_get_ssl_state_message(hSession),
