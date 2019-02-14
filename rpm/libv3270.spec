@@ -51,7 +51,6 @@ BuildRoot:	/var/tmp/%{name}-%{version}
 Provides:	libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
 Conflicts:	otherproviders(libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
 
-BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
@@ -60,7 +59,22 @@ BuildRequires:  coreutils
 BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
+
+%if 0%{?fedora} ||  0%{?suse_version} > 1200
+
+BuildRequires:  pkgconfig(openssl)
+BuildRequires:  pkgconfig(gtk+-3.0)
+
+%else
+
+BuildRequires:  openssl-devel
+BuildRequires:	gtk3-devel
+
+%endif
+
+%if %{undefined fedora} && %{undefined rhel_version}
 BuildRequires:	libgladeui-2-6
+%endif
 
 %description
 
