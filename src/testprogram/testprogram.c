@@ -37,6 +37,7 @@
  #include <v3270/filetransfer.h>
  #include <v3270/ftprogress.h>
  #include <v3270/colorscheme.h>
+ #include <v3270/trace.h>
  #include <lib3270/log.h>
  #include <stdlib.h>
 
@@ -149,6 +150,11 @@ static void disconnect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *term
 
 static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
+	GtkWidget * dialog	= v3270_dialog_new(terminal, _("test"), _("test"));
+	GtkWidget * trace = v3270_trace_new(terminal);
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),trace,TRUE,TRUE,2);
+
+	/*
 	//
 	// Test activity
 	//
@@ -158,13 +164,11 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	v3270_ft_activity_set_remote_filename(activity,"remote_file");
 	v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP);
 
- 	/*
  	//
  	// Test settings dialog
  	//
 	GtkWidget * dialog = v3270_ft_settings_dialog_new(terminal);
 	v3270_ft_settings_dialog_append_activity(dialog,activity,NULL);
-	*/
 
 	//
 	// Test worker widget
@@ -175,6 +179,7 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	v3270_ft_worker_set_session(worker,v3270_get_session(terminal));
 	v3270_ft_worker_set_activity(worker,activity);
 	v3270_ft_worker_start(worker);
+	*/
 
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
@@ -205,6 +210,7 @@ static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 
 }
 
+
 static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
@@ -218,6 +224,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	// v3270_set_font_family(terminal,"Droid Sans Mono");
 	g_signal_connect(terminal,"field_clicked",G_CALLBACK(field_clicked),window);
 
+	/*
 	GtkWidget *trace = v3270_new_trace_window(terminal,NULL);
 	if(trace) {
 		g_signal_connect(trace, "destroy", G_CALLBACK(trace_window_destroy), v3270_get_session(terminal));
@@ -225,6 +232,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_DS_TRACE);
 		gtk_widget_show_all(trace);
 	}
+	*/
 
 	/*
 	v3270_connect(terminal);

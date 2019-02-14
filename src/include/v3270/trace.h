@@ -32,34 +32,25 @@
 #ifndef PW3270_TRACE_H_INCLUDED
 
  #include <gtk/gtk.h>
- #include <v3270.h>
- #include <lib3270.h>
 
  #define PW3270_TRACE_H_INCLUDED 1
 
  G_BEGIN_DECLS
 
- #define V3270_TYPE_TRACE				(v3270_trace_get_type ())
- #define V3270_TRACE(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), V3270_TYPE_TRACE, v3270_trace))
- #define V3270_TRACE_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), V3270_TYPE_TRACE, pw3270_traceClass))
- #define IS_V3270_TRACE(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), V3270_TYPE_TRACE))
- #define IS_V3270_TRACE_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), V3270_TYPE_TRACE))
- #define V3270_TRACE_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), V3270_TYPE_TRACE, v3270_traceClass))
+ #define GTK_TYPE_V3270_TRACE				(V3270Trace_get_type ())
+ #define GTK_V3270_TRACE(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_TRACE, V3270Trace))
+ #define GTK_V3270_TRACE_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_TRACE, V3270TraceClass))
+ #define GTK_IS_V3270_TRACE(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_TRACE))
+ #define GTK_IS_V3270_TRACE_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_TRACE))
+ #define GTK_V3270_TRACE_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_TRACE, V3270TraceClass))
 
- typedef struct _v3270_trace		  v3270_trace;
- typedef struct _v3270_traceClass	  v3270_traceClass;
+ typedef struct _V3270Trace		  	  V3270Trace;
+ typedef struct _V3270TraceClass	  V3270TraceClass;
 
- LIB3270_EXPORT	GtkWidget			* v3270_trace_new();
-
- LIB3270_EXPORT	GtkWidget			* v3270_trace_new_from_session(H3270 *hSession, const gchar *header);
-
- LIB3270_EXPORT	void				  v3270_trace_set_session(GtkWidget *widget, H3270 *hSession);
- LIB3270_EXPORT	GType 				  v3270_trace_get_type(void);
+ LIB3270_EXPORT	GtkWidget			* v3270_trace_new(GtkWidget *terminal);
+ LIB3270_EXPORT void				  v3270_trace_append_text(GtkWidget *widget, const gchar *text);
  LIB3270_EXPORT void				  v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args);
  LIB3270_EXPORT void				  v3270_trace_printf(GtkWidget *widget, const char *fmt, ... );
- LIB3270_EXPORT void				  v3270_trace_append_text(GtkWidget *widget, const gchar *text);
- LIB3270_EXPORT gchar				* v3270_trace_get_command(GtkWidget *widget);
- LIB3270_EXPORT void				  v3270_trace_set_destroy_on_close(GtkWidget *widget,gboolean on);
 
  G_END_DECLS
 
