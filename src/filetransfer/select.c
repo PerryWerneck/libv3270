@@ -37,7 +37,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-gchar * v3270ft_select_file(GtkWidget *dialog, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, G_GNUC_UNUSED const gchar *filter, ...) {
+gchar * v3270_select_file(GtkWidget *dialog, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, G_GNUC_UNUSED const gchar *filter, ...) {
 
 	gchar *rc = NULL;
 

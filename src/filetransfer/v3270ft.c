@@ -190,7 +190,7 @@ static void remove_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 
 static void load_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 
-	gchar * filename = v3270ft_select_file(
+	gchar * filename = v3270_select_file(
 								GTK_WIDGET(dialog),
 								_("Load queue from file"),
 								_("Load"), GTK_FILE_CHOOSER_ACTION_OPEN,
@@ -209,7 +209,7 @@ static void load_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 
 static void save_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 
-	gchar * filename = v3270ft_select_file(
+	gchar * filename = v3270_select_file(
 								GTK_WIDGET(dialog),
 								_("Save queue to file"),
 								_("Save"),
@@ -297,7 +297,7 @@ static void select_local_file(GtkButton G_GNUC_UNUSED(*button), v3270ft *dialog)
 static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, v3270ft *dialog) {
 #endif // WIN32
 
-	gchar *filename = v3270ft_select_file(
+	gchar *filename = v3270_select_file(
 								GTK_WIDGET(dialog),
 								_("Select local file"),
 								_("Select"),

@@ -50,6 +50,7 @@
  #include <lib3270/trace.h>
  #include <lib3270/properties.h>
  #include <v3270/trace.h>
+ #include <internals.h>
 
 #if defined( HAVE_SYSLOG )
  #include <syslog.h>
@@ -73,6 +74,8 @@
 
 	GtkTextBuffer	* text;			///< @brief Trace window contents.
 	GtkEntry		* entry;		///< @brief Command line entry.
+
+ 	gchar 			* filename;		///< @brief Selected file name.
 
 	guint 			  log_handler;	///< @brief GTK Log Handler.
 
@@ -123,6 +126,12 @@
 	debug("V3270Trace::%s",__FUNCTION__);
 
  	V3270Trace *trace = GTK_V3270_TRACE(object);
+
+ 	if(trace->filename)
+	{
+		g_free(trace->filename);
+		trace->filename = NULL;
+	}
 
 	if(trace->log_handler)
 	{
@@ -324,6 +333,9 @@
 
  static void bg_append_text(struct _append_text *cfg)
  {
+ 	if(!GTK_IS_TEXT_BUFFER(cfg->widget->text))
+		return;
+
 	GtkTextIter	itr;
 	gtk_text_buffer_get_end_iter(cfg->widget->text,&itr);
 
@@ -379,9 +391,14 @@
 	g_signal_connect(G_OBJECT(widget), "activate", callback, data);
  }
 
- static void menu_save_as(G_GNUC_UNUSED GtkWidget *button, V3270Trace *trace)
+ static void menu_save(G_GNUC_UNUSED GtkWidget *button, GtkWidget *trace)
  {
-	debug("%s",__FUNCTION__);
+	v3270_trace_save(trace);
+ }
+
+ static void menu_save_as(G_GNUC_UNUSED GtkWidget *button, GtkWidget *trace)
+ {
+	v3270_trace_select_file(trace);
  }
 
  static void menu_close(G_GNUC_UNUSED GtkWidget *button, GtkWidget *window)
@@ -396,7 +413,7 @@
 
  	GtkWidget 	* window	= gtk_window_new(GTK_WINDOW_TOPLEVEL);
  	GtkWidget 	* vbox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
- 	V3270Trace	* trace		= v3270_trace_new(widget);
+ 	GtkWidget	* trace		= v3270_trace_new(widget);
 
  	// Set window title and default size
  	{
@@ -406,7 +423,7 @@
 		if(url)
 			title = g_strdup_printf("%s - %s - Trace", v3270_get_session_name(widget), url);
 		else
-			title = g_strdup_printf("%s - Trace", v3270_get_session_name(widget), url);
+			title = g_strdup_printf("%s - Trace", v3270_get_session_name(widget));
 
 		gtk_window_set_title(GTK_WINDOW(window), title);
 		gtk_window_set_default_size(GTK_WINDOW(widget),590,430);
@@ -421,6 +438,7 @@
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(topitem), submenu);
 		gtk_menu_shell_append(GTK_MENU_SHELL(menubar), topitem);
 
+		menu_item_new(submenu,_("_Save"),G_CALLBACK(menu_save),trace);
 		menu_item_new(submenu,_("Save _As"),G_CALLBACK(menu_save_as),trace);
 		menu_item_new(submenu,_("_Close"),G_CALLBACK(menu_close),window);
 
@@ -433,5 +451,73 @@
 	gtk_container_add(GTK_CONTAINER(window),vbox);
 	gtk_widget_show_all(window);
  	return window;
+ }
+
+ LIB3270_EXPORT void v3270_trace_save(GtkWidget *widget)
+ {
+ 	V3270Trace * trace = GTK_V3270_TRACE(widget);
+
+	if(trace && trace->filename)
+	{
+		GError		* error = NULL;
+		gchar		* text;
+		GtkTextIter	  start;
+		GtkTextIter	  end;
+
+		gtk_text_buffer_get_start_iter(trace->text,&start);
+		gtk_text_buffer_get_end_iter(trace->text,&end);
+		text = gtk_text_buffer_get_text(trace->text,&start,&end,FALSE);
+
+		g_file_set_contents(trace->filename,text,-1,&error);
+
+		g_free(text);
+
+		if(error)
+		{
+			GtkWidget *popup =
+				gtk_message_dialog_new_with_markup(
+						GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+						GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_CLOSE,
+						_( "Can't save %s" ),
+						trace->filename
+				);
+
+			gtk_window_set_title(GTK_WINDOW(popup),_("Can't save file"));
+
+			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",error->message);
+			g_error_free(error);
+
+			gtk_dialog_run(GTK_DIALOG(popup));
+			gtk_widget_destroy(popup);
+
+		}
+
+	}
+
+ }
+
+ LIB3270_EXPORT void v3270_trace_select_file(GtkWidget *widget)
+ {
+	V3270Trace * trace = GTK_V3270_TRACE(widget);
+
+	gchar * filename =
+		v3270_select_file(
+			GTK_WIDGET(trace),
+			_("Save trace to file"),
+			_("Save"),
+			GTK_FILE_CHOOSER_ACTION_SAVE,
+			trace->filename,
+			N_("Text file"), "*.txt",
+			NULL
+		);
+
+	if(filename) {
+		g_free(trace->filename);
+		trace->filename = filename;
+		v3270_trace_save(widget);
+	}
+
  }
 

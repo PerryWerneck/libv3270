@@ -270,7 +270,7 @@
  {
 	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(widget);
 
-	gchar * filename = v3270ft_select_file(
+	gchar * filename = v3270_select_file(
 								widget,
 								_("Load queue from file"),
 								_("Load"), GTK_FILE_CHOOSER_ACTION_OPEN,
@@ -370,7 +370,7 @@
  {
 	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(widget);
 
-	gchar * filename = v3270ft_select_file(
+	gchar * filename = v3270_select_file(
 								widget,
 								_("Save queue to file"),
 								_("Save"),

@@ -202,7 +202,7 @@ static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
 static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, GtkWidget *widget)
 {
 	v3270_autofree gchar *filename =
-		v3270ft_select_file(
+		v3270_select_file(
 			gtk_widget_get_toplevel(widget),
 			_("Select local file"),
 			_("Select"),
