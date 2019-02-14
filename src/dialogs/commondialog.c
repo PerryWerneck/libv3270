@@ -52,6 +52,8 @@ static GtkWidget * create_button(GtkWidget *dialog, const gchar *mnemonic, GCall
 
 LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *title, const gchar *apply)
 {
+#if GTK_CHECK_VERSION(3,12,0)
+
 	gboolean use_header;
 	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
 
@@ -61,6 +63,13 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *titl
 			"use-header-bar", (use_header ? 1 : 0),
 			NULL
 		));
+
+#else
+
+	gboolean use_header = FALSE;
+	GtkWidget * dialog = gtk_dialog_new();
+
+#endif	// GTK 3.12
 
 	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
 
