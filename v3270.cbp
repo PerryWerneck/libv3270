@@ -72,6 +72,9 @@
 		<Unit filename="src/dialogs/security.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/select.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/settingsdialog.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -99,9 +102,6 @@
 		</Unit>
 		<Unit filename="src/filetransfer/private.h" />
 		<Unit filename="src/filetransfer/save.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/filetransfer/select.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/filetransfer/set.c">

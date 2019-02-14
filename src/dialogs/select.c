@@ -19,7 +19,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como select.c e possui - linhas de código.
+ * Este programa está nomeado como - possui - linhas de código.
  *
  * Contatos:
  *
@@ -31,28 +31,23 @@
 #include "private.h"
 #include <stdarg.h>
 
-#ifdef WIN32
-	#include <gdk/gdkwin32.h>
-#endif // WIN32
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-gchar * v3270_select_file(GtkWidget *dialog, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, G_GNUC_UNUSED const gchar *filter, ...) {
-
+gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, const gchar *filter, ...)
+{
 	gchar *rc = NULL;
-
-	debug("%s",__FUNCTION__);
 
 #if GTK_CHECK_VERSION(3,20,0)
 
-	GtkFileChooserNative *native =	gtk_file_chooser_native_new
-									(
-										title,
-										GTK_WINDOW(gtk_widget_get_toplevel(dialog)),
-										action,
-										button,
-										_( "_Cancel" )
-									);
+	GtkFileChooserNative *native =
+		gtk_file_chooser_native_new
+		(
+			title,
+			GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+			action,
+			button,
+			_( "_Cancel" )
+		);
 
 
 	// Setup filename
@@ -89,15 +84,16 @@ gchar * v3270_select_file(GtkWidget *dialog, const gchar *title, const gchar *bu
 
 #else
 
-	GtkWidget * chooser = gtk_file_chooser_dialog_new
-	(
-		title,
-		GTK_WINDOW(gtk_widget_get_toplevel(dialog)),
-		action,
-		_("_Cancel" ),	GTK_RESPONSE_CANCEL,
-		button, GTK_RESPONSE_ACCEPT,
-		NULL
-	);
+	GtkWidget * chooser =
+		gtk_file_chooser_dialog_new
+		(
+			title,
+			GTK_WINDOW(gtk_widget_get_toplevel(dialog)),
+			action,
+			_("_Cancel" ),	GTK_RESPONSE_CANCEL,
+			button, GTK_RESPONSE_ACCEPT,
+			NULL
+		);
 
 	if(filename && *filename)
 		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(chooser),filename);
@@ -131,8 +127,6 @@ gchar * v3270_select_file(GtkWidget *dialog, const gchar *title, const gchar *bu
 
 
 #endif // GTK 3.20
-
-	debug("%s=%s",__FUNCTION__,rc);
 
 	return rc;
 
