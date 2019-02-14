@@ -53,6 +53,11 @@
  G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_grid(GtkAlign align);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
+
+#if ! GTK_CHECK_VERSION(3,12,0)
+ #define GtkHeaderBar GtkWidget
+#endif // ! GTK 3.12
+
  G_GNUC_INTERNAL GtkHeaderBar	* v3270_dialog_get_header_bar(GtkWidget * widget);
 
  // Activity list widget.
