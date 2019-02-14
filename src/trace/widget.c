@@ -426,7 +426,7 @@
 			title = g_strdup_printf("%s - Trace", v3270_get_session_name(widget));
 
 		gtk_window_set_title(GTK_WINDOW(window), title);
-		gtk_window_set_default_size(GTK_WINDOW(widget),590,430);
+		gtk_window_set_default_size(GTK_WINDOW(window),590,430);
  	}
 
 	// Top menu
