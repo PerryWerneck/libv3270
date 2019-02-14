@@ -36,6 +36,8 @@
  */
 
  #include <limits.h>
+ #include <internals.h>
+
  #include "private.h"
 
 /*--[ GTK Requires ]---------------------------------------------------------------------------------*/
