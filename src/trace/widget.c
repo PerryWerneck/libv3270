@@ -331,13 +331,15 @@
  	gchar text[1];
  };
 
- static void bg_append_text(struct _append_text *cfg)
+ static gboolean bg_append_text(struct _append_text *cfg)
  {
  	if(!GTK_IS_TEXT_BUFFER(cfg->widget->text))
-		return;
+		return FALSE;
 
 	GtkTextIter	itr;
 	gtk_text_buffer_get_end_iter(cfg->widget->text,&itr);
+
+	printf("%s\n",cfg->text);
 
 	if(g_utf8_validate(cfg->text,strlen(cfg->text),NULL))
 	{
@@ -354,19 +356,21 @@
 	//GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(hwnd->scroll));
 	//gtk_adjustment_set_value(vadj,gtk_adjustment_get_upper(vadj));
 	//gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(hwnd->scroll), vadj);
+
+	return FALSE;
+
  }
 
  LIB3270_EXPORT void v3270_trace_append_text(GtkWidget *widget, const gchar *text)
  {
- 	debug("widget=%p text=\"%s\"",widget,text);
-
-	g_return_if_fail(GTK_IS_V3270_TRACE(widget));
+ 	g_return_if_fail(GTK_IS_V3270_TRACE(widget));
 
 	// Enqueue update.
  	struct _append_text * cfg = g_malloc0(sizeof(struct _append_text)+strlen(text)+1);
  	cfg->widget = GTK_V3270_TRACE(widget);
  	strcpy(cfg->text,text);
-	gdk_threads_add_idle_full(G_PRIORITY_LOW,(GSourceFunc) bg_append_text,cfg,g_free);
+
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_append_text, cfg, g_free);
 
  }
 
