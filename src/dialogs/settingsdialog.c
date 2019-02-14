@@ -273,6 +273,7 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 	g_signal_connect(G_OBJECT(widget->settings),"validity",G_CALLBACK(validity_changed),widget);
 	g_signal_connect(G_OBJECT(widget->settings),"has-activity",G_CALLBACK(has_activity_changed),widget);
 
+#if GTK_CHECK_VERSION(3,12,0)
 	// Does the dialog have header bar?
 	GtkHeaderBar * header = v3270_dialog_get_header_bar(GTK_WIDGET(widget));
 
@@ -280,6 +281,9 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 		gtk_header_bar_set_title(header,_( "3270 File transfer"));
 	else
 		gtk_window_set_title(GTK_WINDOW(widget),_( "3270 File transfer"));
+#else
+	gtk_window_set_title(GTK_WINDOW(widget),_( "3270 File transfer"));
+#endif // GTK 3.12
 
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(widget))),18);

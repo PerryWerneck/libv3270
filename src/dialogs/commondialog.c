@@ -132,9 +132,9 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *titl
 	return dialog;
 }
 
+#if GTK_CHECK_VERSION(3,12,0)
 GtkHeaderBar * v3270_dialog_get_header_bar(GtkWidget * widget)
 {
-#if GTK_CHECK_VERSION(3,12,0)
 
 	gboolean use_header = FALSE;
 
@@ -143,7 +143,7 @@ GtkHeaderBar * v3270_dialog_get_header_bar(GtkWidget * widget)
 	if(use_header)
 		return GTK_HEADER_BAR(gtk_dialog_get_header_bar(GTK_DIALOG(widget)));
 
-#endif // GTK 3.12
-
 	return NULL;
 }
+#endif // GTK 3.12
+
