@@ -226,7 +226,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 	// v3270_set_font_family(terminal,"Droid Sans Mono");
 	g_signal_connect(terminal,"field_clicked",G_CALLBACK(field_clicked),window);
 
-	GtkWidget *trace = v3270_new_trace_window(terminal);
+	GtkWidget *trace = v3270_trace_window_new(terminal,NULL);
 	if(trace) {
 		g_signal_connect(trace, "destroy", G_CALLBACK(trace_window_destroy), v3270_get_session(terminal));
 		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_SSL_TRACE);

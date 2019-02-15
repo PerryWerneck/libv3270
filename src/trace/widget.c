@@ -413,7 +413,7 @@
 	gtk_widget_destroy(window);
  }
 
- LIB3270_EXPORT GtkWidget * v3270_new_trace_window(GtkWidget *widget)
+ LIB3270_EXPORT GtkWidget * v3270_trace_window_new(GtkWidget *widget, const gchar *header)
  {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
@@ -456,6 +456,10 @@
 
 	gtk_container_add(GTK_CONTAINER(window),vbox);
 	gtk_widget_show_all(window);
+
+	if(header)
+		v3270_trace_append_text(trace,header);
+
  	return window;
  }
 

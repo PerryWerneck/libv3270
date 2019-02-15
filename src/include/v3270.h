@@ -166,7 +166,7 @@
  #endif // v3270_char
 
  LIB3270_EXPORT GtkWidget		* v3270_new(void);
- LIB3270_EXPORT GtkWidget		* v3270_new_trace_window(GtkWidget *widget);
+ LIB3270_EXPORT GtkWidget		* v3270_trace_window_new(GtkWidget *widget, const gchar *header);
  LIB3270_EXPORT GType 			  v3270_get_type(void);
  LIB3270_EXPORT void		  	  v3270_reload(GtkWidget * widget);
  LIB3270_EXPORT void			  v3270_set_font_family(GtkWidget *widget, const gchar *name);
