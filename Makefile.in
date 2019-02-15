@@ -309,13 +309,12 @@ install-shared: \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
 
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 	# Install default configs
 	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
-
-#	@$(INSTALL_DATA) \
-#		colors.conf \
-#		$(DESTDIR)$(datarootdir)/pw3270
 
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
@@ -326,14 +325,7 @@ install-static: \
 		$(DESTDIR)$(libdir)/$(LIBNAME)-static.a
 
 install-dev: \
-	install-shared \
 	$(POTDIR)/$(LIBNAME).pot
-
-	@$(LN_S) \
-		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
-
-	# Install SDK
 
 	@mkdir -p $(DESTDIR)$(includedir)/v3270
 
