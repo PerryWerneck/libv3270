@@ -70,7 +70,7 @@ RLS_CFLAGS="-DNDEBUG=1"
 PLUGINS=""
 APP_RESOURCES=""
 APP_LDFLAGS=""
-DLL_LDFLAGS="-shared"
+DLL_LDFLAGS="-shared -Wl,-soname,\$(@F)"
 STATIC_LDFLAGS=""
 
 dnl ---------------------------------------------------------------------------
