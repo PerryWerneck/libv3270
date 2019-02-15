@@ -80,11 +80,12 @@ dnl ---------------------------------------------------------------------------
 DLLPREFIX="lib"
 
 case "$host" in
-	*-mingw32)
+	*-mingw32|*-pc-msys)
 		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
-		LDFLAGS="$LDFLAGS -pthread -static-libgcc -static-libstdc++"
+		LDFLAGS="$LDFLAGS -pthread"
+		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def"
 		DLLEXT=".dll"
 
 		app_win32_revision=$(date +%y.%m.%d.%H)
@@ -120,6 +121,7 @@ AC_SUBST(LIBS)
 AC_SUBST(LOGDIR)
 AC_SUBST(DLLEXT)
 AC_SUBST(DLLPREFIX)
+AC_SUBST(DLL_LDFLAGS)
 
 dnl ---------------------------------------------------------------------------
 dnl Check for other programs
