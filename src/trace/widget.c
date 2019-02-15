@@ -68,16 +68,18 @@
 
  struct _V3270Trace
  {
- 	GtkGrid			  parent;
- 	H3270			* hSession;		///< @brief TN3270 Session.
- 	GtkWidget		* terminal;		///< @brief V3270 Widget.
+ 	GtkGrid				  parent;
+ 	H3270				* hSession;		///< @brief TN3270 Session.
+ 	GtkWidget			* terminal;		///< @brief V3270 Widget.
+ 	GtkScrolledWindow	* scroll;
 
-	GtkTextBuffer	* text;			///< @brief Trace window contents.
-	GtkEntry		* entry;		///< @brief Command line entry.
+ 	GtkTextView			* view;			///< @brief Text view;
+	GtkTextBuffer		* text;			///< @brief Trace window contents.
+	GtkEntry			* entry;		///< @brief Command line entry.
 
- 	gchar 			* filename;		///< @brief Selected file name.
+ 	gchar 				* filename;		///< @brief Selected file name.
 
-	guint 			  log_handler;	///< @brief GTK Log Handler.
+	guint 				  log_handler;	///< @brief GTK Log Handler.
 
 	/// @brief lib3270's saved trace handler.
 	struct {
@@ -248,21 +250,23 @@
 
 	// Create text view
 	{
-		GtkWidget *scrolled = gtk_scrolled_window_new(NULL,NULL);
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
-		gtk_widget_set_vexpand(scrolled,TRUE);
-		gtk_widget_set_hexpand(scrolled,TRUE);
-		gtk_grid_attach(GTK_GRID(widget),scrolled,0,0,10,1);
+		widget->scroll = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(NULL,NULL));
+		gtk_scrolled_window_set_policy(widget->scroll,GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
+		gtk_widget_set_vexpand(GTK_WIDGET(widget->scroll),TRUE);
+		gtk_widget_set_hexpand(GTK_WIDGET(widget->scroll),TRUE);
+		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->scroll),0,0,10,1);
 
-		GtkWidget *view = gtk_text_view_new();
-		gtk_text_view_set_monospace(GTK_TEXT_VIEW(view),TRUE);
+		widget->view = GTK_TEXT_VIEW(gtk_text_view_new());
 
-		widget->text = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
-		gtk_text_view_set_editable(GTK_TEXT_VIEW(view), TRUE);
+#if GTK_CHECK_VERSION(3,16,0)
+		gtk_text_view_set_monospace(widget->view,TRUE);
+#endif // GTK_CHECK_VERSION
 
-		gtk_container_add(GTK_CONTAINER(scrolled),view);
+		widget->text = gtk_text_view_get_buffer(widget->view);
+		gtk_text_view_set_editable(widget->view, TRUE);
 
-		gtk_widget_set_can_default(view,FALSE);
+		gtk_container_add(GTK_CONTAINER(widget->scroll),GTK_WIDGET(widget->view));
+		gtk_widget_set_can_default(GTK_WIDGET(widget->view),FALSE);
 
 	}
 
@@ -339,8 +343,6 @@
 	GtkTextIter	itr;
 	gtk_text_buffer_get_end_iter(cfg->widget->text,&itr);
 
-	printf("%s\n",cfg->text);
-
 	if(g_utf8_validate(cfg->text,strlen(cfg->text),NULL))
 	{
 		gtk_text_buffer_insert(cfg->widget->text,&itr,cfg->text,strlen(cfg->text));
@@ -350,12 +352,12 @@
 		gtk_text_buffer_insert(cfg->widget->text,&itr,"** Invalid UTF8 String **",-1);
 	}
 
-	// gtk_text_buffer_get_end_iter(hwnd->text,&itr);
-	// gtk_text_view_scroll_to_iter (GTK_TEXT_VIEW(hwnd->view), &itr, 0.0, FALSE, 0.0, 0.0);
+	// gtk_text_buffer_get_end_iter(cfg->widget->text,&itr);
+	// gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(cfg->widget->view), &itr, 0.0, FALSE, 0.0, 0.0);
 
-	//GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(hwnd->scroll));
-	//gtk_adjustment_set_value(vadj,gtk_adjustment_get_upper(vadj));
-	//gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(hwnd->scroll), vadj);
+	GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(cfg->widget->scroll);
+	gtk_adjustment_set_value(vadj,gtk_adjustment_get_upper(vadj));
+	gtk_scrolled_window_set_vadjustment(cfg->widget->scroll, vadj);
 
 	return FALSE;
 
