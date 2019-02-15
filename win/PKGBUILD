@@ -1,0 +1,40 @@
+# Maintainer: Perry Werneck <perry.werneck@gmail.com>
+
+pkgname=${MINGW_PACKAGE_PREFIX}-libv3270
+
+pkgver=5.2
+pkgrel=1
+pkgdesc="3270 Virtual Terminal for GTK"
+url="https://portal.softwarepublico.gov.br/social/pw3270/"
+arch=(i686 x86_64)
+license=(GPL)
+depends=(${MINGW_PACKAGE_PREFIX}-lib3270 ${MINGW_PACKAGE_PREFIX}-gtk3)
+makedepends=(autoconf automake make openssl ${MINGW_PACKAGE_PREFIX}-lib3270 ${MINGW_PACKAGE_PREFIX}-gtk3)
+checkdepends=()
+
+#groups=(gnome)
+
+source=(libv3270-$pkgver.tar.xz)
+sha256sums=('SKIP')
+
+provides=($pkgname)
+conflicts=($pkgname)
+
+prepare() {
+  cd libv3270-$pkgver
+  NOCONFIGURE=1 ./autogen.sh
+  ./configure --prefix=$MINGW_PREFIX
+}
+
+build() {
+  cd libv3270-$pkgver
+  make all
+}
+
+package() {
+  cd libv3270-$pkgver
+  DESTDIR="$pkgdir" make install-dev
+  install .bin/Release/libv3270.dll $MINGW_PREFIX/bin
+  dlltool --dllname libv3270.dll --input-def .bin/Release/libv3270.def --output-lib $MINGW_PREFIX/lib/libv3270.a
+}
+
