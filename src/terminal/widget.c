@@ -235,13 +235,6 @@ static void finalize(GObject *object)
 	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);
  }
 
-static gboolean signal_keypress(GtkWidget *widget,guint keyval, GdkModifierType state)
-{
-//	debug("v3270::%s",__FUNCTION__);
-
-	return FALSE;
-}
-
 static void v3270_class_init(v3270Class *klass)
 {
 	GObjectClass	* gobject_class	= G_OBJECT_CLASS(klass);
@@ -252,9 +245,6 @@ static void v3270_class_init(v3270Class *klass)
 	gtk_binding_entry_skip(binding,GDK_F10,0);
 
 	lib3270_set_log_handler(loghandler);
-
-	// V3270 methods
-	klass->keypress = signal_keypress;
 
 	// Object methods
 	gobject_class->finalize							= finalize;
@@ -376,9 +366,9 @@ static void v3270_class_init(v3270Class *klass)
 		g_signal_new(	"keypress",
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_LAST,
-						G_STRUCT_OFFSET (v3270Class, keypress),
+						0,
 						NULL, NULL,
-						v3270_BOOLEAN__VOID_UINT_ENUM,
+						v3270_BOOLEAN__UINT_ENUM,
 						G_TYPE_BOOLEAN, 2, G_TYPE_UINT, G_TYPE_UINT);
 
 	v3270_widget_signal[SIGNAL_CONNECTED] =

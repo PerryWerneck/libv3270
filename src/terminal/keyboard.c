@@ -54,9 +54,6 @@
 	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
 #endif
 
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#pragma GCC diagnostic ignored "-Wsign-compare"
-
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
 	 static struct _keycode
@@ -64,37 +61,36 @@
 		guint			  keyval;
 		GdkModifierType	  state;
 		int				  (*exec)(H3270 *session);
-		GtkAction		* action;
 	 } keycode[] =
 	 {
-		{ GDK_Left,				0,					lib3270_cursor_left,	NULL	},
-		{ GDK_Up,				0,					lib3270_cursor_up,		NULL	},
-		{ GDK_Right,			0,					lib3270_cursor_right,	NULL	},
-		{ GDK_Down,				0,					lib3270_cursor_down,	NULL	},
-		{ GDK_Tab,				0,					lib3270_nextfield,		NULL	},
-		{ GDK_ISO_Left_Tab,		GDK_SHIFT_MASK,		lib3270_previousfield,	NULL	},
-		{ GDK_KP_Left,			0,					lib3270_cursor_left,	NULL	},
-		{ GDK_KP_Up,			0,					lib3270_cursor_up,		NULL	},
-		{ GDK_KP_Right,			0,					lib3270_cursor_right,	NULL	},
-		{ GDK_KP_Down,			0,					lib3270_cursor_down,	NULL	},
+		{ GDK_Left,				0,					lib3270_cursor_left		},
+		{ GDK_Up,				0,					lib3270_cursor_up		},
+		{ GDK_Right,			0,					lib3270_cursor_right	},
+		{ GDK_Down,				0,					lib3270_cursor_down		},
+		{ GDK_Tab,				0,					lib3270_nextfield		},
+		{ GDK_ISO_Left_Tab,		GDK_SHIFT_MASK,		lib3270_previousfield	},
+		{ GDK_KP_Left,			0,					lib3270_cursor_left		},
+		{ GDK_KP_Up,			0,					lib3270_cursor_up		},
+		{ GDK_KP_Right,			0,					lib3270_cursor_right	},
+		{ GDK_KP_Down,			0,					lib3270_cursor_down		},
 
-		{ GDK_KP_Add,			GDK_NUMLOCK_MASK,	NULL,					NULL	},
-		{ GDK_KP_Subtract,		GDK_NUMLOCK_MASK,	NULL,					NULL	},
+//		{ GDK_KP_Add,			GDK_NUMLOCK_MASK,	NULL					},
+//		{ GDK_KP_Subtract,		GDK_NUMLOCK_MASK,	NULL					},
 
-		{ GDK_3270_PrintScreen,	0,					lib3270_print_all,		NULL	},
-		{ GDK_P,				GDK_CONTROL_MASK,	lib3270_print_all,		NULL	},
+		{ GDK_3270_PrintScreen,	0,					lib3270_print_all		},
+		{ GDK_P,				GDK_CONTROL_MASK,	lib3270_print_all		},
 
-		{ GDK_Sys_Req,			0,					lib3270_sysreq,			NULL	},
+		{ GDK_Sys_Req,			0,					lib3270_sysreq			},
 
-		{ GDK_Print,			GDK_CONTROL_MASK,	lib3270_print_all,		NULL	},
-		{ GDK_Print,			GDK_SHIFT_MASK,		lib3270_sysreq,			NULL	},
-		{ GDK_Control_R,		0,					NULL,					NULL	},
-		{ GDK_Control_L,		0,					NULL,					NULL	},
+		{ GDK_Print,			GDK_CONTROL_MASK,	lib3270_print_all		},
+		{ GDK_Print,			GDK_SHIFT_MASK,		lib3270_sysreq			},
+//		{ GDK_Control_R,		0,					NULL					},
+//		{ GDK_Control_L,		0,					NULL					},
 
 
-#ifdef WIN32
-		{ GDK_Pause,			0,					NULL,					NULL	},
-#endif
+//#ifdef WIN32
+//		{ GDK_Pause,			0,					NULL					},
+//#endif
 	};
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -127,9 +123,9 @@
 
  static gboolean check_keypress(v3270 *widget, GdkEventKey *event)
  {
-	int			f;
-	int			state	= event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK);
-	gboolean	handled = FALSE;
+	int				f;
+	GdkModifierType	state	= event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK);
+	gboolean		handled = FALSE;
 
 #ifdef WIN32
 	// FIXME (perry#1#): Find a better way!
@@ -142,6 +138,7 @@
 #endif
 
 	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_KEYPRESS], 0, event->keyval, state, &handled);
+	debug("Keyboard action was %s",handled ? "Handled" : "Not handled");
 	if(handled)
 		return TRUE;
 
@@ -160,9 +157,7 @@
 	{
 		if(keycode[f].keyval == event->keyval && state == keycode[f].state)
 		{
-			if(keycode[f].action)
-				gtk_action_activate(keycode[f].action);
-			else if(keycode[f].exec)
+			if(keycode[f].exec)
 				keycode[f].exec(widget->host);
 			else
 				return FALSE;
@@ -172,28 +167,6 @@
 	}
 
  	return FALSE;
- }
-
- LIB3270_EXPORT gboolean v3270_set_keyboard_action(GtkWidget *widget, const gchar *key_name, GtkAction *action)
- {
-	guint			keyval;
-	GdkModifierType	state;
-	int				f;
-
-	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
-
-	gtk_accelerator_parse(key_name,&keyval,&state);
-
-	for(f=0; f < (int) G_N_ELEMENTS(keycode);f++)
-	{
-		if(keycode[f].keyval == keyval && keycode[f].state == state)
-		{
-			keycode[f].action = action;
-			return TRUE;
-		}
-	}
-
-	return FALSE;
  }
 
  gboolean v3270_key_press_event(GtkWidget *widget, GdkEventKey *event)
