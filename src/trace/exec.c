@@ -40,6 +40,7 @@
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
  #include <lib3270/properties.h>
+ #include <lib3270/actions.h>
  #include <v3270.h>
  #include <v3270/trace.h>
  #include <internals.h>
@@ -108,6 +109,8 @@
 
  int v3270_exec_command(GtkWidget *widget, const gchar *text)
  {
+ 	size_t ix;
+
  	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
 
  	H3270 *hSession = v3270_get_session(widget);
@@ -147,7 +150,23 @@
 	if(sep)
 	{
 		*(sep++) = 0;
-		set_property(hSession,g_strstrip(cmdline),g_strstrip(sep));
+		return set_property(hSession,g_strstrip(cmdline),g_strstrip(sep));
+	}
+	else
+	{
+		// Check for lib3270 actions.
+		const LIB3270_ACTION_ENTRY *actions = lib3270_get_action_table();
+
+		for(ix=0; actions[ix].name; ix++)
+		{
+			if(!g_ascii_strcasecmp(actions[ix].name,cmdline))
+			{
+				lib3270_trace_event(hSession,"Action: %s\n",actions[ix].name);
+				return actions[ix].call(hSession);
+			}
+
+		}
+
 	}
 
 	return errno = ENOENT;
