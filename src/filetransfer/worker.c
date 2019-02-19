@@ -342,6 +342,9 @@
  	// Try to get more detailed info.
  	const gchar * description	= NULL;
 
+	pulse_stop(cfg->worker);
+	timer_stop(cfg->worker);
+
 	if(cfg->length)
 	{
 		gtk_entry_set_printf(cfg->worker->field[PROGRESS_FIELD_TOTAL],"%lu",cfg->length);
@@ -388,9 +391,6 @@
 	state->kbytes_sec	= kbytes_sec;
 
 	strcpy(state->msg,msg);
-
-	pulse_stop(state->worker);
-	timer_stop(state->worker);
 
 	gdk_threads_add_idle_full(G_PRIORITY_LOW,(GSourceFunc) bg_emit_complete, state, g_free);
 
