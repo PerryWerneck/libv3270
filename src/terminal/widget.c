@@ -1008,14 +1008,13 @@ LIB3270_EXPORT int v3270_set_host_charset(GtkWidget *widget, const gchar *name)
 	return lib3270_set_host_charset(GTK_V3270(widget)->host,name);
 }
 
-/*
-GtkWidget * v3270_get_default_widget(void)
+LIB3270_EXPORT GtkWidget * v3270_get_default_widget(void)
 {
 	H3270 * hSession = lib3270_get_default_session_handle();
 
 	if(!hSession)
 	{
-		g_warning("No default session available on %s",__FUNCTION__);
+		g_warning("%s: No default session available",__FUNCTION__);
 		return NULL;
 	}
 
@@ -1023,11 +1022,10 @@ GtkWidget * v3270_get_default_widget(void)
 
 	if(!(widget && GTK_IS_V3270(widget)))
 	{
-		g_warning("No widget on default session on %s",__FUNCTION__);
+		g_warning("%s: Can't determine default widget",__FUNCTION__);
 		return NULL;
 	}
 
 	return GTK_WIDGET(widget);
 }
-*/
 
