@@ -157,6 +157,22 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	*/
 
 	//
+	// Test transfer dialog.
+	//
+	v3270_transfer_file(
+		terminal,
+		LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP,
+		"/tmp/test.txt",
+		"remote_file",
+		0,
+		0,
+		0,
+		0,
+		4096
+	);
+
+	/*
+	//
 	// Test activity
 	//
 	GObject * activity = v3270_ft_activity_new();
@@ -164,6 +180,7 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	v3270_ft_activity_set_local_filename(activity,"/tmp/test.txt");
 	v3270_ft_activity_set_remote_filename(activity,"remote_file");
 	v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP);
+	*/
 
 	/*
  	//
@@ -173,6 +190,7 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	v3270_ft_settings_dialog_append_activity(dialog,activity,NULL);
 	*/
 
+	/*
 	//
 	// Test worker widget
 	//
@@ -186,6 +204,8 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
+	*/
+
 }
 
 static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)

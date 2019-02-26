@@ -162,4 +162,9 @@
 	LIB3270_EXPORT void					  v3270_ft_worker_set_session(GtkWidget *widget, H3270 *hSession);
 	LIB3270_EXPORT int					  v3270_ft_worker_start(GtkWidget *widget);
 
+
+	// File transfer compatibility.
+	LIB3270_EXPORT gint			  		  v3270_transfer_file(GtkWidget *widget, LIB3270_FT_OPTION options, const gchar *local, const gchar *remote, int lrecl, int blksize, int primspace, int secspace, int dft);
+
+
 #endif // V3270FT_H_INCLUDED

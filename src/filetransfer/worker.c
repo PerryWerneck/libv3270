@@ -165,6 +165,17 @@
 			G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER
 	);
 
+ 	v3270_worker_signals[V3270_WORKER_TRANSFER_SUCCESS_SIGNAL] =
+		g_signal_new(
+			"success",
+			G_OBJECT_CLASS_TYPE (gobject_class),
+			G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
+			0,
+			NULL, NULL,
+			v3270ft_VOID__POINTER_POINTER,
+			G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER
+	);
+
  	v3270_worker_signals[V3270_WORKER_TRANSFER_STATE_SIGNAL] =
 		g_signal_new(
 			"ft-state-changed",

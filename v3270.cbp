@@ -81,6 +81,9 @@
 		<Unit filename="src/dialogs/tools.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/transfer.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/filetransfer/activity.c">
 			<Option compilerVar="CC" />
 		</Unit>
