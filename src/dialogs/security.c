@@ -45,7 +45,12 @@
  {
  	GtkLabel *widget = GTK_LABEL(gtk_label_new(""));
  	gtk_label_set_markup(widget,text);
+#if GTK_CHECK_VERSION(3,16,0)
 	gtk_label_set_xalign(widget,0);
+#else
+	gtk_misc_set_alignment(GTK_MISC(widget),0,0.5);
+#endif // GTK_CHECK_VERSION
+
  	return GTK_WIDGET(widget);
  }
 
