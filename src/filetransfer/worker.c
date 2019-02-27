@@ -594,7 +594,12 @@ static gboolean do_timer(V3270FTWorker *worker) {
 		gtk_progress_bar_set_text(worker->pbar,gettext(message));
 
 		pulse_stop(worker);
+
+		// Emit "transfer failed"
 		g_signal_emit(GTK_WIDGET(widget),v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL], 0, gettext(message), NULL);
+
+		// Emit "no transfer"
+		ft_state_changed(worker->hSession, LIB3270_FT_STATE_NONE, _("No transfer in progress"), widget);
 
 		return -1;
 	}
@@ -621,7 +626,6 @@ static gboolean do_timer(V3270FTWorker *worker) {
 		return -1;
 	}
 
-	debug("*************************************worker=%p",widget);
 	lib3270_ft_set_user_data(worker->hSession,widget);
 
 	cbk->complete 		= ft_complete;
