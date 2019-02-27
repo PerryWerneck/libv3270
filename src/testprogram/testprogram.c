@@ -184,11 +184,18 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP);
 	*/
 
+	/*
  	//
  	// Test settings dialog
  	//
 	GtkWidget * dialog = v3270_ft_settings_dialog_new(terminal);
 	// v3270_ft_settings_dialog_append_activity(dialog,activity,NULL);
+	*/
+
+	//
+	// V5.1 dialog
+	//
+	GtkWidget *dialog = v3270ft_new();
 
 	/*
 	//

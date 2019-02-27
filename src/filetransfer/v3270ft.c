@@ -355,10 +355,9 @@ static void v3270ft_init(v3270ft *dialog) {
 	GtkWidget		* entry[G_N_ELEMENTS(label)];
 
 	// Initialize
-	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),18);
 	gtk_window_set_title(GTK_WINDOW(dialog),_( "3270 File transfer"));
 	gtk_window_set_resizable(GTK_WINDOW(dialog),FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(box),3);
+	gtk_container_set_border_width(GTK_CONTAINER(box),18);
 	dialog->files = dialog->active = g_list_append(NULL,v3270ft_create_entry());
 
 	// Buttons
