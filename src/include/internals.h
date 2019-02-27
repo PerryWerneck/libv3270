@@ -49,8 +49,7 @@
 
  G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_start(GtkWidget *box, GtkWidget *child, gboolean expand, gboolean fill, guint padding);
  G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_end(GtkWidget *box, GtkWidget *child, gboolean expand, gboolean fill, guint padding);
- G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding);
- G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding);
+ G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, const gchar *tooltip, GtkAlign align, gboolean expand, gboolean fill, guint padding);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_grid(GtkAlign align);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
 

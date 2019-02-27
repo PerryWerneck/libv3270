@@ -161,14 +161,6 @@ const struct v3270ft_value ft_value[] = {
 
 	{
 		// LIB3270_FT_VALUE_BLKSIZE
-		"primary",
-		0,99999,
-		N_( "Primary space:" ),
-		N_( "Primary allocation for a file created on a TSO host.\nThe units are given by the space allocation units option." )
-	},
-
-	{
-		// LIB3270_FT_VALUE_PRIMSPACE
 		"blksize",
 		0,32760,
 		N_( "Block size:" ),
@@ -177,6 +169,14 @@ const struct v3270ft_value ft_value[] = {
 			"For data sets containing variable length records, the block size must be " \
 			"greater than or equal to the record length plus four bytes. The block size " \
 			"must not exceed the track length of the device on which the data set resides." )
+	},
+
+	{
+		// LIB3270_FT_VALUE_PRIMSPACE
+		"primary",
+		0,99999,
+		N_( "Primary space:" ),
+		N_( "Primary allocation for a file created on a TSO host.\nThe units are given by the space allocation units option." )
 	},
 
 	{

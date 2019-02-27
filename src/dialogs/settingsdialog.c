@@ -495,4 +495,6 @@ LIB3270_EXPORT void v3270_ft_settings_dialog_set_session(GtkWidget *widget, H327
 
 	gtk_widget_set_sensitive(dialog->button.begin,lib3270_is_connected(hSession) ? TRUE : FALSE);
 
+	v3270_ft_settings_set_tso(dialog->settings,lib3270_is_tso(hSession));
+
 }

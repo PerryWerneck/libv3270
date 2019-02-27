@@ -62,11 +62,15 @@
 	return GTK_WIDGET(frame);
  }
 
- GtkWidget * v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, GtkAlign align, gboolean expand, gboolean fill, guint padding)
+ GtkWidget * v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, const gchar *tooltip, GtkAlign align, gboolean expand, gboolean fill, guint padding)
  {
 	GtkWidget * frame = v3270_dialog_create_frame(child,title);
 	gtk_widget_set_halign(GTK_WIDGET(frame),align);
 	gtk_box_pack_start(GTK_BOX(box),frame,expand,fill,padding);
+
+	if(tooltip)
+		gtk_widget_set_tooltip_markup(frame,tooltip);
+
 	return child;
  }
 

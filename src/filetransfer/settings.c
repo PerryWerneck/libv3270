@@ -76,6 +76,7 @@
  	GtkComboBox			* type;
 	GtkWidget			* recordFormatBox;
 	GtkWidget			* spaceAllocationBox;
+	GtkWidget			* units;
 
  	GtkWidget			* options[NUM_OPTIONS_WIDGETS];
  	GtkWidget			* spins[LIB3270_FT_VALUE_COUNT];
@@ -430,6 +431,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 				options,
 				gtk_box_new(GTK_ORIENTATION_VERTICAL,6),
 				_("Transfer options"),
+				NULL,
 				GTK_ALIGN_START,
 				FALSE,
 				FALSE,
@@ -456,6 +458,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 				options,
 				gtk_box_new(GTK_ORIENTATION_VERTICAL,6),
 				_("Record format"),
+				_("Specifies the record format of the data set."),
 				GTK_ALIGN_CENTER,
 				FALSE,
 				FALSE,
@@ -481,6 +484,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 			options,
 			gtk_box_new(GTK_ORIENTATION_VERTICAL,6),
 			_("Space allocation units"),
+			_("Specifies the units for the TSO host primary and secondary space options."),
 			GTK_ALIGN_END,
 			FALSE,
 			FALSE,
@@ -638,5 +642,25 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 	set_options(GTK_V3270_FT_SETTINGS(widget),options);
 
+
+ }
+
+ LIB3270_EXPORT void v3270_ft_settings_set_tso(GtkWidget *widget, gboolean tso)
+ {
+	V3270FTSettings * settings = GTK_V3270_FT_SETTINGS(widget);
+    debug("Host is %s",(tso ? "TSO" : "not TSO"));
+
+	GtkWidget *widgets[] =
+	{
+		GTK_WIDGET(settings->spins[LIB3270_FT_VALUE_PRIMSPACE]),
+		GTK_WIDGET(settings->spins[LIB3270_FT_VALUE_SECSPACE]),
+		GTK_WIDGET(settings->options[7]),
+		GTK_WIDGET(settings->spaceAllocationBox)
+	};
+
+	size_t ix;
+
+	for(ix = 0; ix < G_N_ELEMENTS(widgets); ix++)
+		gtk_widget_set_sensitive(widgets[ix],tso);
 
  }

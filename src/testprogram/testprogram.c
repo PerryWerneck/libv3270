@@ -156,6 +156,7 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),trace,TRUE,TRUE,2);
 	*/
 
+	/*
 	//
 	// Test transfer dialog.
 	//
@@ -170,6 +171,7 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 		0,
 		4096
 	);
+	*/
 
 	/*
 	//
@@ -182,13 +184,11 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP);
 	*/
 
-	/*
  	//
  	// Test settings dialog
  	//
 	GtkWidget * dialog = v3270_ft_settings_dialog_new(terminal);
-	v3270_ft_settings_dialog_append_activity(dialog,activity,NULL);
-	*/
+	// v3270_ft_settings_dialog_append_activity(dialog,activity,NULL);
 
 	/*
 	//
@@ -200,11 +200,11 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	v3270_ft_worker_set_session(worker,v3270_get_session(terminal));
 	v3270_ft_worker_set_activity(worker,activity);
 	v3270_ft_worker_start(worker);
+	*/
 
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
-	*/
 
 }
 
