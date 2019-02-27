@@ -295,7 +295,6 @@
 	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(widget);
 	GString * str	= g_string_new("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<filelist>\n");
 	GError	* error	= NULL;
-	size_t	  ix;
 
 	debug("%s",__FUNCTION__);
 
@@ -310,6 +309,9 @@
 			GObject * activity = NULL;
 			gtk_tree_model_get(model, &iter, 0, &activity, -1);
 
+			v3270_ft_activity_xml_encode(activity,str);
+
+			/*
 			if(activity)
 			{
 				g_string_append(str,"\t<entry>\n");
@@ -331,6 +333,7 @@
 
 				g_string_append(str,"\t</entry>\n");
 			}
+			*/
 
 		}
 		while(gtk_tree_model_iter_next(model,&iter));

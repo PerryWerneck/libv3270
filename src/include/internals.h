@@ -56,6 +56,9 @@
 
 #if GTK_CHECK_VERSION(3,12,0)
  G_GNUC_INTERNAL GtkHeaderBar	* v3270_dialog_get_header_bar(GtkWidget * widget);
+ G_GNUC_INTERNAL void			  v3270_dialog_cancel(GtkButton G_GNUC_UNUSED(*button), GtkWidget *dialog);
+ G_GNUC_INTERNAL void			  v3270_dialog_apply(GtkButton G_GNUC_UNUSED(*button), GtkWidget *dialog);
+ G_GNUC_INTERNAL GtkWidget		* v3270_dialog_button_new(GtkWidget *dialog, const gchar *mnemonic, GCallback callback);
 #endif // ! GTK 3.12
 
  // Activity list widget.

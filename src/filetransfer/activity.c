@@ -350,3 +350,33 @@
 	);
 
  }
+
+ LIB3270_EXPORT void v3270_ft_activity_xml_encode(GObject *object, GString *str)
+ {
+ 	g_return_if_fail(G_IS_V3270_FT_ACTIVITY(object));
+
+	size_t	  ix;
+	V3270FTActivity * activity = G_V3270_FT_ACTIVITY(object);
+
+	g_string_append_printf(
+		str,
+		"\t<entry>\n\t\t<file type=\'local\' path=\'%s\' />\n\t\t<file type=\'remote\' path=\'%s\' />\n",
+				activity->file.local,
+				activity->file.remote
+	);
+
+	for(ix = 0; v3270_activity_list_options[ix].name; ix++)
+	{
+		if((activity->options & v3270_activity_list_options[ix].option) == v3270_activity_list_options[ix].option)
+			g_string_append_printf(str,"\t\t<option name=\'%s\' value=\'%s\' />\n",v3270_activity_list_options[ix].name,v3270_activity_list_options[ix].value);
+	}
+
+	for(ix=0;ix<LIB3270_FT_VALUE_COUNT;ix++)
+	{
+		g_string_append_printf(str,"\t\t<parameter name=\"%s\" value=\"%u\"/>\n",ft_value[ix].name,activity->values[ix]);
+	}
+
+	g_string_append(str,"\t</entry>\n");
+
+ }
+
