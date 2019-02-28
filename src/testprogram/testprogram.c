@@ -156,6 +156,7 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),trace,TRUE,TRUE,2);
 	*/
 
+
 	/*
 	//
 	// Test transfer dialog.
@@ -187,13 +188,13 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  	//
  	// Test settings dialog
  	//
-	GtkWidget * dialog = v3270_ft_settings_dialog_new(terminal);
+	// GtkWidget * dialog = v3270_ft_settings_dialog_new(terminal);
 	// v3270_ft_settings_dialog_append_activity(dialog,activity,NULL);
 
 	//
 	// V5.1 dialog
 	//
-	//GtkWidget *dialog = v3270ft_new();
+	GtkWidget *dialog = v3270ft_new();
 
 	/*
 	//

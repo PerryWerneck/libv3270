@@ -607,6 +607,7 @@ static void v3270ft_init(v3270ft *dialog) {
 	g_object_set(G_OBJECT(widget),"margin-top",18,NULL);
 
 	grid = v3270ft_new_grid();
+	gtk_container_set_border_width(GTK_CONTAINER(grid),6);
 	gtk_grid_set_column_homogeneous(grid,TRUE);
 	gtk_container_add(GTK_CONTAINER(widget),GTK_WIDGET(grid));
 	gtk_box_pack_start(box,widget,FALSE,TRUE,2);
@@ -632,6 +633,7 @@ static void v3270ft_init(v3270ft *dialog) {
 		GtkBox * box   = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL,2));
 		GSList * group = NULL;
 
+		gtk_container_set_border_width(GTK_CONTAINER(box),6);
 		dialog->radio[f] = gtk_frame_new(gettext(frame[f+1]));
 
 		gtk_container_add(GTK_CONTAINER(dialog->radio[f]),GTK_WIDGET(box));
