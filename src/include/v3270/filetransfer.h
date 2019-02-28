@@ -119,6 +119,7 @@
 	typedef struct _V3270FTActivityClass	V3270FTActivityClass;
 
 	LIB3270_EXPORT GObject					* v3270_ft_activity_new();
+	LIB3270_EXPORT GObject					* v3270_ft_activity_new_from_filename(const gchar *filename);
 
 	LIB3270_EXPORT void						  v3270_ft_activity_set_from_context(GObject * activity, GMarkupParseContext * context);
 

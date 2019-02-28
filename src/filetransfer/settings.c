@@ -388,7 +388,6 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	}
 
 
-
 	gtk_entry_set_text(settings->file.local,filename);
 
 	g_autofree gchar * basename	= g_path_get_basename(filename);
@@ -410,7 +409,10 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 		if(!g_ascii_strncasecmp("file:///",uris[ix],8)) {
 
 			if(v3270_ft_settings_set_from_filename(widget,uris[ix]+7))
+			{
+				rc++;
 				break;
+			}
 
 		}
 	}
@@ -422,7 +424,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
  static void drag_data_received(GtkWidget *widget, GdkDragContext *context, G_GNUC_UNUSED gint x, G_GNUC_UNUSED gint y, GtkSelectionData *data, G_GNUC_UNUSED guint info, guint time)
  {
-	debug("%s",__FUNCTION__);
+	debug("settings::%s",__FUNCTION__);
 	gtk_drag_finish(context, v3270_ft_settings_set_from_selection(widget, data) > 0, FALSE, time);
  }
 
@@ -597,14 +599,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	gtk_widget_set_sensitive(GTK_WIDGET(widget->file.local),FALSE);
 	gtk_widget_set_sensitive(GTK_WIDGET(widget->file.remote),FALSE);
 
-	// Setup drag & drop
-	// http://ftp.math.utah.edu/u/ma/hohn/linux/gnome/developer.gnome.org/doc/tutorials/gnome-libs/x1003.html
-	static const GtkTargetEntry targets[] = {
-		{ "text/plain", 					GTK_TARGET_OTHER_APP, 0 }
-	};
-
-	gtk_drag_dest_set(GTK_WIDGET(widget),GTK_DEST_DEFAULT_ALL,targets,G_N_ELEMENTS(targets),GDK_ACTION_COPY);
-	g_signal_connect(widget,"drag-data-received",G_CALLBACK(drag_data_received),widget);
+	v3270_drag_dest_set(GTK_WIDGET(widget), G_CALLBACK(drag_data_received));
 
  }
 

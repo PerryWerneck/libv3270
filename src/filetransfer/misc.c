@@ -94,3 +94,15 @@ void v3270ft_update_actions(v3270ft *dialog) {
 
 }
 
+void v3270_drag_dest_set(GtkWidget *widget, GCallback callback)
+{
+
+	// http://ftp.math.utah.edu/u/ma/hohn/linux/gnome/developer.gnome.org/doc/tutorials/gnome-libs/x1003.html
+	static const GtkTargetEntry targets[] = {
+		{ "text/plain", 					GTK_TARGET_OTHER_APP, 0 }
+	};
+
+	gtk_drag_dest_set(widget,GTK_DEST_DEFAULT_ALL,targets,G_N_ELEMENTS(targets),GDK_ACTION_COPY);
+	g_signal_connect(widget,"drag-data-received",callback,widget);
+
+}

@@ -165,6 +165,36 @@
 	return g_object_new(G_TYPE_V3270_FT_ACTIVITY, NULL);
  }
 
+ LIB3270_EXPORT GObject	* v3270_ft_activity_new_from_filename(const gchar *filename)
+ {
+ 	GObject *activity = g_object_new(G_TYPE_V3270_FT_ACTIVITY, NULL);
+
+ 	// Set local filename
+	v3270_ft_activity_set_local_filename(activity,filename);
+
+	// Set options
+	LIB3270_FT_OPTION options = LIB3270_FT_OPTION_SEND;
+	size_t ix;
+
+	for(ix = 0; v3270_text_file_extensions[ix]; ix++)
+	{
+		if(g_str_has_suffix(filename,v3270_text_file_extensions[ix]))
+		{
+			options |= (LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP);
+			break;
+		}
+	}
+
+	v3270_ft_activity_set_options(activity,options);
+
+	// Set remote filename
+	g_autofree gchar * basename	= g_path_get_basename(filename);
+	v3270_ft_activity_set_remote_filename(activity,basename);
+
+ 	return activity;
+ }
+
+
  /**
  * v3270_ft_activity_get_local_filename:
  * @object: a #V3270FTActivity

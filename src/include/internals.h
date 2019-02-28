@@ -47,6 +47,8 @@
 
  G_BEGIN_DECLS
 
+ G_GNUC_INTERNAL void			  v3270_drag_dest_set(GtkWidget *widget, GCallback callback);
+
  G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_start(GtkWidget *box, GtkWidget *child, gboolean expand, gboolean fill, guint padding);
  G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_end(GtkWidget *box, GtkWidget *child, gboolean expand, gboolean fill, guint padding);
  G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, const gchar *tooltip, GtkAlign align, gboolean expand, gboolean fill, guint padding);

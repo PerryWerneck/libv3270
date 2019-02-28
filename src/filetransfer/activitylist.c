@@ -138,6 +138,65 @@
 	g_object_set(G_OBJECT(cell),"text",v3270_ft_activity_get_remote_filename(activity),NULL);
  }
 
+ gboolean v3270_activity_list_append_filename(GtkWidget *widget, const gchar *filename)
+ {
+	debug("%s(%s)",__FUNCTION__,filename);
+
+ 	GtkTreeModel * model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
+	GtkTreeIter iter;
+
+	if(gtk_tree_model_get_iter_first(model,&iter))
+	{
+		do
+		{
+			GObject * activity = NULL;
+			gtk_tree_model_get(model, &iter, 0, &activity, -1);
+
+			if(activity && !strcmp(filename,v3270_ft_activity_get_local_filename(activity)))
+			{
+				debug("%s already in the list",filename);
+				return FALSE;
+			}
+
+
+		}
+		while(gtk_tree_model_iter_next(model,&iter));
+	}
+
+	// Append filename
+	v3270_activity_list_append(widget,v3270_ft_activity_new_from_filename(filename));
+
+	return TRUE;
+ }
+
+ guint v3270_activity_list_set_from_selection(GtkWidget *widget, GtkSelectionData *data)
+ {
+	gchar	**uris 	= g_strsplit((const gchar *) gtk_selection_data_get_text(data),"\n",-1);
+	guint	  rc	= 0;
+	size_t	  ix;
+
+	for(ix = 0; uris[ix]; ix++)
+	{
+		if(!g_ascii_strncasecmp("file:///",uris[ix],8)) {
+			if(v3270_activity_list_append_filename(widget,uris[ix]+7))
+				rc++;
+		}
+	}
+
+	g_strfreev(uris);
+
+	debug("%s exits with rc=%u",__FUNCTION__,rc);
+	return rc;
+}
+
+
+ static void drag_data_received(GtkWidget *widget, GdkDragContext *context, G_GNUC_UNUSED gint x, G_GNUC_UNUSED gint y, GtkSelectionData *data, G_GNUC_UNUSED guint info, guint time)
+ {
+	debug("activitylist::%s",__FUNCTION__);
+	gtk_drag_finish(context, v3270_activity_list_set_from_selection(widget, data) > 0, FALSE, time);
+
+ }
+
  static void V3270FTActivityList_init(V3270FTActivityList *widget)
  {
 	GtkTreeModel * model = GTK_TREE_MODEL(gtk_list_store_new(1,G_TYPE_POINTER));	// Using pointer type because I take care of refcounts.
@@ -165,6 +224,8 @@
 		render_remote,
 		0, NULL
 	);
+
+	v3270_drag_dest_set(GTK_WIDGET(widget), G_CALLBACK(drag_data_received));
 
  }
 
@@ -308,33 +369,7 @@
 		{
 			GObject * activity = NULL;
 			gtk_tree_model_get(model, &iter, 0, &activity, -1);
-
 			v3270_ft_activity_xml_encode(activity,str);
-
-			/*
-			if(activity)
-			{
-				g_string_append(str,"\t<entry>\n");
-
-				g_string_append_printf(str,"\t\t<file type=\'local\' path=\'%s\' />\n",v3270_ft_activity_get_local_filename(activity));
-				g_string_append_printf(str,"\t\t<file type=\'remote\' path=\'%s\' />\n",v3270_ft_activity_get_remote_filename(activity));
-
-				LIB3270_FT_OPTION options = v3270_ft_activity_get_options(activity);
-				for(ix = 0; v3270_activity_list_options[ix].name; ix++)
-				{
-					if((options & v3270_activity_list_options[ix].option) == v3270_activity_list_options[ix].option)
-						g_string_append_printf(str,"\t\t<option name=\'%s\' value=\'%s\' />\n",v3270_activity_list_options[ix].name,v3270_activity_list_options[ix].value);
-				}
-
-				for(ix=0;ix<LIB3270_FT_VALUE_COUNT;ix++)
-				{
-					g_string_append_printf(str,"\t\t<parameter name=\"%s\" value=\"%u\"/>\n",ft_value[ix].name,v3270_ft_activity_get_value(activity,(LIB3270_FT_VALUE) ix));
-				}
-
-				g_string_append(str,"\t</entry>\n");
-			}
-			*/
-
 		}
 		while(gtk_tree_model_iter_next(model,&iter));
 	}

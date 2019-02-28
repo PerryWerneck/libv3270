@@ -228,7 +228,7 @@ const gchar * v3270_text_file_extensions[] =
 {
 	".txt",
 	".c",
-	".h"
+	".h",
 	NULL
 };
 
