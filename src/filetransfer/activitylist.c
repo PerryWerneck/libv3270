@@ -36,6 +36,7 @@
  enum _SIGNALS
  {
  	V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL,	///< @brief Indicates if the list has a file name set.
+ 	V3270_ACTIVITY_LIST_SELECTED_SIGNAL,	///< @brief Indicates if the list has a file name set.
 
  	V3270_ACTIVITY_LIST_LAST_SIGNAL
  };
@@ -104,11 +105,35 @@
  	debug("%s",__FUNCTION__);
  }
 
+ static void row_activated(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G_GNUC_UNUSED(*column))
+ {
+ 	debug("%s",__FUNCTION__);
+
+	GtkTreeIter iter;
+	GtkTreeModel * model = gtk_tree_view_get_model(view);
+
+	if(gtk_tree_model_get_iter(model, &iter, path))
+	{
+		GObject * activity = NULL;
+		gtk_tree_model_get(model, &iter, 0, &activity, -1);
+
+		if(activity)
+		{
+			debug("%s: activity is %p",__FUNCTION__,activity);
+			g_signal_emit(view, v3270_activity_list_signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL], 0, activity);
+		}
+
+	}
+ }
+
  static void V3270FTActivityList_class_init(V3270FTActivityListClass *klass)
  {
-	GObjectClass * gobject_class = G_OBJECT_CLASS(klass);
+	GObjectClass 		* gobject_class 	= G_OBJECT_CLASS(klass);
+	GtkTreeViewClass	* treeview_class	= GTK_TREE_VIEW_CLASS(klass);
 
 	gobject_class->dispose = dispose;
+
+	treeview_class->row_activated = row_activated;
 
 	klass->signal.has_file = V3270FTActivityList_has_file;
 
@@ -120,6 +145,15 @@
 						NULL, NULL,
 						v3270ft_VOID__VOID_BOOLEAN,
 						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+
+	v3270_activity_list_signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL] =
+		g_signal_new(	"changed",
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_FIRST,
+						0,
+						NULL, NULL,
+						v3270ft_VOID__VOID_POINTER,
+						G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 
  }
@@ -251,6 +285,7 @@
 	{
 		debug("%s: Selecting inserted activity",__FUNCTION__);
 		gtk_tree_selection_select_iter(gtk_tree_view_get_selection(GTK_TREE_VIEW(widget)),&iter);
+		g_signal_emit(widget, v3270_activity_list_signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL], 0, activity);
 	}
 
  }

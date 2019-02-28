@@ -100,22 +100,25 @@ static void V3270FTSettingsDialog_class_init(G_GNUC_UNUSED V3270FTSettingsDialog
 	G_OBJECT_CLASS(klass)->finalize = finalize;
 }
 
-void activity_selected(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn G_GNUC_UNUSED(*column), V3270FTSettingsDialog *widget)
+void activity_selected(GtkWidget G_GNUC_UNUSED(*view), GObject * activity, V3270FTSettingsDialog *widget)
 {
-	GtkTreeIter iter;
-	GtkTreeModel * model = gtk_tree_view_get_model(view);
+	debug("%s(widget=%p activity=%p",__FUNCTION__,widget,activity);
 
-	if(gtk_tree_model_get_iter(model, &iter, path))
+	v3270_ft_settings_set_activity(widget->settings,activity);
+
+	if(activity)
 	{
-		GObject * activity = NULL;
-		gtk_tree_model_get(model, &iter, 0, &activity, -1);
-		v3270_ft_settings_set_activity(widget->settings,activity);
-
 		gtk_widget_set_sensitive(widget->button.update,TRUE);
 		gtk_widget_set_sensitive(widget->button.remove,TRUE);
 		gtk_widget_set_sensitive(widget->button.reset,TRUE);
-
 	}
+	else
+	{
+		gtk_widget_set_sensitive(widget->button.update,FALSE);
+		gtk_widget_set_sensitive(widget->button.remove,FALSE);
+		gtk_widget_set_sensitive(widget->button.reset,FALSE);
+	}
+
 
 }
 
@@ -356,8 +359,8 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 	{
 		widget->queue.view = v3270_activity_list_new();
 		gtk_widget_set_tooltip_markup(widget->queue.view,_("Files to transfer"));
-		g_signal_connect(G_OBJECT(widget->queue.view),"row-activated",G_CALLBACK(activity_selected),widget);
 		g_signal_connect(G_OBJECT(widget->queue.view),"has-file",G_CALLBACK(enable_queue_save),widget);
+		g_signal_connect(G_OBJECT(widget->queue.view),"changed",G_CALLBACK(activity_selected),widget);
 
 		// Put the view inside a scrolled window.
 		GtkWidget * scrolled = gtk_scrolled_window_new(NULL,NULL);
