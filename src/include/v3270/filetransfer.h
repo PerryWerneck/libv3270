@@ -97,6 +97,8 @@
 	LIB3270_EXPORT void			  v3270_ft_settings_set_activity(GtkWidget *widget, GObject *activity);
 	LIB3270_EXPORT GObject 		* v3270_ft_settings_get_activity(GtkWidget *widget);
 
+	LIB3270_EXPORT gboolean		  v3270_ft_settings_set_from_filename(GtkWidget *widget, const gchar *filename);
+
 	LIB3270_EXPORT GObject 		* v3270_ft_settings_create_activity(GtkWidget *widget);
 
 	LIB3270_EXPORT void			  v3270_ft_settings_reset(GtkWidget *widget);

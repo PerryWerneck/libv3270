@@ -128,6 +128,7 @@
 	G_GNUC_INTERNAL extern const struct v3270ft_value				ft_value[];
 	G_GNUC_INTERNAL extern const struct v3270_activity_list_option	v3270_activity_list_options[];
 	G_GNUC_INTERNAL extern const struct v3270_ft_worker_field		v3270_ft_worker_fields[PROGRESS_FIELD_COUNT];
+	G_GNUC_INTERNAL extern const gchar *							v3270_text_file_extensions[];
 
 	#define ENTRY_FILENAME_LENGTH FILENAME_MAX
 	struct v3270ft_entry {

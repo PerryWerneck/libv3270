@@ -352,7 +352,8 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	set_valid(widget, VALIDITY_LOCAL_FILENAME);
  }
 
- static void remote_file_changed(GtkEntry *entry, V3270FTSettings *widget) {
+ static void remote_file_changed(GtkEntry *entry, V3270FTSettings *widget)
+ {
 
 	const gchar * text = gtk_entry_get_text(entry);
 
@@ -364,6 +365,65 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 	set_valid(widget, VALIDITY_REMOTE_FILENAME);
 
+ }
+
+ LIB3270_EXPORT gboolean v3270_ft_settings_set_from_filename(GtkWidget *widget, const gchar *filename)
+ {
+ 	g_return_val_if_fail(GTK_IS_V3270_FT_SETTINGS(widget) && g_file_test(filename,G_FILE_TEST_IS_REGULAR),FALSE);
+
+	debug("%s(%s)",__FUNCTION__,filename);
+
+	// Setup dialog from filename.
+	V3270FTSettings * settings = GTK_V3270_FT_SETTINGS(widget);
+	LIB3270_FT_OPTION options = LIB3270_FT_OPTION_SEND;
+	size_t ix;
+
+	for(ix = 0; v3270_text_file_extensions[ix]; ix++)
+	{
+		if(g_str_has_suffix(filename,v3270_text_file_extensions[ix]))
+		{
+			options |= (LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP);
+			break;
+		}
+	}
+
+
+
+	gtk_entry_set_text(settings->file.local,filename);
+
+	g_autofree gchar * basename	= g_path_get_basename(filename);
+	gtk_entry_set_text(settings->file.remote,basename);
+
+	v3270_ft_settings_set_options(widget,options);
+
+    return TRUE;
+ }
+
+ guint v3270_ft_settings_set_from_selection(GtkWidget *widget, GtkSelectionData *data)
+ {
+	gchar	**uris 	= g_strsplit((const gchar *) gtk_selection_data_get_text(data),"\n",-1);
+	guint	  rc	= 0;
+	size_t	  ix;
+
+	for(ix = 0; uris[ix]; ix++)
+	{
+		if(!g_ascii_strncasecmp("file:///",uris[ix],8)) {
+
+			if(v3270_ft_settings_set_from_filename(widget,uris[ix]+7))
+				break;
+
+		}
+	}
+
+	g_strfreev(uris);
+
+	return rc;
+}
+
+ static void drag_data_received(GtkWidget *widget, GdkDragContext *context, G_GNUC_UNUSED gint x, G_GNUC_UNUSED gint y, GtkSelectionData *data, G_GNUC_UNUSED guint info, guint time)
+ {
+	debug("%s",__FUNCTION__);
+	gtk_drag_finish(context, v3270_ft_settings_set_from_selection(widget, data) > 0, FALSE, time);
  }
 
  static void V3270FTSettings_init(V3270FTSettings *widget)
@@ -536,6 +596,15 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 	gtk_widget_set_sensitive(GTK_WIDGET(widget->file.local),FALSE);
 	gtk_widget_set_sensitive(GTK_WIDGET(widget->file.remote),FALSE);
+
+	// Setup drag & drop
+	// http://ftp.math.utah.edu/u/ma/hohn/linux/gnome/developer.gnome.org/doc/tutorials/gnome-libs/x1003.html
+	static const GtkTargetEntry targets[] = {
+		{ "text/plain", 					GTK_TARGET_OTHER_APP, 0 }
+	};
+
+	gtk_drag_dest_set(GTK_WIDGET(widget),GTK_DEST_DEFAULT_ALL,targets,G_N_ELEMENTS(targets),GDK_ACTION_COPY);
+	g_signal_connect(widget,"drag-data-received",G_CALLBACK(drag_data_received),widget);
 
  }
 

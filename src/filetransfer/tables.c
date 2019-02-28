@@ -223,3 +223,12 @@ const struct v3270_ft_worker_field v3270_ft_worker_fields[PROGRESS_FIELD_COUNT] 
 	{ N_("Speed:"),		N_("Transfer speed")					},
 	{ N_("ETA:"),		N_("Estimated transfer arrival")		}
 };
+
+const gchar * v3270_text_file_extensions[] =
+{
+	".txt",
+	".c",
+	".h"
+	NULL
+};
+
