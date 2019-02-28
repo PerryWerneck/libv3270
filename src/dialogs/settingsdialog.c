@@ -204,7 +204,7 @@ int v3270_ft_settings_dialog_append_activity(GtkWidget *widget, GObject *activit
 	}
 
 	// Not found, insert it.
-	v3270_activity_list_append(dialog->queue.view,activity);
+	v3270_activity_list_append(dialog->queue.view,activity,FALSE);
 
 	return 0;
 }
@@ -251,7 +251,7 @@ static void insert_clicked(GtkWidget *button, V3270FTSettingsDialog *widget)
 	}
 
 	// Not found, insert it.
-	v3270_activity_list_append(widget->queue.view,v3270_ft_settings_create_activity(widget->settings));
+	v3270_activity_list_append(widget->queue.view,v3270_ft_settings_create_activity(widget->settings),FALSE);
 
 }
 
@@ -440,7 +440,7 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 		v3270_ft_activity_set_remote_filename(activity,"remote---");
 		v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_SEND|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP|LIB3270_FT_OPTION_APPEND|LIB3270_FT_RECORD_FORMAT_VARIABLE);
 
-		v3270_activity_list_append(widget->queue.view,activity);
+		v3270_activity_list_append(widget->queue.view,activity,FALSE);
 #endif // DEBUG
 */
 

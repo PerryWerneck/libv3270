@@ -138,9 +138,9 @@
 	g_object_set(G_OBJECT(cell),"text",v3270_ft_activity_get_remote_filename(activity),NULL);
  }
 
- gboolean v3270_activity_list_append_filename(GtkWidget *widget, const gchar *filename)
+ gboolean v3270_activity_list_append_filename(GtkWidget *widget, const gchar *filename, gboolean select)
  {
-	debug("%s(%s)",__FUNCTION__,filename);
+	debug("%s(%s,%s)",__FUNCTION__,filename,select ? "SELECT" : "NO-SELECT");
 
  	GtkTreeModel * model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
 	GtkTreeIter iter;
@@ -155,6 +155,10 @@
 			if(activity && !strcmp(filename,v3270_ft_activity_get_local_filename(activity)))
 			{
 				debug("%s already in the list",filename);
+				if(select)
+				{
+					gtk_tree_selection_select_iter(gtk_tree_view_get_selection(GTK_TREE_VIEW(widget)),&iter);
+				}
 				return FALSE;
 			}
 
@@ -164,7 +168,7 @@
 	}
 
 	// Append filename
-	v3270_activity_list_append(widget,v3270_ft_activity_new_from_filename(filename));
+	v3270_activity_list_append(widget,v3270_ft_activity_new_from_filename(filename),select);
 
 	return TRUE;
  }
@@ -178,7 +182,7 @@
 	for(ix = 0; uris[ix]; ix++)
 	{
 		if(!g_ascii_strncasecmp("file:///",uris[ix],8)) {
-			if(v3270_activity_list_append_filename(widget,uris[ix]+7))
+			if(v3270_activity_list_append_filename(widget,uris[ix]+7,TRUE))
 				rc++;
 		}
 	}
@@ -225,6 +229,7 @@
 		0, NULL
 	);
 
+	gtk_tree_view_set_activate_on_single_click(GTK_TREE_VIEW(widget),TRUE);
 	v3270_drag_dest_set(GTK_WIDGET(widget), G_CALLBACK(drag_data_received));
 
  }
@@ -234,13 +239,19 @@
 	return g_object_new(GTK_TYPE_V3270_FT_ACTIVITY_LIST, NULL);
  }
 
- void v3270_activity_list_append(GtkWidget *widget, GObject *activity)
+ void v3270_activity_list_append(GtkWidget *widget, GObject *activity, gboolean select)
  {
  	GtkTreeModel * model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
 	GtkTreeIter iter;
 	gtk_list_store_append((GtkListStore *) model,&iter);
 	gtk_list_store_set((GtkListStore *) model, &iter, 0, activity, -1);
 	g_object_ref_sink(activity);
+
+	if(select)
+	{
+		debug("%s: Selecting inserted activity",__FUNCTION__);
+		gtk_tree_selection_select_iter(gtk_tree_view_get_selection(GTK_TREE_VIEW(widget)),&iter);
+	}
 
  }
 
@@ -283,7 +294,7 @@
 		// Create new activity
 		GObject * activity = v3270_ft_activity_new();
 		v3270_ft_activity_set_from_context(activity,context);
-		v3270_activity_list_append(GTK_WIDGET(widget), activity);
+		v3270_activity_list_append(GTK_WIDGET(widget), activity, FALSE);
 	}
 
  }

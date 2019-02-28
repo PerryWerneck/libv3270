@@ -74,7 +74,7 @@
  typedef struct _V3270FTActivityListClass	V3270FTActivityListClass;
 
  G_GNUC_INTERNAL GtkWidget	* v3270_activity_list_new();
- G_GNUC_INTERNAL void		  v3270_activity_list_append(GtkWidget *widget, GObject *activity);
+ G_GNUC_INTERNAL void		  v3270_activity_list_append(GtkWidget *widget, GObject *activity, gboolean select);
  G_GNUC_INTERNAL void		  v3270_activity_list_remove(GtkWidget *widget, GObject *activity);
  G_GNUC_INTERNAL void		  v3270_activity_list_load(GtkWidget *widget);
  G_GNUC_INTERNAL void		  v3270_activity_list_save(GtkWidget *widget);
