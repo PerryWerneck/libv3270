@@ -72,7 +72,8 @@ BuildRequires:	gtk3-devel
 
 %endif
 
-%if %{undefined fedora} && %{undefined rhel_version}
+# https://en.opensuse.org/openSUSE:Build_Service_cross_distribution_howto
+%if %{undefined fedora} && %{undefined rhel_version} && %{undefined centos_version}
 BuildRequires:	libgladeui-2-6
 %endif
 
