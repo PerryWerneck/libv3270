@@ -335,9 +335,9 @@ static void drag_data_received(GtkWidget *widget, GdkDragContext *context, G_GNU
 static void v3270ft_init(v3270ft *dialog) {
 
 	static const gchar * label[] = {
-		N_( "_Operation:" ),
-		N_( "_Local file:"),
-		N_( "_Remote file:")
+		N_( "_Operation" ),
+		N_( "_Local file"),
+		N_( "_Remote file")
 	};
 
 	static const gchar * frame[] = {
@@ -531,6 +531,7 @@ static void v3270ft_init(v3270ft *dialog) {
 
 	// Top level
 	grid = v3270ft_new_grid();
+
 	gtk_box_pack_start(box,GTK_WIDGET(grid),TRUE,TRUE,2);
 
 	// Transfer type combo
@@ -595,7 +596,7 @@ static void v3270ft_init(v3270ft *dialog) {
 
 	for(f=0;f< (int) G_N_ELEMENTS(label);f++) {
 		GtkWidget * widget = gtk_label_new_with_mnemonic(gettext(label[f]));
-        gtk_widget_set_halign(widget,GTK_ALIGN_START);
+        gtk_widget_set_halign(widget,GTK_ALIGN_END);
         gtk_widget_set_valign(widget,GTK_ALIGN_CENTER);
 		gtk_grid_attach(grid,GTK_WIDGET(widget),0,f,1,1);
 		gtk_label_set_mnemonic_widget(GTK_LABEL(widget),entry[f]);
@@ -603,6 +604,8 @@ static void v3270ft_init(v3270ft *dialog) {
 
 	// Transfer options
 	widget = gtk_frame_new(gettext(frame[0]));
+	g_object_set(G_OBJECT(widget),"margin-top",18,NULL);
+
 	grid = v3270ft_new_grid();
 	gtk_grid_set_column_homogeneous(grid,TRUE);
 	gtk_container_add(GTK_CONTAINER(widget),GTK_WIDGET(grid));
@@ -619,8 +622,9 @@ static void v3270ft_init(v3270ft *dialog) {
 
 	// Formats
 	grid = v3270ft_new_grid();
+	g_object_set(G_OBJECT(grid),"margin-top",18,NULL);
 	gtk_grid_set_column_homogeneous(grid,TRUE);
-	gtk_box_pack_start(box,GTK_WIDGET(grid),FALSE,TRUE,2);
+	gtk_box_pack_start(box,GTK_WIDGET(grid),FALSE,TRUE,0);
 
 	// Record & Space allocation
 	for(f=0;f<2;f++) {
@@ -629,6 +633,7 @@ static void v3270ft_init(v3270ft *dialog) {
 		GSList * group = NULL;
 
 		dialog->radio[f] = gtk_frame_new(gettext(frame[f+1]));
+
 		gtk_container_add(GTK_CONTAINER(dialog->radio[f]),GTK_WIDGET(box));
 		gtk_container_add(GTK_CONTAINER(grid),dialog->radio[f]);
 
@@ -649,13 +654,14 @@ static void v3270ft_init(v3270ft *dialog) {
 
 	// Values
 	grid = v3270ft_new_grid();
+	g_object_set(G_OBJECT(grid),"margin-top",18,NULL);
 	gtk_grid_set_column_homogeneous(grid,TRUE);
 	gtk_box_pack_start(box,GTK_WIDGET(grid),FALSE,TRUE,2);
 
 	for(f=0;f < LIB3270_FT_VALUE_COUNT;f++) {
 
 		GtkWidget * label = gtk_label_new_with_mnemonic(gettext(ft_value[f].label));
-        gtk_widget_set_halign(label,GTK_ALIGN_START);
+        gtk_widget_set_halign(label,GTK_ALIGN_END);
         gtk_widget_set_valign(label,GTK_ALIGN_CENTER);
 
 		widget = gtk_spin_button_new_with_range(ft_value[f].minval,ft_value[f].maxval,1);

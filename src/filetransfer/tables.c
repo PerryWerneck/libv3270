@@ -154,7 +154,7 @@ const struct v3270ft_value ft_value[] = {
 		// LIB3270_FT_VALUE_LRECL
 		"lrecl",
 		0, 32760,
-		N_( "Record Length:" ),
+		N_( "Record Length" ),
 		N_( "Specifies the logical record length (n) for a data set consisting of fixed length records or the maximum logical record length for a data set consisting of variable length records." )
 	},
 
@@ -163,7 +163,7 @@ const struct v3270ft_value ft_value[] = {
 		// LIB3270_FT_VALUE_BLKSIZE
 		"blksize",
 		0,32760,
-		N_( "Block size:" ),
+		N_( "Block size" ),
 		N_( "Specifies the block size (n) for a new data set. For data sets containing fixed " \
 			"length records, the block size must be a multiple of the record length. " \
 			"For data sets containing variable length records, the block size must be " \
@@ -175,7 +175,7 @@ const struct v3270ft_value ft_value[] = {
 		// LIB3270_FT_VALUE_PRIMSPACE
 		"primary",
 		0,99999,
-		N_( "Primary space:" ),
+		N_( "Primary space" ),
 		N_( "Primary allocation for a file created on a TSO host.\nThe units are given by the space allocation units option." )
 	},
 
@@ -183,7 +183,7 @@ const struct v3270ft_value ft_value[] = {
 		// LIB3270_FT_VALUE_SECSPACE
 		"secondary",
 		0,99999,
-		N_( "Secondary space:" ),
+		N_( "Secondary space" ),
 		N_( "Secondary allocation for a file created on a TSO host.\nThe units are given by the space allocation units option." )
 	},
 
@@ -191,7 +191,7 @@ const struct v3270ft_value ft_value[] = {
 		// LIB3270_FT_VALUE_DFT
 		"dft",
 		0,99999,
-		N_( "DFT B_uffer size:" ),
+		N_( "DFT B_uffer size" ),
 		N_("Specifies the default buffer size for DFT IND$FILE file transfers.")
 	},
 
