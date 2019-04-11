@@ -148,7 +148,7 @@ static void disconnect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *term
 	lib3270_disconnect(v3270_get_session(terminal));
 }
 
-static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+static void ft_clicked(GtkButton *button, GtkWidget *terminal)
 {
 	/*
 	GtkWidget * dialog	= v3270_dialog_new(terminal, _("test"), _("test"));
@@ -194,7 +194,7 @@ static void ft_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 	//
 	// V5.1 dialog
 	//
-	GtkWidget *dialog = v3270ft_new();
+	GtkWidget *dialog = v3270ft_new(button);
 
 	/*
 	//
@@ -382,6 +382,9 @@ int main (int argc, char **argv) {
   g_object_unref (app);
 
   g_message("rc=%d",status);
-  return status;
+
+  return 0;
+
 }
+
 

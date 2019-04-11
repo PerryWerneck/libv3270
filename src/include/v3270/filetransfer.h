@@ -52,7 +52,7 @@
 	typedef struct _v3270ftClass	v3270ftClass;
 
 
-	GtkWidget			* v3270ft_new(void);
+	GtkWidget			* v3270ft_new(GtkWidget *dialog);
 	GType      			  v3270ft_get_type(void);
 	void				  v3270ft_set_options(GtkWidget *widget, LIB3270_FT_OPTION opt);
 	LIB3270_FT_OPTION	  v3270ft_get_options(GtkWidget *widget);

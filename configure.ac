@@ -58,6 +58,7 @@ AC_PROG_LN_S
 AC_PATH_TOOL([AR], [ar], [ar])
 AC_PATH_TOOL([CONVERT], [convert], [no])
 AC_PATH_TOOL([OPTIPNG],[optipng],[no])
+AC_PATH_TOOL([ZIP],[zip],[no])
 
 AC_LANG([C])
 

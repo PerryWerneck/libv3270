@@ -35,6 +35,7 @@ SOURCES= \
 	$(wildcard src/filetransfer/*.c) \
 	$(wildcard src/trace/*.c) \
 	$(wildcard src/dialogs/*.c) \
+	$(wildcard src/dialogs/@OSNAME@/*.c) \
 	$(wildcard src/dialogs/print/*.c)
 
 TEST_SOURCES= \
@@ -58,6 +59,7 @@ VALGRIND=@VALGRIND@
 GENMARSHAL=@GENMARSHAL@
 CONVERT=@CONVERT@
 OPTIPNG=@OPTIPNG@
+ZIP=@ZIP@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -454,6 +456,16 @@ $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 		$(OBJDIR)/marshal/v3270.o \
 		$(OBJDIR)/marshal/v3270ft.o \
 		$(LIBS)
+
+zip-debug: \
+	$(LIBNAME)-debug-@PACKAGE_VERSION@-@host_cpu@.zip
+
+$(LIBNAME)-debug-@PACKAGE_VERSION@-@host_cpu@.zip: \
+	$(BINDBG)/$(LIBNAME)@EXEEXT@ \
+	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	@$(ZIP) -9 -j $@ $^
+
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 

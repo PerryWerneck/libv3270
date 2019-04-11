@@ -58,6 +58,9 @@
 		<Unit filename="src/dialogs/hostselect.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/linux/select.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/print/begin.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -72,9 +75,6 @@
 		<Unit filename="src/dialogs/security.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/dialogs/select.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/dialogs/settingsdialog.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -82,6 +82,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/transfer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dialogs/windows/select.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/filetransfer/activity.c">

@@ -299,6 +299,8 @@ static void select_local_file(GtkButton G_GNUC_UNUSED(*button), v3270ft *dialog)
 static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, v3270ft *dialog) {
 #endif // WIN32
 
+	debug("%s",__FUNCTION__);
+
 	gchar *filename = v3270_select_file(
 								GTK_WIDGET(dialog),
 								_("Select local file"),
@@ -706,7 +708,11 @@ static void v3270ft_init(v3270ft *dialog) {
  *
  * Returns: a new #v3270ft.
  */
-LIB3270_EXPORT GtkWidget * v3270ft_new(void) {
-	return GTK_WIDGET(g_object_new(GTK_TYPE_V3270FT, "use-header-bar", (gint) 1, NULL));
+LIB3270_EXPORT GtkWidget * v3270ft_new(GtkWidget *parent) {
+
+	GtkWidget * dialog = GTK_WIDGET(g_object_new(GTK_TYPE_V3270FT, "use-header-bar", (gint) 1, NULL));
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(parent)));
+
+	return dialog;
 }
 
