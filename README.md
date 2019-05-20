@@ -37,9 +37,9 @@ Cross-compiling on SuSE Linux (Native or WSL)
 		* https://build.opensuse.org/project/show/windows:mingw:win64
 		* https://build.opensuse.org/project/show/home:PerryWerneck:mingw64
 
-2. Get lib3270 sources from git
+2. Get libv3270 sources from git
 
-	* git clone http://softwarepublico.gov.br/gitlab/pw3270/lib3270.git ./v3270
+	* git clone https://github.com/PerryWerneck/libv3270.git ./v3270
 
 3. Install cross compilers
 
@@ -51,4 +51,29 @@ Cross-compiling on SuSE Linux (Native or WSL)
 
 	* ./v3270/win/win-configure.sh --32 (for 32 bits)
 	* ./v3270/win/win-configure.sh --64 (for 64 bits)
+
+4. Build
+
+	* cd v3270
+	* make clean
+	* make all
+
+
+Compiling for Windows (With MSYS2)
+----------------------------------
+
+1. Build and install lib3270 
+
+	* Follow the guide on https://github.com/PerryWerneck/lib3270
+
+2. Get libv3270 sources from git
+
+	* git clone https://github.com/PerryWerneck/libv3270.git ./v3270
+
+4. Build library using the mingw shell
+
+	* cd v3270
+	* ./autogen.sh
+	* make all
+
 
