@@ -43,7 +43,7 @@ Release:	0
 License:        LGPL-3.0
 Source:		libv3270-%{version}.tar.xz
 
-Url:		https://portal.softwarepublico.gov.br/social/pw3270/
+Url:		https://github.com/PerryWerneck/libv3270.git
 
 Group:		Development/Libraries/C and C++
 BuildRoot:	/var/tmp/%{name}-%{version}
@@ -75,6 +75,11 @@ BuildRequires:	gtk3-devel
 # https://en.opensuse.org/openSUSE:Build_Service_cross_distribution_howto
 %if %{undefined fedora} && %{undefined rhel_version} && %{undefined centos_version}
 BuildRequires:	libgladeui-2-6
+%endif
+
+%if 0%{?centos_version}
+# centos requires python for genmarshal
+BuildRequires:  python
 %endif
 
 %description
