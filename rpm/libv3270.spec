@@ -40,7 +40,7 @@ Summary:	3270 Virtual Terminal for GTK
 Name:		libv3270-%{_libvrs}
 Version:	5.2
 Release:	0
-License:        LGPL-3.0
+License:	LGPL-3.0
 Source:		libv3270-%{version}.tar.xz
 
 Url:		https://github.com/PerryWerneck/libv3270.git
@@ -48,10 +48,7 @@ Url:		https://github.com/PerryWerneck/libv3270.git
 Group:		Development/Libraries/C and C++
 BuildRoot:	/var/tmp/%{name}-%{version}
 
-Provides:	libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
-Conflicts:	otherproviders(libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
-
-BuildRequires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
+BuildRequires:	lib3270-devel
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils
@@ -90,18 +87,15 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
-%package devel
+%package -n libv3270-devel
 
 Summary:	3270 Virtual Terminal for GTK development files
 Group:		Development/Libraries/C and C++
 
 Requires:	%{name} = %{version}
-Requires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
+Requires:	lib3270-devel
 
-Provides:	libv3270-devel = %{version}
-Conflicts:	otherproviders(libv3270-devel)
-
-%description devel
+%description -n libv3270-devel
 
 3270 Virtual Terminal for GTK development files.
 
@@ -152,10 +146,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc AUTHORS LICENSE README.md
 
-%{_libdir}/libv3270.so.5
-%{_libdir}/libv3270.so.5.2
+%{_libdir}/libv3270.so.%{MAJOR_VERSION}
+%{_libdir}/libv3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%files devel
+%files -n libv3270-devel
 %defattr(-,root,root)
 
 %{_libdir}/libv3270.so
