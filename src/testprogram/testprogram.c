@@ -194,7 +194,7 @@ static void ft_clicked(GtkButton *button, GtkWidget *terminal)
 	//
 	// V5.1 dialog
 	//
-	GtkWidget *dialog = v3270ft_new(button);
+	GtkWidget *dialog = v3270ft_new(GTK_WIDGET(button));
 
 	/*
 	//

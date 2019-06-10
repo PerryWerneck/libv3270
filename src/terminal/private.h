@@ -81,8 +81,9 @@ G_BEGIN_DECLS
  	SIGNAL_PRINT_SETUP,
  	SIGNAL_PRINT_APPLY,
  	SIGNAL_PRINT_DONE,
+ 	SIGNAL_SESSION_CHANGED,
 
- 	LAST_SIGNAL
+ 	V3270_LAST_SIGNAL
  };
 
 
@@ -221,7 +222,7 @@ G_BEGIN_DECLS
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
- G_GNUC_INTERNAL guint			  v3270_widget_signal[LAST_SIGNAL];
+ G_GNUC_INTERNAL guint			  v3270_widget_signal[V3270_LAST_SIGNAL];
  G_GNUC_INTERNAL GdkCursor		* v3270_cursor[LIB3270_POINTER_COUNT];
  G_GNUC_INTERNAL const gchar	* v3270_default_colors;
  G_GNUC_INTERNAL const gchar	* v3270_default_font;

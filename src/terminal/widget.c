@@ -63,8 +63,8 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
- guint		  		  v3270_widget_signal[LAST_SIGNAL]		= { 0 };
- GdkCursor			* v3270_cursor[LIB3270_POINTER_COUNT]	= { 0 };
+ guint		  		  v3270_widget_signal[V3270_LAST_SIGNAL]	= { 0 };
+ GdkCursor			* v3270_cursor[LIB3270_POINTER_COUNT]		= { 0 };
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
@@ -382,6 +382,15 @@ static void v3270_class_init(v3270Class *klass)
 
 	v3270_widget_signal[SIGNAL_DISCONNECTED] =
 		g_signal_new(	"disconnected",
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_FIRST,
+						0,
+						NULL, NULL,
+						v3270_VOID__VOID,
+						G_TYPE_NONE, 0);
+
+	v3270_widget_signal[SIGNAL_SESSION_CHANGED] =
+		g_signal_new(	"session_changed",
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -978,10 +987,25 @@ LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 	g_return_if_fail(GTK_IS_V3270(widget));
 	g_return_if_fail(name != NULL);
 
-	if(GTK_V3270(widget)->session_name)
+	if(GTK_V3270(widget)->session_name) {
+
+		debug("Old session name was \"%s\"",GTK_V3270(widget)->session_name);
+
+		if(!strcmp(GTK_V3270(widget)->session_name,name)) {
+			// Same session name, keep it.
+			return;
+		}
+
 		g_free(GTK_V3270(widget)->session_name);
 
+	}
+
 	GTK_V3270(widget)->session_name = g_strdup(name);
+
+	debug("New session name is \"%s\"",GTK_V3270(widget)->session_name);
+
+	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_SESSION_CHANGED], 0);
+
 }
 
 LIB3270_EXPORT int v3270_set_host_type(GtkWidget *widget, LIB3270_HOST_TYPE type)
