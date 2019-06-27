@@ -79,6 +79,17 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 }
 
 /**
+ * Clear clipboard contents.
+ *
+ * @param terminal	Pointer to the terminal Widget.
+ *
+ */
+void v3270_clear_clipboard(v3270 *terminal)
+{
+    terminal->selection.text = lib3270_free(terminal->selection.text);
+}
+
+/**
  * Get text at informed area.
  *
  * @param widget    Widget.
@@ -109,10 +120,8 @@ LIB3270_EXPORT gchar * v3270_get_text(GtkWidget *widget, int offset, int len)
 
 static const char * update_selected_text(GtkWidget *widget, gboolean cut)
 {
-	v3270	* terminal;
 	char	* text;
-
-	terminal = GTK_V3270(widget);
+	v3270	* terminal = GTK_V3270(widget);
 
     v3270_clear_clipboard(terminal);
 

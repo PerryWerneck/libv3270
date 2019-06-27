@@ -568,11 +568,6 @@ LIB3270_EXPORT GtkWidget * v3270_new(void)
 	return g_object_new(GTK_TYPE_V3270, NULL);
 }
 
-void v3270_clear_clipboard(v3270 *terminal)
-{
-    terminal->selection.text = lib3270_free(terminal->selection.text);
-}
-
 static void v3270_destroy(GtkWidget *widget)
 {
 	v3270 * terminal = GTK_V3270(widget);
