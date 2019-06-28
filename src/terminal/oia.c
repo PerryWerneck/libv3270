@@ -288,7 +288,7 @@ static void draw_undera(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGB
 		cairo_stroke(cr);
 
 	}
-	debug("%s",__FUNCTION__);
+//	debug("%s",__FUNCTION__);
 
 }
 
@@ -497,7 +497,7 @@ static void draw_status_message(cairo_t *cr, LIB3270_MESSAGE id, v3270FontInfo *
 	{
 		rect.x++;
 
-		debug("%s(%s)",__FUNCTION__,msg);
+//		debug("%s(%s)",__FUNCTION__,msg);
 
 		gdk_cairo_set_source_rgba(cr,color+message[id].color);
 

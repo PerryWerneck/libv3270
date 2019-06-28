@@ -238,134 +238,104 @@ static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 
 }
 
+static void toggle_ds_trace(GtkToggleToolButton *button, GtkWidget *terminal) {
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_DS_TRACE,gtk_toggle_tool_button_get_active(button));
+}
+
+static void toggle_event_trace(GtkToggleToolButton *button, GtkWidget *terminal) {
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_EVENT_TRACE,gtk_toggle_tool_button_get_active(button));
+}
+
+static void toggle_ssl_trace(GtkToggleToolButton *button, GtkWidget *terminal) {
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_SSL_TRACE,gtk_toggle_tool_button_get_active(button));
+}
+
+static void toggle_screen_trace(GtkToggleToolButton *button, GtkWidget *terminal) {
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_SCREEN_TRACE,gtk_toggle_tool_button_get_active(button));
+}
+
+static GtkToolItem * create_tool_item(GtkWidget *terminal, const gchar *label, const gchar *tooltip, GCallback callback) {
+	GtkToolItem * item = gtk_toggle_tool_button_new();
+	gtk_tool_button_set_label(GTK_TOOL_BUTTON(item),label);
+
+	g_signal_connect(GTK_WIDGET(item), "toggled", G_CALLBACK(callback), terminal);
+
+	if(tooltip)
+		gtk_widget_set_tooltip_text(GTK_WIDGET(item),tooltip);
+
+	return item;
+}
 
 static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();
-	GValue 		  val		= G_VALUE_INIT;
+	GtkWidget	* notebook	= gtk_notebook_new();
 	size_t		  f;
 
-	v3270_set_url(terminal,NULL);
-	// v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,TRUE);
-
-	// v3270_set_font_family(terminal,"Droid Sans Mono");
-	g_signal_connect(terminal,"field_clicked",G_CALLBACK(field_clicked),window);
-
-	GtkWidget *trace = v3270_trace_window_new(terminal,NULL);
-	if(trace) {
-		g_signal_connect(trace, "destroy", G_CALLBACK(trace_window_destroy), v3270_get_session(terminal));
-		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_SSL_TRACE);
-		lib3270_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_DS_TRACE);
-		gtk_widget_show_all(trace);
-	}
-
-	/*
-	v3270_connect(terminal);
-	*/
-
-	/*
-	g_value_init (&val, G_TYPE_STRING);
-	g_value_set_string(&val,url);
-	g_object_set_property(G_OBJECT(terminal), "url", &val);
-	g_value_unset(&val);
-	*/
-
-	g_value_init(&val, G_TYPE_STRING);
-	g_object_get_property(G_OBJECT(terminal),"url",&val);
-	g_message("URL=%s",g_value_get_string(&val));
-
-	gchar * title = g_strdup_printf("%s - %s", v3270_get_session_name(terminal), g_value_get_string(&val));
-	gtk_window_set_title(GTK_WINDOW(window), title);
-	g_free(title);
-	g_value_unset(&val);
-
-
-	g_value_init(&val, G_TYPE_BOOLEAN);
-	g_object_get_property(G_OBJECT(terminal),"tso",&val);
-	g_message("TSO=%s",g_value_get_boolean(&val) ? "Yes" : "No");
-	g_value_unset(&val);
-
-	g_value_init(&val, G_TYPE_BOOLEAN);
-	g_object_get_property(G_OBJECT(terminal),"monocase",&val);
-	g_message("monocase=%s",g_value_get_boolean(&val) ? "Yes" : "No");
-	g_value_unset(&val);
-
-	g_value_init(&val, G_TYPE_INT);
-	g_object_get_property(G_OBJECT(terminal),"width",&val);
-	g_message("width=%d",(int) g_value_get_int(&val));
-	g_value_unset(&val);
-
-	// g_signal_connect(terminal,"popup",G_CALLBACK(popup_menu),NULL);
-
-	// Create box
-	GtkWidget *box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
-
-	// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
-	static const struct _buttons {
-		const gchar * icon;
-		GCallback	  callback;
-		const gchar * tooltip;
-	} buttons[] = {
-		{ "gtk-connect",		G_CALLBACK(connect_clicked),	"Connect to host"  				},
-		{ "gtk-disconnect",		G_CALLBACK(disconnect_clicked),	"Disconnect from host"  		},
-		{ "gtk-select-color",	G_CALLBACK(color_clicked),		"Edit or change color scheme"	},
-		{ "gtk-home",			G_CALLBACK(host_clicked),		"Configure host"				},
-		{ "gtk-print",			G_CALLBACK(print_clicked),		"Print screen contents"			},
-		{ "gtk-harddisk",		G_CALLBACK(ft_clicked),			"Open file transfer dialog"		}
-	};
-
-	GtkWidget * toolbar = gtk_toolbar_new();
-	for(f = 0; f < G_N_ELEMENTS(buttons); f++)
+	// Create Terminal window
 	{
-		GtkWidget * button = GTK_WIDGET(gtk_tool_button_new_from_stock(buttons[f].icon));
-		gtk_widget_set_tooltip_markup(button,buttons[f].tooltip);
-		g_signal_connect(G_OBJECT(button),"clicked",buttons[f].callback,terminal);
-		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(button),-1);
+		GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
+
+		// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+		static const struct _buttons {
+			const gchar * icon;
+			GCallback	  callback;
+			const gchar * tooltip;
+		} buttons[] = {
+			{ "gtk-connect",		G_CALLBACK(connect_clicked),	"Connect to host"  				},
+			{ "gtk-disconnect",		G_CALLBACK(disconnect_clicked),	"Disconnect from host"  		},
+			{ "gtk-select-color",	G_CALLBACK(color_clicked),		"Edit or change color scheme"	},
+			{ "gtk-home",			G_CALLBACK(host_clicked),		"Configure host"				},
+			{ "gtk-print",			G_CALLBACK(print_clicked),		"Print screen contents"			},
+			{ "gtk-harddisk",		G_CALLBACK(ft_clicked),			"Open file transfer dialog"		}
+		};
+
+		GtkWidget * toolbar = gtk_toolbar_new();
+		for(f = 0; f < G_N_ELEMENTS(buttons); f++)
+		{
+			GtkWidget * button = GTK_WIDGET(gtk_tool_button_new_from_stock(buttons[f].icon));
+			gtk_widget_set_tooltip_markup(button,buttons[f].tooltip);
+			g_signal_connect(G_OBJECT(button),"clicked",buttons[f].callback,terminal);
+			gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(button),-1);
+			gtk_widget_set_can_focus(button,FALSE);
+			gtk_widget_set_can_default(button,FALSE);
+			gtk_widget_set_focus_on_click(button,FALSE);
+		}
+		gtk_widget_set_can_focus(toolbar,FALSE);
+
+		gtk_box_pack_start(GTK_BOX(box),toolbar,FALSE,TRUE,0);
+
+		gtk_widget_set_can_default(terminal,TRUE);
+		gtk_widget_set_focus_on_click(terminal,TRUE);
+		gtk_box_pack_start(GTK_BOX(box),terminal,TRUE,TRUE,0);
+
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),box,gtk_label_new("Terminal"));
 	}
 
-	/*
-	GtkWidget *color	= gtk_button_new_with_label("Colors");
-	GtkWidget *print	= gtk_button_new_with_label("Print");
-	GtkWidget *host		= gtk_button_new_with_label("Host");
+	// Create trace window
+	{
+		GtkWidget	* box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+		GtkWidget	* trace 	= v3270_trace_new(terminal);
+		GtkWidget	* toolbar	= gtk_toolbar_new();
 
-	gtk_widget_set_focus_on_click(print,FALSE);
-	g_signal_connect(G_OBJECT(print),"clicked",G_CALLBACK(print_clicked),terminal);
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "DS Trace","Toggle DS Trace",G_CALLBACK(toggle_ds_trace)),-1);
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "Event Trace","Toggle Event Trace",G_CALLBACK(toggle_event_trace)),-1);
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "Screen Trace","Toggle Screen Trace",G_CALLBACK(toggle_screen_trace)),-1);
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "SSL Trace","Toggle SSL Trace",G_CALLBACK(toggle_ssl_trace)),-1);
 
-	gtk_widget_set_focus_on_click(host,FALSE);
-	g_signal_connect(G_OBJECT(host),"clicked",G_CALLBACK(host_clicked),terminal);
+		gtk_box_pack_start(GTK_BOX(box),toolbar,FALSE,FALSE,0);
+		gtk_box_pack_start(GTK_BOX(box),trace,TRUE,TRUE,0);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),box,gtk_label_new("Trace"));
+	}
 
-	gtk_widget_set_focus_on_click(color,FALSE);
-	g_signal_connect(G_OBJECT(color),"clicked",G_CALLBACK(color_clicked),terminal);
-	*/
-
-	/*
-	v3270_color_scheme_set_rgba(color,v3270_get_color_table(terminal));
-	g_signal_connect(G_OBJECT(color),"update-colors",G_CALLBACK(color_scheme_changed),terminal);
-	*/
-
-	/*
-	gtk_grid_attach(GTK_GRID(grid),color,0,0,1,1);
-	gtk_grid_attach(GTK_GRID(grid),print,1,0,1,1);
-	gtk_grid_attach(GTK_GRID(grid),host,2,0,1,1);
-	*/
-
-	gtk_box_pack_start(GTK_BOX(box),toolbar,FALSE,TRUE,0);
-	gtk_box_pack_start(GTK_BOX(box),terminal,TRUE,TRUE,0);
-
-	// Setup and show window
+	// Setup and show main window
 	gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
-	gtk_container_add(GTK_CONTAINER(window),box);
-	gtk_widget_show_all (window);
+	gtk_container_add(GTK_CONTAINER(window),notebook);
+	gtk_widget_show_all(window);
+
 	gtk_widget_grab_focus(terminal);
-
-	// v3270_set_toggle(terminal,LIB3270_TOGGLE_RECONNECT,1);
-
-	// v3270_set_script(terminal,'R');
-
-	// v3270_print_all(terminal);
-
 
 }
 
