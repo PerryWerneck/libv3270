@@ -107,6 +107,42 @@
 
  }
 
+ static int get_property(GtkWidget *widget, const gchar *name)
+ {
+	GParamSpec * spec = g_object_class_find_property(G_OBJECT_GET_CLASS(widget),name);
+
+	if(!spec) {
+		return errno = ENOENT;
+	}
+
+	GValue val = G_VALUE_INIT;
+
+	g_value_init(&val, spec->value_type);
+	g_object_get_property(G_OBJECT(widget),name,&val);
+
+	switch(spec->value_type)
+	{
+	case G_TYPE_STRING:
+		lib3270_write_trace(v3270_get_session(widget),"%s=%s",spec->name,g_value_get_string(&val));
+		break;
+
+	case G_TYPE_BOOLEAN:
+		lib3270_write_trace(v3270_get_session(widget),"%s=%s",spec->name,(g_value_get_boolean(&val) ? "true" : "false"));
+		break;
+
+	case G_TYPE_INT:
+		lib3270_write_trace(v3270_get_session(widget),"%s=%d",spec->name,g_value_get_int(&val));
+		break;
+
+	default:
+		lib3270_write_trace(v3270_get_session(widget),"%s has an unexpected value type",spec->name);
+
+	}
+
+	g_value_unset(&val);
+	return 0;
+ }
+
  int v3270_exec_command(GtkWidget *widget, const gchar *text)
  {
  	size_t ix;
@@ -136,6 +172,14 @@
 		const gchar * name = get_word(&txtptr);
 		g_strstrip(txtptr);
 		return set_property(hSession,name,(*txtptr ? txtptr : "1"));
+	}
+
+ 	if(g_str_has_prefix(cmdline,"get"))
+	{
+		gchar *txtptr = cmdline+3;
+		const gchar * name = get_word(&txtptr);
+		g_strstrip(txtptr);
+		return get_property(widget,name);
 	}
 
  	if(g_str_has_prefix(cmdline,"reset"))

@@ -258,6 +258,10 @@ static GtkToolItem * create_tool_item(GtkWidget *terminal, const gchar *label, c
 	GtkToolItem * item = gtk_toggle_tool_button_new();
 	gtk_tool_button_set_label(GTK_TOOL_BUTTON(item),label);
 
+	gtk_widget_set_can_focus(item,FALSE);
+	gtk_widget_set_can_default(item,FALSE);
+	gtk_widget_set_focus_on_click(item,FALSE);
+
 	g_signal_connect(GTK_WIDGET(item), "toggled", G_CALLBACK(callback), terminal);
 
 	if(tooltip)
