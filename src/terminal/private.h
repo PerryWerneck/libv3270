@@ -311,7 +311,7 @@ G_GNUC_INTERNAL void		  v3270_draw_ssl_status(v3270 *widget, cairo_t *cr, GdkRec
 
 G_GNUC_INTERNAL void		  v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor);
 
-G_GNUC_INTERNAL void		  v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int height);
+G_GNUC_INTERNAL void		  v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width, unsigned int height);
 
 G_GNUC_INTERNAL void		  v3270_update_cursor_rect(v3270 *widget, GdkRectangle *rect, unsigned char chr, unsigned short attr);
 

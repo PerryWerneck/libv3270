@@ -32,11 +32,9 @@
  #include <lib3270.h>
  #include <lib3270/log.h>
 
- #define WIDTH_IN_PIXELS(terminal,x) (x * cols)
- #define HEIGHT_IN_PIXELS(terminal,x) (x * (rows+1))
 
- #define CONTENTS_WIDTH(terminal) (cols * terminal->font.width)
- #define CONTENTS_HEIGHT(terminal) (((rows+2) * terminal->font.spacing)+OIA_TOP_MARGIN+2)
+ #define VIEW_HEIGTH_FROM_FONT(font_height) (( ((unsigned int) font_height) * (rows+1)) + OIA_TOP_MARGIN + 2)
+ #define VIEW_WIDTH_FROM_FONT(max_x_advance) (((unsigned int) max_x_advance) * cols)
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
@@ -53,7 +51,16 @@ const gchar * v3270_get_default_font_name()
 	return v3270_default_font;
 }
 
-void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int height)
+/**
+ * @brief Update font metrics based on view sizes.
+ *
+ * @param terminal	v3270 terminal widget.
+ * @param cr		Cairo context.
+ * @param width		View width in pixels.
+ * @param height	View height in pixels.
+ *
+ */
+void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width, unsigned int height)
 {
 	// update font metrics
 	unsigned int rows, cols, hFont, size;
@@ -61,7 +68,7 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int heig
 	cairo_font_extents_t extents;
 
 	lib3270_get_screen_size(terminal->host,&rows,&cols);
-	debug("Screen_size: %ux%u Scalled=%s",rows,cols,terminal->font.scaled ? "Yes" : "No");
+	debug("Screen_size: %ux%u Scalled=%s view_rows=%d view_cols=%d",rows,cols,terminal->font.scaled ? "Yes" : "No", (rows+OIA_TOP_MARGIN+3));
 
 	terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
 
@@ -69,33 +76,38 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int heig
 
 	if(terminal->font.scaled)
 	{
+		/*
 		double w = ((double) width) / ((double)cols);
-		double h = ((double) height) / ((double) (rows+2));
-		double s = w < h ? w : h;
+		double h = ((double) height) / ((double) ((rows + OIA_TOP_MARGIN + 3)));
+		double s = (w < h) ? w : h;
+		*/
+
+		double s = 0.1;
 
 		cairo_set_font_size(cr,s);
 		cairo_font_extents(cr,&extents);
 
-		while( HEIGHT_IN_PIXELS(terminal,(extents.height+extents.descent)) < height && WIDTH_IN_PIXELS(terminal,extents.max_x_advance) < width )
+		while( (VIEW_HEIGTH_FROM_FONT( (extents.height+extents.descent) ) < height) && (VIEW_WIDTH_FROM_FONT(extents.max_x_advance) < width) )
 		{
-			s += 1.0;
+			s += 0.5;
 			cairo_set_font_size(cr,s);
 			cairo_font_extents(cr,&extents);
 		}
 
-		s -= 1.0;
+		s -= 0.5;
 
 		cairo_set_font_size(cr,s < 1.0 ? 1.0 : s);
 		cairo_font_extents(cr,&extents);
+
 	}
 	else
 	{
-		static const int font_size[] = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 32, 36, 40, 48, 56, 64, 72, 0 };
-		int f;
+		static const unsigned int font_size[] = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 32, 36, 40, 48, 56, 64, 72 };
+		size_t f;
 
 		size = font_size[0];
 
-		for(f=0;font_size[f];f++)
+		for(f=0;f < G_N_ELEMENTS(font_size);f++)
 		{
 			cairo_set_font_size(cr,font_size[f]);
 			cairo_font_extents(cr,&extents);
@@ -106,9 +118,20 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int heig
 				terminal->minimum_height = ((rows+1) * (extents.height + extents.descent)) + (OIA_TOP_MARGIN+2);
 			}
 
-			if( HEIGHT_IN_PIXELS(terminal,(extents.height+extents.descent)) < height && WIDTH_IN_PIXELS(terminal,extents.max_x_advance) < width )
+			debug("font_size=%d y_advance=%u font_extents=%u+%u font_height=%u view_height=%u",
+					font_size[f],
+					(unsigned int) extents.max_y_advance,
+					(unsigned int) extents.height, (unsigned int) extents.descent,
+					VIEW_HEIGTH_FROM_FONT( (unsigned int) (extents.height + extents.descent) ),
+					height
+			);
+
+			if( VIEW_HEIGTH_FROM_FONT((extents.height + extents.descent)) < height && VIEW_WIDTH_FROM_FONT(extents.max_x_advance) < width)
 				size = font_size[f];
+
 		}
+
+		debug("font_size=%d",size);
 
 		cairo_set_font_size(cr,size);
 
@@ -134,7 +157,7 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int heig
 	terminal->font.ascent   = (int) extents.ascent;
 	terminal->font.descent  = (int) extents.descent;
 
-	hFont = terminal->font.height + terminal->font.descent;
+	hFont = (unsigned int) (terminal->font.height + terminal->font.descent);
 
 	// Create new cursor surface
 	if(terminal->cursor.surface)
@@ -143,7 +166,7 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int heig
 	terminal->cursor.surface = gdk_window_create_similar_surface(gtk_widget_get_window(GTK_WIDGET(terminal)),CAIRO_CONTENT_COLOR,terminal->font.width,hFont);
 
 	// Center image
-	size = CONTENTS_WIDTH(terminal);
+	size = VIEW_WIDTH_FROM_FONT(terminal->font.width);
 
 	if(width >= size) {
 
@@ -158,11 +181,14 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int heig
 
 	debug("Width=%u size=%u left=%d",height, size, terminal->font.left);
 
-	terminal->font.spacing = height / (rows+2);
+	/*
+	terminal->font.spacing = height / (rows+1);
 	if((int) terminal->font.spacing < hFont)
 		terminal->font.spacing = hFont;
+	*/
 
-	size = CONTENTS_HEIGHT(terminal);
+	terminal->font.spacing = hFont;
+	size = VIEW_HEIGTH_FROM_FONT(terminal->font.spacing);
 
 	if(height >= size) {
 

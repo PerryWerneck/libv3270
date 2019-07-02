@@ -213,7 +213,7 @@
 	// Creating toggle properties.
 	for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)
 	{
-		debug("Property %u=%s (Toggle)",(unsigned int) v3270_properties.type.toggle + ix, lib3270_get_toggle_name(ix));
+//		debug("Property %u=%s (Toggle)",(unsigned int) v3270_properties.type.toggle + ix, lib3270_get_toggle_name(ix));
 		v3270_properties.toggle[ix] = g_param_spec_boolean(lib3270_get_toggle_name(ix),lib3270_get_toggle_name(ix),lib3270_get_toggle_description(ix),FALSE,G_PARAM_WRITABLE|G_PARAM_READABLE);
 		v3270_install_property(gobject_class, v3270_properties.type.toggle + ix, v3270_properties.toggle[ix]);
 	}
@@ -222,7 +222,7 @@
 	// Creating boolean properties.
 	for(ix = 0; bool_props[ix].name; ix++)
 	{
-		debug("Property %u=%s (Boolean)",(unsigned int) v3270_properties.type.boolean + ix, bool_props[ix].name);
+//		debug("Property %u=%s (Boolean)",(unsigned int) v3270_properties.type.boolean + ix, bool_props[ix].name);
 		spec = g_param_spec_boolean(bool_props[ix].name, bool_props[ix].name, bool_props[ix].description, FALSE,(bool_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE)));
 		v3270_install_property(gobject_class, v3270_properties.type.boolean + ix, spec);
 
@@ -231,7 +231,7 @@
 	// Creating integer properties.
 	for(ix = 0; int_props[ix].name; ix++)
 	{
-		debug("Property %u=%s (Integer)",(unsigned int) v3270_properties.type.integer + ix, int_props[ix].name);
+//		debug("Property %u=%s (Integer)",(unsigned int) v3270_properties.type.integer + ix, int_props[ix].name);
 
 		spec = g_param_spec_int(
 			int_props[ix].name,
