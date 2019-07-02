@@ -72,6 +72,8 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value
 {
 	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
 
+ 	trace("%s(%s,%d)",__FUNCTION__,name,(int) value);
+
 	switch(ix)
 	{
 	case LIB3270_TOGGLE_CURSOR_POS:
@@ -138,7 +140,7 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value
 static gboolean bg_update_message(H3270 *session)
 {
 	void *widget = lib3270_get_user_data(session);
- 	trace("-----A %s %p",__FUNCTION__, lib3270_get_user_data(session));
+ 	// trace("-----A %s %p",__FUNCTION__, lib3270_get_user_data(session));
 
 	g_signal_emit(
 		GTK_WIDGET(widget),
@@ -147,7 +149,7 @@ static gboolean bg_update_message(H3270 *session)
 		(gint) lib3270_get_program_message(session)
 	);
 
- 	trace("-----B %s %p",__FUNCTION__, lib3270_get_user_data(session));
+ 	//trace("-----B %s %p",__FUNCTION__, lib3270_get_user_data(session));
 
  	return FALSE;
 }
@@ -378,7 +380,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
  static gboolean bg_update_ssl(H3270 *session)
  {
- 	trace("%s(%p,%p)",__FUNCTION__,session,lib3270_get_user_data(session));
+// 	trace("%s(%p,%p)",__FUNCTION__,session,lib3270_get_user_data(session));
 
  	v3270_blink_ssl(GTK_V3270(lib3270_get_user_data(session)));
 

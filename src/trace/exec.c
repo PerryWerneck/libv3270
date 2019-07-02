@@ -62,8 +62,51 @@
  	return rc;
  }
 
- static int set_property(H3270 *hSession, const gchar *name, const gchar * value)
+ static int set_property(GtkWidget *widget, const gchar *name, const gchar * value)
  {
+
+	GParamSpec * spec = g_object_class_find_property(G_OBJECT_GET_CLASS(widget),name);
+
+	if(!spec) {
+		return errno = ENOENT;
+	}
+
+	GValue val = G_VALUE_INIT;
+
+	g_value_init(&val, spec->value_type);
+
+	switch(spec->value_type)
+	{
+	case G_TYPE_STRING:
+		{
+			g_value_set_string(&val,value);
+			g_object_set_property(G_OBJECT(widget),name,&val);
+		}
+		break;
+
+	case G_TYPE_BOOLEAN:
+		{
+			g_value_set_boolean(&val,(atoi(value) == 0 ? FALSE : TRUE));
+			g_object_set_property(G_OBJECT(widget),name,&val);
+		}
+		break;
+
+	case G_TYPE_INT:
+		{
+			g_value_set_int(&val,atoi(value));
+			g_object_set_property(G_OBJECT(widget),name,&val);
+		}
+		break;
+
+	default:
+		lib3270_write_trace(v3270_get_session(widget),"%s has an unexpected value type\n",spec->name);
+
+	}
+
+	g_value_unset(&val);
+	return 0;
+
+ 	/*
  	size_t ix;
 
  	debug("%s=%s",name,value);
@@ -102,6 +145,7 @@
 			return sProp[ix].set(hSession,value);
 
 	}
+	*/
 
 	return errno = ENOENT;
 
@@ -123,19 +167,19 @@
 	switch(spec->value_type)
 	{
 	case G_TYPE_STRING:
-		lib3270_write_trace(v3270_get_session(widget),"%s=%s",spec->name,g_value_get_string(&val));
+		lib3270_write_trace(v3270_get_session(widget),"%s=%s\n",spec->name,g_value_get_string(&val));
 		break;
 
 	case G_TYPE_BOOLEAN:
-		lib3270_write_trace(v3270_get_session(widget),"%s=%s",spec->name,(g_value_get_boolean(&val) ? "true" : "false"));
+		lib3270_write_trace(v3270_get_session(widget),"%s=%s\n",spec->name,(g_value_get_boolean(&val) ? "true" : "false"));
 		break;
 
 	case G_TYPE_INT:
-		lib3270_write_trace(v3270_get_session(widget),"%s=%d",spec->name,g_value_get_int(&val));
+		lib3270_write_trace(v3270_get_session(widget),"%s=%d\n",spec->name,g_value_get_int(&val));
 		break;
 
 	default:
-		lib3270_write_trace(v3270_get_session(widget),"%s has an unexpected value type",spec->name);
+		lib3270_write_trace(v3270_get_session(widget),"%s has an unexpected value type\n",spec->name);
 
 	}
 
@@ -161,6 +205,29 @@
 		return lib3270_reconnect(hSession,0);
 	}
 
+ 	if(g_str_has_prefix(cmdline,"reload"))
+	{
+		v3270_reload(widget);
+		return 0;
+	}
+
+	if(g_str_has_suffix(cmdline,"?"))
+	{
+		gchar * str = strchr(cmdline,'?');
+		*str = 0;
+		g_strstrip(cmdline);
+		return get_property(widget,cmdline);
+	}
+
+	if(strchr(cmdline,'='))
+	{
+		gchar * value = strchr(cmdline,'=');
+		*(value++) = 0;
+		g_strstrip(cmdline);
+		g_strstrip(value);
+		return set_property(widget,cmdline,value);
+	}
+
  	if(g_str_has_prefix(cmdline,"disconnect"))
 	{
 		return lib3270_disconnect(hSession);
@@ -171,7 +238,7 @@
 		gchar *txtptr = cmdline+3;
 		const gchar * name = get_word(&txtptr);
 		g_strstrip(txtptr);
-		return set_property(hSession,name,(*txtptr ? txtptr : "1"));
+		return set_property(widget,name,(*txtptr ? txtptr : "1"));
 	}
 
  	if(g_str_has_prefix(cmdline,"get"))
@@ -187,14 +254,14 @@
 		gchar *txtptr = cmdline+3;
 		const gchar * name = get_word(&txtptr);
 		g_strstrip(txtptr);
-		return set_property(hSession,name,(*txtptr ? txtptr : "0"));
+		return set_property(widget,name,(*txtptr ? txtptr : "0"));
 	}
 
 	gchar * sep = strchr(cmdline,'=');
 	if(sep)
 	{
 		*(sep++) = 0;
-		return set_property(hSession,g_strstrip(cmdline),g_strstrip(sep));
+		return set_property(widget,g_strstrip(cmdline),g_strstrip(sep));
 	}
 	else
 	{

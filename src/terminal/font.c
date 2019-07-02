@@ -36,7 +36,7 @@
  #define HEIGHT_IN_PIXELS(terminal,x) (x * (rows+1))
 
  #define CONTENTS_WIDTH(terminal) (cols * terminal->font.width)
- #define CONTENTS_HEIGHT(terminal) (((rows+1) * terminal->font.spacing)+OIA_TOP_MARGIN+2)
+ #define CONTENTS_HEIGHT(terminal) (((rows+2) * terminal->font.spacing)+OIA_TOP_MARGIN+2)
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
@@ -56,11 +56,12 @@ const gchar * v3270_get_default_font_name()
 void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int height)
 {
 	// update font metrics
-	int rows, cols, hFont, size;
+	unsigned int rows, cols, hFont, size;
 
 	cairo_font_extents_t extents;
 
 	lib3270_get_screen_size(terminal->host,&rows,&cols);
+	debug("Screen_size: %ux%u Scalled=%s",rows,cols,terminal->font.scaled ? "Yes" : "No");
 
 	terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
 
@@ -143,7 +144,19 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int heig
 
 	// Center image
 	size = CONTENTS_WIDTH(terminal);
-	terminal->font.left = (width >> 1) - ((size) >> 1);
+
+	if(width >= size) {
+
+		terminal->font.left = ((width - size) / 2);
+
+	} else {
+
+		terminal->font.left = 0;
+	}
+
+	// terminal->font.left = (width >> 1) - ((size) >> 1);
+
+	debug("Width=%u size=%u left=%d",height, size, terminal->font.left);
 
 	terminal->font.spacing = height / (rows+2);
 	if((int) terminal->font.spacing < hFont)
@@ -151,7 +164,19 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, int width, int heig
 
 	size = CONTENTS_HEIGHT(terminal);
 
-	terminal->font.top = (height >> 1) - (size >> 1);
+	if(height >= size) {
+
+		terminal->font.top = ((height - size) /2);
+
+	} else {
+
+		terminal->font.top = 0;
+
+	}
+
+	//terminal->font.top = (height >> 1) - (size >> 1);
+
+	debug("screen_height=%u content_height=%u top=%d",height, size, terminal->font.top);
 
 }
 

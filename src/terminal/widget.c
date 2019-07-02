@@ -794,30 +794,12 @@ static void v3270_size_allocate(GtkWidget * widget, GtkAllocation * allocation)
 	g_return_if_fail(GTK_IS_V3270(widget));
 	g_return_if_fail(allocation != NULL);
 
-#if GTK_CHECK_VERSION(2,18,0)
 	gtk_widget_set_allocation(widget, allocation);
-#else
-	widget->allocation = *allocation;
-#endif // GTK(2,18)
-
-#if !GTK_CHECK_VERSION(3,0,0)
-	{
-		v3270 *terminal = GTK_V3270(widget);
-
-		terminal->width  = allocation->width;
-		terminal->height = allocation->height;
-	}
-#endif
 
 	if(gtk_widget_get_realized(widget))
 	{
-#if GTK_CHECK_VERSION(2,18,0)
 		if(gtk_widget_get_has_window(widget))
 			gdk_window_move_resize(gtk_widget_get_window (widget),allocation->x, allocation->y,allocation->width, allocation->height);
-#else
-		if(widget->window)
-			gdk_window_move_resize(widget->window,allocation->x, allocation->y,allocation->width, allocation->height);
-#endif // GTK(2,18,0)
 
 		v3270_reload(widget);
 		v3270_send_configure(GTK_V3270(widget));

@@ -156,14 +156,14 @@
 
  	size_t ix;
 
- 	debug("Property %s=%u",g_param_spec_get_name(pspec),(unsigned int) property_id);
+// 	debug("Property %s=%u",g_param_spec_get_name(pspec),(unsigned int) property_id);
 	g_object_class_install_property(oclass, property_id, pspec);
 
 	for(ix = 0; ix < G_N_ELEMENTS(properties); ix++)
 	{
 		if(!g_ascii_strcasecmp(properties[ix].name,g_param_spec_get_name(pspec)))
 		{
-			debug("Property \"%s\" is special",g_param_spec_get_name(pspec));
+//			debug("Property \"%s\" is special",g_param_spec_get_name(pspec));
 			*properties[ix].prop = pspec;
 			break;
 		}
@@ -250,7 +250,7 @@
 	// Creating string properties.
 	for(ix = 0; str_props[ix].name; ix++)
 	{
-		debug("Property %u=%s (String)",(unsigned int) v3270_properties.type.str + ix, str_props[ix].name);
+//		debug("Property %u=%s (String)",(unsigned int) v3270_properties.type.str + ix, str_props[ix].name);
 		spec = g_param_spec_string(str_props[ix].name, str_props[ix].name, str_props[ix].description, FALSE,(str_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE)));
 		v3270_install_property(gobject_class, v3270_properties.type.str + ix, spec);
 

@@ -104,7 +104,7 @@ static gint draw_spinner(cairo_t *cr, GdkRectangle *r, GdkRGBA *color, gint step
 	step++;
 	step %= num_steps;
 
-	debug("%s step=%d",__FUNCTION__,step);
+//	debug("%s step=%d",__FUNCTION__,step);
 
 	for (i = 0; i < ((gint) num_steps); i++)
 	{
@@ -1108,7 +1108,7 @@ void v3270_update_oia(v3270 *terminal, LIB3270_FLAG id, unsigned char on)
 	switch(id)
 	{
 	case LIB3270_FLAG_BOXSOLID:
-		debug("%s LIB3270_FLAG_BOXSOLID",__FUNCTION__);
+//		debug("%s LIB3270_FLAG_BOXSOLID",__FUNCTION__);
 		cr = v3270_oia_set_update_region(terminal,&r,V3270_OIA_CONNECTION);
 		v3270_draw_connection(cr,terminal->host,&terminal->font,terminal->color,r);
 		cairo_destroy(cr);
@@ -1116,25 +1116,25 @@ void v3270_update_oia(v3270 *terminal, LIB3270_FLAG id, unsigned char on)
 		break;
 
 	case LIB3270_FLAG_UNDERA:
-		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
+//		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
 		cr = v3270_oia_set_update_region(terminal,&r,V3270_OIA_UNDERA);
-		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
+//		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
 		draw_undera(cr,terminal->host,&terminal->font,terminal->color,r);
-		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
+//		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
 		cairo_destroy(cr);
-		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
+//		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
 		v3270_queue_draw_area(GTK_WIDGET(terminal),r->x,r->y,r->width,r->height);
-		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
+//		debug("%s LIB3270_FLAG_UNDERA",__FUNCTION__);
 		break;
 
 	case LIB3270_FLAG_TYPEAHEAD:
-		debug("%s LIB3270_FLAG_TYPEAHEAD",__FUNCTION__);
+//		debug("%s LIB3270_FLAG_TYPEAHEAD",__FUNCTION__);
 		v3270_oia_update_text_field(terminal,on,V3270_OIA_TYPEAHEAD,'T');
 		break;
 
 #ifdef HAVE_PRINTER
 	case LIB3270_FLAG_PRINTER:
-		debug("%s LIB3270_FLAG_PRINTER",__FUNCTION__);
+//		debug("%s LIB3270_FLAG_PRINTER",__FUNCTION__);
 		v3270_oia_update_text_field(terminal,on,V3270_OIA_PRINTER,'P');
 		break;
 #endif // HAVE_PRINTER

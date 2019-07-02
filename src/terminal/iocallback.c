@@ -148,7 +148,7 @@ static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void
 
 	struct bgParameter p = { TRUE, hSession, -1, callback, parm };
 
-	trace("%s starts -------------------------------------", __FUNCTION__);
+//	trace("%s starts -------------------------------------", __FUNCTION__);
 
 	p.running = TRUE;
 
@@ -167,7 +167,7 @@ static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void
 
 	g_thread_join(thread);
 
-	trace("%s ends ---------------------------------------", __FUNCTION__);
+//	trace("%s ends ---------------------------------------", __FUNCTION__);
 
 	return p.rc;
 

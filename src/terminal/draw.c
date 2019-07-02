@@ -371,13 +371,8 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 {
 	v3270 * terminal = GTK_V3270(widget);
 
-#if GTK_CHECK_VERSION(3,0,0)
 	gint width	= gtk_widget_get_allocated_width(widget);
 	gint height	= gtk_widget_get_allocated_height(widget);
-#else
-    gint width	= terminal->width;
-    gint height	= terminal->height;
-#endif
 
 	GdkRectangle rect;
 	int addr, cursor, r, rows, cols;
@@ -385,7 +380,9 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 	cairo_t * cr;
 
 	if(!(gtk_widget_get_realized(widget) && terminal->drawing))
+	{
 		return;
+	}
 
 	// Create new terminal image
 	if(terminal->surface)
