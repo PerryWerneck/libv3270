@@ -34,7 +34,7 @@
 
 
  #define VIEW_HEIGTH_FROM_FONT(font_height) (( ((unsigned int) font_height) * (rows+1)) + OIA_TOP_MARGIN + 2)
- #define VIEW_WIDTH_FROM_FONT(max_x_advance) (((unsigned int) max_x_advance) * cols)
+ #define VIEW_WIDTH_FROM_FONT(max_x_advance) ( ((unsigned int) max_x_advance) * cols)
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
@@ -68,19 +68,26 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 	cairo_font_extents_t extents;
 
 	lib3270_get_screen_size(terminal->host,&rows,&cols);
-	debug("Screen_size: %ux%u Scalled=%s view_rows=%d view_cols=%d",rows,cols,terminal->font.scaled ? "Yes" : "No", (rows+OIA_TOP_MARGIN+3));
+
+	debug(
+		"Screen_size: %ux%u Scalled=%s view_rows=%d",
+			rows,
+			cols,
+			terminal->font.scaled ? "Yes" : "No",
+			(rows+OIA_TOP_MARGIN+3)
+	);
 
 	terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
 
 	cairo_select_font_face(cr,terminal->font.family, CAIRO_FONT_SLANT_NORMAL,terminal->font.weight);
 
+	/*
 	if(terminal->font.scaled)
 	{
-		/*
-		double w = ((double) width) / ((double)cols);
-		double h = ((double) height) / ((double) ((rows + OIA_TOP_MARGIN + 3)));
-		double s = (w < h) ? w : h;
-		*/
+
+		// double w = ((double) width) / ((double)cols);
+		// double h = ((double) height) / ((double) ((rows + OIA_TOP_MARGIN + 3)));
+		// double s = (w < h) ? w : h;
 
 		double s = 0.1;
 
@@ -100,7 +107,7 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 		cairo_font_extents(cr,&extents);
 
 	}
-	else
+	else */
 	{
 		static const unsigned int font_size[] = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 32, 36, 40, 48, 56, 64, 72 };
 		size_t f;
@@ -118,12 +125,14 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 				terminal->minimum_height = ((rows+1) * (extents.height + extents.descent)) + (OIA_TOP_MARGIN+2);
 			}
 
-			debug("font_size=%d y_advance=%u font_extents=%u+%u font_height=%u view_height=%u",
+			debug("font_size=%d x_advance=%lf y_advance=%lf font_extents=%u+%u font_height=%u view_height=%u view_width=%u",
 					font_size[f],
-					(unsigned int) extents.max_y_advance,
+					extents.max_x_advance,
+					extents.max_y_advance,
 					(unsigned int) extents.height, (unsigned int) extents.descent,
 					VIEW_HEIGTH_FROM_FONT( (unsigned int) (extents.height + extents.descent) ),
-					height
+					height,
+					VIEW_WIDTH_FROM_FONT(extents.max_x_advance)
 			);
 
 			if( VIEW_HEIGTH_FROM_FONT((extents.height + extents.descent)) < height && VIEW_WIDTH_FROM_FONT(extents.max_x_advance) < width)
@@ -228,6 +237,7 @@ LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 		terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
 
 		g_signal_emit(widget,v3270_widget_signal[SIGNAL_UPDATE_CONFIG], 0, "font-family", name);
+		g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.font_family);
 
 		v3270_reload(widget);
 		gtk_widget_queue_draw(widget);

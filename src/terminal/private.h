@@ -246,6 +246,10 @@ G_BEGIN_DECLS
     	guint str;
     } type;
 
+    // V3270 Internal properties.
+    GParamSpec * font_family;
+
+    // Properties who launch signals.
     GParamSpec * online;
     GParamSpec * luname;
     GParamSpec * model;

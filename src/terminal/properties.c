@@ -88,10 +88,17 @@
 		lib3270_set_toggle(window->host,prop_id - v3270_properties.type.toggle, (int) g_value_get_boolean (value));
 
 	}
-	else
-	{
+
+	// Check for internal properties.
+ 	switch(prop_id) {
+	case PROP_BEGIN:	// Font-family
+		v3270_set_font_family(GTK_WIDGET(object), g_value_get_string(value));
+		break;
+
+	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-	}
+
+ 	}
 
  }
 
@@ -134,10 +141,19 @@
 		g_value_set_boolean(value,lib3270_get_toggle(window->host,prop_id - v3270_properties.type.toggle) ? TRUE : FALSE );
 
 	}
-	else
-	{
+
+	// Check for internal properties.
+ 	switch(prop_id) {
+	case PROP_BEGIN:	// Font-family
+		g_value_set_string(value,v3270_get_font_family(GTK_WIDGET(object)));
+		break;
+
+	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-	}
+
+ 	}
+
+
 
  }
 
@@ -148,10 +164,10 @@
  		const char	*name;
  		GParamSpec	**prop;
  	} properties[] = {
- 		{ "connected",		&v3270_properties.online	},
- 		{ "luname",			&v3270_properties.luname	},
- 		{ "model",			&v3270_properties.model		},
- 		{ "has-selection",	&v3270_properties.selection	}
+ 		{ "connected",		&v3270_properties.online		},
+ 		{ "luname",			&v3270_properties.luname		},
+ 		{ "model",			&v3270_properties.model			},
+ 		{ "has-selection",	&v3270_properties.selection		},
  	};
 
  	size_t ix;
@@ -179,59 +195,75 @@
  	debug("%s",__FUNCTION__);
 
  	memset(&v3270_properties,0,sizeof(v3270_properties));
- 	v3270_properties.count = LIB3270_TOGGLE_COUNT;
-	v3270_properties.type.toggle = PROP_BEGIN;
-
 	gobject_class->set_property = v3270_set_property;
 	gobject_class->get_property = v3270_get_property;
 
-	// Get property tables
-	const LIB3270_INT_PROPERTY		* bool_props	= lib3270_get_boolean_properties_list();
-	const LIB3270_INT_PROPERTY		* int_props		= lib3270_get_int_properties_list();
-	const LIB3270_STRING_PROPERTY	* str_props		= lib3270_get_string_properties_list();
+	v3270_properties.count = PROP_BEGIN;
 
-	v3270_properties.type.boolean = v3270_properties.count + PROP_BEGIN;
-	for(ix = 0; bool_props[ix].name; ix++)
-	{
-		v3270_properties.count++;
-	}
+	// Setup internal properties.
+	v3270_properties.font_family = g_param_spec_string(
+										"font_family",
+										"font_family",
+										_("Font family for terminal contents"),
+										FALSE,
+										G_PARAM_READABLE|G_PARAM_WRITABLE
+									);
 
-	v3270_properties.type.integer = v3270_properties.count + PROP_BEGIN;
-	for(ix = 0; int_props[ix].name; ix++)
-	{
-		v3270_properties.count++;
-	}
+	g_object_class_install_property(
+		gobject_class,
+		v3270_properties.count++,
+		v3270_properties.font_family
+	);
 
-	v3270_properties.type.str = v3270_properties.count + PROP_BEGIN;
-	for(ix = 0; str_props[ix].name; ix++)
-	{
-		v3270_properties.count++;
-	}
+	//
+	// Extract properties from LIB3270 control tables
+	//
 
-	debug("Creating %u properties", (unsigned int) v3270_properties.count);
-
-	// Creating toggle properties.
+	// Extract toggle class.
+	v3270_properties.type.toggle = v3270_properties.count;
 	for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)
 	{
-//		debug("Property %u=%s (Toggle)",(unsigned int) v3270_properties.type.toggle + ix, lib3270_get_toggle_name(ix));
-		v3270_properties.toggle[ix] = g_param_spec_boolean(lib3270_get_toggle_name(ix),lib3270_get_toggle_name(ix),lib3270_get_toggle_description(ix),FALSE,G_PARAM_WRITABLE|G_PARAM_READABLE);
-		v3270_install_property(gobject_class, v3270_properties.type.toggle + ix, v3270_properties.toggle[ix]);
+		debug("Property %u=%s (Toggle)",(unsigned int) v3270_properties.type.toggle + ix, lib3270_get_toggle_name(ix));
+
+		v3270_properties.toggle[ix] =
+				g_param_spec_boolean(
+					lib3270_get_toggle_name(ix),
+					lib3270_get_toggle_name(ix),
+					lib3270_get_toggle_description(ix),
+					FALSE,
+					G_PARAM_WRITABLE|G_PARAM_READABLE
+		);
+
+		v3270_install_property(gobject_class, v3270_properties.count++, v3270_properties.toggle[ix]);
+
 	}
 
-
 	// Creating boolean properties.
+	v3270_properties.type.boolean = v3270_properties.count;
+	const LIB3270_INT_PROPERTY * bool_props = lib3270_get_boolean_properties_list();
+
 	for(ix = 0; bool_props[ix].name; ix++)
 	{
-//		debug("Property %u=%s (Boolean)",(unsigned int) v3270_properties.type.boolean + ix, bool_props[ix].name);
-		spec = g_param_spec_boolean(bool_props[ix].name, bool_props[ix].name, bool_props[ix].description, FALSE,(bool_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE)));
-		v3270_install_property(gobject_class, v3270_properties.type.boolean + ix, spec);
+		debug("Property %u=%s (Boolean)",(unsigned int) v3270_properties.type.boolean + ix, bool_props[ix].name);
+		spec = g_param_spec_boolean(
+					bool_props[ix].name,
+					bool_props[ix].name,
+					bool_props[ix].description,
+					FALSE,
+					(bool_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
+		);
+
+		v3270_install_property(gobject_class, v3270_properties.count++, spec);
 
 	}
 
 	// Creating integer properties.
+	const LIB3270_INT_PROPERTY * int_props = lib3270_get_int_properties_list();
+	v3270_properties.type.integer = v3270_properties.count;
+
 	for(ix = 0; int_props[ix].name; ix++)
 	{
-//		debug("Property %u=%s (Integer)",(unsigned int) v3270_properties.type.integer + ix, int_props[ix].name);
+		debug("Property %u=%s (Integer)",(unsigned int) v3270_properties.type.integer + ix, int_props[ix].name);
 
 		spec = g_param_spec_int(
 			int_props[ix].name,
@@ -242,17 +274,34 @@
 			0,			// Default
 			(int_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 		);
+	debug("Creating %u properties", (unsigned int) v3270_properties.count);
 
-		v3270_install_property(gobject_class, v3270_properties.type.integer + ix, spec);
+
+
+
+
+		v3270_install_property(gobject_class, v3270_properties.count++, spec);
 
 	}
 
 	// Creating string properties.
+	const LIB3270_STRING_PROPERTY * str_props = lib3270_get_string_properties_list();
+	v3270_properties.type.str = v3270_properties.count;
+
 	for(ix = 0; str_props[ix].name; ix++)
 	{
-//		debug("Property %u=%s (String)",(unsigned int) v3270_properties.type.str + ix, str_props[ix].name);
-		spec = g_param_spec_string(str_props[ix].name, str_props[ix].name, str_props[ix].description, FALSE,(str_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE)));
-		v3270_install_property(gobject_class, v3270_properties.type.str + ix, spec);
+
+		debug("Property %u=%s (String)",(unsigned int) v3270_properties.type.str + ix, str_props[ix].name);
+
+		spec = g_param_spec_string(
+					str_props[ix].name,
+					str_props[ix].name,
+					str_props[ix].description,
+					FALSE,
+					(str_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
+		);
+
+		v3270_install_property(gobject_class, v3270_properties.count++, spec);
 
 	}
 
