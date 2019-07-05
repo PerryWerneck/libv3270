@@ -306,8 +306,8 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 
 	case LIB3270_PRINT_SELECTED:
 		{
-			int row, col;
-			int baddr = 0;
+			unsigned int row, col;
+			unsigned int baddr = 0;
 
 			GdkRectangle rect;
 			memset(&rect,0,sizeof(rect));
@@ -340,12 +340,12 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 
 			operation->contents.text = g_new0(column *, operation->contents.height+1);
 
-			for(row = rect.y; row < rect.width; row++)
+			for(row = rect.y; ((int) row) < rect.width; row++)
 			{
 				int c = 0;
 				operation->contents.text[r++] = text = g_new0(column, operation->contents.width);
 
-				for(col = rect.x; col < rect.height; col++)
+				for(col = rect.x; ((int) col) < rect.height; col++)
 				{
 					lib3270_get_element(operation->session,lib3270_translate_to_address(operation->session,row,col),&text[c].c,&text[c].attr);
 					if(!(text[c].attr & LIB3270_ATTR_SELECTED))

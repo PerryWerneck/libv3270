@@ -86,6 +86,7 @@ static gboolean popup_menu(GtkWidget *widget, G_GNUC_UNUSED gboolean selected, g
 }
 	*/
 
+	/*
  static gboolean field_clicked(GtkWidget *widget, gboolean connected, V3270_OIA_FIELD field, GdkEventButton *event, GtkWidget *window)
  {
 	trace("%s: %s field=%d event=%p window=%p",__FUNCTION__,connected ? "Connected" : "Disconnected", field, event, window);
@@ -103,7 +104,9 @@ static gboolean popup_menu(GtkWidget *widget, G_GNUC_UNUSED gboolean selected, g
 
 	return FALSE;
  }
+ */
 
+ /*
 static void trace_window_destroy(G_GNUC_UNUSED GtkWidget *widget, H3270 *hSession) {
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_DS_TRACE,0);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SCREEN_TRACE,0);
@@ -111,6 +114,7 @@ static void trace_window_destroy(G_GNUC_UNUSED GtkWidget *widget, H3270 *hSessio
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_NETWORK_TRACE,0);
 	lib3270_set_toggle(hSession,LIB3270_TOGGLE_SSL_TRACE,0);
 }
+*/
 
 
 /*

@@ -375,7 +375,8 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 	gint height	= gtk_widget_get_allocated_height(widget);
 
 	GdkRectangle rect;
-	int addr, cursor, r, rows, cols;
+	int addr, cursor;
+	unsigned int rows, cols, r;
 
 	cairo_t * cr;
 
@@ -411,7 +412,7 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 
 	for(r = 0; r < rows; r++)
 	{
-		int c;
+		unsigned int c;
 
 		rect.x = terminal->font.left;
 
@@ -447,7 +448,7 @@ void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned sho
 	v3270			* terminal = GTK_V3270(lib3270_get_user_data(session));
 	cairo_t			* cr;
 	GdkRectangle	  rect;
-	int				  rows,cols;
+	unsigned int	  rows,cols;
 
 	if(!(gtk_widget_get_realized(GTK_WIDGET(terminal)) && terminal->drawing))
 		return;

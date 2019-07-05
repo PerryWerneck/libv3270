@@ -310,9 +310,9 @@ static void v3270_accessible_get_character_extents(	AtkText      *text,
 													gint         *height,
 													AtkCoordType  coords )
 {
-	v3270		* widget = (v3270 *) gtk_accessible_get_widget(GTK_ACCESSIBLE (text));
-	int 		  rows, cols;
-	GdkWindow	* window;
+	v3270			* widget = (v3270 *) gtk_accessible_get_widget(GTK_ACCESSIBLE (text));
+	unsigned int	  rows, cols;
+	GdkWindow		* window;
 
 	if (widget == NULL)
 		return;
@@ -344,10 +344,10 @@ static void v3270_accessible_get_character_extents(	AtkText      *text,
 
 static gchar * v3270_accessible_get_text_at_offset(AtkText *atk_text, gint offset, AtkTextBoundary boundary_type, G_GNUC_UNUSED gint *start_offset, G_GNUC_UNUSED gint *end_offset)
 {
-	GtkWidget	* widget = gtk_accessible_get_widget(GTK_ACCESSIBLE (atk_text));
-	H3270		* host;
-	char		* text	 = NULL;
-	int			  rows,cols,pos;
+	GtkWidget		* widget = gtk_accessible_get_widget(GTK_ACCESSIBLE (atk_text));
+	H3270			* host;
+	char			* text	 = NULL;
+	unsigned int	  rows,cols,pos;
 
 	if(!widget)
 		return NULL;
@@ -385,7 +385,7 @@ static gchar * v3270_accessible_get_text_at_offset(AtkText *atk_text, gint offse
 		case ATK_TEXT_BOUNDARY_LINE_START:		// Boundary is the initial character of the content or a character immediately following a newline,
 												// linefeed, or return character.
 			pos = (offset/cols)*cols;
-			if(pos == offset)
+			if( ((int) pos) == offset)
 				offset++;
 			text = lib3270_get_string_at_address(host,pos,(offset-pos),'\n');
 			break;

@@ -42,13 +42,13 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void header_on_state_changed(GtkWidget *worker, guint state, const gchar *msg, GtkDialog *dialog)
+static void header_on_state_changed(GtkWidget G_GNUC_UNUSED(*worker), guint G_GNUC_UNUSED(state), const gchar *msg, GtkDialog *dialog)
 {
 	debug("%s(%s)",__FUNCTION__,msg);
 	gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gtk_dialog_get_header_bar(dialog)),msg);
 }
 
-static void transfer_success(GtkWidget *worker, const gchar *msg, const gchar *description, GtkDialog *dialog)
+static void transfer_success(GtkWidget G_GNUC_UNUSED(*worker), const gchar *msg, const gchar *description, GtkDialog *dialog)
 {
 	debug("%s(\"%s\",\"%s\")",__FUNCTION__,msg,description);
 	gtk_dialog_response(dialog,GTK_RESPONSE_OK);

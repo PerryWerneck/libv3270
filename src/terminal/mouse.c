@@ -48,7 +48,7 @@
 gint v3270_get_offset_at_point(v3270 *widget, gint x, gint y)
 {
 	GdkPoint point;
-	int r,c;
+	unsigned int r,c;
 
 	g_return_val_if_fail(widget->font.width > 0,-1);
 
@@ -59,7 +59,7 @@ gint v3270_get_offset_at_point(v3270 *widget, gint x, gint y)
 
 		lib3270_get_screen_size(widget->host,&r,&c);
 
-		if(point.x >= 0 && point.y >= 0 && point.x < c && point.y < r)
+		if(point.x >= 0 && point.y >= 0 && point.x < ((int) c) && point.y < ((int) r))
 			return (point.y * c) + point.x;
 	}
 
