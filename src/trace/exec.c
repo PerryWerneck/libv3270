@@ -211,6 +211,12 @@
 		return 0;
 	}
 
+ 	if(g_str_has_prefix(cmdline,"pattern"))
+	{
+		lib3270_testpattern(hSession);
+		return 0;
+	}
+
 	if(g_str_has_suffix(cmdline,"?"))
 	{
 		gchar * str = strchr(cmdline,'?');
