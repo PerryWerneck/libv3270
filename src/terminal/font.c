@@ -81,7 +81,6 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 
 	cairo_select_font_face(cr,terminal->font.family, CAIRO_FONT_SLANT_NORMAL,terminal->font.weight);
 
-	/*
 	if(terminal->font.scaled)
 	{
 
@@ -89,7 +88,36 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 		// double h = ((double) height) / ((double) ((rows + OIA_TOP_MARGIN + 3)));
 		// double s = (w < h) ? w : h;
 
-		double s = 0.1;
+		double s = 0;
+		double selected = 0;
+
+		do
+		{
+			selected = s;
+
+			s += 0.5;
+			cairo_set_font_size(cr,s);
+			cairo_font_extents(cr,&extents);
+
+			debug("font_size=%lf x_advance=%lf y_advance=%lf font_extents=%u+%u font_height=%u view_height=%u view_width=%u",
+					s,
+					extents.max_x_advance,
+					extents.max_y_advance,
+					(unsigned int) extents.height, (unsigned int) extents.descent,
+					VIEW_HEIGTH_FROM_FONT( (unsigned int) (extents.height + extents.descent) ),
+					height,
+					VIEW_WIDTH_FROM_FONT(extents.max_x_advance)
+			);
+
+		} while( (VIEW_HEIGTH_FROM_FONT( (extents.height+extents.descent) ) < height) && (VIEW_WIDTH_FROM_FONT(extents.max_x_advance) < width) );
+
+		debug("Selected size=%lf",selected);
+
+		cairo_set_font_size(cr,selected);
+		cairo_font_extents(cr,&extents);
+
+
+		/*
 
 		cairo_set_font_size(cr,s);
 		cairo_font_extents(cr,&extents);
@@ -99,15 +127,25 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 			s += 0.5;
 			cairo_set_font_size(cr,s);
 			cairo_font_extents(cr,&extents);
+
+			debug("font_size=%lf x_advance=%lf y_advance=%lf font_extents=%u+%u font_height=%u view_height=%u view_width=%u",
+					s,
+					extents.max_x_advance,
+					extents.max_y_advance,
+					(unsigned int) extents.height, (unsigned int) extents.descent,
+					VIEW_HEIGTH_FROM_FONT( (unsigned int) (extents.height + extents.descent) ),
+					height,
+					VIEW_WIDTH_FROM_FONT(extents.max_x_advance)
+			);
+
 		}
 
 		s -= 0.5;
+		*/
 
-		cairo_set_font_size(cr,s < 1.0 ? 1.0 : s);
-		cairo_font_extents(cr,&extents);
 
 	}
-	else */
+	else
 	{
 		static const unsigned int font_size[] = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 32, 36, 40, 48, 56, 64, 72 };
 		size_t f;
