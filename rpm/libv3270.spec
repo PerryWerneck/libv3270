@@ -23,11 +23,6 @@
 
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
-#Compat macro for new _fillupdir macro introduced in Nov 2017
-%if ! %{defined _fillupdir}
-  %define _fillupdir /var/adm/fillup-templates
-%endif
-
 #---[ Macros ]--------------------------------------------------------------------------------------------------------
 
 %if ! %{defined _release}
@@ -90,7 +85,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 %package -n libv3270-devel
 
 Summary:	3270 Virtual Terminal for GTK development files
-Group:		Development/Libraries/C and C++
+Group:		System/Libraries
 
 Requires:	%{name} = %{version}
 Requires:	lib3270-devel
@@ -144,7 +139,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS LICENSE README.md
+%if 0%{?sle_version} > 120200
+%doc AUTHORS README.md
+%license LICENSE
+%else
+%doc AUTHORS README.md LICENSE
+%endif
 
 %{_libdir}/libv3270.so.%{MAJOR_VERSION}
 %{_libdir}/libv3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
