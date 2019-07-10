@@ -1,0 +1,99 @@
+{
+   libcrypt_FIPS_selftest
+   Memcheck:Cond
+   ...
+   fun:FIPS_selftest
+}
+
+{
+   libcrypt_FIPS_mode_set
+   Memcheck:Cond
+   ...
+   fun:FIPS_mode_set
+}
+
+{
+   libcrypt_BIO_new_mem_buf
+   Memcheck:Cond
+   ...
+   fun:BIO_new_mem_buf
+}
+
+
+{
+   g_type_register_fundamental
+   Memcheck:Leak
+   ...
+   fun:g_type_register_fundamental
+}
+
+{
+   glib_dl_init
+   Memcheck:Leak
+   ...
+   fun:_dl_init
+}
+
+{
+   pango_itemize_with_base_dir
+   Memcheck:Leak
+   ...
+   fun:pango_itemize_with_base_dir
+}
+
+{
+   fontconfig_FcDefaultSubstitute
+   Memcheck:Leak
+   ...
+   fun:FcDefaultSubstitute
+}
+
+{
+   fontconfig_FcConfigParseAndLoad
+   Memcheck:Leak
+   ...
+   fun:FcConfigParseAndLoad
+}
+
+{
+   fontconfig_FcFontMatch
+   Memcheck:Leak
+   ...
+   fun:FcFontMatch
+}
+
+{
+   g_type_register_static
+   Memcheck:Leak
+   ...
+   fun:g_type_register_static
+}
+
+{
+   g_thread_pool_push
+   Memcheck:Leak
+   ...
+   fun:g_task_run_in_thread
+}
+
+{
+   g_bus_get_sync
+   Memcheck:Leak
+   ...
+   fun:g_bus_get_sync
+}
+
+{
+   g_type_add_interface_static
+   Memcheck:Leak
+   ...
+   fun:g_type_add_interface_static
+}
+
+{
+   g_type_create_instance
+   Memcheck:Leak
+   ...
+   fun:g_type_create_instance
+}
+
