@@ -78,6 +78,7 @@
 	guint					  top;
 
 	gchar 					* family;
+	cairo_font_face_t 		* face;
 	cairo_font_weight_t		  weight;
 	cairo_scaled_font_t		* scaled;
 

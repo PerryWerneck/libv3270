@@ -110,6 +110,8 @@
  	if(widget->hSession == hSession)
 		return;
 
+	debug("%s: Session changes %p -> %p", __FUNCTION__, widget->hSession, hSession);
+
 	if(widget->hSession) {
 		lib3270_set_trace_handler(widget->hSession,widget->trace.handler,widget->trace.userdata);
 	}

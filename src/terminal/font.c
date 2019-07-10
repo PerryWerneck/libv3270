@@ -79,7 +79,15 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 
 	terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
 
-	cairo_select_font_face(cr,terminal->font.family, CAIRO_FONT_SLANT_NORMAL,terminal->font.weight);
+	if(terminal->font.face)
+	{
+		cairo_font_face_destroy(terminal->font.face);
+	}
+
+	terminal->font.face = cairo_toy_font_face_create(terminal->font.family, CAIRO_FONT_SLANT_NORMAL, terminal->font.weight);
+	cairo_set_font_face(cr,terminal->font.face);
+
+	// cairo_select_font_face(cr,terminal->font.family, CAIRO_FONT_SLANT_NORMAL,terminal->font.weight);
 
 	if(terminal->font.scaled)
 	{

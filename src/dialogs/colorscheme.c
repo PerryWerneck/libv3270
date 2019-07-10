@@ -126,8 +126,8 @@
 
  static void load_color_scheme(GKeyFile *conf, const gchar *group, GdkRGBA *clr)
  {
-	const gchar	* val;
-	size_t	  	  f;
+	gchar	* val;
+	size_t 	  f;
 
 	// Load base colors
 	val = g_key_file_get_string(conf,group,"base",NULL);
@@ -165,7 +165,7 @@
 
 		}
 		g_strfreev(str);
-
+		g_free(val);
 	}
 	else
 	{
@@ -194,6 +194,7 @@
 			gdk_rgba_parse(clr+V3270_COLOR_FIELD+f,str[f]);
 
 		g_strfreev(str);
+		g_free(val);
 	}
 
 	// Load selection colors
@@ -208,6 +209,7 @@
 			gdk_rgba_parse(clr+V3270_COLOR_SELECTED_BG+f,str[f]);
 
 		g_strfreev(str);
+		g_free(val);
 	}
 
 	// Load OIA colors
@@ -243,6 +245,7 @@
 		}
 
 		g_strfreev(str);
+		g_free(val);
 	}
 
 	// Setup extended elements
@@ -250,7 +253,10 @@
 
 	val = g_key_file_get_string(conf,group,"cross-hair",NULL);
 	if(val)
+	{
 		gdk_rgba_parse(clr+V3270_COLOR_CROSS_HAIR,val);
+		g_free(val);
+	}
 
  }
 
@@ -297,7 +303,7 @@
 		{
 			// Setup colors for current entry
 			GdkRGBA		* clr	= GTK_V3270_COLOR_SCHEME(widget)->schemes+index;
-			const gchar	* label	= g_key_file_get_locale_string(conf,group[g],"label",NULL,NULL);
+			gchar		* label	= g_key_file_get_locale_string(conf,group[g],"label",NULL,NULL);
 
 			load_color_scheme(conf,group[g],clr);
 
@@ -307,6 +313,8 @@
 												0, label ? label : group[g],
 												1, clr,
 												-1);
+
+			g_free(label);
 
 			// move to next color list
 			index += V3270_COLOR_COUNT;

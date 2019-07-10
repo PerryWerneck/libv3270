@@ -232,6 +232,16 @@ static void v3270_toggle_changed(G_GNUC_UNUSED v3270 *widget, G_GNUC_UNUSED LIB3
 static void finalize(GObject *object)
  {
 	debug("V3270::%s",__FUNCTION__);
+
+	v3270 * terminal = GTK_V3270(object);
+
+	if(terminal->host)
+	{
+		// Release session
+		lib3270_session_free(terminal->host);
+		terminal->host = NULL;
+	}
+
 	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);
  }
 
@@ -579,10 +589,6 @@ static void v3270_destroy(GtkWidget *widget)
 		// Cleanup
 		lib3270_reset_callbacks(terminal->host);
 		lib3270_set_user_data(terminal->host,NULL);
-
-		// Release session
-		lib3270_session_free(terminal->host);
-		terminal->host = NULL;
 	}
 
 	if(terminal->accessible)
@@ -602,6 +608,11 @@ static void v3270_destroy(GtkWidget *widget)
 	{
 		cairo_scaled_font_destroy(terminal->font.scaled);
 		terminal->font.scaled = NULL;
+	}
+
+	if(terminal->font.face) {
+		cairo_font_face_destroy(terminal->font.face);
+		terminal->font.face = NULL;
 	}
 
 	if(terminal->surface)
