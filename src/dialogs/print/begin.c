@@ -93,5 +93,7 @@
 
 	gtk_print_operation_set_n_pages(prt,operation->pages);
 
+	pango_font_description_free(fontDescription);
+
  }
 
