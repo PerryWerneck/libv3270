@@ -34,6 +34,7 @@
  #endif // _WIN32
 
  #include "private.h"
+ #include <internals.h>
 
  #include <gtk/gtk.h>
  #include <libintl.h>

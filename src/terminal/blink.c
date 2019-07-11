@@ -29,6 +29,7 @@
 
  #include <config.h>
  #include "private.h"
+ #include <internals.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 

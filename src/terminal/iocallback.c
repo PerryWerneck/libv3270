@@ -30,6 +30,7 @@
 #include <config.h>
 #include <lib3270.h>
 #include <lib3270/log.h>
+#include <internals.h>
 #include "private.h"
 
 static void				* static_AddSource(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*proc)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);

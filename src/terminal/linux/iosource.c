@@ -31,6 +31,7 @@
  #include <lib3270.h>
  #include <lib3270/log.h>
  #include <poll.h>
+ #include <internals.h>
  #include "../private.h"
 
 /*---[ Structs ]-------------------------------------------------------------------------------------------*/

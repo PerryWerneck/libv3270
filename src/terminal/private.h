@@ -182,43 +182,7 @@ G_BEGIN_DECLS
 		GSource				* timer;						/**< @brief Timer source. */
 	} blink;
 
-	/*
-	// Scripting
-	struct
-	{
-		int					  blink : 1;
-		gchar				  id;						///< Script indicator
-		GSource				* timer;
-	} script;
-	*/
-
  };
-
-/*--[ Properties ]-----------------------------------------------------------------------------------*/
-
- /*
- enum
- {
-	PROP_0,
-
-	// Construct
-	PROP_TYPE,
-
-	// Widget properties
-	PROP_ONLINE,
-	PROP_SELECTION,
-	PROP_MODEL,
-	PROP_LUNAME,
-	PROP_AUTO_DISCONNECT,
-	PROP_URL,
-	PROP_SESSION_NAME,
-
-	// Toggles - always the last one, the real values are PROP_TOGGLE+LIB3270_TOGGLE
-	PROP_TOGGLE
- };
-
- #define PROP_LAST (PROP_TOGGLE+LIB3270_TOGGLE_COUNT)
- */
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
@@ -260,6 +224,7 @@ G_BEGIN_DECLS
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
+/*
 const GtkWidgetClass		* v3270_get_parent_class(void);
 
 G_GNUC_INTERNAL gboolean	  v3270_draw(GtkWidget * widget, cairo_t * cr);
@@ -346,5 +311,6 @@ G_GNUC_INTERNAL gboolean		v3270_scroll_event(GtkWidget *widget, GdkEventScroll *
 // I/O Callbacks
 G_GNUC_INTERNAL GSource			* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
 G_GNUC_INTERNAL void			  IO_source_set_state(GSource *source, gboolean enable);
+*/
 
 G_END_DECLS

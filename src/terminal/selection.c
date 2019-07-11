@@ -31,6 +31,7 @@
  #include <lib3270.h>
  #include <v3270.h>
  #include "private.h"
+ #include <internals.h>
  #include <lib3270/selection.h>
  #include <lib3270/log.h>
  #include <lib3270/actions.h>
