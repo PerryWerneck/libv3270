@@ -101,7 +101,6 @@ G_BEGIN_DECLS
 	int selecting		: 1;	/**< Selecting region */
 	int moving			: 1;	/**< Moving selected region */
 	int resizing		: 1;	/**< Resizing selected region */
-	int table			: 1;	/**< Copy mode is table */
 	int scaled_fonts	: 1;	/**< Use scaled fonts */
 	int drawing			: 1;	/**< Draw widget? */
 
@@ -118,8 +117,9 @@ G_BEGIN_DECLS
 
 	struct
 	{
-	    char                * text;                 	/**< Clipboard contents (lib3270 charset) */
-        int                   baddr;	        		/**< Selection addr */
+		V3270_SELECT_FORMAT	  format;		/**< Copy format */
+	    char                * text;        	/**< Clipboard contents (lib3270 charset) */
+        int                   baddr;		/**< Selection addr */
 	} selection;
 
 	LIB3270_POINTER 		  pointer_id;

@@ -42,6 +42,18 @@
 			<Add option="-fPIC" />
 		</Linker>
 		<Unit filename="configure.ac" />
+		<Unit filename="src/clipboard/linux/paste.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/clipboard/selection.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/clipboard/text.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/clipboard/windows/paste.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/colors.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -130,6 +142,7 @@
 		<Unit filename="src/filetransfer/worker.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/include/clipboard.h" />
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/hostselect.h" />
@@ -163,6 +176,9 @@
 		<Unit filename="src/terminal/font.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/get.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/iocallback.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -183,9 +199,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/security.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/terminal/selection.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/widget.c">
