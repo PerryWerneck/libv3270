@@ -29,8 +29,7 @@
 
 #include <config.h>
 
-#define ENABLE_NLS
-#define GETTEXT_PACKAGE PACKAGE_NAME
+#include <internals.h>
 
 #include <libintl.h>
 #include <glib/gi18n.h>
@@ -44,7 +43,15 @@ G_BEGIN_DECLS
  {
 	GtkWidgetClass parent_class;
 
-	/* Signals */
+    // Internal properties.
+    struct {
+		size_t		  count;							// Number of properties.
+
+		GParamSpec * font_family;
+
+    } properties;
+
+	// Signals
 	void 		(*activate)(GtkWidget *widget);
 	void 		(*toggle_changed)(v3270 *widget,LIB3270_TOGGLE toggle_id,gboolean toggle_state,const gchar *toggle_name);
 	void 		(*message_changed)(v3270 *widget, LIB3270_MESSAGE id);
@@ -61,31 +68,6 @@ G_BEGIN_DECLS
  #ifndef WIN32
   #define KEY_FLAG_ALT	0x0002
  #endif // !WIN32
-
- enum
- {
- 	SIGNAL_TOGGLE_CHANGED,
- 	SIGNAL_MESSAGE_CHANGED,
- 	SIGNAL_KEYPRESS,
- 	SIGNAL_CONNECTED,
- 	SIGNAL_DISCONNECTED,
- 	SIGNAL_UPDATE_CONFIG,
- 	SIGNAL_MODEL_CHANGED,
- 	SIGNAL_SELECTING,
- 	SIGNAL_POPUP,
- 	SIGNAL_PASTENEXT,
- 	SIGNAL_CLIPBOARD,
- 	SIGNAL_CHANGED,
- 	SIGNAL_MESSAGE,
- 	SIGNAL_FIELD,
- 	SIGNAL_PRINT_SETUP,
- 	SIGNAL_PRINT_APPLY,
- 	SIGNAL_PRINT_DONE,
- 	SIGNAL_SESSION_CHANGED,
-
- 	V3270_LAST_SIGNAL
- };
-
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
@@ -186,20 +168,10 @@ G_BEGIN_DECLS
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
- G_GNUC_INTERNAL guint			  v3270_widget_signal[V3270_LAST_SIGNAL];
  G_GNUC_INTERNAL GdkCursor		* v3270_cursor[LIB3270_POINTER_COUNT];
- G_GNUC_INTERNAL const gchar	* v3270_default_colors;
- G_GNUC_INTERNAL const gchar	* v3270_default_font;
- G_GNUC_INTERNAL void			  v3270_start_blinking(GtkWidget *widget);
-
- G_GNUC_INTERNAL void			  v3270_oia_update_text_field(v3270 *terminal, gboolean flag, V3270_OIA_FIELD id, const gchar chr);
- G_GNUC_INTERNAL cairo_t		* v3270_oia_set_update_region(v3270 * terminal, GdkRectangle **r, V3270_OIA_FIELD id);
-
- G_GNUC_INTERNAL void			  v3270_install_callbacks(v3270 *widget);
 
  G_GNUC_INTERNAL struct _v3270_properties
  {
-    size_t		  count;							// Number of properties.
     GParamSpec	* toggle[LIB3270_TOGGLE_COUNT];		// Toggle properties.
 
     struct
@@ -210,8 +182,10 @@ G_BEGIN_DECLS
     	guint str;
     } type;
 
+    /*
     // V3270 Internal properties.
     GParamSpec * font_family;
+    */
 
     // Properties who launch signals.
     GParamSpec * online;
@@ -220,97 +194,5 @@ G_BEGIN_DECLS
     GParamSpec * selection;
 
  } v3270_properties;
-
-
-/*--[ Prototipes ]-----------------------------------------------------------------------------------*/
-
-/*
-const GtkWidgetClass		* v3270_get_parent_class(void);
-
-G_GNUC_INTERNAL gboolean	  v3270_draw(GtkWidget * widget, cairo_t * cr);
-G_GNUC_INTERNAL void		  v3270_cursor_draw(v3270 *widget);
-
-G_GNUC_INTERNAL void		  v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols);
-G_GNUC_INTERNAL void		  v3270_update_mouse_pointer(GtkWidget *widget);
-
-G_GNUC_INTERNAL AtkObject	* v3270_get_accessible(GtkWidget * widget);
-
-#if ! GTK_CHECK_VERSION(2,18,0)
-	G_GNUC_INTERNAL void gtk_widget_get_allocation(GtkWidget *widget,GtkAllocation *allocation);
-#endif // !GTK(2,18)
-
-#if ! GTK_CHECK_VERSION(2,20,0)
-	#define gtk_widget_get_realized(w)		GTK_WIDGET_REALIZED(w)
-	#define gtk_widget_set_realized(w,r)	if(r) { GTK_WIDGET_SET_FLAGS(w,GTK_REALIZED); } else { GTK_WIDGET_UNSET_FLAGS(w,GTK_REALIZED); }
-#endif // !GTK(2,20)
-
-#if ! GTK_CHECK_VERSION(2,22,0)
-	#define gtk_accessible_set_widget(a,w)	g_object_set_data(G_OBJECT(a),"widget",w)
-	#define gtk_accessible_get_widget(a)	GTK_WIDGET(g_object_get_data(G_OBJECT(a),"widget"))
-
-	G_GNUC_INTERNAL cairo_surface_t * gdk_window_create_similar_surface(GdkWindow *window, cairo_content_t content, int width, int height);
-
-#endif // !GTK(2,22)
-
-
-#if ! GTK_CHECK_VERSION(3,0,0)
-gboolean	  v3270_expose(GtkWidget * widget, GdkEventExpose *event);
-#endif // GTK 3
-
-G_GNUC_INTERNAL void		  v3270_draw_shift_status(v3270 *terminal);
-G_GNUC_INTERNAL void		  v3270_draw_alt_status(v3270 *terminal);
-G_GNUC_INTERNAL void		  v3270_draw_ins_status(v3270 *terminal);
-
-G_GNUC_INTERNAL void		  v3270_clear_clipboard(v3270 *terminal);
-
-G_GNUC_INTERNAL void		  v3270_update_cursor_surface(v3270 *widget,unsigned char chr,unsigned short attr);
-
-G_GNUC_INTERNAL void		  v3270_register_io_handlers(v3270Class *cls);
-
-G_GNUC_INTERNAL void 		  v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *font, GdkRectangle *rect, GdkRGBA *fg, GdkRGBA *bg);
-G_GNUC_INTERNAL void		  v3270_draw_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo *font, const char *str);
-G_GNUC_INTERNAL void		  v3270_draw_text_at(cairo_t *cr, int x, int y, v3270FontInfo *font, const char *str);
-
-G_GNUC_INTERNAL void		  v3270_start_timer(GtkWidget *terminal);
-G_GNUC_INTERNAL void		  v3270_stop_timer(GtkWidget *terminal);
-
-G_GNUC_INTERNAL void		  v3270_draw_connection(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, const GdkRectangle *rect);
-
-G_GNUC_INTERNAL void		  v3270_draw_ssl_status(v3270 *widget, cairo_t *cr, GdkRectangle *rect);
-
-G_GNUC_INTERNAL void		  v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor);
-
-G_GNUC_INTERNAL void		  v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width, unsigned int height);
-
-G_GNUC_INTERNAL void		  v3270_update_cursor_rect(v3270 *widget, GdkRectangle *rect, unsigned char chr, unsigned short attr);
-
-G_GNUC_INTERNAL void		  v3270_update_message(v3270 *widget, LIB3270_MESSAGE id);
-G_GNUC_INTERNAL void		  v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col, unsigned char c, unsigned short attr);
-G_GNUC_INTERNAL void		    v3270_update_oia(v3270 *terminal, LIB3270_FLAG id, unsigned char on);
-
-G_GNUC_INTERNAL void			v3270_blink_ssl(v3270 *terminal);
-
-G_GNUC_INTERNAL void			v3270_update_luname(GtkWidget *widget,const gchar *name);
-G_GNUC_INTERNAL void			v3270_init_properties(GObjectClass * gobject_class);
-G_GNUC_INTERNAL	void			v3270_queue_draw_area(GtkWidget *widget, gint x, gint y, gint width, gint height);
-
-G_GNUC_INTERNAL void			v3270_disable_updates(GtkWidget *widget);
-G_GNUC_INTERNAL void			v3270_enable_updates(GtkWidget *widget);
-
-// Keyboard & Mouse
-G_GNUC_INTERNAL gboolean		v3270_key_press_event(GtkWidget *widget, GdkEventKey *event);
-G_GNUC_INTERNAL gboolean		v3270_key_release_event(GtkWidget *widget, GdkEventKey *event);
-G_GNUC_INTERNAL void			v3270_key_commit(GtkIMContext *imcontext, gchar *str, v3270 *widget);
-G_GNUC_INTERNAL gboolean		v3270_button_press_event(GtkWidget *widget, GdkEventButton *event);
-G_GNUC_INTERNAL gboolean		v3270_button_release_event(GtkWidget *widget, GdkEventButton*event);
-G_GNUC_INTERNAL gboolean		v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event);
-G_GNUC_INTERNAL void			v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event);
-G_GNUC_INTERNAL gint			v3270_get_offset_at_point(v3270 *widget, gint x, gint y);
-G_GNUC_INTERNAL gboolean		v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event);
-
-// I/O Callbacks
-G_GNUC_INTERNAL GSource			* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
-G_GNUC_INTERNAL void			  IO_source_set_state(GSource *source, gboolean enable);
-*/
 
 G_END_DECLS

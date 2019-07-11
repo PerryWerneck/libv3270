@@ -134,7 +134,7 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value
 	}
 
 	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.toggle[ix]);
-	g_signal_emit(widget, v3270_widget_signal[SIGNAL_TOGGLE_CHANGED], 0, (guint) ix, (gboolean) (value != 0), (gchar *) name);
+	g_signal_emit(widget, v3270_widget_signal[V3270_SIGNAL_TOGGLE_CHANGED], 0, (guint) ix, (gboolean) (value != 0), (gchar *) name);
 
 }
 
@@ -145,7 +145,7 @@ static gboolean bg_update_message(H3270 *session)
 
 	g_signal_emit(
 		GTK_WIDGET(widget),
-		v3270_widget_signal[SIGNAL_MESSAGE_CHANGED],
+		v3270_widget_signal[V3270_SIGNAL_MESSAGE_CHANGED],
 		0,
 		(gint) lib3270_get_program_message(session)
 	);
@@ -218,12 +218,12 @@ static void update_connect(H3270 *session, unsigned char connected)
 	if(connected)
 	{
 		widget->cursor.show |= 2;
-		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_CONNECTED], 0, lib3270_get_host(session));
+		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_CONNECTED], 0, lib3270_get_host(session));
 	}
 	else
 	{
 		widget->cursor.show &= ~2;
-		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_DISCONNECTED], 0);
+		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_DISCONNECTED], 0);
 	}
 
 	if(v3270_properties.online)
@@ -245,7 +245,7 @@ static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNU
 	if(v3270_properties.model)
 		g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), v3270_properties.model);
 
-	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)),v3270_widget_signal[SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
+	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)),v3270_widget_signal[V3270_SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
 }
 
 static void changed(H3270 *session, int offset, int len)
@@ -292,7 +292,7 @@ static void changed(H3270 *session, int offset, int len)
 	gtk_widget_queue_draw(widget);
 #endif // WIN32
 
-	g_signal_emit(GTK_WIDGET(widget),v3270_widget_signal[SIGNAL_CHANGED], 0, (guint) offset, (guint) len);
+	g_signal_emit(GTK_WIDGET(widget),v3270_widget_signal[V3270_SIGNAL_CHANGED], 0, (guint) offset, (guint) len);
 }
 
 static void set_selection(H3270 *session, unsigned char status)
@@ -302,7 +302,7 @@ static void set_selection(H3270 *session, unsigned char status)
 	if(v3270_properties.selection)
 		g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.selection);
 
-	g_signal_emit(widget,v3270_widget_signal[SIGNAL_SELECTING], 0, status ? TRUE : FALSE);
+	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_SELECTING], 0, status ? TRUE : FALSE);
 
 }
 
@@ -319,7 +319,7 @@ static void update_selection(H3270 *session, G_GNUC_UNUSED int start, G_GNUC_UNU
 
 static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text)
 {
-	g_signal_emit(	GTK_WIDGET(lib3270_get_user_data(session)), v3270_widget_signal[SIGNAL_MESSAGE], 0,
+	g_signal_emit(	GTK_WIDGET(lib3270_get_user_data(session)), v3270_widget_signal[V3270_SIGNAL_MESSAGE], 0,
 							(int) id,
 							(gchar *) title,
 							(gchar *) message,

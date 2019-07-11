@@ -138,7 +138,7 @@
 		state &= ~GDK_CONTROL_MASK;
 #endif
 
-	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_KEYPRESS], 0, event->keyval, state, &handled);
+	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_KEYPRESS], 0, event->keyval, state, &handled);
 	debug("Keyboard action was %s",handled ? "Handled" : "Not handled");
 	if(handled)
 		return TRUE;

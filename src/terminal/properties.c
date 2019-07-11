@@ -191,6 +191,7 @@
  {
  	size_t		  ix;
  	GParamSpec	* spec;
+ 	v3270Class	* klass = GTK_V3270_CLASS(gobject_class);
 
  	debug("%s",__FUNCTION__);
 
@@ -198,21 +199,21 @@
 	gobject_class->set_property = v3270_set_property;
 	gobject_class->get_property = v3270_get_property;
 
-	v3270_properties.count = PROP_BEGIN;
+	klass->properties.count = PROP_BEGIN;
 
 	// Setup internal properties.
-	v3270_properties.font_family = g_param_spec_string(
-										"font_family",
-										"font_family",
-										_("Font family for terminal contents"),
-										FALSE,
-										G_PARAM_READABLE|G_PARAM_WRITABLE
-									);
+	klass->properties.font_family = g_param_spec_string(
+							"font_family",
+							"font_family",
+							_("Font family for terminal contents"),
+							FALSE,
+							G_PARAM_READABLE|G_PARAM_WRITABLE
+						);
 
 	g_object_class_install_property(
 		gobject_class,
-		v3270_properties.count++,
-		v3270_properties.font_family
+		klass->properties.count++,
+		klass->properties.font_family
 	);
 
 	//
@@ -220,7 +221,7 @@
 	//
 
 	// Extract toggle class.
-	v3270_properties.type.toggle = v3270_properties.count;
+	v3270_properties.type.toggle = klass->properties.count;
 	for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)
 	{
 		debug("Property %u=%s (Toggle)",(unsigned int) v3270_properties.type.toggle + ix, lib3270_get_toggle_name(ix));
@@ -234,12 +235,12 @@
 					G_PARAM_WRITABLE|G_PARAM_READABLE
 		);
 
-		v3270_install_property(gobject_class, v3270_properties.count++, v3270_properties.toggle[ix]);
+		v3270_install_property(gobject_class, klass->properties.count++, v3270_properties.toggle[ix]);
 
 	}
 
 	// Creating boolean properties.
-	v3270_properties.type.boolean = v3270_properties.count;
+	v3270_properties.type.boolean = klass->properties.count;
 	const LIB3270_INT_PROPERTY * bool_props = lib3270_get_boolean_properties_list();
 
 	for(ix = 0; bool_props[ix].name; ix++)
@@ -253,13 +254,13 @@
 					(bool_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 		);
 
-		v3270_install_property(gobject_class, v3270_properties.count++, spec);
+		v3270_install_property(gobject_class, klass->properties.count++, spec);
 
 	}
 
 	// Creating integer properties.
 	const LIB3270_INT_PROPERTY * int_props = lib3270_get_int_properties_list();
-	v3270_properties.type.integer = v3270_properties.count;
+	v3270_properties.type.integer = klass->properties.count;
 
 	for(ix = 0; int_props[ix].name; ix++)
 	{
@@ -274,19 +275,19 @@
 			0,			// Default
 			(int_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 		);
-	debug("Creating %u properties", (unsigned int) v3270_properties.count);
+	debug("Creating %u properties", (unsigned int) klass->properties.count);
 
 
 
 
 
-		v3270_install_property(gobject_class, v3270_properties.count++, spec);
+		v3270_install_property(gobject_class, klass->properties.count++, spec);
 
 	}
 
 	// Creating string properties.
 	const LIB3270_STRING_PROPERTY * str_props = lib3270_get_string_properties_list();
-	v3270_properties.type.str = v3270_properties.count;
+	v3270_properties.type.str = klass->properties.count;
 
 	for(ix = 0; str_props[ix].name; ix++)
 	{
@@ -301,7 +302,7 @@
 					(str_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 		);
 
-		v3270_install_property(gobject_class, v3270_properties.count++, spec);
+		v3270_install_property(gobject_class, klass->properties.count++, spec);
 
 	}
 

@@ -125,7 +125,7 @@ void v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event)
 
 	lib3270_get_contents(widget->host,baddr,baddr,&chr,&attr);
 
-	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[SIGNAL_POPUP], 0,
+	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_POPUP], 0,
 									(attr & LIB3270_ATTR_SELECTED) ? TRUE : FALSE,
 									lib3270_connected(widget->host) ? TRUE : FALSE,
 									event,
@@ -195,7 +195,7 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 		{
 			gboolean handled = FALSE;
 
-			g_signal_emit(widget,	v3270_widget_signal[SIGNAL_FIELD], 0,
+			g_signal_emit(widget,	v3270_widget_signal[V3270_SIGNAL_FIELD], 0,
 									lib3270_connected(GTK_V3270(widget)->host) ? TRUE : FALSE,
 									GTK_V3270(widget)->oia.selected,
 									event,

@@ -44,7 +44,7 @@
 	debug("%s",__FUNCTION__);
 
 	if(operation->widget)
-		g_signal_emit(GTK_WIDGET(operation->widget), v3270_widget_signal[SIGNAL_PRINT_DONE], 0, prt, (guint) result);
+		g_signal_emit(GTK_WIDGET(operation->widget), v3270_widget_signal[V3270_SIGNAL_PRINT_DONE], 0, prt, (guint) result);
 
  }
 
@@ -93,7 +93,7 @@
  	V3270PrintOperation	* operation = GTK_V3270_PRINT_OPERATION(prt);
 
 	if(operation->widget)
-		g_signal_emit(operation->widget, v3270_widget_signal[SIGNAL_PRINT_SETUP], 0, prt);
+		g_signal_emit(operation->widget, v3270_widget_signal[V3270_SIGNAL_PRINT_SETUP], 0, prt);
 
 	// Create dialog
 
@@ -151,7 +151,7 @@
 	debug("%s",__FUNCTION__);
 
 	if(operation->widget)
-		g_signal_emit(operation->widget, v3270_widget_signal[SIGNAL_PRINT_APPLY], 0, prt);
+		g_signal_emit(operation->widget, v3270_widget_signal[V3270_SIGNAL_PRINT_APPLY], 0, prt);
 
  }
 

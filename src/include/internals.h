@@ -32,6 +32,10 @@
  #define V3270_INTERNALS_H_INCLUDED 1
 
  #include <config.h>
+
+ #define ENABLE_NLS
+ #define GETTEXT_PACKAGE PACKAGE_NAME
+
  #include <glib.h>
  #include <gtk/gtk.h>
  #include <lib3270.h>
@@ -47,6 +51,42 @@
  #endif // ! GLIB(2,44,0)
 
  G_BEGIN_DECLS
+
+/*--[ Signals ]--------------------------------------------------------------------------------------*/
+
+ /// @brief V3270 Signal list
+ enum
+ {
+ 	V3270_SIGNAL_TOGGLE_CHANGED,
+ 	V3270_SIGNAL_MESSAGE_CHANGED,
+ 	V3270_SIGNAL_KEYPRESS,
+ 	V3270_SIGNAL_CONNECTED,
+ 	V3270_SIGNAL_DISCONNECTED,
+ 	V3270_SIGNAL_UPDATE_CONFIG,
+ 	V3270_SIGNAL_MODEL_CHANGED,
+ 	V3270_SIGNAL_SELECTING,
+ 	V3270_SIGNAL_POPUP,
+ 	V3270_SIGNAL_PASTENEXT,
+ 	V3270_SIGNAL_CLIPBOARD,
+ 	V3270_SIGNAL_CHANGED,
+ 	V3270_SIGNAL_MESSAGE,
+ 	V3270_SIGNAL_FIELD,
+ 	V3270_SIGNAL_PRINT_SETUP,
+ 	V3270_SIGNAL_PRINT_APPLY,
+ 	V3270_SIGNAL_PRINT_DONE,
+ 	V3270_SIGNAL_SESSION_CHANGED,
+
+ 	V3270_SIGNAL_LAST
+ };
+
+ G_GNUC_INTERNAL guint v3270_widget_signal[V3270_SIGNAL_LAST];
+
+/*--[ Constants ]------------------------------------------------------------------------------------*/
+
+ G_GNUC_INTERNAL const gchar	* v3270_default_colors;
+ G_GNUC_INTERNAL const gchar	* v3270_default_font;
+
+/*--[ Internal methods ]-----------------------------------------------------------------------------*/
 
  G_GNUC_INTERNAL void			  v3270_drag_dest_set(GtkWidget *widget, GCallback callback);
 
@@ -159,6 +199,11 @@
 
  G_GNUC_INTERNAL void		  v3270_disable_updates(GtkWidget *widget);
  G_GNUC_INTERNAL void		  v3270_enable_updates(GtkWidget *widget);
+
+ G_GNUC_INTERNAL void		  v3270_start_blinking(GtkWidget *widget);
+ G_GNUC_INTERNAL void		  v3270_oia_update_text_field(v3270 *terminal, gboolean flag, V3270_OIA_FIELD id, const gchar chr);
+ G_GNUC_INTERNAL cairo_t	* v3270_oia_set_update_region(v3270 * terminal, GdkRectangle **r, V3270_OIA_FIELD id);
+ G_GNUC_INTERNAL void		  v3270_install_callbacks(v3270 *widget);
 
  // Keyboard & Mouse
  G_GNUC_INTERNAL gboolean	  v3270_key_press_event(GtkWidget *widget, GdkEventKey *event);

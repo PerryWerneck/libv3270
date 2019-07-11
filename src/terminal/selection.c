@@ -133,7 +133,7 @@ static const char * update_selected_text(GtkWidget *widget, gboolean cut)
 
 	if(!text)
 	{
-		g_signal_emit(widget,v3270_widget_signal[SIGNAL_CLIPBOARD], 0, FALSE);
+		g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, FALSE);
 		lib3270_ring_bell(terminal->host);
 		return NULL;
 	}
@@ -267,7 +267,7 @@ LIB3270_EXPORT void v3270_set_copy(GtkWidget *widget, const gchar *text)
     if(!text)
     {
         /* No string, signal clipboard clear and return */
-        g_signal_emit(widget,v3270_widget_signal[SIGNAL_CLIPBOARD], 0, FALSE);
+        g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, FALSE);
         return;
     }
 
@@ -278,7 +278,7 @@ LIB3270_EXPORT void v3270_set_copy(GtkWidget *widget, const gchar *text)
     if(!isotext)
     {
         /* No string, signal clipboard clear and return */
-        g_signal_emit(widget,v3270_widget_signal[SIGNAL_CLIPBOARD], 0, FALSE);
+        g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, FALSE);
         return;
     }
 
@@ -286,7 +286,7 @@ LIB3270_EXPORT void v3270_set_copy(GtkWidget *widget, const gchar *text)
 
     g_free(isotext);
 
-    g_signal_emit(widget,v3270_widget_signal[SIGNAL_CLIPBOARD], 0, TRUE);
+    g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, TRUE);
 }
 
 static void update_system_clipboard(GtkWidget *widget)
@@ -306,7 +306,7 @@ static void update_system_clipboard(GtkWidget *widget)
 			gtk_clipboard_set_can_store(clipboard,targets,1);
 		}
 
-		g_signal_emit(widget,v3270_widget_signal[SIGNAL_CLIPBOARD], 0, TRUE);
+		g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, TRUE);
 	}
 }
 
@@ -506,7 +506,7 @@ LIB3270_EXPORT void v3270_paste_string(GtkWidget *widget, const gchar *text, con
 	}
     else
 	{
-		g_signal_emit(widget,v3270_widget_signal[SIGNAL_PASTENEXT], 0, FALSE);
+		g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_PASTENEXT], 0, FALSE);
 		return;
 	}
 
@@ -514,7 +514,7 @@ LIB3270_EXPORT void v3270_paste_string(GtkWidget *widget, const gchar *text, con
 
 	g_free(buffer);
 
-	g_signal_emit(widget,v3270_widget_signal[SIGNAL_PASTENEXT], 0, next);
+	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_PASTENEXT], 0, next);
 
 }
 
