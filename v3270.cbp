@@ -172,6 +172,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/marshal.h" />
+		<Unit filename="src/terminal/mouse.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/oia.c">
 			<Option compilerVar="CC" />
 		</Unit>

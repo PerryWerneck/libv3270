@@ -222,7 +222,7 @@ static void update_mouse_pointer(GtkWidget *widget, int baddr)
 
 	if(baddr >= 0 && terminal->pointer_id == LIB3270_POINTER_UNLOCKED)
 	{
-		gdk_window_set_cursor(gtk_widget_get_window(widget),v3270_cursor[lib3270_get_pointer(terminal->host,baddr)]);
+		v3270_set_cursor(widget,lib3270_get_pointer(terminal->host,baddr));
 	}
 }
 
@@ -240,7 +240,7 @@ gboolean v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event)
 
 	if(!lib3270_connected(terminal->host))
 	{
-		gdk_window_set_cursor(gtk_widget_get_window(widget),v3270_cursor[LIB3270_POINTER_LOCKED]);
+		v3270_set_cursor(widget,LIB3270_POINTER_LOCKED);
 		return FALSE;
 	}
 
@@ -292,7 +292,7 @@ gboolean v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event)
 			}
 		}
 
-		gdk_window_set_cursor(gtk_widget_get_window(widget),v3270_cursor[id]);
+		v3270_set_cursor(widget,id);
 	}
 
 	return FALSE;

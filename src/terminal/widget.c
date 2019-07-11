@@ -64,7 +64,6 @@
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
  guint		  		  v3270_widget_signal[V3270_SIGNAL_LAST]	= { 0 };
- GdkCursor			* v3270_cursor[LIB3270_POINTER_COUNT]		= { 0 };
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
@@ -337,9 +336,9 @@ static void v3270_class_init(v3270Class *klass)
 		for(f=0;f<LIB3270_POINTER_COUNT;f++)
 		{
 #ifdef WIN32
-			v3270_cursor[f] = gdk_cursor_new_from_name(gdk_display_get_default(),cr[f]);
+			klass->cursors[f] = gdk_cursor_new_from_name(gdk_display_get_default(),cr[f]);
 #else
-			v3270_cursor[f] = gdk_cursor_new_for_display(gdk_display_get_default(),cr[f]);
+			klass->cursors[f] = gdk_cursor_new_for_display(gdk_display_get_default(),cr[f]);
 #endif
 		}
 	}
@@ -1039,5 +1038,13 @@ LIB3270_EXPORT GtkWidget * v3270_get_default_widget(void)
 	}
 
 	return GTK_WIDGET(widget);
+}
+
+void v3270_set_cursor(GtkWidget *widget, LIB3270_POINTER id)
+{
+	gdk_window_set_cursor(
+		gtk_widget_get_window(widget),
+		GTK_V3270_GET_CLASS(widget)->cursors[id % LIB3270_POINTER_COUNT]
+	);
 }
 

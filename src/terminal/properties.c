@@ -51,41 +51,42 @@
 
  static void v3270_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
  {
-	v3270  *window = GTK_V3270(object);
+	v3270 		* window	= GTK_V3270(object);
+ 	v3270Class	* klass		= GTK_V3270_GET_CLASS(object);
 
  	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
 
- 	if(prop_id >= v3270_properties.type.str)
+ 	if(prop_id >= klass->properties.type.str)
 	{
-		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - v3270_properties.type.str));
+		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - klass->properties.type.str));
 		debug("%s.%s.%s=%s",__FUNCTION__,"string",prop->name,g_value_get_string(value));
 
 		if(prop->set)
 			prop->set(window->host,g_value_get_string(value));
 
 	}
-	else if(prop_id >= v3270_properties.type.integer)
+	else if(prop_id >= klass->properties.type.integer)
 	{
-		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - v3270_properties.type.integer));
+		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - klass->properties.type.integer));
 		debug("%s.%s.%s",__FUNCTION__,"integer",prop->name);
 
 		if(prop->set)
 			prop->set(window->host,g_value_get_int(value));
 
 	}
-	else if(prop_id >= v3270_properties.type.boolean)
+	else if(prop_id >= klass->properties.type.boolean)
 	{
-		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - v3270_properties.type.boolean));
+		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - klass->properties.type.boolean));
 		debug("%s.%s.%s",__FUNCTION__,"boolean",prop->name);
 
 		if(prop->set)
 			prop->set(window->host,g_value_get_boolean(value) ? 1 : 0);
 
 	}
- 	else if(prop_id >= v3270_properties.type.toggle)
+ 	else if(prop_id >= klass->properties.type.toggle)
 	{
 		debug("%s.%s",__FUNCTION__,"toggle");
-		lib3270_set_toggle(window->host,prop_id - v3270_properties.type.toggle, (int) g_value_get_boolean (value));
+		lib3270_set_toggle(window->host,prop_id - klass->properties.type.toggle, (int) g_value_get_boolean (value));
 
 	}
 
@@ -104,41 +105,42 @@
 
  static void v3270_get_property(GObject *object,guint prop_id, GValue *value, GParamSpec *pspec)
  {
-	v3270  *window = GTK_V3270(object);
+	v3270		* window	= GTK_V3270(object);
+ 	v3270Class	* klass		= GTK_V3270_GET_CLASS(object);
 
  	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
 
- 	if(prop_id >= v3270_properties.type.str)
+ 	if(prop_id >= klass->properties.type.str)
 	{
-		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - v3270_properties.type.str));
+		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - klass->properties.type.str));
 		debug("%s.%s.%s",__FUNCTION__,"string",prop->name);
 
 		if(prop->get)
 			g_value_set_string(value,prop->get(window->host));
 
 	}
-	else if(prop_id >= v3270_properties.type.integer)
+	else if(prop_id >= klass->properties.type.integer)
 	{
-		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - v3270_properties.type.integer));
+		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - klass->properties.type.integer));
 		debug("%s.%s.%s",__FUNCTION__,"integer",prop->name);
 
 		if(prop->get)
 			g_value_set_int(value,prop->get(window->host));
 
 	}
-	else if(prop_id >= v3270_properties.type.boolean)
+	else if(prop_id >= klass->properties.type.boolean)
 	{
-		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - v3270_properties.type.boolean));
+		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - klass->properties.type.boolean));
 		debug("%s.%s.%s",__FUNCTION__,"boolean",prop->name);
 
 		if(prop->get)
 			g_value_set_boolean(value,prop->get(window->host) != 0 ? TRUE : FALSE);
 
 	}
- 	else if(prop_id >= v3270_properties.type.toggle)
+ 	else if(prop_id >= klass->properties.type.toggle)
 	{
-		debug("%s.%s.%s",__FUNCTION__,"toggle",lib3270_get_toggle_name(prop_id - v3270_properties.type.toggle));
-		g_value_set_boolean(value,lib3270_get_toggle(window->host,prop_id - v3270_properties.type.toggle) ? TRUE : FALSE );
+		debug("%s.%s.%s",__FUNCTION__,"toggle",lib3270_get_toggle_name(prop_id - klass->properties.type.toggle));
+		g_value_set_boolean(value,lib3270_get_toggle(window->host,prop_id - klass->properties.type.toggle) ? TRUE : FALSE );
 
 	}
 
@@ -159,15 +161,17 @@
 
  void v3270_install_property(GObjectClass *oclass, guint property_id, GParamSpec *pspec)
  {
- 	static const struct
+ 	v3270Class * klass = GTK_V3270_CLASS(oclass);
+
+ 	const struct
  	{
  		const char	*name;
  		GParamSpec	**prop;
  	} properties[] = {
- 		{ "connected",		&v3270_properties.online		},
- 		{ "luname",			&v3270_properties.luname		},
- 		{ "model",			&v3270_properties.model			},
- 		{ "has-selection",	&v3270_properties.selection		},
+ 		{ "connected",		&klass->properties.online		},
+ 		{ "luname",			&klass->properties.luname		},
+ 		{ "model",			&klass->properties.model		},
+ 		{ "has-selection",	&klass->properties.selection	},
  	};
 
  	size_t ix;
@@ -195,7 +199,6 @@
 
  	debug("%s",__FUNCTION__);
 
- 	memset(&v3270_properties,0,sizeof(v3270_properties));
 	gobject_class->set_property = v3270_set_property;
 	gobject_class->get_property = v3270_get_property;
 
@@ -221,12 +224,12 @@
 	//
 
 	// Extract toggle class.
-	v3270_properties.type.toggle = klass->properties.count;
+	klass->properties.type.toggle = klass->properties.count;
 	for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)
 	{
-		debug("Property %u=%s (Toggle)",(unsigned int) v3270_properties.type.toggle + ix, lib3270_get_toggle_name(ix));
+		debug("Property %u=%s (Toggle)",(unsigned int) klass->properties.type.toggle + ix, lib3270_get_toggle_name(ix));
 
-		v3270_properties.toggle[ix] =
+		klass->properties.toggle[ix] =
 				g_param_spec_boolean(
 					lib3270_get_toggle_name(ix),
 					lib3270_get_toggle_name(ix),
@@ -235,17 +238,17 @@
 					G_PARAM_WRITABLE|G_PARAM_READABLE
 		);
 
-		v3270_install_property(gobject_class, klass->properties.count++, v3270_properties.toggle[ix]);
+		v3270_install_property(gobject_class, klass->properties.count++, klass->properties.toggle[ix]);
 
 	}
 
 	// Creating boolean properties.
-	v3270_properties.type.boolean = klass->properties.count;
+	klass->properties.type.boolean = klass->properties.count;
 	const LIB3270_INT_PROPERTY * bool_props = lib3270_get_boolean_properties_list();
 
 	for(ix = 0; bool_props[ix].name; ix++)
 	{
-		debug("Property %u=%s (Boolean)",(unsigned int) v3270_properties.type.boolean + ix, bool_props[ix].name);
+		debug("Property %u=%s (Boolean)",(unsigned int) klass->properties.type.boolean + ix, bool_props[ix].name);
 		spec = g_param_spec_boolean(
 					bool_props[ix].name,
 					bool_props[ix].name,
@@ -260,11 +263,11 @@
 
 	// Creating integer properties.
 	const LIB3270_INT_PROPERTY * int_props = lib3270_get_int_properties_list();
-	v3270_properties.type.integer = klass->properties.count;
+	klass->properties.type.integer = klass->properties.count;
 
 	for(ix = 0; int_props[ix].name; ix++)
 	{
-		debug("Property %u=%s (Integer)",(unsigned int) v3270_properties.type.integer + ix, int_props[ix].name);
+		debug("Property %u=%s (Integer)",(unsigned int) klass->properties.type.integer + ix, int_props[ix].name);
 
 		spec = g_param_spec_int(
 			int_props[ix].name,
@@ -287,12 +290,12 @@
 
 	// Creating string properties.
 	const LIB3270_STRING_PROPERTY * str_props = lib3270_get_string_properties_list();
-	v3270_properties.type.str = klass->properties.count;
+	klass->properties.type.str = klass->properties.count;
 
 	for(ix = 0; str_props[ix].name; ix++)
 	{
 
-		debug("Property %u=%s (String)",(unsigned int) v3270_properties.type.str + ix, str_props[ix].name);
+		debug("Property %u=%s (String)",(unsigned int) klass->properties.type.str + ix, str_props[ix].name);
 
 		spec = g_param_spec_string(
 					str_props[ix].name,

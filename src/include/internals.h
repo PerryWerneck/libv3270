@@ -37,6 +37,7 @@
  #define GETTEXT_PACKAGE PACKAGE_NAME
 
  #include <glib.h>
+ #include <glib/gi18n.h>
  #include <gtk/gtk.h>
  #include <lib3270.h>
  #include <lib3270/log.h>
@@ -133,6 +134,7 @@
 
  G_GNUC_INTERNAL gboolean	  v3270_draw(GtkWidget * widget, cairo_t * cr);
  G_GNUC_INTERNAL void		  v3270_cursor_draw(v3270 *widget);
+ G_GNUC_INTERNAL void		  v3270_set_cursor(GtkWidget *widget, LIB3270_POINTER id);
 
  G_GNUC_INTERNAL void		  v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols);
  G_GNUC_INTERNAL void		  v3270_update_mouse_pointer(GtkWidget *widget);

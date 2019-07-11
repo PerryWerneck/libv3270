@@ -28,14 +28,7 @@
  */
 
 #include <config.h>
-
 #include <internals.h>
-
-#include <libintl.h>
-#include <glib/gi18n.h>
-
-#include <gtk/gtk.h>
-#include <v3270.h>
 
 G_BEGIN_DECLS
 
@@ -45,11 +38,30 @@ G_BEGIN_DECLS
 
     // Internal properties.
     struct {
+
 		size_t		  count;							// Number of properties.
 
 		GParamSpec * font_family;
+		GParamSpec * toggle[LIB3270_TOGGLE_COUNT];		// Toggle properties.
+
+		// Signal related properties
+		GParamSpec * online;
+		GParamSpec * luname;
+		GParamSpec * model;
+		GParamSpec * selection;
+
+		struct
+		{
+			guint toggle;
+			guint boolean;
+			guint integer;
+			guint str;
+		} type;
 
     } properties;
+
+    // Cursors
+	GdkCursor * cursors[LIB3270_POINTER_COUNT];
 
 	// Signals
 	void 		(*activate)(GtkWidget *widget);
@@ -167,32 +179,5 @@ G_BEGIN_DECLS
  };
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
-
- G_GNUC_INTERNAL GdkCursor		* v3270_cursor[LIB3270_POINTER_COUNT];
-
- G_GNUC_INTERNAL struct _v3270_properties
- {
-    GParamSpec	* toggle[LIB3270_TOGGLE_COUNT];		// Toggle properties.
-
-    struct
-    {
-    	guint toggle;
-    	guint boolean;
-    	guint integer;
-    	guint str;
-    } type;
-
-    /*
-    // V3270 Internal properties.
-    GParamSpec * font_family;
-    */
-
-    // Properties who launch signals.
-    GParamSpec * online;
-    GParamSpec * luname;
-    GParamSpec * model;
-    GParamSpec * selection;
-
- } v3270_properties;
 
 G_END_DECLS

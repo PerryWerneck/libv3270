@@ -71,7 +71,8 @@ static void set_timer(H3270 *session, unsigned char on)
 
 static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value, G_GNUC_UNUSED LIB3270_TOGGLE_TYPE reason, const char *name)
 {
-	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
+	GtkWidget	* widget = GTK_WIDGET(lib3270_get_user_data(session));
+ 	v3270Class	* klass = GTK_V3270_GET_CLASS(widget);
 
  	trace("%s(%s,%d)",__FUNCTION__,name,(int) value);
 
@@ -133,7 +134,7 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value
 
 	}
 
-	g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.toggle[ix]);
+	g_object_notify_by_pspec(G_OBJECT(widget), klass->properties.toggle[ix]);
 	g_signal_emit(widget, v3270_widget_signal[V3270_SIGNAL_TOGGLE_CHANGED], 0, (guint) ix, (gboolean) (value != 0), (gchar *) name);
 
 }
@@ -226,8 +227,7 @@ static void update_connect(H3270 *session, unsigned char connected)
 		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_DISCONNECTED], 0);
 	}
 
-	if(v3270_properties.online)
-		g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.online);
+	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.online);
 
 	widget->activity.timestamp = time(0);
 
@@ -236,16 +236,16 @@ static void update_connect(H3270 *session, unsigned char connected)
 
 static void update_screen_size(H3270 *session, G_GNUC_UNUSED unsigned short rows, G_GNUC_UNUSED unsigned short cols)
 {
-	v3270_reload(GTK_WIDGET(lib3270_get_user_data(session)));
-	gtk_widget_queue_draw(GTK_WIDGET(lib3270_get_user_data(session)));
+	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
+	v3270_reload(widget);
+	gtk_widget_queue_draw(widget);
 }
 
 static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNUSED int rows, G_GNUC_UNUSED int cols)
 {
-	if(v3270_properties.model)
-		g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), v3270_properties.model);
-
-	g_signal_emit(GTK_WIDGET(lib3270_get_user_data(session)),v3270_widget_signal[V3270_SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
+	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
+	g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), GTK_V3270_GET_CLASS(widget)->properties.model);
+	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
 }
 
 static void changed(H3270 *session, int offset, int len)
@@ -299,9 +299,7 @@ static void set_selection(H3270 *session, unsigned char status)
 {
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
 
-	if(v3270_properties.selection)
-		g_object_notify_by_pspec(G_OBJECT(widget), v3270_properties.selection);
-
+	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.selection);
 	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_SELECTING], 0, status ? TRUE : FALSE);
 
 }
