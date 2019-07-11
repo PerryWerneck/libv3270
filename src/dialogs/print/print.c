@@ -322,11 +322,11 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 				{
 					if(lib3270_is_selected(operation->session,baddr++))
 					{
-						rect.x = MIN(rect.x,col);
-						rect.width = MAX(rect.width,col);
+						rect.x = MIN( ((unsigned int) rect.x),col);
+						rect.width = MAX( ((unsigned int) rect.width),col);
 
-						rect.y = MIN(rect.y,row);
-						rect.height = MAX(rect.height,row);
+						rect.y = MIN( ((unsigned int) rect.y),row);
+						rect.height = MAX( ((unsigned int) rect.height),row);
 					}
 				}
 			}
