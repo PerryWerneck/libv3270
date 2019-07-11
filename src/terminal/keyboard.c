@@ -39,7 +39,7 @@
 
  #include <v3270.h>
  #include <internals.h>
- #include "private.h"
+ #include <terminal.h>
 
 #if GTK_CHECK_VERSION(3,0,0)
 	#include <gdk/gdkkeysyms-compat.h>

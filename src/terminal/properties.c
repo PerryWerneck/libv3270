@@ -43,7 +43,7 @@
  #include <stdlib.h>
  #include <errno.h>
  #include <v3270.h>
- #include "private.h"
+ #include <terminal.h>
 
  #define PROP_BEGIN 2
 

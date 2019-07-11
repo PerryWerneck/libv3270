@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como private.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -64,10 +64,10 @@ G_BEGIN_DECLS
 	GdkCursor * cursors[LIB3270_POINTER_COUNT];
 
 	// Signals
-	void 		(*activate)(GtkWidget *widget);
-	void 		(*toggle_changed)(v3270 *widget,LIB3270_TOGGLE toggle_id,gboolean toggle_state,const gchar *toggle_name);
-	void 		(*message_changed)(v3270 *widget, LIB3270_MESSAGE id);
-	void 		(*popup_message)(GtkWidget *widget, LIB3270_NOTIFY id , const gchar *title, const gchar *message, const gchar *text);
+	void (*activate)(GtkWidget *widget);
+	void (*toggle_changed)(v3270 *widget,LIB3270_TOGGLE toggle_id,gboolean toggle_state,const gchar *toggle_name);
+	void (*message_changed)(v3270 *widget, LIB3270_MESSAGE id);
+	void (*popup_message)(GtkWidget *widget, LIB3270_NOTIFY id , const gchar *title, const gchar *message, const gchar *text);
 
  };
 

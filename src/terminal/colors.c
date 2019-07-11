@@ -28,7 +28,7 @@
  */
 
  #include <config.h>
- #include "private.h"
+ #include <terminal.h>
 
  #include <lib3270.h>
  #include <lib3270/log.h>

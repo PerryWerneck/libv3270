@@ -35,8 +35,7 @@
  #include <gtk/gtk.h>
  #include <libintl.h>
  #include <glib/gi18n.h>
-
- #include "private.h"
+ #include <terminal.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 

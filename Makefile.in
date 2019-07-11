@@ -94,8 +94,7 @@ DEPENDS= \
 	src/include/v3270/*.h \
 	src/filetransfer/marshal.h \
 	src/filetransfer/private.h \
-	src/terminal/marshal.h \
-	src/terminal/private.h
+	src/terminal/marshal.h
 
 CFLAGS= \
 	@CFLAGS@ \

@@ -27,7 +27,7 @@
  *
  */
 
- #include "private.h"
+ #include <terminal.h>
  #include <v3270.h>
  #include <lib3270/charset.h>
  #include <lib3270/log.h>

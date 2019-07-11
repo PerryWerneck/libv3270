@@ -1,4 +1,11 @@
 {
+   libcrypto_BIO_read
+   Memcheck:Cond
+   ...
+   fun:BIO_read
+}
+
+{
    libcrypt_FIPS_selftest
    Memcheck:Cond
    ...
@@ -137,4 +144,19 @@
    ...
    fun:cairo_mask
 }
+
+{
+   gtk_css_dimension_value_new
+   Memcheck:Leak
+   ...
+   fun:gtk_css_dimension_value_new
+}
+
+{
+   gtk_style_constructed
+   Memcheck:Leak
+   ...
+   fun:gtk_style_constructed
+}
+
 

@@ -33,7 +33,7 @@
 	#include <winsock2.h>
  #endif // _WIN32
 
- #include "private.h"
+ #include <terminal.h>
  #include <internals.h>
 
  #include <gtk/gtk.h>

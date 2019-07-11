@@ -28,7 +28,7 @@
  */
 
  #include <config.h>
- #include "private.h"
+ #include <terminal.h>
  #include "marshal.h"
 
  #include <lib3270.h>
