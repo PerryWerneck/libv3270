@@ -30,7 +30,7 @@
  #include <clipboard.h>
 
 
-LIB3270_EXPORT void v3270_copy_append(GtkWidget *widget)
+LIB3270_EXPORT void v3270_copy_text_append(GtkWidget *widget)
 {
 	v3270			* terminal;
 	char 			* str;
@@ -42,7 +42,7 @@ LIB3270_EXPORT void v3270_copy_append(GtkWidget *widget)
 	if(!terminal->selection.text)
     {
         // Clipboard is empty, do a single copy
-        v3270_copy(widget, V3270_SELECT_TEXT, FALSE);
+        v3270_copy_text(widget, V3270_SELECT_TEXT, FALSE);
         return;
     }
 
@@ -161,7 +161,7 @@ const char * v3270_update_selected_text(GtkWidget *widget, gboolean cut)
 
 }
 
-LIB3270_EXPORT void v3270_paste_string(GtkWidget *widget, const gchar *text, const gchar *encoding)
+LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget, const gchar *text, const gchar *encoding)
 {
  	gchar 		* buffer 	= NULL;
  	H3270		* session 	= v3270_get_session(widget);

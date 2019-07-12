@@ -31,11 +31,13 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
+/*
  static const GtkTargetEntry targets[] =
  {
 	{ "COMPOUND_TEXT", 	0, CLIPBOARD_TYPE_TEXT },
 	{ "UTF8_STRING", 	0, CLIPBOARD_TYPE_TEXT },
  };
+*/
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -46,6 +48,8 @@ static void clipboard_clear(G_GNUC_UNUSED GtkClipboard *clipboard, G_GNUC_UNUSED
 static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionData *selection, guint target, GObject *obj)
 {
 	v3270 * widget = GTK_V3270(obj);
+
+	debug("%s target=%u",__FUNCTION__,(unsigned int) target);
 
 	switch(target)
 	{
@@ -157,10 +161,30 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 	{
         GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GDK_SELECTION_CLIPBOARD);
 
+        // Create target list
+        //
+        // Reference: https://cpp.hotexamples.com/examples/-/-/g_list_insert_sorted/cpp-g_list_insert_sorted-function-examples.html
+        //
+		GtkTargetList 	* list = gtk_target_list_new(NULL, 0);
+		GtkTargetEntry	* targets;
+		int				  n_targets;
+
+		gtk_target_list_add_text_targets(list, CLIPBOARD_TYPE_TEXT);
+		targets = gtk_target_table_new_from_list(list, &n_targets);
+
+#ifdef DEBUG
+		{
+			int ix;
+			for(ix = 0; ix < n_targets; ix++) {
+				debug("target(%d)=\"%s\"",ix,targets[ix].target);
+			}
+		}
+#endif // DEBUG
+
 		if(gtk_clipboard_set_with_owner(
 				clipboard,
 				targets,
-				G_N_ELEMENTS(targets),
+				n_targets,
 				(GtkClipboardGetFunc)	clipboard_get,
 				(GtkClipboardClearFunc) clipboard_clear,
 				G_OBJECT(widget)
@@ -169,11 +193,14 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 			gtk_clipboard_set_can_store(clipboard,targets,1);
 		}
 
+		gtk_target_table_free(targets, n_targets);
+		gtk_target_list_unref(list);
+
 		g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, TRUE);
 	}
 }
 
-LIB3270_EXPORT void v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut)
+LIB3270_EXPORT void v3270_copy_text(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 	GTK_V3270(widget)->selection.format = mode;

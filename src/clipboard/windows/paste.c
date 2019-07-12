@@ -48,7 +48,7 @@ LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 		LPTSTR lptstr = GlobalLock(hglb);
 		if (lptstr != NULL)
 		{
-			v3270_paste_string(widget,lptstr,"CP1252");
+			v3270_paste_text(widget,lptstr,"CP1252");
 			GlobalUnlock(hglb);
 		}
 	}

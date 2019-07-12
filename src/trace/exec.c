@@ -106,49 +106,6 @@
 	g_value_unset(&val);
 	return 0;
 
- 	/*
- 	size_t ix;
-
- 	debug("%s=%s",name,value);
-
- 	// Check toggles
- 	for(ix = 0; ix < (size_t) LIB3270_TOGGLE_COUNT; ix++)
-	{
-		if(g_ascii_strcasecmp(name,lib3270_get_toggle_name((LIB3270_TOGGLE) ix)) == 0)
-			return lib3270_set_toggle(hSession,(LIB3270_TOGGLE) ix, atoi(value));
-
-	}
-
- 	// Check boolean properties
- 	const LIB3270_INT_PROPERTY * bProp = lib3270_get_boolean_properties_list();
- 	for(ix = 0; bProp[ix].name; ix++)
-	{
-		if(g_ascii_strcasecmp(name,bProp[ix].name) == 0 && bProp[ix].set)
-			return bProp[ix].set(hSession,atoi(value));
-
-	}
-
-	// Check integer properties
- 	const LIB3270_INT_PROPERTY * iProp = lib3270_get_int_properties_list();
- 	for(ix = 0; iProp[ix].name; ix++)
-	{
-		if(g_ascii_strcasecmp(name,iProp[ix].name) == 0 && iProp[ix].set)
-			return iProp[ix].set(hSession,atoi(value));
-
-	}
-
-	// Check string properties
-	const LIB3270_STRING_PROPERTY * sProp = lib3270_get_string_properties_list();
- 	for(ix = 0; sProp[ix].name; ix++)
-	{
-		if(g_ascii_strcasecmp(name,sProp[ix].name) == 0 && sProp[ix].set)
-			return sProp[ix].set(hSession,value);
-
-	}
-	*/
-
-	return errno = ENOENT;
-
  }
 
  static int get_property(GtkWidget *widget, const gchar *name)
@@ -214,6 +171,24 @@
  	if(g_str_has_prefix(cmdline,"pattern"))
 	{
 		lib3270_testpattern(hSession);
+		return 0;
+	}
+
+ 	if(g_str_has_prefix(cmdline,"copy"))
+	{
+		gchar * arg = cmdline+4;
+		g_strstrip(arg);
+
+		if(!(*arg && g_ascii_strcasecmp(arg,"text")))
+		{
+			// No argument or "text" copy text.
+			v3270_copy_text(widget, V3270_SELECT_TEXT, FALSE);
+		}
+		else if(!g_ascii_strcasecmp(arg,"table"))
+		{
+			v3270_copy_text(widget, V3270_SELECT_TABLE, FALSE);
+		}
+
 		return 0;
 	}
 

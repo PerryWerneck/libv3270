@@ -33,7 +33,7 @@
 
 static void text_received(G_GNUC_UNUSED  GtkClipboard *clipboard, const gchar *text, GtkWidget *widget)
 {
-	v3270_paste_string(widget,text,"UTF-8");
+	v3270_paste_text(widget,text,"UTF-8");
 }
 
 LIB3270_EXPORT void v3270_paste(GtkWidget *widget)

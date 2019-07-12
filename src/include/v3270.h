@@ -189,8 +189,6 @@
 	V3270_SELECT_MAX
  } V3270_SELECT_FORMAT;
 
- LIB3270_EXPORT void			  v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut);
- LIB3270_EXPORT void			  v3270_copy_append(GtkWidget *widget);
  LIB3270_EXPORT gchar			* v3270_get_selected(GtkWidget *widget, gboolean cut);
  LIB3270_EXPORT gchar			* v3270_get_copy(GtkWidget *widget);
  LIB3270_EXPORT void              v3270_set_copy(GtkWidget *widget, const gchar *text);
@@ -206,9 +204,13 @@
  LIB3270_EXPORT gboolean		  v3270_get_selection_bounds(GtkWidget *widget, gint *start, gint *end);
  LIB3270_EXPORT void			  v3270_unselect(GtkWidget *widget);
  LIB3270_EXPORT void 			  v3270_select_all(GtkWidget *widget);
- LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget);
- LIB3270_EXPORT void 			  v3270_paste_string(GtkWidget *widget, const gchar *text, const gchar *encoding);
  LIB3270_EXPORT void	  		  v3270_select_region(GtkWidget *widget, gint start, gint end);
+
+ LIB3270_EXPORT void			  v3270_copy_text(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut);
+ LIB3270_EXPORT void			  v3270_copy_text_append(GtkWidget *widget);
+
+ LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget);
+ LIB3270_EXPORT void 			  v3270_paste_text(GtkWidget *widget, const gchar *text, const gchar *encoding);
 
  // Colors
  LIB3270_EXPORT void			  v3270_set_colors(GtkWidget *widget, const gchar *);
