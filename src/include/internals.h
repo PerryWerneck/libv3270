@@ -53,6 +53,14 @@
 
  G_BEGIN_DECLS
 
+/*--[ Structures ]-----------------------------------------------------------------------------------*/
+
+ struct v3270_character
+ {
+	unsigned char	  chr;		///< @brief Character value.
+	unsigned short	  attr;		///< @brief Character attribute.
+ };
+
 /*--[ Signals ]--------------------------------------------------------------------------------------*/
 
  /// @brief V3270 Signal list
@@ -187,7 +195,7 @@
 
  G_GNUC_INTERNAL void		  v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width, unsigned int height);
 
- G_GNUC_INTERNAL void		  v3270_update_cursor_rect(v3270 *widget, GdkRectangle *rect, unsigned char chr, unsigned short attr);
+ G_GNUC_INTERNAL void		  v3270_update_cursor_rect(v3270 *widget, GdkRectangle *rect, const struct v3270_character *element);
 
  G_GNUC_INTERNAL void		  v3270_update_message(v3270 *widget, LIB3270_MESSAGE id);
  G_GNUC_INTERNAL void		  v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col, unsigned char c, unsigned short attr);

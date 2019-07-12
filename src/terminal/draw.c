@@ -188,35 +188,7 @@ void v3270_draw_text_at(cairo_t *cr, int x, int y, v3270FontInfo *font, const ch
 }
 
 void v3270_draw_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo *font, const char *str) {
-
 	v3270_draw_text_at(cr,rect->x,rect->y,font,str);
-
-/*
-	cairo_status_t		 		  status;
-	cairo_glyph_t				* glyphs			= NULL;
-	int							  num_glyphs		= 0;
-	cairo_text_cluster_t		* clusters			= NULL;
-	int							  num_clusters		= 0;
-	cairo_text_cluster_flags_t	  cluster_flags;
-	cairo_scaled_font_t			* scaled_font		= cairo_get_scaled_font (cr);
-
-	status = cairo_scaled_font_text_to_glyphs(
-					scaled_font,
-					(double) rect->x, (double) (rect->y+font->height),
-					str, strlen(str),
-					&glyphs, &num_glyphs,
-					&clusters, &num_clusters, &cluster_flags );
-
-	if (status == CAIRO_STATUS_SUCCESS) {
-		cairo_show_text_glyphs(cr,str,strlen(str),glyphs, num_glyphs,clusters, num_clusters, cluster_flags);
-	}
-
-    if(glyphs)
-		cairo_glyph_free(glyphs);
-
-    if(clusters)
-		cairo_text_cluster_free(clusters);
-*/
 }
 
 void v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *font, GdkRectangle *rect, GdkRGBA *fg, GdkRGBA *bg)
@@ -419,15 +391,14 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 
 		for(c=0;c < cols;c++)
 		{
-			unsigned char	  chr = 0;
-			unsigned short	  attr;
+			struct v3270_character element = { 0, 0 };
 
-			lib3270_get_contents(terminal->host,addr,addr,&chr,&attr);
+			lib3270_get_contents(terminal->host,addr,addr,&element.chr,&element.attr);
 
 			if(addr == cursor)
-				v3270_update_cursor_rect(terminal,&rect,chr,attr);
+				v3270_update_cursor_rect(terminal,&rect,&element);
 
-			v3270_draw_element(cr,chr,attr,terminal->host,&terminal->font,&rect,terminal->color);
+			v3270_draw_element(cr,element.chr,element.attr,terminal->host,&terminal->font,&rect,terminal->color);
 
 			addr++;
 			rect.x += rect.width;
@@ -446,10 +417,14 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 
 void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor)
 {
-	v3270			* terminal = GTK_V3270(lib3270_get_user_data(session));
-	cairo_t			* cr;
-	GdkRectangle	  rect;
-	unsigned int	  rows,cols;
+	v3270					* terminal = GTK_V3270(lib3270_get_user_data(session));
+	cairo_t					* cr;
+	GdkRectangle			  rect;
+	unsigned int	  		  rows,cols;
+	struct v3270_character	  element;
+
+	element.chr		= chr;
+	element.attr	= attr;
 
 	if(!(gtk_widget_get_realized(GTK_WIDGET(terminal)) && terminal->drawing))
 		return;
@@ -473,8 +448,9 @@ void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned sho
 	cairo_set_scaled_font(cr,terminal->font.scaled);
 	v3270_draw_element(cr, chr, attr, terminal->host, &terminal->font, &rect,terminal->color);
     cairo_destroy(cr);
+
 	if(cursor)
-		v3270_update_cursor_rect(terminal,&rect,chr,attr);
+		v3270_update_cursor_rect(terminal,&rect,&element);
 
 	v3270_queue_draw_area(GTK_WIDGET(terminal),rect.x,rect.y,rect.width,rect.height);
 
@@ -503,13 +479,13 @@ void v3270_update_cursor_surface(v3270 *widget,unsigned char chr,unsigned short 
 
 }
 
-void v3270_update_cursor_rect(v3270 *widget, GdkRectangle *rect, unsigned char chr, unsigned short attr)
+void v3270_update_cursor_rect(v3270 *widget, GdkRectangle *rect, const struct v3270_character *element)
 {
-	widget->cursor.chr  = chr;
+	widget->cursor.chr  = element->chr;
 	widget->cursor.rect = *rect;
-	widget->cursor.attr = attr;
+	widget->cursor.attr = element->attr;
 	widget->cursor.rect.height = widget->font.height + widget->font.descent;
-	v3270_update_cursor_surface(widget,chr,attr);
+	v3270_update_cursor_surface(widget,element->chr,element->attr);
 }
 
 void v3270_queue_draw_area(GtkWidget *widget, gint x, gint y, gint width, gint height)

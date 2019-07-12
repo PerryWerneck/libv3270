@@ -42,6 +42,9 @@
 			<Add option="-fPIC" />
 		</Linker>
 		<Unit filename="configure.ac" />
+		<Unit filename="src/clipboard/copy.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/clipboard/linux/paste.c">
 			<Option compilerVar="CC" />
 		</Unit>

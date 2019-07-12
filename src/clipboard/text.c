@@ -32,6 +32,7 @@
 
 LIB3270_EXPORT void v3270_copy_text_append(GtkWidget *widget)
 {
+	/*
 	v3270			* terminal;
 	char 			* str;
 
@@ -61,11 +62,13 @@ LIB3270_EXPORT void v3270_copy_text_append(GtkWidget *widget)
     }
 
     v3270_update_system_clipboard(widget);
+    */
 
 }
 
 const char * v3270_update_selected_text(GtkWidget *widget, gboolean cut)
 {
+	/*
 	char	* text;
 	v3270	* terminal = GTK_V3270(widget);
 
@@ -158,6 +161,9 @@ const char * v3270_update_selected_text(GtkWidget *widget, gboolean cut)
 	}
 
     return terminal->selection.text = text;
+    */
+
+    return NULL;
 
 }
 

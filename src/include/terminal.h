@@ -115,12 +115,31 @@ G_BEGIN_DECLS
 	GtkIMContext			* input_method;
 	unsigned short			  keyflags;
 
+	struct {
+
+		int 					baddr;		///< @brief Selection address.
+		V3270_SELECT_FORMAT		format;		///< @brief Copy format.
+
+		struct {
+			unsigned int row;
+			unsigned int col;
+			unsigned int width;
+			unsigned int height;
+
+		} bounds;					///< @brief Clipboard rectangle.
+
+		struct v3270_character * contents;
+
+	} selection;
+
+	/*
 	struct
 	{
-		V3270_SELECT_FORMAT	  format;		/**< Copy format */
-	    char                * text;        	/**< Clipboard contents (lib3270 charset) */
-        int                   baddr;		/**< Selection addr */
+		V3270_SELECT_FORMAT	  format;		///< Copy format
+	    char                * text;        	///< Clipboard contents (lib3270 charset)
+        int                   baddr;		///< Selection addr
 	} selection;
+	*/
 
 	LIB3270_POINTER 		  pointer_id;
 	unsigned char			  pointer;					/**< Mouse pointer ID */

@@ -183,8 +183,9 @@
  // Clipboard
  typedef enum _v3270_select_format
  {
-	V3270_SELECT_TEXT,
-	V3270_SELECT_TABLE,
+ 	V3270_SELECT_NONE,			///< @brief No selected format, use default.
+	V3270_SELECT_TEXT,			///< @brief Single text format, don't process.
+	V3270_SELECT_TABLE,			///< @brief Parse contents as table (only for text formats).
 
 	V3270_SELECT_MAX
  } V3270_SELECT_FORMAT;
@@ -206,6 +207,7 @@
  LIB3270_EXPORT void 			  v3270_select_all(GtkWidget *widget);
  LIB3270_EXPORT void	  		  v3270_select_region(GtkWidget *widget, gint start, gint end);
 
+ LIB3270_EXPORT void			  v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut);
  LIB3270_EXPORT void			  v3270_copy_text(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut);
  LIB3270_EXPORT void			  v3270_copy_text_append(GtkWidget *widget);
 
