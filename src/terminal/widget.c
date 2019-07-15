@@ -660,7 +660,7 @@ static void v3270_destroy(GtkWidget *widget)
 		terminal->input_method = NULL;
 	}
 
-    v3270_clear_clipboard(terminal);
+    v3270_clear_selection(terminal);
 
 	if(terminal->session_name)
 	{

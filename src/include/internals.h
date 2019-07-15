@@ -174,7 +174,7 @@
  G_GNUC_INTERNAL void		  v3270_draw_alt_status(v3270 *terminal);
  G_GNUC_INTERNAL void		  v3270_draw_ins_status(v3270 *terminal);
 
- G_GNUC_INTERNAL void		  v3270_clear_clipboard(v3270 *terminal);
+ G_GNUC_INTERNAL void		  v3270_clear_selection(v3270 *terminal);
 
  G_GNUC_INTERNAL void		  v3270_update_cursor_surface(v3270 *widget,unsigned char chr,unsigned short attr);
 

@@ -119,8 +119,7 @@ G_BEGIN_DECLS
 
 		int 				  baddr;		///< @brief Selection address.
 		V3270_SELECT_FORMAT	  format;		///< @brief Copy format.
-
-		GList				*  blocks;		///< @brief Selection blocks.
+		GList				* blocks;		///< @brief Selection blocks.
 
 	} selection;
 

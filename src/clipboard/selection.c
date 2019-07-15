@@ -28,6 +28,7 @@
  */
 
  #include <clipboard.h>
+ #include <lib3270/selection.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -38,40 +39,8 @@ static void clipboard_clear(G_GNUC_UNUSED GtkClipboard *clipboard, G_GNUC_UNUSED
 	if(!lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_KEEP_SELECTED))
 	{
 		v3270_unselect(GTK_WIDGET(obj));
-		v3270_clear_clipboard(terminal);
+		v3270_clear_selection(terminal);
 	}
-
-}
-
-/// @brief Get formatted contents as single text.
-static gchar * get_copy_as_text(v3270 * terminal)
-{
-	GList	* element	= terminal->selection.blocks;
-	GString	* string	= g_string_new("");
-
-	while(element)
-	{
-		struct selection * block = ((struct selection *) element->data);
-		unsigned int row, col, src = 0;
-
-		for(row=0; row < block->bounds.height; row++)
-		{
-			for(col=0; col<block->bounds.width; col++)
-			{
-				if(block->contents[src].attr & LIB3270_ATTR_SELECTED)
-					g_string_append_c(string,block->contents[src].chr);
-
-				src++;
-
-			}
-			g_string_append_c(string,'\n');
-		}
-
-		element = g_list_next(element);
-	}
-
-	g_autofree char * text = g_string_free(string,FALSE);
-	return g_convert(text, -1, "UTF-8", lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 
 }
 
@@ -85,7 +54,7 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 
 		if(terminal->selection.blocks)
 		{
-			g_autofree gchar * converted = get_copy_as_text(terminal);
+			g_autofree gchar * converted = v3270_get_copy_as_text(terminal);
 			gtk_selection_data_set_text(selection,converted,-1);
 		}
 
@@ -102,11 +71,11 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
  * @param terminal	Pointer to the terminal Widget.
  *
  */
-void v3270_clear_clipboard(v3270 *terminal)
+void v3270_clear_selection(v3270 *terminal)
 {
 	if(terminal->selection.blocks)
 	{
-		g_list_free_full(terminal->selection.blocks,g_free);
+		g_list_free_full(terminal->selection.blocks,(GDestroyNotify) lib3270_free);
 		terminal->selection.blocks = NULL;
 	}
 }
@@ -135,49 +104,6 @@ LIB3270_EXPORT gchar * v3270_get_selected(GtkWidget *widget, gboolean cut)
 
     return NULL;
 }
-
-LIB3270_EXPORT gchar * v3270_get_copy(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
-	return get_copy_as_text(GTK_V3270(widget));
-}
-
-	/*
-LIB3270_EXPORT void v3270_set_copy(GtkWidget *widget, const gchar *text)
-{
-	v3270	* terminal;
-	gchar   * isotext;
-
-	g_return_if_fail(GTK_IS_V3270(widget));
-
-	terminal = GTK_V3270(widget);
-    v3270_clear_clipboard(terminal);
-
-    if(!text)
-    {
-        // No string, signal clipboard clear and return
-        g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, FALSE);
-        return;
-    }
-
-    // Received text, replace the selection buffer
-    terminal->selection.format = V3270_SELECT_TEXT;
-    isotext = g_convert(text, -1, lib3270_get_display_charset(terminal->host), "UTF-8", NULL, NULL, NULL);
-
-    if(!isotext)
-    {
-        // No string, signal clipboard clear and return
-        g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, FALSE);
-        return;
-    }
-
-    terminal->selection.text = lib3270_strdup(isotext);
-
-    g_free(isotext);
-
-    g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, TRUE);
-}
-    */
 
 void v3270_update_system_clipboard(GtkWidget *widget)
 {

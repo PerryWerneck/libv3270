@@ -30,8 +30,16 @@
  #include <clipboard.h>
  #include <lib3270/selection.h>
 
- static void do_copy(v3270 *terminal)
+ static void do_copy(v3270 *terminal, gboolean cut)
  {
+ 	lib3270_selection * selection = lib3270_get_selection(terminal->host,cut);
+
+ 	if(selection)
+	{
+		terminal->selection.blocks = g_list_append(terminal->selection.blocks,selection);
+	}
+
+ 	/*
 	// Get selection bounds.
 	unsigned int row;
 	unsigned int col;
@@ -80,7 +88,7 @@
 	}
 
 	terminal->selection.blocks = g_list_append(terminal->selection.blocks,selection);
-
+	*/
  }
 
  LIB3270_EXPORT void v3270_copy_selection(GtkWidget *widget, V3270_SELECT_FORMAT format, gboolean cut)
@@ -90,17 +98,13 @@
 	v3270 * terminal = GTK_V3270(widget);
 
 	// Have data? Clear it?
-	v3270_clear_clipboard(terminal);
+	v3270_clear_selection(terminal);
 
 	terminal->selection.format = format;
-	do_copy(terminal);
+	do_copy(terminal,cut);
 
 	v3270_update_system_clipboard(widget);
 
-	if(cut)
-	{
-		lib3270_erase_selected(terminal->host);
-	}
  }
 
  LIB3270_EXPORT void v3270_append_selection(GtkWidget *widget, gboolean cut)
@@ -109,13 +113,9 @@
 
 	v3270 * terminal = GTK_V3270(widget);
 
-	do_copy(terminal);
+	do_copy(terminal,cut);
 
 	v3270_update_system_clipboard(widget);
 
-	if(cut)
-	{
-		lib3270_erase_selected(terminal->host);
-	}
  }
 

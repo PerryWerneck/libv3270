@@ -45,23 +45,11 @@
 		CLIPBOARD_TYPE_TEXT,
 	};
 
-	struct selection
-	{
-		struct {
-			unsigned int row;
-			unsigned int col;
-			unsigned int width;
-			unsigned int height;
-
-		} bounds;					///< @brief Clipboard rectangle.
-
-		struct v3270_character contents[1];
-
-	};
-
 	G_GNUC_INTERNAL void		  v3270_update_system_clipboard(GtkWidget *widget);
 	G_GNUC_INTERNAL const char	* v3270_update_selected_text(GtkWidget *widget, gboolean cut);
 
+	/// @brief Get formatted contents as single text.
+	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_text(v3270 * terminal);
 
 
 #endif // V3270_CLIPBOARD_H_INCLUDED
