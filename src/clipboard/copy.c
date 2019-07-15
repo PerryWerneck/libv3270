@@ -30,57 +30,92 @@
  #include <clipboard.h>
  #include <lib3270/selection.h>
 
- LIB3270_EXPORT void v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT format, gboolean cut)
+ static void do_copy(v3270 *terminal)
  {
-
-	g_return_if_fail(GTK_IS_V3270(widget));
-
-	v3270 * terminal = GTK_V3270(widget);
-
-	terminal->selection.format = format;
-
-	// Have data? Clear it?
-	v3270_clear_clipboard(terminal);
-
 	// Get selection bounds.
+	unsigned int row;
+	unsigned int col;
+	unsigned int width;
+	unsigned int height;
 
-	if(lib3270_get_selection_rectangle(terminal->host, &terminal->selection.bounds.row, &terminal->selection.bounds.col, &terminal->selection.bounds.width, &terminal->selection.bounds.height) != 0)
+	if(lib3270_get_selection_rectangle(terminal->host, &row, &col, &width, &height) != 0)
 		return;
 
 	debug("Selecion rectangle starts on %u,%u with size of %ux%u",
-				terminal->selection.bounds.row, terminal->selection.bounds.col,
-				terminal->selection.bounds.width, terminal->selection.bounds.height
+				row, col,
+				width, height
 		);
 
+	// Allocate buffer
+	struct selection * selection = g_malloc0(sizeof(struct selection) + (sizeof(struct v3270_character) * (width * height)));
+
+	selection->bounds.row		= row;
+	selection->bounds.col		= col;
+	selection->bounds.width		= width;
+	selection->bounds.height	= height;
 
 	// Copy terminal buffer
 	unsigned int r, c;
 
-	terminal->selection.contents = g_new0(struct v3270_character,(terminal->selection.bounds.width * terminal->selection.bounds.height));
-
 	int pos = 0;
-	for(r=0;r < terminal->selection.bounds.height; r++)
+	for(r=0;r < selection->bounds.height; r++)
 	{
 		// Get starting address.
-		int baddr = lib3270_translate_to_address(terminal->host, terminal->selection.bounds.row+r+1, terminal->selection.bounds.col+1);
+		int baddr = lib3270_translate_to_address(terminal->host, selection->bounds.row+r+1, selection->bounds.col+1);
 		if(baddr < 0)
 		{
-			g_message("Can't convert coordinate %u,%d",terminal->selection.bounds.row+r+1,terminal->selection.bounds.col+1);
+			g_message("Can't convert coordinate %u,%d",selection->bounds.row+r+1,selection->bounds.col+1);
 			gdk_display_beep(gdk_display_get_default());
 			return;
 		}
 
-		for(c=0;c < terminal->selection.bounds.width; c++)
+		for(c=0;c < selection->bounds.width; c++)
 		{
-			lib3270_get_contents(terminal->host,baddr,baddr,&terminal->selection.contents[pos].chr,&terminal->selection.contents[pos].attr);
-			debug("pos=%d baddr=%u char=%c",pos,baddr,terminal->selection.contents[pos].chr);
+			lib3270_get_contents(terminal->host,baddr,baddr,&selection->contents[pos].chr,&selection->contents[pos].attr);
+			debug("pos=%d baddr=%u char=%c",pos,baddr,selection->contents[pos].chr);
 			pos++;
 			baddr++;
 		}
 
 	}
 
+	terminal->selection.blocks = g_list_append(terminal->selection.blocks,selection);
+
+ }
+
+ LIB3270_EXPORT void v3270_copy_selection(GtkWidget *widget, V3270_SELECT_FORMAT format, gboolean cut)
+ {
+	g_return_if_fail(GTK_IS_V3270(widget));
+
+	v3270 * terminal = GTK_V3270(widget);
+
+	// Have data? Clear it?
+	v3270_clear_clipboard(terminal);
+
+	terminal->selection.format = format;
+	do_copy(terminal);
+
 	v3270_update_system_clipboard(widget);
 
+	if(cut)
+	{
+		lib3270_erase_selected(terminal->host);
+	}
+ }
+
+ LIB3270_EXPORT void v3270_append_selection(GtkWidget *widget, gboolean cut)
+ {
+	g_return_if_fail(GTK_IS_V3270(widget));
+
+	v3270 * terminal = GTK_V3270(widget);
+
+	do_copy(terminal);
+
+	v3270_update_system_clipboard(widget);
+
+	if(cut)
+	{
+		lib3270_erase_selected(terminal->host);
+	}
  }
 

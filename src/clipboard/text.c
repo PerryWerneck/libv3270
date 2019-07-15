@@ -30,42 +30,6 @@
  #include <clipboard.h>
 
 
-LIB3270_EXPORT void v3270_copy_text_append(GtkWidget *widget)
-{
-	/*
-	v3270			* terminal;
-	char 			* str;
-
-	g_return_if_fail(GTK_IS_V3270(widget));
-
-	terminal = GTK_V3270(widget);
-
-	if(!terminal->selection.text)
-    {
-        // Clipboard is empty, do a single copy
-        v3270_copy_text(widget, V3270_SELECT_TEXT, FALSE);
-        return;
-    }
-
-	str = lib3270_get_selected(terminal->host);
-
-	if(str)
-    {
-        size_t len = strlen(terminal->selection.text)+strlen(str)+2;
-
-        terminal->selection.text = lib3270_realloc(terminal->selection.text,len);
-
-        strncat(terminal->selection.text,"\n",len);
-        strncat(terminal->selection.text,str,len);
-
-        lib3270_free(str);
-    }
-
-    v3270_update_system_clipboard(widget);
-    */
-
-}
-
 const char * v3270_update_selected_text(GtkWidget *widget, gboolean cut)
 {
 	/*

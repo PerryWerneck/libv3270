@@ -183,11 +183,11 @@
 		if(!(*arg && g_ascii_strcasecmp(arg,"text")))
 		{
 			// No argument or "text" copy text.
-			v3270_copy(widget, V3270_SELECT_TEXT, FALSE);
+			v3270_copy_selection(widget, V3270_SELECT_TEXT, FALSE);
 		}
 		else if(!g_ascii_strcasecmp(arg,"table"))
 		{
-			v3270_copy(widget, V3270_SELECT_TABLE, FALSE);
+			v3270_copy_selection(widget, V3270_SELECT_TABLE, FALSE);
 		}
 
 		return 0;
