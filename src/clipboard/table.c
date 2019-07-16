@@ -54,7 +54,7 @@ static gboolean hasDataOnColumn(v3270 * terminal, unsigned int col)
 
 			for(row = 0; row < block->bounds.height; row++)
 			{
-				if(!isspace(block->contents[pos].chr))
+				if( (block->contents[pos].flags & LIB3270_ATTR_SELECTED) && !isspace(block->contents[pos].chr))
 				{
 					return TRUE;
 				}
