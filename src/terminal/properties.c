@@ -45,7 +45,9 @@
  #include <v3270.h>
  #include <terminal.h>
 
- #define PROP_BEGIN 2
+ #define PROP_FONT_FAMILY	2
+ #define PROP_CLIPBOARD		3
+ #define PROP_DYNAMIC		4
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -92,8 +94,30 @@
 
 	// Check for internal properties.
  	switch(prop_id) {
-	case PROP_BEGIN:	// Font-family
+	case PROP_FONT_FAMILY:	// Font-family
 		v3270_set_font_family(GTK_WIDGET(object), g_value_get_string(value));
+		break;
+
+	case PROP_CLIPBOARD:	// Clipboard
+		{
+			const gchar * name = g_value_get_string(value);
+			if(!*name) {
+				g_message("Setting default clipboard");
+				window->selection.target = GDK_SELECTION_CLIPBOARD;
+			}
+			else
+			{
+				GdkAtom clipboard = gdk_atom_intern(name,TRUE);
+				if(clipboard == GDK_NONE)
+				{
+					g_warning("\"%s\" is not a valid clipboard name",name);
+				}
+				else
+				{
+					window->selection.target = clipboard;
+				}
+			}
+		}
 		break;
 
 	default:
@@ -146,8 +170,12 @@
 
 	// Check for internal properties.
  	switch(prop_id) {
-	case PROP_BEGIN:	// Font-family
+	case PROP_FONT_FAMILY:	// Font-family
 		g_value_set_string(value,v3270_get_font_family(GTK_WIDGET(object)));
+		break;
+
+	case PROP_CLIPBOARD:	// Clipboard
+		g_value_take_string(value,gdk_atom_name(window->selection.target));
 		break;
 
 	default:
@@ -202,9 +230,9 @@
 	gobject_class->set_property = v3270_set_property;
 	gobject_class->get_property = v3270_get_property;
 
-	klass->properties.count = PROP_BEGIN;
-
 	// Setup internal properties.
+
+	// Font family
 	klass->properties.font_family = g_param_spec_string(
 							"font_family",
 							"font_family",
@@ -215,14 +243,33 @@
 
 	g_object_class_install_property(
 		gobject_class,
-		klass->properties.count++,
+		PROP_FONT_FAMILY,
 		klass->properties.font_family
 	);
+
+	// Clipboard
+	spec = g_param_spec_string(
+							"clipboard",
+							"clipboard",
+							_("Clipboard name"),
+							FALSE,
+							G_PARAM_READABLE|G_PARAM_WRITABLE
+						);
+
+	g_object_class_install_property(
+		gobject_class,
+		PROP_CLIPBOARD,
+		spec
+	);
+
+	//
+	// Create dynamic properties
+	klass->properties.count = PROP_DYNAMIC;
+
 
 	//
 	// Extract properties from LIB3270 control tables
 	//
-
 	// Extract toggle class.
 	klass->properties.type.toggle = klass->properties.count;
 	for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)

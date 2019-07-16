@@ -143,11 +143,7 @@ void v3270_update_system_clipboard(GtkWidget *widget)
     }
 
     // Has clipboard data, inform system.
-//#ifdef DEBUG
-//	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GDK_SELECTION_PRIMARY);
-//#else
-	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GDK_SELECTION_CLIPBOARD);
-//#endif // DEBUG
+	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,terminal->selection.target);
 
 	// Create target list
 	//

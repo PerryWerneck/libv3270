@@ -541,6 +541,9 @@ static void v3270_init(v3270 *widget)
 	// Install callbacks
 	v3270_install_callbacks(widget);
 
+	// Setup clipboard.
+	widget->selection.target		= GDK_SELECTION_CLIPBOARD;
+
 	// Reset timer
 	widget->activity.timestamp		= time(0);
 	widget->activity.disconnect		= 0;
