@@ -105,6 +105,14 @@
 
 	v3270_update_system_clipboard(widget);
 
+/*
+#ifdef DEBUG
+	gchar *columns = v3270_get_copy_as_table(terminal,"---");
+	debug("Output:\n%s",columns);
+	g_free(columns);
+#endif // DEBUG
+*/
+
  }
 
  LIB3270_EXPORT void v3270_append_selection(GtkWidget *widget, gboolean cut)

@@ -51,6 +51,9 @@
 		<Unit filename="src/clipboard/selection.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/clipboard/table.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/clipboard/text.c">
 			<Option compilerVar="CC" />
 		</Unit>

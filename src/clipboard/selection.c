@@ -48,16 +48,42 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 {
 	v3270 * terminal = GTK_V3270(obj);
 
+	if(!terminal->selection.blocks)
+	{
+		return;
+	}
+
 	switch(target)
 	{
 	case CLIPBOARD_TYPE_TEXT:   // Get clipboard contents as text
-
-		if(terminal->selection.blocks)
 		{
-			g_autofree gchar * converted = v3270_get_copy_as_text(terminal);
-			gtk_selection_data_set_text(selection,converted,-1);
-		}
+			gchar *text;
 
+			if(terminal->selection.format == V3270_SELECT_TABLE)
+			{
+				text = v3270_get_copy_as_table(terminal,"\t");
+			}
+			else
+			{
+				text = v3270_get_copy_as_text(terminal);
+			}
+			gtk_selection_data_set_text(selection,text,-1);
+			g_free(text);
+		}
+		break;
+
+	case CLIPBOARD_TYPE_CSV:
+		{
+			g_autofree gchar *text = v3270_get_copy_as_table(terminal,";");
+			debug("Selection:\n%s",text);
+			gtk_selection_data_set(
+				selection,
+				gdk_atom_intern_static_string("text/csv"),
+				8,
+				(guchar *) text,
+				strlen(text)
+			);
+		}
 		break;
 
 	default:
@@ -117,17 +143,26 @@ void v3270_update_system_clipboard(GtkWidget *widget)
     }
 
     // Has clipboard data, inform system.
+//#ifdef DEBUG
+//	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GDK_SELECTION_PRIMARY);
+//#else
 	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GDK_SELECTION_CLIPBOARD);
+//#endif // DEBUG
 
 	// Create target list
 	//
 	// Reference: https://cpp.hotexamples.com/examples/-/-/g_list_insert_sorted/cpp-g_list_insert_sorted-function-examples.html
 	//
-	GtkTargetList 	* list = gtk_target_list_new(NULL, 0);
+	static const GtkTargetEntry internal_targets[] = {
+		{ "text/csv", 0, CLIPBOARD_TYPE_CSV }
+	};
+
+	GtkTargetList 	* list = gtk_target_list_new(internal_targets, G_N_ELEMENTS(internal_targets));
 	GtkTargetEntry	* targets;
 	int				  n_targets;
 
 	gtk_target_list_add_text_targets(list, CLIPBOARD_TYPE_TEXT);
+
 	targets = gtk_target_table_new_from_list(list, &n_targets);
 
 #ifdef DEBUG
