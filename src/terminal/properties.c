@@ -45,9 +45,13 @@
  #include <v3270.h>
  #include <terminal.h>
 
- #define PROP_FONT_FAMILY	2
- #define PROP_CLIPBOARD		3
- #define PROP_DYNAMIC		4
+ enum _v3270_internal_property
+ {
+	V3270_PROPERTY_FONT_FAMILY	= 2,	///< @brief Name of the font-family used by widget.
+	V3270_PROPERTY_CLIPBOARD	= 3,	///< @brief Name of the selected clipboard.
+	V3270_PROPERTY_SESSION_NAME	= 4,	///< @brief Widget's session name.
+	V3270_PROPERTY_DYNAMIC		= 5		///< @brief Id of the first LIB3270 internal property.
+ };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -65,6 +69,15 @@
 
 		if(prop->set)
 			prop->set(window->host,g_value_get_string(value));
+
+	}
+	else if(prop_id >= klass->properties.type.uint)
+	{
+		const LIB3270_UINT_PROPERTY * prop = (lib3270_get_unsigned_properties_list()+(prop_id - klass->properties.type.uint));
+		debug("%s.%s.%s",__FUNCTION__,"unsigned",prop->name);
+
+		if(prop->set)
+			prop->set(window->host,g_value_get_uint(value));
 
 	}
 	else if(prop_id >= klass->properties.type.integer)
@@ -91,39 +104,47 @@
 		lib3270_set_toggle(window->host,prop_id - klass->properties.type.toggle, (int) g_value_get_boolean (value));
 
 	}
+	else
+	{
+		// Check for internal properties.
+		switch(prop_id) {
+		case V3270_PROPERTY_FONT_FAMILY:	// Font-family
+			v3270_set_font_family(GTK_WIDGET(object), g_value_get_string(value));
+			break;
 
-	// Check for internal properties.
- 	switch(prop_id) {
-	case PROP_FONT_FAMILY:	// Font-family
-		v3270_set_font_family(GTK_WIDGET(object), g_value_get_string(value));
-		break;
-
-	case PROP_CLIPBOARD:	// Clipboard
-		{
-			const gchar * name = g_value_get_string(value);
-			if(!*name) {
-				g_message("Setting default clipboard");
-				window->selection.target = GDK_SELECTION_CLIPBOARD;
-			}
-			else
+		case V3270_PROPERTY_CLIPBOARD:	// Clipboard
 			{
-				GdkAtom clipboard = gdk_atom_intern(name,TRUE);
-				if(clipboard == GDK_NONE)
-				{
-					g_warning("\"%s\" is not a valid clipboard name",name);
+				const gchar * name = g_value_get_string(value);
+				if(!*name) {
+					g_message("Setting default clipboard");
+					window->selection.target = GDK_SELECTION_CLIPBOARD;
 				}
 				else
-				{
-					window->selection.target = clipboard;
+			{
+					GdkAtom clipboard = gdk_atom_intern(name,TRUE);
+					if(clipboard == GDK_NONE)
+					{
+						g_warning("\"%s\" is not a valid clipboard name",name);
+					}
+					else
+					{
+						window->selection.target = clipboard;
+					}
 				}
 			}
+			break;
+
+		case V3270_PROPERTY_SESSION_NAME:	// Session Name
+			v3270_set_session_name(GTK_WIDGET(object), g_value_get_string(value));
+			break;
+
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+
 		}
-		break;
 
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+	}
 
- 	}
 
  }
 
@@ -141,6 +162,15 @@
 
 		if(prop->get)
 			g_value_set_string(value,prop->get(window->host));
+
+	}
+	else if(prop_id >= klass->properties.type.uint)
+	{
+		const LIB3270_UINT_PROPERTY * prop = (lib3270_get_unsigned_properties_list()+(prop_id - klass->properties.type.uint));
+		debug("%s.%s.%s",__FUNCTION__,"unsigned",prop->name);
+
+		if(prop->get)
+			g_value_set_uint(value,prop->get(window->host));
 
 	}
 	else if(prop_id >= klass->properties.type.integer)
@@ -167,23 +197,27 @@
 		g_value_set_boolean(value,lib3270_get_toggle(window->host,prop_id - klass->properties.type.toggle) ? TRUE : FALSE );
 
 	}
+	else
+	{
+		// Check for internal properties.
+		switch(prop_id) {
+		case V3270_PROPERTY_FONT_FAMILY:	// Font-family
+			g_value_set_string(value,v3270_get_font_family(GTK_WIDGET(object)));
+			break;
 
-	// Check for internal properties.
- 	switch(prop_id) {
-	case PROP_FONT_FAMILY:	// Font-family
-		g_value_set_string(value,v3270_get_font_family(GTK_WIDGET(object)));
-		break;
+		case V3270_PROPERTY_CLIPBOARD:	// Clipboard
+			g_value_take_string(value,gdk_atom_name(window->selection.target));
+			break;
 
-	case PROP_CLIPBOARD:	// Clipboard
-		g_value_take_string(value,gdk_atom_name(window->selection.target));
-		break;
+		case V3270_PROPERTY_SESSION_NAME:
+			g_value_set_string(value,v3270_get_session_name(GTK_WIDGET(object)));
+			break;
 
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 
- 	}
-
-
+		}
+	}
 
  }
 
@@ -243,8 +277,23 @@
 
 	g_object_class_install_property(
 		gobject_class,
-		PROP_FONT_FAMILY,
+		V3270_PROPERTY_FONT_FAMILY,
 		klass->properties.font_family
+	);
+
+	// Session name.
+	spec = g_param_spec_string(
+							"session_name",
+							"session_name",
+							_("TN3270 Session name"),
+							FALSE,
+							G_PARAM_READABLE|G_PARAM_WRITABLE
+						);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_SESSION_NAME,
+		spec
 	);
 
 	// Clipboard
@@ -258,14 +307,13 @@
 
 	g_object_class_install_property(
 		gobject_class,
-		PROP_CLIPBOARD,
+		V3270_PROPERTY_CLIPBOARD,
 		spec
 	);
 
 	//
 	// Create dynamic properties
-	klass->properties.count = PROP_DYNAMIC;
-
+	klass->properties.count = V3270_PROPERTY_DYNAMIC;
 
 	//
 	// Extract properties from LIB3270 control tables
@@ -308,7 +356,7 @@
 
 	}
 
-	// Creating integer properties.
+	// Creating signed integer properties.
 	const LIB3270_INT_PROPERTY * int_props = lib3270_get_int_properties_list();
 	klass->properties.type.integer = klass->properties.count;
 
@@ -325,11 +373,28 @@
 			0,			// Default
 			(int_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 		);
-	debug("Creating %u properties", (unsigned int) klass->properties.count);
 
+		v3270_install_property(gobject_class, klass->properties.count++, spec);
 
+	}
 
+	// Creating unsigned integer properties.
+	const LIB3270_UINT_PROPERTY * uint_props = lib3270_get_unsigned_properties_list();
+	klass->properties.type.uint = klass->properties.count;
 
+	for(ix = 0; uint_props[ix].name; ix++)
+	{
+		debug("Property %u=%s (unsigned)",(unsigned int) klass->properties.type.integer + ix, uint_props[ix].name);
+
+		spec = g_param_spec_uint(
+			uint_props[ix].name,
+			uint_props[ix].name,
+			uint_props[ix].description,
+			0,			// Minimo
+			UINT_MAX,	// Máximo
+			0,			// Default
+			(uint_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
+		);
 
 		v3270_install_property(gobject_class, klass->properties.count++, spec);
 

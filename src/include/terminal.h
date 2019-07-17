@@ -55,6 +55,7 @@ G_BEGIN_DECLS
 			guint toggle;
 			guint boolean;
 			guint integer;
+			guint uint;
 			guint str;
 		} type;
 

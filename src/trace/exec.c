@@ -98,6 +98,13 @@
 		}
 		break;
 
+	case G_TYPE_UINT:
+		{
+			g_value_set_uint(&val,atoi(value));
+			g_object_set_property(G_OBJECT(widget),name,&val);
+		}
+		break;
+
 	default:
 		lib3270_write_trace(v3270_get_session(widget),"%s has an unexpected value type\n",spec->name);
 
@@ -133,6 +140,10 @@
 
 	case G_TYPE_INT:
 		lib3270_write_trace(v3270_get_session(widget),"%s=%d\n",spec->name,g_value_get_int(&val));
+		break;
+
+	case G_TYPE_UINT:
+		lib3270_write_trace(v3270_get_session(widget),"%s=%u\n",spec->name,g_value_get_uint(&val));
 		break;
 
 	default:
