@@ -65,7 +65,7 @@ gchar * v3270_get_copy_as_text(v3270 * terminal)
 }
 
 
-LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget, const gchar *text, const gchar *encoding)
+LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const gchar *encoding)
 {
  	gchar 		* buffer 	= NULL;
  	H3270		* session 	= v3270_get_session(widget);
@@ -144,7 +144,13 @@ LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget, const gchar *text, const
 																_(  "Can't convert line %lu from %s to %s" ),(unsigned long) (f+1), encoding, charset);
 
 					gtk_window_set_title(GTK_WINDOW(dialog), _( "Charset error" ) );
-					gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s\n%s",error->message, ln[f]);
+
+					if(error)
+					{
+						gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s\n%s",error->message, ln[f]);
+						g_error_free(error);
+						error = NULL;
+					}
 
 					gtk_dialog_run(GTK_DIALOG (dialog));
 					gtk_widget_destroy(dialog);

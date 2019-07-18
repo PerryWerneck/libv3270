@@ -27,17 +27,35 @@
  *
  */
 
+ #include <windows.h>
  #include <clipboard.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void text_received(G_GNUC_UNUSED  GtkClipboard *clipboard, const gchar *text, GtkWidget *widget)
-{
-	v3270_paste_text(widget,text,"UTF-8");
-}
-
 LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 {
-	gtk_clipboard_request_text(gtk_widget_get_clipboard(widget,GDK_SELECTION_CLIPBOARD),(GtkClipboardTextReceivedFunc) text_received,(gpointer) widget);
-}
+	g_return_if_fail(GTK_IS_V3270(session));
 
+	if (!OpenClipboard(NULL))
+		return;
+
+	if (IsClipboardFormatAvailable(CF_TEXT))
+	{
+		// Got text formatted clipboard.
+		HGLOBAL hglb;
+
+		hglb = GetClipboardData(CF_TEXT);
+		if (hglb != NULL)
+		{
+			LPTSTR lptstr = GlobalLock(hglb);
+			if (lptstr != NULL)
+			{
+				v3270_input_text(widget,lptstr,"CP1252");
+				GlobalUnlock(hglb);
+			}
+		}
+	}
+
+	CloseClipboard();
+
+}

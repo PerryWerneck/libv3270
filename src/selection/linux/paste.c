@@ -27,32 +27,49 @@
  *
  */
 
- #include <windows.h>
  #include <clipboard.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
+static void text_received(G_GNUC_UNUSED  GtkClipboard *clipboard, const gchar *text, GtkWidget *widget)
 {
-	HGLOBAL hglb;
+	v3270_input_text(widget,text,"UTF-8");
+}
 
-	if (!IsClipboardFormatAvailable(CF_TEXT))
-		return;
+static gboolean has_target(const gchar *name, const GdkAtom *atoms, const gint n_atoms)
+{
+	gint ix;
 
-	if (!OpenClipboard(NULL))
-		return;
-
-	hglb = GetClipboardData(CF_TEXT);
-	if (hglb != NULL)
+	for(ix = 0; ix < n_atoms; ix++)
 	{
-		LPTSTR lptstr = GlobalLock(hglb);
-		if (lptstr != NULL)
-		{
-			v3270_paste_text(widget,lptstr,"CP1252");
-			GlobalUnlock(hglb);
-		}
+		if(!g_ascii_strcasecmp(name,gdk_atom_name(atoms[ix])))
+			return TRUE;
+
 	}
 
-	CloseClipboard();
+    return FALSE;
+}
+
+static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, GtkWidget *widget)
+{
+	if(has_target("application/x-" PACKAGE_NAME, atoms, n_atoms))
+	{
+		debug("Clipboard as TN3270 \"%s\" data",PACKAGE_NAME);
+		return;
+	}
+
+	// No special format available, request it as text.
+	gtk_clipboard_request_text(clipboard, (GtkClipboardTextReceivedFunc) text_received, (gpointer) widget);
 
 }
+
+LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
+{
+	g_return_if_fail(GTK_IS_V3270(widget));
+
+	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GTK_V3270(widget)->selection.target);
+
+	gtk_clipboard_request_targets(clipboard, (GtkClipboardTargetsReceivedFunc) targets_received, (gpointer) widget);
+
+}
+
