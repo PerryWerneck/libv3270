@@ -225,7 +225,11 @@
 		<Unit filename="src/terminal/windows/resources.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
+		<Unit filename="src/testprogram/private.h" />
 		<Unit filename="src/testprogram/testprogram.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/testprogram/toolbar.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/trace/exec.c">
