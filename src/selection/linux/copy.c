@@ -65,7 +65,11 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 			}
 			else
 			{
+#ifdef DEBUG
+				text = v3270_get_copy_as_html(terminal);
+#else
 				text = v3270_get_copy_as_text(terminal);
+#endif // DEBUG
 			}
 			gtk_selection_data_set_text(selection,text,-1);
 			g_free(text);
@@ -79,6 +83,20 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 			gtk_selection_data_set(
 				selection,
 				gdk_atom_intern_static_string("text/csv"),
+				8,
+				(guchar *) text,
+				strlen(text)
+			);
+		}
+		break;
+
+	case CLIPBOARD_TYPE_HTML:
+		{
+			g_autofree gchar *text = v3270_get_copy_as_html(terminal);
+			//debug("Selection:\n%s",text);
+			gtk_selection_data_set(
+				selection,
+				gdk_atom_intern_static_string("text/html"),
 				8,
 				(guchar *) text,
 				strlen(text)
@@ -110,7 +128,8 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 	// Reference: https://cpp.hotexamples.com/examples/-/-/g_list_insert_sorted/cpp-g_list_insert_sorted-function-examples.html
 	//
 	static const GtkTargetEntry internal_targets[] = {
-		{ "text/csv", 0, CLIPBOARD_TYPE_CSV }
+		{ "text/csv", 	0, CLIPBOARD_TYPE_CSV	},
+		{ "text/html",	0, CLIPBOARD_TYPE_HTML	}
 	};
 
 	GtkTargetList 	* list = gtk_target_list_new(internal_targets, G_N_ELEMENTS(internal_targets));

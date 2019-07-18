@@ -223,6 +223,11 @@ static void paste_clicked(GtkButton *button, GtkWidget *terminal)
 	v3270_paste(terminal);
 }
 
+static void copy_clicked(GtkButton *button, GtkWidget *terminal)
+{
+	v3270_copy_selection(terminal,V3270_SELECT_TEXT,FALSE);
+}
+
 static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
 {
 	GtkWidget * dialog	= v3270_dialog_new(terminal, _("Color setup"), _("_Save"));
@@ -302,6 +307,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 			{ "gtk-home",			G_CALLBACK(host_clicked),		"Configure host"				},
 			{ "gtk-print",			G_CALLBACK(print_clicked),		"Print screen contents"			},
 			{ "gtk-harddisk",		G_CALLBACK(ft_clicked),			"Open file transfer dialog"		},
+			{ "gtk-copy",			G_CALLBACK(copy_clicked),		"Copy data"						},
 			{ "gtk-paste",			G_CALLBACK(paste_clicked),		"Paste data"					}
 		};
 

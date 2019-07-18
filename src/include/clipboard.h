@@ -44,6 +44,7 @@
 	{
 		CLIPBOARD_TYPE_TEXT,
 		CLIPBOARD_TYPE_CSV,
+		CLIPBOARD_TYPE_HTML,
 	};
 
 	G_GNUC_INTERNAL void		  v3270_update_system_clipboard(GtkWidget *widget);
@@ -51,6 +52,7 @@
 
 	/// @brief Get formatted contents as single text.
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_text(v3270 * terminal);
+	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_html(v3270 * terminal);
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter);
 
 #endif // V3270_CLIPBOARD_H_INCLUDED

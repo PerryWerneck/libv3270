@@ -146,6 +146,12 @@
 		<Unit filename="src/selection/copy.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/selection/html.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/selection/linux/copy.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/selection/linux/paste.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -156,6 +162,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/selection/text.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/selection/windows/copy.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/selection/windows/paste.c">
