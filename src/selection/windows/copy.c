@@ -1,0 +1,149 @@
+/*
+ * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+ * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+ * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ *
+ * Copyright (C) <2008> <Banco do Brasil S.A.>
+ *
+ * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+ * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+ * Free Software Foundation.
+ *
+ * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+ * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+ * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+ * obter mais detalhes.
+ *
+ * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+ * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Este programa está nomeado como - e possui - linhas de código.
+ *
+ * Contatos:
+ *
+ * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
+ *
+ */
+
+ #include <clipboard.h>
+ #include <lib3270/selection.h>
+
+/*--[ Implement ]------------------------------------------------------------------------------------*/
+static void clipboard_clear(G_GNUC_UNUSED GtkClipboard *clipboard, G_GNUC_UNUSED  GObject *obj)
+{
+	v3270 * terminal = GTK_V3270(obj);
+
+	if(!lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_KEEP_SELECTED))
+	{
+		v3270_unselect(GTK_WIDGET(obj));
+		v3270_clear_selection(terminal);
+	}
+
+}
+
+static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionData *selection, guint target, GObject *obj)
+{
+	v3270 * terminal = GTK_V3270(obj);
+
+	if(!terminal->selection.blocks)
+	{
+		return;
+	}
+
+	switch(target)
+	{
+	case CLIPBOARD_TYPE_TEXT:   // Get clipboard contents as text
+		{
+			gchar *text;
+
+			if(terminal->selection.format == V3270_SELECT_TABLE)
+			{
+				text = v3270_get_copy_as_table(terminal,"\t");
+			}
+			else
+			{
+				text = v3270_get_copy_as_text(terminal);
+			}
+			gtk_selection_data_set_text(selection,text,-1);
+			g_free(text);
+		}
+		break;
+
+	case CLIPBOARD_TYPE_CSV:
+		{
+			g_autofree gchar *text = v3270_get_copy_as_table(terminal,";");
+			debug("Selection:\n%s",text);
+			gtk_selection_data_set(
+				selection,
+				gdk_atom_intern_static_string("text/csv"),
+				8,
+				(guchar *) text,
+				strlen(text)
+			);
+		}
+		break;
+
+	default:
+		g_warning("Unexpected clipboard type %d\n",target);
+	}
+}
+
+void v3270_update_system_clipboard(GtkWidget *widget)
+{
+	v3270 * terminal = GTK_V3270(widget);
+
+    if(!terminal->selection.blocks)
+    {
+    	// No clipboard data, return.
+		g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, FALSE);
+    	return;
+    }
+
+    // Has clipboard data, inform system.
+	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,terminal->selection.target);
+
+	// Create target list
+	//
+	// Reference: https://cpp.hotexamples.com/examples/-/-/g_list_insert_sorted/cpp-g_list_insert_sorted-function-examples.html
+	//
+	static const GtkTargetEntry internal_targets[] = {
+		{ "text/csv", 0, CLIPBOARD_TYPE_CSV }
+	};
+
+	GtkTargetList 	* list = gtk_target_list_new(internal_targets, G_N_ELEMENTS(internal_targets));
+	GtkTargetEntry	* targets;
+	int				  n_targets;
+
+	gtk_target_list_add_text_targets(list, CLIPBOARD_TYPE_TEXT);
+
+	targets = gtk_target_table_new_from_list(list, &n_targets);
+
+#ifdef DEBUG
+	{
+		int ix;
+		for(ix = 0; ix < n_targets; ix++) {
+			debug("target(%d)=\"%s\"",ix,targets[ix].target);
+		}
+	}
+#endif // DEBUG
+
+	if(gtk_clipboard_set_with_owner(
+			clipboard,
+			targets,
+			n_targets,
+			(GtkClipboardGetFunc)	clipboard_get,
+			(GtkClipboardClearFunc) clipboard_clear,
+			G_OBJECT(widget)
+		))
+	{
+		gtk_clipboard_set_can_store(clipboard,targets,1);
+	}
+
+	gtk_target_table_free(targets, n_targets);
+	gtk_target_list_unref(list);
+
+	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, TRUE);
+
+}

@@ -53,6 +53,5 @@
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_text(v3270 * terminal);
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter);
 
-
 #endif // V3270_CLIPBOARD_H_INCLUDED
 
