@@ -57,19 +57,8 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 	{
 	case CLIPBOARD_TYPE_TEXT:   // Get clipboard contents as text
 		{
-			gchar *text;
-
-#ifdef DEBUG
-			text = v3270_get_copy_as_html(terminal);
-#else
-			if(terminal->selection.format == V3270_SELECT_TABLE)
-				text = v3270_get_copy_as_table(terminal,"\t");
-			else
-				text = v3270_get_copy_as_text(terminal);
-#endif // DEBUG
-
+			g_autofree gchar *text = v3270_get_copy_as_text(terminal);
 			gtk_selection_data_set_text(selection,text,-1);
-			g_free(text);
 		}
 		break;
 

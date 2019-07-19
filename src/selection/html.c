@@ -147,18 +147,12 @@ static gchar * get_as_div(v3270 * terminal)
 static gchar * get_as_table(v3270 * terminal)
 {
 	GList				* element	= terminal->selection.blocks;
-	GString				* string	= g_string_new("");
+	GString				* string	= g_string_new("<table><tbody>");
 
 	unsigned int		  width		= lib3270_get_width(terminal->host);
 	g_autofree gchar	* line		= g_malloc0(width+1);
 
 	GList 				* column;
-
-	g_string_append_printf(
-		string,
-		"<table style=\"font-family:%s,monospace\"><tbody>",
-			terminal->font.family
-	);
 
 	// Get contents
 	GList * columns = v3270_getColumns_from_selection(terminal);
@@ -219,7 +213,6 @@ static gchar * get_as_table(v3270 * terminal)
 	return g_string_free(string,FALSE);
 
 }
-
 
 gchar * v3270_get_copy_as_html(v3270 * terminal)
 {
