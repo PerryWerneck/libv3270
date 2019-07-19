@@ -47,8 +47,17 @@
 		CLIPBOARD_TYPE_HTML,
 	};
 
+	struct ColumnDescription
+	{
+		unsigned int begin;
+		unsigned int width;
+	};
+
+
 	G_GNUC_INTERNAL void		  v3270_update_system_clipboard(GtkWidget *widget);
 	G_GNUC_INTERNAL const char	* v3270_update_selected_text(GtkWidget *widget, gboolean cut);
+	G_GNUC_INTERNAL GList		* v3270_getColumns_from_selection(v3270 * terminal);
+
 
 	/// @brief Get formatted contents as single text.
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_text(v3270 * terminal);

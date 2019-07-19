@@ -31,11 +31,6 @@
  #include <ctype.h>
  #include <lib3270/selection.h>
 
- struct ColumnDescription {
-	unsigned int begin;
-	unsigned int width;
- };
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /// @brief Check if column has data.
@@ -70,7 +65,7 @@ static gboolean hasDataOnColumn(v3270 * terminal, unsigned int col)
 }
 
 /// @brief Get column list.
-GList * getColumns(v3270 * terminal)
+GList * v3270_getColumns_from_selection(v3270 * terminal)
 {
 	unsigned int col = 0;
 	GList *rc = NULL;
@@ -108,7 +103,7 @@ gchar * v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter)
 {
 	GString	* string = g_string_new("");
 
-	GList * columns = getColumns(terminal);
+	GList * columns = v3270_getColumns_from_selection(terminal);
 
 	debug("columns=%p",columns);
 

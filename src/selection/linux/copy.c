@@ -59,18 +59,15 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 		{
 			gchar *text;
 
-			if(terminal->selection.format == V3270_SELECT_TABLE)
-			{
-				text = v3270_get_copy_as_table(terminal,"\t");
-			}
-			else
-			{
 #ifdef DEBUG
-				text = v3270_get_copy_as_html(terminal);
+			text = v3270_get_copy_as_html(terminal);
 #else
+			if(terminal->selection.format == V3270_SELECT_TABLE)
+				text = v3270_get_copy_as_table(terminal,"\t");
+			else
 				text = v3270_get_copy_as_text(terminal);
 #endif // DEBUG
-			}
+
 			gtk_selection_data_set_text(selection,text,-1);
 			g_free(text);
 		}

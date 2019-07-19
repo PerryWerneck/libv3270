@@ -143,8 +143,92 @@ static gchar * get_as_div(v3270 * terminal)
 
 }
 
+/// @brief Get formatted contents as HTML TABLE.
+static gchar * get_as_table(v3270 * terminal)
+{
+	GList				* element	= terminal->selection.blocks;
+	GString				* string	= g_string_new("");
+
+	unsigned int		  width		= lib3270_get_width(terminal->host);
+	g_autofree gchar	* line		= g_malloc0(width+1);
+
+	GList 				* column;
+
+	g_string_append_printf(
+		string,
+		"<table style=\"font-family:%s,monospace\"><tbody>",
+			terminal->font.family
+	);
+
+	// Get contents
+	GList * columns = v3270_getColumns_from_selection(terminal);
+
+	while(element)
+	{
+		lib3270_selection * block = ((lib3270_selection *) element->data);
+
+		unsigned int row, col, src = 0;
+
+		for(row=0; row < block->bounds.height; row++)
+		{
+
+			// Build text line with selected data.
+			memset(line,' ',width);
+			for(col=0; col<block->bounds.width; col++)
+			{
+				if(block->contents[src].flags & LIB3270_ATTR_SELECTED)
+				{
+					line[block->bounds.col+col] = block->contents[src].chr;
+				}
+
+				src++;
+			}
+
+			g_string_append(string,"<tr>");
+
+			// Extract columns
+			for(column = columns; column; column = column->next)
+			{
+				struct ColumnDescription * columndescription = (struct ColumnDescription *) column->data;
+
+				g_string_append_printf(string,"<td>");
+				g_string_append_len(string,line+columndescription->begin,columndescription->width);
+				g_string_append(string,"</td>");
+
+			}
+
+			g_string_append(string,"</tr>");
+
+#ifdef DEBUG
+			g_string_append_c(string,'\n');
+#endif // DEBUG
+
+		}
+
+		element = g_list_next(element);
+	}
+
+	g_list_free_full(columns,g_free);
+
+#ifdef DEBUG
+	g_string_append_c(string,'\n');
+#endif // DEBUG
+
+	g_string_append(string,"</tbody></table>");
+
+	return g_string_free(string,FALSE);
+
+}
+
+
 gchar * v3270_get_copy_as_html(v3270 * terminal)
 {
-	g_autofree char * text = get_as_div(terminal);
+	g_autofree char * text = NULL;
+
+	if(terminal->selection.format == V3270_SELECT_TABLE)
+		text = get_as_table(terminal);
+	else
+		text = get_as_div(terminal);
+
 	return g_convert(text, -1, "UTF-8", lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 }
