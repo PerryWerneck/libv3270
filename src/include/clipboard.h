@@ -45,14 +45,43 @@
 		CLIPBOARD_TYPE_TEXT,
 		CLIPBOARD_TYPE_CSV,
 		CLIPBOARD_TYPE_HTML,
+		CLIPBOARD_TYPE_V3270_UNPROTECTED
 	};
 
+	/// @brief Column from selection.
 	struct ColumnDescription
 	{
 		unsigned int begin;
 		unsigned int width;
 	};
 
+	/// @brief Selection data for sending to another application.
+	struct SelectionHeader
+	{
+		unsigned int length;		///< @brief Length of the data block.
+		unsigned int build;			///< @brief V3270 build id.
+	};
+
+	/// @brief Header of a list of fields.
+	struct SelectionBlockHeader
+	{
+		/// @brief Cursor address.
+		unsigned int cursor_address;
+
+		/// @brief Number of records;
+		unsigned int records;
+	};
+
+	/// @brief Header for a field prefix.
+	struct SelectionFieldHeader
+	{
+		/// @brief Field address.
+		unsigned short baddr;
+
+		/// @brief Field length.
+		unsigned short length;
+
+	};
 
 	G_GNUC_INTERNAL void		  v3270_update_system_clipboard(GtkWidget *widget);
 	G_GNUC_INTERNAL const char	* v3270_update_selected_text(GtkWidget *widget, gboolean cut);
@@ -63,6 +92,7 @@
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_text(v3270 * terminal);
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_html(v3270 * terminal);
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter);
+	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_data_block(v3270 * terminal);
 
 #endif // V3270_CLIPBOARD_H_INCLUDED
 

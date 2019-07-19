@@ -90,6 +90,19 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 		}
 		break;
 
+	case CLIPBOARD_TYPE_V3270_UNPROTECTED:
+		{
+			g_autofree gchar *data = v3270_get_copy_as_data_block(terminal);
+			gtk_selection_data_set(
+				selection,
+				gdk_atom_intern_static_string("application/x-v3270-unprotected"),
+				8,
+				(guchar *) data,
+				((struct SelectionHeader *) data)->length
+			);
+		}
+		break;
+
 	default:
 		g_warning("Unexpected clipboard type %d\n",target);
 	}
@@ -114,8 +127,9 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 	// Reference: https://cpp.hotexamples.com/examples/-/-/g_list_insert_sorted/cpp-g_list_insert_sorted-function-examples.html
 	//
 	static const GtkTargetEntry internal_targets[] = {
-		{ "text/csv", 	0, CLIPBOARD_TYPE_CSV	},
-		{ "text/html",	0, CLIPBOARD_TYPE_HTML	}
+		{ "text/csv",					 		0, CLIPBOARD_TYPE_CSV				},
+		{ "text/html",							0, CLIPBOARD_TYPE_HTML				},
+		{ "application/x-v3270-unprotected",	0, CLIPBOARD_TYPE_V3270_UNPROTECTED	},
 	};
 
 	GtkTargetList 	* list = gtk_target_list_new(internal_targets, G_N_ELEMENTS(internal_targets));
@@ -153,3 +167,4 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, TRUE);
 
 }
+
