@@ -49,7 +49,7 @@ static gboolean hasDataOnColumn(v3270 * terminal, unsigned int col)
 
 			for(row = 0; row < block->bounds.height; row++)
 			{
-				if( (block->contents[pos].flags & LIB3270_ATTR_SELECTED) && !isspace(block->contents[pos].chr))
+				if( (block->contents[pos].attribute.visual & LIB3270_ATTR_SELECTED) && !isspace(block->contents[pos].chr))
 				{
 					return TRUE;
 				}
@@ -139,7 +139,7 @@ gchar * v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter)
 			memset(line,' ',width);
 			for(col=0; col<block->bounds.width; col++)
 			{
-				if(block->contents[src].flags & LIB3270_ATTR_SELECTED)
+				if(block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED)
 				{
 					line[block->bounds.col+col] = block->contents[src].chr;
 				}

@@ -47,7 +47,7 @@ static gchar * get_as_text(v3270 * terminal)
 		{
 			for(col=0; col<block->bounds.width; col++)
 			{
-				if(block->contents[src].flags & LIB3270_ATTR_SELECTED)
+				if(block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED)
 					g_string_append_c(string,block->contents[src].chr);
 
 				src++;

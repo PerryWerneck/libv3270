@@ -69,7 +69,7 @@ static gchar * get_as_div(v3270 * terminal)
 	{
 		lib3270_selection * block = ((lib3270_selection *) element->data);
 		unsigned int row, col, src = 0;
-		unsigned short flags = block->contents[0].flags;
+		unsigned short flags = block->contents[0].attribute.visual;
 
 		get_element_colors(terminal,flags,&fgColor,&bgColor);
 
@@ -91,9 +91,9 @@ static gchar * get_as_div(v3270 * terminal)
 		{
 			for(col=0; col<block->bounds.width; col++)
 			{
-				if(flags != block->contents[src].flags)
+				if(flags != block->contents[src].attribute.visual)
 				{
-					flags = block->contents[src].flags;
+					flags = block->contents[src].attribute.visual;
 
 					get_element_colors(terminal,flags,&fgColor,&bgColor);
 
@@ -110,7 +110,7 @@ static gchar * get_as_div(v3270 * terminal)
 
 				}
 
-				if(block->contents[src].flags & LIB3270_ATTR_SELECTED && !isspace(block->contents[src].chr))
+				if(block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED && !isspace(block->contents[src].chr))
 				{
 					g_string_append_c(string,block->contents[src].chr);
 				}
@@ -170,7 +170,7 @@ static gchar * get_as_table(v3270 * terminal)
 			memset(line,' ',width);
 			for(col=0; col<block->bounds.width; col++)
 			{
-				if(block->contents[src].flags & LIB3270_ATTR_SELECTED)
+				if(block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED)
 				{
 					line[block->bounds.col+col] = block->contents[src].chr;
 				}
