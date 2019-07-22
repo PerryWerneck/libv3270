@@ -201,6 +201,27 @@
 			v3270_copy_selection(widget, V3270_SELECT_TABLE, FALSE);
 		}
 
+	}
+
+ 	if(g_str_has_prefix(cmdline,"paste"))
+	{
+
+		gchar * arg = cmdline+5;
+		g_strstrip(arg);
+
+		if(!*arg)
+		{
+			v3270_paste(widget);
+		}
+		else if(!g_ascii_strcasecmp(arg,"text"))
+		{
+			v3270_paste_text(widget);
+		}
+		else
+		{
+			return errno = EINVAL;
+		}
+
 		return 0;
 	}
 
