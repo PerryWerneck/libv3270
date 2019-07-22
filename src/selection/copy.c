@@ -53,14 +53,6 @@
 	terminal->selection.format = format;
 	do_copy(terminal,cut);
 
-#ifdef DEBUG
-	{
-		// DEBUG DATA BLOCK
-		g_free(v3270_get_copy_as_data_block(terminal));
-	}
-
-#endif // DEBUG
-
 	v3270_update_system_clipboard(widget);
 
  }

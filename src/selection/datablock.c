@@ -71,7 +71,7 @@ static GList * getUnprotected(H3270 *hSession, const lib3270_selection *selectio
 
 				struct SelectionFieldHeader * field = (struct SelectionFieldHeader *) g_malloc0(sizeof(struct SelectionFieldHeader) + length);
 
-				field->baddr = lib3270_translate_to_address(hSession,row + selection->bounds.row,start + selection->bounds.col);
+				field->baddr = lib3270_translate_to_address(hSession,row + selection->bounds.row + 1,start + selection->bounds.col + 1);
 				field->length = length;
 
 				// Copy string
@@ -125,6 +125,7 @@ gchar * v3270_get_copy_as_data_block(v3270 * terminal)
 		}
 
 		// Setup block header
+		debug("Creating block at offset %u", header->length);
 		struct SelectionBlockHeader * blockheader = (struct SelectionBlockHeader *) (((unsigned char *) header) + header->length);
 		header->length += sizeof(* blockheader);
 
@@ -149,6 +150,7 @@ gchar * v3270_get_copy_as_data_block(v3270 * terminal)
 
 			memcpy((ptr+header->length), value->data, length);
 			header->length += length;
+			blockheader->records++;
 
 		}
 
@@ -157,4 +159,88 @@ gchar * v3270_get_copy_as_data_block(v3270 * terminal)
 	}
 
 	return (gchar *) g_realloc((gpointer) header, header->length+1);
+}
+
+gboolean v3270_set_from_data_block(v3270 * terminal, const struct SelectionHeader *selection)
+{
+	const unsigned char * raw_data = (const unsigned char *) selection;
+	unsigned int		  raw_pos = sizeof(struct SelectionHeader);
+	unsigned int		  column;
+	unsigned int		  record;
+
+	while(raw_pos < selection->length)
+	{
+		const struct SelectionBlockHeader * block = (const struct SelectionBlockHeader *) (raw_data + raw_pos);
+		debug("Processing block at offset %u with %u elements", raw_pos, block->records);
+
+		raw_pos += sizeof(struct SelectionBlockHeader);
+		gboolean found = TRUE;
+
+		for(record = 0; record < block->records; record++)
+		{
+			const struct SelectionFieldHeader * field = (struct SelectionFieldHeader *) (raw_data + raw_pos);
+
+			debug("Analizing field at %u: addr=%u length=%u",
+				raw_pos,
+				field->baddr,
+				field->length
+			);
+
+			raw_pos += (sizeof(struct SelectionFieldHeader) + field->length);
+			for(column = 0; column < field->length; column++)
+			{
+                if(lib3270_is_protected(terminal->host,field->baddr+column))
+				{
+					debug("Column %d is protected",column);
+					found = FALSE;
+					break;
+				}
+			}
+		}
+
+		if(found && block->records)
+		{
+			// The current datablock is valid, paste it!
+			raw_data = (const unsigned char *) (block+1);
+			raw_pos	 = 0;
+
+			debug("Found valid screen with %u elements", block->records);
+
+			for(record = 0; record < block->records; record++)
+			{
+				const struct SelectionFieldHeader * field = (struct SelectionFieldHeader *) (raw_data + raw_pos);
+
+				debug("Processing field at %u: addr=%u length=%u",
+					raw_pos,
+					field->baddr,
+					field->length
+				);
+
+				raw_pos += (sizeof(struct SelectionFieldHeader) + field->length);
+
+				debug(
+					"Pasting record %u baddr=%u length=%u",
+						record,
+						field->baddr,
+						(unsigned int) field->length
+				);
+
+				if(lib3270_set_string_at_address(terminal->host, field->baddr,(const unsigned char *) (field+1), field->length) < 0)
+				{
+					debug("Can't set string baddr=%u length=%u errno=%d %s",
+							field->baddr,
+							field->length,
+							errno,
+							strerror(errno)
+					);
+					return FALSE;
+				}
+			}
+
+			return TRUE;
+		}
+
+	}
+
+	return FALSE;
 }

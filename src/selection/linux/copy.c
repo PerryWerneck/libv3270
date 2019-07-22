@@ -95,7 +95,7 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 			g_autofree gchar *data = v3270_get_copy_as_data_block(terminal);
 			gtk_selection_data_set(
 				selection,
-				gdk_atom_intern_static_string("application/x-v3270-unprotected"),
+				GTK_V3270_GET_CLASS(obj)->clipboard_formatted,
 				8,
 				(guchar *) data,
 				((struct SelectionHeader *) data)->length

@@ -64,6 +64,9 @@ G_BEGIN_DECLS
     // Cursors
 	GdkCursor * cursors[LIB3270_POINTER_COUNT];
 
+	// Atoms
+	GdkAtom clipboard_formatted;	///< @brief Format for internal clipboard cut & paste.
+
 	// Signals
 	void (*activate)(GtkWidget *widget);
 	void (*toggle_changed)(v3270 *widget,LIB3270_TOGGLE toggle_id,gboolean toggle_state,const gchar *toggle_name);

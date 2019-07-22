@@ -36,30 +36,139 @@ static void text_received(G_GNUC_UNUSED  GtkClipboard *clipboard, const gchar *t
 	v3270_input_text(widget,text,"UTF-8");
 }
 
-static gboolean has_target(const gchar *name, const GdkAtom *atoms, const gint n_atoms)
+static gboolean has_target(const GdkAtom atom, const GdkAtom *atoms, const gint n_atoms)
 {
 	gint ix;
 
 	for(ix = 0; ix < n_atoms; ix++)
 	{
-		if(!g_ascii_strcasecmp(name,gdk_atom_name(atoms[ix])))
+		if(atom == atoms[ix])
 			return TRUE;
-
 	}
 
     return FALSE;
 }
 
+static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *selection_data, GtkWidget *widget)
+{
+	const struct SelectionHeader *selection = (const struct SelectionHeader *) gtk_selection_data_get_data(selection_data);
+
+	v3270 * terminal = GTK_V3270(widget);
+
+	debug(
+		"Received formatted data with %u bytes: Build=%u rows=%u cols=%u",
+			selection->length,
+			selection->build,
+			selection->rows,
+			selection->cols
+	);
+
+	if(selection->cols != lib3270_get_width(terminal->host) || selection->rows != lib3270_get_height(terminal->host))
+	{
+		GtkWidget * dialog =
+					gtk_message_dialog_new(
+						GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+						GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_INFO,
+						GTK_BUTTONS_NONE,
+						_("Not the same terminal type")
+					);
+
+
+		gtk_window_set_title(GTK_WINDOW(dialog),_("Can't paste"));
+
+		gtk_dialog_add_buttons(
+			GTK_DIALOG (dialog),
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Paste as text"), GTK_RESPONSE_APPLY,
+			NULL
+		);
+
+		gtk_dialog_set_default_response(GTK_DIALOG (dialog),GTK_RESPONSE_APPLY);
+
+		gint response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+		gtk_widget_destroy(dialog);
+
+		if(response == GTK_RESPONSE_APPLY)
+		{
+			gtk_clipboard_request_text(
+						clipboard,
+						(GtkClipboardTextReceivedFunc) text_received,
+						(gpointer) widget
+			);
+		}
+
+		return;
+
+	}
+
+	if(!v3270_set_from_data_block(terminal, selection))
+	{
+		GtkWidget * dialog =
+					gtk_message_dialog_new(
+						GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+						GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_INFO,
+						GTK_BUTTONS_NONE,
+						_("Unable to paste formatted data")
+					);
+
+
+		gtk_window_set_title(GTK_WINDOW(dialog),_("Can't paste"));
+
+		gtk_dialog_add_buttons(
+			GTK_DIALOG (dialog),
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Paste as text"), GTK_RESPONSE_APPLY,
+			NULL
+		);
+
+		gtk_dialog_set_default_response(GTK_DIALOG (dialog),GTK_RESPONSE_APPLY);
+
+		gint response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+		gtk_widget_destroy(dialog);
+
+		if(response == GTK_RESPONSE_APPLY)
+		{
+			gtk_clipboard_request_text(
+						clipboard,
+						(GtkClipboardTextReceivedFunc) text_received,
+						(gpointer) widget
+			);
+		}
+
+		return;
+
+
+	}
+
+
+}
+
 static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, GtkWidget *widget)
 {
-	if(has_target("application/x-" PACKAGE_NAME, atoms, n_atoms))
+	if(has_target(GTK_V3270_GET_CLASS(widget)->clipboard_formatted,atoms,n_atoms))
 	{
-		debug("Clipboard as TN3270 \"%s\" data",PACKAGE_NAME);
+		debug("Clipboard as TN3270 \"%s\" data",gdk_atom_name(GTK_V3270_GET_CLASS(widget)->clipboard_formatted));
+
+		gtk_clipboard_request_contents(
+			clipboard,
+			GTK_V3270_GET_CLASS(widget)->clipboard_formatted,
+			(GtkClipboardReceivedFunc) formatted_received,
+			(gpointer) widget
+		);
+
 		return;
 	}
 
 	// No special format available, request it as text.
-	gtk_clipboard_request_text(clipboard, (GtkClipboardTextReceivedFunc) text_received, (gpointer) widget);
+	gtk_clipboard_request_text(
+				clipboard,
+				(GtkClipboardTextReceivedFunc) text_received,
+				(gpointer) widget
+	);
 
 }
 
