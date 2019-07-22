@@ -60,6 +60,8 @@
 	{
 		unsigned int length;		///< @brief Length of the data block.
 		unsigned int build;			///< @brief V3270 build id.
+		unsigned int rows;			///< @brief Terminal rows.
+		unsigned int cols;			///< @brief Terminal cols.
 	};
 
 	/// @brief Header of a list of fields.

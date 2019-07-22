@@ -35,7 +35,7 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /// @brief Get a list of all selected and unprotected contents.
-static GList * getUnprotected(const lib3270_selection *selection)
+static GList * getUnprotected(H3270 *hSession, const lib3270_selection *selection)
 {
 	GList * list = NULL;
 	unsigned int row;
@@ -48,14 +48,14 @@ static GList * getUnprotected(const lib3270_selection *selection)
 		// Find selected and unprotected entries.
 		while(col < selection->bounds.width)
 		{
-			if((element[col].attribute.visual & LIB3270_ATTR_SELECTED) && !(element[col].attribute.field & LIB3270_FIELD_ATTRIBUTE_PROTECT))
+			if((element[col].attribute.visual & LIB3270_ATTR_SELECTED) && !((element[col].attribute.field & LIB3270_FIELD_ATTRIBUTE_PROTECT) || (element[col].attribute.visual & LIB3270_ATTR_MARKER)))
 			{
 				// Element is selected and not protected, get the length.
 				unsigned short start = col;
 				unsigned short length = 0;
 				while(col < selection->bounds.width)
 				{
-					if( !(element[col].attribute.visual & LIB3270_ATTR_SELECTED) || (element[col].attribute.field & LIB3270_FIELD_ATTRIBUTE_PROTECT))
+					if( !(element[col].attribute.visual & (LIB3270_ATTR_SELECTED|LIB3270_ATTR_MARKER)) || (element[col].attribute.field & LIB3270_FIELD_ATTRIBUTE_PROTECT))
 						break;
 
 					col++;
@@ -68,6 +68,22 @@ static GList * getUnprotected(const lib3270_selection *selection)
 					start + selection->bounds.col,
 					(unsigned int) length
 				);
+
+				struct SelectionFieldHeader * field = (struct SelectionFieldHeader *) g_malloc0(sizeof(struct SelectionFieldHeader) + length);
+
+				field->baddr = lib3270_translate_to_address(hSession,row + selection->bounds.row,start + selection->bounds.col);
+				field->length = length;
+
+				// Copy string
+				unsigned char *ptr = (unsigned char *) (field+1);
+				unsigned short ix;
+				for(ix=0;ix < field->length; ix++)
+				{
+					ptr[ix] = element[start+ix].chr;
+				}
+
+				// Add allocated block in the list
+				list = g_list_append(list, (gpointer) field);
 
 			}
 			else
@@ -94,6 +110,7 @@ gchar * v3270_get_copy_as_data_block(v3270 * terminal)
 	// Initialize header.
 	header->build 	= BUILD_DATE;
 	header->length	= sizeof(struct SelectionHeader);
+	lib3270_get_screen_size(terminal->host, &header->rows, &header->cols);
 
 	// Insert elements.
 	for(element = terminal->selection.blocks; element; element = element->next)
@@ -115,8 +132,25 @@ gchar * v3270_get_copy_as_data_block(v3270 * terminal)
 		blockheader->records = 0;
 
 		// Get values.
-		GList * values = getUnprotected((const lib3270_selection *) element->data);
+		GList * values = getUnprotected(terminal->host, (const lib3270_selection *) element->data);
+		GList * value;
 
+		for(value = values; value; value = value->next)
+		{
+			size_t length = (sizeof(struct SelectionFieldHeader) + ((struct SelectionFieldHeader *) value->data)->length);
+
+			if( (header->length+length) >= szBlock )
+			{
+				szBlock += ALLOCATION_BLOCK_LENGTH + header->length + length;
+				header = (struct SelectionHeader *) g_realloc(header,szBlock+1);
+			}
+
+			unsigned char *ptr = ((unsigned char *) header);
+
+			memcpy((ptr+header->length), value->data, length);
+			header->length += length;
+
+		}
 
 		g_list_free_full(values,g_free);
 
