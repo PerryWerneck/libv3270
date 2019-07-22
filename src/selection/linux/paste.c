@@ -182,3 +182,16 @@ LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 
 }
 
+LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget)
+{
+	g_return_if_fail(GTK_IS_V3270(widget));
+	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GTK_V3270(widget)->selection.target);
+
+	gtk_clipboard_request_text(
+				clipboard,
+				(GtkClipboardTextReceivedFunc) text_received,
+				(gpointer) widget
+	);
+
+}
+

@@ -212,6 +212,7 @@
  LIB3270_EXPORT void			  v3270_append_selection(GtkWidget *widget, gboolean cut);
 
  LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget);
+ LIB3270_EXPORT void 			  v3270_paste_text(GtkWidget *widget);
  LIB3270_EXPORT void 			  v3270_input_text(GtkWidget *widget, const gchar *text, const gchar *encoding);
 
  // Colors
