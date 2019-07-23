@@ -219,11 +219,6 @@ gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, G_GNUC_UNUSED g
 	return FALSE;
 }
 
-static void loghandler(G_GNUC_UNUSED H3270 *session, const char *module, int rc, const char *fmt, va_list args)
-{
-	g_logv(module,rc ? G_LOG_LEVEL_WARNING : G_LOG_LEVEL_MESSAGE, fmt, args);
-}
-
 static void v3270_toggle_changed(G_GNUC_UNUSED v3270 *widget, G_GNUC_UNUSED LIB3270_TOGGLE toggle_id, G_GNUC_UNUSED gboolean toggle_state, G_GNUC_UNUSED const gchar *toggle_name)
 {
 }
@@ -252,8 +247,6 @@ static void v3270_class_init(v3270Class *klass)
 
 	// Setup widget key bindings
 	gtk_binding_entry_skip(binding,GDK_F10,0);
-
-	lib3270_set_log_handler(loghandler);
 
 	// Object methods
 	gobject_class->finalize							= finalize;
