@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como selection.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -32,9 +32,9 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
+LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget)
 {
-	g_return_if_fail(GTK_IS_V3270(session));
+	g_return_if_fail(GTK_IS_V3270(widget));
 
 	if (!OpenClipboard(NULL))
 		return;
@@ -58,4 +58,9 @@ LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 
 	CloseClipboard();
 
+}
+
+LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
+{
+	v3270_paste(widget);
 }
