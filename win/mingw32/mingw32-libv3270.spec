@@ -67,7 +67,7 @@ BuildRequires:	mingw32(pkg:gtk+-win32-3.0)
 BuildRequires:	mingw32(lib:iconv)
 BuildRequires:	mingw32(lib:intl)
 
-BuildRequires:	mingw32-lib3270-%{_libvrs}-devel
+BuildRequires:	mingw32-lib3270-devel = %{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %description
 

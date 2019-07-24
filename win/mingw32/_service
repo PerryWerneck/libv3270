@@ -5,7 +5,7 @@
         <param name="changesgenerate">enable</param>
 		<param name="sslverify">disable</param>
 		<param name="versionformat">@PARENT_TAG@</param>
-		<param name="url">http://softwarepublico.gov.br/gitlab/pw3270/libv3270.git</param>
+		<param name="url">https://github.com/PerryWerneck/libv3270.git</param>
 		<param name="scm">git</param>
 	</service>
 
@@ -13,7 +13,7 @@
 	<!-- service name="extract_file">
 		<param name="archive">*.tar</param>
 		<param name="files">*/win/mingw32/libv3270.spec</param>
-		<param name="outfilename">mingw32-libv3270-5_2.spec</param>
+		<param name="outfilename">mingw32-libv3270.spec</param>
 	</service -->
 
 	<service name="recompress">
