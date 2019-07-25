@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como - e possui - linhas de código.
+ * Este programa está nomeado como - possui - linhas de código.
  *
  * Contatos:
  *
@@ -31,6 +31,7 @@
  #include <lib3270/selection.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
+
 static void clipboard_clear(G_GNUC_UNUSED GtkClipboard *clipboard, G_GNUC_UNUSED  GObject *obj)
 {
 	v3270 * terminal = GTK_V3270(obj);
@@ -56,18 +57,8 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 	{
 	case CLIPBOARD_TYPE_TEXT:   // Get clipboard contents as text
 		{
-			gchar *text;
-
-			if(terminal->selection.format == V3270_SELECT_TABLE)
-			{
-				text = v3270_get_copy_as_table(terminal,"\t");
-			}
-			else
-			{
-				text = v3270_get_copy_as_text(terminal);
-			}
+			g_autofree gchar *text = v3270_get_copy_as_text(terminal);
 			gtk_selection_data_set_text(selection,text,-1);
-			g_free(text);
 		}
 		break;
 
@@ -81,6 +72,33 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 				8,
 				(guchar *) text,
 				strlen(text)
+			);
+		}
+		break;
+
+	case CLIPBOARD_TYPE_HTML:
+		{
+			g_autofree gchar *text = v3270_get_copy_as_html(terminal);
+			//debug("Selection:\n%s",text);
+			gtk_selection_data_set(
+				selection,
+				gdk_atom_intern_static_string("text/html"),
+				8,
+				(guchar *) text,
+				strlen(text)
+			);
+		}
+		break;
+
+	case CLIPBOARD_TYPE_V3270_UNPROTECTED:
+		{
+			g_autofree gchar *data = v3270_get_copy_as_data_block(terminal);
+			gtk_selection_data_set(
+				selection,
+				GTK_V3270_GET_CLASS(obj)->clipboard_formatted,
+				8,
+				(guchar *) data,
+				((struct SelectionHeader *) data)->length
 			);
 		}
 		break;
@@ -109,7 +127,9 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 	// Reference: https://cpp.hotexamples.com/examples/-/-/g_list_insert_sorted/cpp-g_list_insert_sorted-function-examples.html
 	//
 	static const GtkTargetEntry internal_targets[] = {
-		{ "text/csv", 0, CLIPBOARD_TYPE_CSV }
+		{ "text/csv",					 		0, CLIPBOARD_TYPE_CSV				},
+		{ "text/html",							0, CLIPBOARD_TYPE_HTML				},
+		{ "application/x-v3270-unprotected",	0, CLIPBOARD_TYPE_V3270_UNPROTECTED	},
 	};
 
 	GtkTargetList 	* list = gtk_target_list_new(internal_targets, G_N_ELEMENTS(internal_targets));
@@ -147,3 +167,4 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, TRUE);
 
 }
+

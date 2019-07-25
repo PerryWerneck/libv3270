@@ -92,6 +92,10 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),terminal,gtk_label_new("Terminal"));
 
+#ifdef _WIN32
+		v3270_set_font_family(terminal,"Droid Sans Mono");
+#endif // _WIN32
+
 	}
 
 	// Create trace window
