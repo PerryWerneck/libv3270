@@ -58,6 +58,11 @@
 	lib3270_disconnect(v3270_get_session(terminal));
  }
 
+static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ {
+ 	lib3270_save_all(v3270_get_session(terminal),NULL);
+ }
+
  static void ft_clicked(GtkButton *button, GtkWidget *terminal)
  {
 	/*
@@ -175,7 +180,8 @@
 		{ "gtk-print",			G_CALLBACK(print_clicked),		"Print screen contents"			},
 		{ "gtk-harddisk",		G_CALLBACK(ft_clicked),			"Open file transfer dialog"		},
 		{ "gtk-copy",			G_CALLBACK(copy_clicked),		"Copy data"						},
-		{ "gtk-paste",			G_CALLBACK(paste_clicked),		"Paste data"					}
+		{ "gtk-paste",			G_CALLBACK(paste_clicked),		"Paste data"					},
+		{ "gtk-save",			G_CALLBACK(save_all_clicked),	"Save screen"					}
 	};
 
 	GtkWidget * toolbar = gtk_toolbar_new();

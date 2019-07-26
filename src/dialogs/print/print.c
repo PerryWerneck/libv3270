@@ -210,7 +210,7 @@
 
 
  	// Setup defaults
-    widget->mode 			= LIB3270_PRINT_ALL;
+    widget->mode 			= LIB3270_CONTENT_ALL;
     widget->show_selection	= FALSE;
     widget->font.name		= NULL; // g_strdup(v3270_default_font);
     widget->contents.width	= 80;
@@ -219,7 +219,7 @@
 
  }
 
-V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT_MODE mode)
+V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
@@ -237,7 +237,7 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 
 /*--[ Convenience ]----------------------------------------------------------------------------------*/
 
- int v3270_print(GtkWidget *widget, LIB3270_PRINT_MODE mode, GError **error)
+ int v3270_print(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, GError **error)
  {
  	if(*error)
 	{
@@ -262,26 +262,26 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 
  int v3270_print_all(GtkWidget *widget, GError **error)
  {
-	return v3270_print(widget,LIB3270_PRINT_ALL,error);
+	return v3270_print(widget,LIB3270_CONTENT_ALL,error);
  }
 
  int v3270_print_selected(GtkWidget *widget, GError **error)
  {
-	return v3270_print(widget,LIB3270_PRINT_SELECTED,error);
+	return v3270_print(widget,LIB3270_CONTENT_SELECTED,error);
  }
 
  int v3270_print_copy(GtkWidget *widget, GError **error)
  {
-	return v3270_print(widget,LIB3270_PRINT_COPY,error);
+	return v3270_print(widget,LIB3270_CONTENT_COPY,error);
  }
 
- void V3270PrintOperation_set_text_by_mode(V3270PrintOperation * operation, LIB3270_PRINT_MODE mode)
+ void V3270PrintOperation_set_text_by_mode(V3270PrintOperation * operation, LIB3270_CONTENT_OPTION mode)
  {
  	operation->mode = mode;
 
 	switch(mode)
 	{
-	case LIB3270_PRINT_ALL:
+	case LIB3270_CONTENT_ALL:
 		{
 			size_t row, col;
 			int baddr = 0;
@@ -304,7 +304,7 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 		}
 		break;
 
-	case LIB3270_PRINT_SELECTED:
+	case LIB3270_CONTENT_SELECTED:
 		{
 			unsigned int row, col;
 			unsigned int baddr = 0;
@@ -361,7 +361,7 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_PRINT
 		}
 		break;
 
-	case LIB3270_PRINT_COPY:
+	case LIB3270_CONTENT_COPY:
 		{
 			lib3270_autoptr(char) copy = v3270_get_copy(GTK_WIDGET(operation->widget));
 			if(copy)

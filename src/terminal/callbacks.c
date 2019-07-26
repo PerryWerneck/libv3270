@@ -326,7 +326,7 @@ static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const
 }
 
 
-static int print(H3270 *session, LIB3270_PRINT_MODE mode)
+static int print(H3270 *session, LIB3270_CONTENT_OPTION mode)
 {
 	GtkWidget	* widget = GTK_WIDGET(lib3270_get_user_data(session));
 	GError		* error = NULL;

@@ -71,6 +71,13 @@
 		</Unit>
 		<Unit filename="src/dialogs/print/private.h" />
 		<Unit filename="src/dialogs/private.h" />
+		<Unit filename="src/dialogs/save/convenience.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dialogs/save/private.h" />
+		<Unit filename="src/dialogs/save/save.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/security.c">
 			<Option compilerVar="CC" />
 		</Unit>

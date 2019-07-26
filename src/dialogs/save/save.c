@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como private.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -27,15 +27,9 @@
  *
  */
 
-#include <config.h>
+ #include "private.h"
 
-#define ENABLE_NLS
-#define GETTEXT_PACKAGE PACKAGE_NAME
+/*--[ Implement ]------------------------------------------------------------------------------------*/
 
-#include <libintl.h>
-#include <glib/gi18n.h>
-
-#include <gtk/gtk.h>
-#include <v3270.h>
 
 

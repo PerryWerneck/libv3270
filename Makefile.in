@@ -38,7 +38,8 @@ SOURCES= \
 	$(wildcard src/trace/*.c) \
 	$(wildcard src/dialogs/*.c) \
 	$(wildcard src/dialogs/@OSNAME@/*.c) \
-	$(wildcard src/dialogs/print/*.c)
+	$(wildcard src/dialogs/print/*.c) \
+	$(wildcard src/dialogs/save/*.c)
 
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.c)
