@@ -36,16 +36,18 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+/*
  static void V3270SaveDialog_finalize(V3270SaveDialog *object)
  {
 	V3270SaveDialog *dialog = V3270_SAVE_DIALOG(object);
  }
+*/
 
  static void V3270SaveDialog_class_init(V3270SaveDialogClass *klass)
  {
 
 	debug("%s",__FUNCTION__);
-	G_OBJECT_CLASS(klass)->finalize = V3270SaveDialog_finalize;
+//	G_OBJECT_CLASS(klass)->finalize = V3270SaveDialog_finalize;
 
  }
 
