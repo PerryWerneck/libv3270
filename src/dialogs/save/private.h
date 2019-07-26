@@ -28,54 +28,31 @@
  */
 
  #include <v3270.h>
+ #include <save.h>
  #include <v3270/print.h>
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
- struct _V3270PrintOperationClass
+ struct _V3270SaveDialog
  {
- 	GtkPrintOperationClass parent_class;
+	GtkDialog parent;
+
+	GtkWidget				* terminal;
+	GtkWidget				* filename;
+	LIB3270_CONTENT_OPTION	  mode;
 
  };
 
- typedef struct _column
+ struct _V3270SaveDialogClass
  {
-	unsigned char	c;
-	unsigned short	attr;
- } column;
-
- struct _V3270PrintOperation
- {
- 	GtkPrintOperation		  parent;
-	GdkRGBA					  colors[V3270_COLOR_COUNT];
-    LIB3270_CONTENT_OPTION	  mode;
-    v3270					* widget;
-    H3270					* session;
-
-	size_t					  lpp;					///< @brief Lines per page (in rows).
-	size_t					  pages;				///< @brief Number of pages.
-	gboolean				  show_selection;		///< @brief Print selection box?
-
-    struct
-	{
-		size_t	  width;							///< @brief Width of the contents (in columns);
-		size_t	  height;							///< @brief Height of the contents (in rows);
-		column 	**text;								///< @brief Report contents.
-	} contents;
-
-    struct
-    {
-		gchar			* name;
-		v3270FontInfo	  info;
-    } font;
+	GtkDialogClass parent_class;
+	int dummy;
 
  };
 
 /*--[ Prototypes ]-----------------------------------------------------------------------------------*/
 
- G_GNUC_INTERNAL void V3270PrintOperation_begin_print(GtkPrintOperation *prt, GtkPrintContext *context);
- G_GNUC_INTERNAL void V3270PrintOperation_draw_page(GtkPrintOperation *prt, GtkPrintContext *context, gint page);
 
 

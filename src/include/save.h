@@ -27,9 +27,9 @@
  *
  */
 
-#ifndef V3270HOST_H_INCLUDED
+#ifndef V3270SAVE_H_INCLUDED
 
- #define V3270HOST_H_INCLUDED 1
+ #define V3270SAVE_H_INCLUDED 1
 
  #include <config.h>
  #define ENABLE_NLS
@@ -47,21 +47,21 @@
 
 /*--[ Progress widget ]------------------------------------------------------------------------------*/
 
- #define GTK_TYPE_V3270HostSelectWidget				(V3270HostSelectWidget_get_type ())
- #define GTK_V3270HostSelectWidget(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270HostSelectWidget, V3270HostSelectWidget))
- #define GTK_V3270HostSelectWidget_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270HostSelectWidget, V3270HostSelectWidgetClass))
- #define GTK_IS_V3270HostSelectWidget(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270HostSelectWidget))
- #define GTK_IS_V3270HostSelectWidget_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270HostSelectWidget))
- #define GTK_V3270HostSelectWidget_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270HostSelectWidget, V3270HostSelectWidgetClass))
+ #define GTK_TYPE_V3270SaveDialog			(V3270SaveDialog_get_type ())
+ #define V3270_SAVE_DIALOG(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270SaveDialog, V3270SaveDialog))
+ #define V3270SaveDialog_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270SaveDialog, V3270SaveDialogClass))
+ #define IS_V3270SaveDialog(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270SaveDialog))
+ #define IS_V3270SaveDialog_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270SaveDialog))
+ #define V3270SaveDialog_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270SaveDialog, V3270SaveDialogClass))
 
- typedef struct _V3270HostSelectWidget		V3270HostSelectWidget;
- typedef struct _V3270HostSelectWidgetClass	V3270HostSelectWidgetClass;
+ typedef struct _V3270SaveDialog		V3270SaveDialog;
+ typedef struct _V3270SaveDialogClass	V3270SaveDialogClass;
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
- void	  v3270_host_select_set_session(GtkWidget *widget, GtkWidget *session);
- int	  v3270_host_select_apply(GtkWidget *widget);
+ GtkWidget * v3270_save_dialog_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, const gchar *filename);
+ void v3270_save_dialog_run(GtkWidget *widget);
 
  G_END_DECLS
 
-#endif // V3270HOST_H_INCLUDED
+#endif // V3270SAVE_H_INCLUDED
