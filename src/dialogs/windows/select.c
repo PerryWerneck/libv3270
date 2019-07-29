@@ -160,7 +160,7 @@ gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *bu
 			NULL
 		);
 
-	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
+	gtk_window_set_deletable(GTK_WINDOW(chooser),FALSE);
 	g_signal_connect(G_OBJECT(chooser),"close",G_CALLBACK(v3270_dialog_close),NULL);
 
 	if(filename && *filename)
