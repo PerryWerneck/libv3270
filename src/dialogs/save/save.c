@@ -100,6 +100,32 @@
 	gtk_dialog_response(dialog,GTK_RESPONSE_APPLY);
  }
 
+ /*
+ static GtkFileChooserConfirmation confirm_overwrite(GtkFileChooser *chooser, GObject *action)
+ {
+	const gchar					* attr		= g_object_get_data(action,"overwrite");
+	GtkFileChooserConfirmation	  ret 		= GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME;
+	GtkWidget					* dialog;
+
+	if(attr && !g_ascii_strcasecmp(attr,"yes"))
+		return ret;
+
+	dialog = gtk_message_dialog_new_with_markup(	GTK_WINDOW(chooser),
+													GTK_DIALOG_DESTROY_WITH_PARENT,
+													GTK_MESSAGE_QUESTION,GTK_BUTTONS_OK_CANCEL,
+													"%s",_("The file already exists. Replace it?"));
+
+
+	if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_OK)
+		ret = GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN;
+
+	gtk_widget_destroy(dialog);
+
+	return ret;
+
+ }
+ */
+
 #ifdef WIN32
 static void select_local_file(GtkButton G_GNUC_UNUSED(*button), v3270ft *dialog) {
 #else
@@ -119,6 +145,9 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 						gettext(formats[format].name), extension,
 						NULL
 					);
+
+	// g_signal_connect(GTK_FILE_CHOOSER(dialog), "confirm-overwrite", G_CALLBACK(confirm_overwrite), G_OBJECT(action));
+
 
 	if(filename)
 		gtk_entry_set_text(GTK_ENTRY(dialog->filename),filename);

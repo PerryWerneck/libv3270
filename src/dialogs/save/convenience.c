@@ -36,19 +36,70 @@
 
  LIB3270_EXPORT int	v3270_save(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, const gchar *filename, GError **error)
  {
- 	if(*error)
+	g_autofree gchar * message = NULL;
+
+	if(filename)
 	{
-		return -1;
+		message = g_strdup_printf("Can't save contents to file \"%s\"",filename);
+	}
+	else
+	{
+		message = g_strdup("Can't save contents to file");
 	}
 
  	if(!v3270_is_connected(widget))
 	{
-		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,"%s",strerror(ENOTCONN));
-		return -1;
+		if(error)
+		{
+			*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,"%s",strerror(ENOTCONN));
+		}
+		else
+		{
+			GtkWidget *popup = gtk_message_dialog_new_with_markup(
+				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+				GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
+				message
+			);
+
+			gtk_window_set_title(GTK_WINDOW(popup),_("Operation has failed"));
+
+			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",strerror(ENOTCONN));
+
+			gtk_dialog_run(GTK_DIALOG(popup));
+			gtk_widget_destroy(popup);
+		}
+		return errno = ENOTCONN;
 	}
 
 	lib3270_trace_event(v3270_get_session(widget),"save action activated (type=%d)",(int) mode);
-	return lib3270_save(v3270_get_session(widget),mode,filename);
+	int rc = lib3270_save(v3270_get_session(widget),mode,filename);
+
+	if(!rc)
+		return 0;
+
+	if(error)
+	{
+		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),rc,"%s",strerror(rc));
+	}
+	else
+	{
+		GtkWidget *popup = gtk_message_dialog_new_with_markup(
+			GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+			GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
+			message
+		);
+
+		gtk_window_set_title(GTK_WINDOW(popup),_("Operation has failed"));
+
+		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",strerror(ENOTCONN));
+
+		gtk_dialog_run(GTK_DIALOG(popup));
+		gtk_widget_destroy(popup);
+	}
+
+	return errno = rc;
  }
 
  int v3270_save_all(GtkWidget *widget, const gchar *filename, GError **error)
