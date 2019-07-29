@@ -335,6 +335,9 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 	switch(dialog->mode)
 	{
 	case LIB3270_CONTENT_ALL:
+		dynamic = g_new0(GList,1);
+		dynamic->data = (gpointer) lib3270_get_selection(v3270_get_session(dialog->terminal),0,1);
+		selection = dynamic;
 		break;
 
 	case LIB3270_CONTENT_COPY:
@@ -343,7 +346,7 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 
 	case LIB3270_CONTENT_SELECTED:
 		dynamic = g_new0(GList,1);
-		dynamic->data = (gpointer) lib3270_get_selection(v3270_get_session(dialog->terminal),0);
+		dynamic->data = (gpointer) lib3270_get_selection(v3270_get_session(dialog->terminal),0,0);
 		selection = dynamic;
 		break;
 
@@ -366,15 +369,15 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 		switch(gtk_combo_box_get_active(GTK_COMBO_BOX(dialog->format)))
 		{
 		case 0: // "Plain text"
-			text = v3270_get_selection_as_text(GTK_V3270(dialog->terminal), selection, encoding);
+			text = v3270_get_selection_as_text(GTK_V3270(dialog->terminal), selection, encoding, dialog->mode == LIB3270_CONTENT_ALL);
 			break;
 
 		case 1: // "Comma-separated values (CSV)"
-			text = v3270_get_selection_as_table(GTK_V3270(dialog->terminal),selection,";",encoding);
+			text = v3270_get_selection_as_table(GTK_V3270(dialog->terminal),selection,";",encoding, dialog->mode == LIB3270_CONTENT_ALL);
 			break;
 
 		case 2: // "HyperText Markup Language (HTML)"
-			text = v3270_get_selection_as_html_div(GTK_V3270(dialog->terminal),selection,encoding);
+			text = v3270_get_selection_as_html_div(GTK_V3270(dialog->terminal),selection,encoding, dialog->mode == LIB3270_CONTENT_ALL);
 			break;
 
 		default:

@@ -49,7 +49,7 @@ static void get_element_colors(v3270 * terminal, unsigned short attr, gchar **fg
 }
 
 /// @brief Get formatted contents as HTML DIV.
-static gchar * get_as_div(v3270 * terminal, const GList *selection)
+static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all)
 {
 	const GList	* element	= selection;
 	GString		* string	= g_string_new("");
@@ -110,7 +110,7 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection)
 
 				}
 
-				if(block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED && !isspace(block->contents[src].chr))
+				if( (block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED || all) && !isspace(block->contents[src].chr))
 				{
 					g_string_append_c(string,block->contents[src].chr);
 				}
@@ -144,7 +144,7 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection)
 }
 
 /// @brief Get formatted contents as HTML TABLE.
-static gchar * get_as_table(v3270 * terminal, const GList *selection)
+static gchar * get_as_table(v3270 * terminal, const GList *selection, gboolean all)
 {
 	const GList			* element	= selection;
 	GString				* string	= g_string_new("<table><tbody>");
@@ -155,7 +155,7 @@ static gchar * get_as_table(v3270 * terminal, const GList *selection)
 	GList 				* column;
 
 	// Get contents
-	GList * columns = v3270_getColumns_from_selection(terminal, selection);
+	GList * columns = v3270_getColumns_from_selection(terminal, selection, all);
 
 	while(element)
 	{
@@ -214,15 +214,15 @@ static gchar * get_as_table(v3270 * terminal, const GList *selection)
 
 }
 
-gchar * v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding)
+gchar * v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all)
 {
-	g_autofree char * text = get_as_div(terminal, selection);
+	g_autofree char * text = get_as_div(terminal, selection, all);
 	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 }
 
-gchar * v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding)
+gchar * v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all)
 {
-	g_autofree char * text = get_as_table(terminal, selection);
+	g_autofree char * text = get_as_table(terminal, selection, all);
 	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 }
 
@@ -230,8 +230,8 @@ gchar * v3270_get_copy_as_html(v3270 * terminal, const gchar *encoding)
 {
 
 	if(terminal->selection.format == V3270_SELECT_TABLE)
-		return v3270_get_selection_as_html_table(terminal, terminal->selection.blocks, encoding);
+		return v3270_get_selection_as_html_table(terminal, terminal->selection.blocks, encoding, FALSE);
 
-	return v3270_get_selection_as_html_div(terminal, terminal->selection.blocks, encoding);
+	return v3270_get_selection_as_html_div(terminal, terminal->selection.blocks, encoding, FALSE);
 
 }

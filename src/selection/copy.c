@@ -32,7 +32,7 @@
 
  static void do_copy(v3270 *terminal, gboolean cut)
  {
- 	lib3270_selection * selection = lib3270_get_selection(terminal->host,cut);
+ 	lib3270_selection * selection = lib3270_get_selection(terminal->host,cut,0);
 
  	if(selection)
 	{

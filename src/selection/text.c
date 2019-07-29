@@ -33,7 +33,7 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /// @brief Get formatted contents as single text.
-gchar * v3270_get_selection_as_text(v3270 * terminal, const GList *selection, const gchar *encoding)
+gchar * v3270_get_selection_as_text(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all)
 {
 	GString	* string = g_string_new("");
 
@@ -46,7 +46,7 @@ gchar * v3270_get_selection_as_text(v3270 * terminal, const GList *selection, co
 		{
 			for(col=0; col<block->bounds.width; col++)
 			{
-				if(block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED)
+				if( (block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED) || all )
 					g_string_append_c(string,block->contents[src].chr);
 
 				src++;
@@ -68,7 +68,7 @@ gchar * v3270_get_copy_as_text(v3270 * terminal, const gchar *encoding)
 {
 	if(terminal->selection.format == V3270_SELECT_TABLE)
 		return v3270_get_copy_as_table(terminal,"\t",encoding);
-	return v3270_get_selection_as_text(terminal, terminal->selection.blocks, encoding);
+	return v3270_get_selection_as_text(terminal, terminal->selection.blocks, encoding, FALSE);
 }
 
 LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const gchar *encoding)

@@ -87,13 +87,13 @@
 
 	G_GNUC_INTERNAL void		  v3270_update_system_clipboard(GtkWidget *widget);
 	G_GNUC_INTERNAL const char	* v3270_update_selected_text(GtkWidget *widget, gboolean cut);
-	G_GNUC_INTERNAL GList		* v3270_getColumns_from_selection(v3270 * terminal, const GList *selection);
+	G_GNUC_INTERNAL GList		* v3270_getColumns_from_selection(v3270 * terminal, const GList *selection, gboolean all);
 
 	/// @brief Get contents.
-	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_text(v3270 * terminal, const GList *selection, const gchar *encoding);
-	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_table(v3270 * terminal, const GList *selection, const gchar *delimiter, const gchar *encoding);
-	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding);
-	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding);
+	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_text(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all);
+	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_table(v3270 * terminal, const GList *selection, const gchar *delimiter, const gchar *encoding, gboolean all);
+	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all);
+	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all);
 
 	G_GNUC_INTERNAL const GList	* v3270_get_selection_blocks(GtkWidget *widget);
 
