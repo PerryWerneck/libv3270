@@ -251,6 +251,13 @@
 
  GtkWidget * v3270_save_dialog_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, const gchar *filename)
  {
+ 	static const gchar * titles[] =
+ 	{
+ 		N_("Save terminal contents"),
+ 		N_("Save selected area"),
+ 		N_("Save copied data"),
+ 	};
+
 	gboolean use_header;
 	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
 
@@ -263,6 +270,11 @@
 									);
 
 	dialog->mode = mode;
+
+	if( (size_t) mode < G_N_ELEMENTS(titles))
+	{
+		gtk_window_set_title(GTK_WINDOW(dialog),gettext(titles[(size_t) mode]));
+	}
 
 	if(filename)
 		gtk_entry_set_text(GTK_ENTRY(dialog->filename),filename);
