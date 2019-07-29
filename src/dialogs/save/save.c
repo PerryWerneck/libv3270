@@ -101,19 +101,16 @@
  }
 
  /*
- static GtkFileChooserConfirmation confirm_overwrite(GtkFileChooser *chooser, GObject *action)
+ static GtkFileChooserConfirmation confirm_overwrite(GtkFileChooser *chooser, V3270SaveDialog G_GNUC_UNUSED(*widget))
  {
-	const gchar					* attr		= g_object_get_data(action,"overwrite");
-	GtkFileChooserConfirmation	  ret 		= GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME;
-	GtkWidget					* dialog;
+	GtkFileChooserConfirmation ret = GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME;
 
-	if(attr && !g_ascii_strcasecmp(attr,"yes"))
-		return ret;
-
-	dialog = gtk_message_dialog_new_with_markup(	GTK_WINDOW(chooser),
-													GTK_DIALOG_DESTROY_WITH_PARENT,
-													GTK_MESSAGE_QUESTION,GTK_BUTTONS_OK_CANCEL,
-													"%s",_("The file already exists. Replace it?"));
+	GtkWidget * dialog = gtk_message_dialog_new_with_markup(
+							GTK_WINDOW(chooser),
+							GTK_DIALOG_DESTROY_WITH_PARENT,
+							GTK_MESSAGE_QUESTION,GTK_BUTTONS_OK_CANCEL,
+							"%s",_("The file already exists. Replace it?")
+						);
 
 
 	if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_OK)
@@ -127,37 +124,44 @@
  */
 
 #ifdef WIN32
-static void select_local_file(GtkButton G_GNUC_UNUSED(*button), v3270ft *dialog) {
+static void select_local_file(GtkButton G_GNUC_UNUSED(*button), V3270SaveDialog *widget) {
 #else
-static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, V3270SaveDialog *dialog) {
+static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, V3270SaveDialog *widget) {
 #endif // WIN32
 
-	gint format = gtk_combo_box_get_active(GTK_COMBO_BOX(dialog->format));
-	g_autofree gchar * extension = g_strconcat("*",formats[format].extension,NULL);
+	//gint format = gtk_combo_box_get_active(GTK_COMBO_BOX(widget->format));
+	//g_autofree gchar * extension = g_strconcat("*",formats[format].extension,NULL);
 
-	g_autofree gchar *filename =
-					v3270_select_file(
-						GTK_WIDGET(dialog),
-						_("Select file to save"),
-						_("Select"),
-						GTK_FILE_CHOOSER_ACTION_SAVE,
-						gtk_entry_get_text(GTK_ENTRY(dialog->filename)),
-						gettext(formats[format].name), extension,
-						NULL
-					);
-
-	// g_signal_connect(GTK_FILE_CHOOSER(dialog), "confirm-overwrite", G_CALLBACK(confirm_overwrite), G_OBJECT(action));
+	GtkWidget * dialog =
+		gtk_file_chooser_dialog_new(
+				_( "Select destination file"),
+				GTK_WINDOW(widget),
+				GTK_FILE_CHOOSER_ACTION_SAVE,
+				_("Cancel"),	GTK_RESPONSE_CANCEL,
+				_("Select"),	GTK_RESPONSE_ACCEPT,
+				NULL );
 
 
-	if(filename)
-		gtk_entry_set_text(GTK_ENTRY(dialog->filename),filename);
+	const gchar *filename = gtk_entry_get_text(GTK_ENTRY(widget->filename));
+
+	if(filename && *filename)
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog),filename);
+	else
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),g_get_user_special_dir(G_USER_DIRECTORY_DOCUMENTS));
+
+	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+		gtk_entry_set_text(GTK_ENTRY(widget->filename),gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
+
+	gtk_widget_destroy(dialog);
+
 
  }
 
+
  static void V3270SaveDialog_init(V3270SaveDialog *dialog)
  {
- 	//     0--------1---------------------2-------3------------------
- 	// 0 - Filename xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.
+ 	//     0--------1---------------------2-------3--------------------4
+ 	// 0 - Filename xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx. x
  	// 1 - Charset  xxxxxxxxx.xxxxxxxxx.  Format: xxxxxxxxx.xxxxxxxxx.
 
 
@@ -193,7 +197,7 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 #ifdef WIN32
 		widget = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_BUTTON);
 		g_signal_connect(G_OBJECT(widget),"clicked",G_CALLBACK(select_local_file),dialog);
-		gtk_grid_attach(grid,widget,6,0,1,1);
+		gtk_grid_attach(grid,widget,4,0,1,1);
 #else
 		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,"document-open");
 		gtk_entry_set_icon_activatable(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,TRUE);
@@ -364,16 +368,19 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 	switch(dialog->mode)
 	{
 	case LIB3270_CONTENT_ALL:
+		debug("%s","LIB3270_CONTENT_ALL");
 		dynamic = g_new0(GList,1);
 		dynamic->data = (gpointer) lib3270_get_selection(v3270_get_session(dialog->terminal),0,1);
 		selection = dynamic;
 		break;
 
 	case LIB3270_CONTENT_COPY:
+		debug("%s","LIB3270_CONTENT_COPY");
 		selection = v3270_get_selection_blocks(dialog->terminal);
 		break;
 
 	case LIB3270_CONTENT_SELECTED:
+		debug("%s","LIB3270_CONTENT_SELECTED");
 		dynamic = g_new0(GList,1);
 		dynamic->data = (gpointer) lib3270_get_selection(v3270_get_session(dialog->terminal),0,0);
 		selection = dynamic;
@@ -415,14 +422,33 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 
 		if(text)
 		{
-			debug("%s",text);
+			const gchar * filename	= gtk_entry_get_text(GTK_ENTRY(dialog->filename));
+			gint		  response 	= GTK_RESPONSE_OK;
 
-			g_file_set_contents(
-				gtk_entry_get_text(GTK_ENTRY(dialog->filename)),
-				text,
-				-1,
-				error
-			);
+			if(g_file_test(filename,G_FILE_TEST_EXISTS))
+			{
+				GtkWidget * confirmation =
+								gtk_message_dialog_new_with_markup(
+										GTK_WINDOW(widget),
+										GTK_DIALOG_DESTROY_WITH_PARENT,
+										GTK_MESSAGE_QUESTION,GTK_BUTTONS_OK_CANCEL,
+										_("The file \"%s\" already exists. Replace it?"),
+										filename
+									);
+
+				response = gtk_dialog_run(GTK_DIALOG(confirmation));
+				gtk_widget_destroy(confirmation);
+			}
+
+			if(response == GTK_RESPONSE_OK)
+			{
+				g_file_set_contents(
+					gtk_entry_get_text(GTK_ENTRY(dialog->filename)),
+					text,
+					-1,
+					error
+				);
+			}
 
 		}
 
