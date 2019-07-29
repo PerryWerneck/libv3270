@@ -47,6 +47,13 @@ void v3270_clear_selection(v3270 *terminal)
 	}
 }
 
+const GList * v3270_get_selection_blocks(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+	return GTK_V3270(widget)->selection.blocks;
+}
+
+
 /**
  * Get lib3270 selection as a g_malloc buffer.
  *

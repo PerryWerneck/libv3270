@@ -29,6 +29,10 @@
 
 
  #include "private.h"
+ #include <internals.h>
+ #include <lib3270.h>
+ #include <lib3270/selection.h>
+ #include <clipboard.h>
  #include <limits.h>
 
 /*--[ GTK Requires ]---------------------------------------------------------------------------------*/
@@ -57,6 +61,18 @@
 	}
  };
 
+ static const struct _charsets
+ {
+	const gchar *name;
+	const gchar *description;
+ } charsets[] =
+ {
+	// http://en.wikipedia.org/wiki/Character_encoding
+	{ "UTF-8",		N_( "UTF-8"	)								},
+	{ "ISO-8859-1", N_( "Western Europe (ISO 8859-1)" ) 		},
+	{ "CP1252",		N_( "Windows Western languages (CP1252)" )	},
+ };
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /*
@@ -82,6 +98,31 @@
  static void apply_operation(GtkButton G_GNUC_UNUSED(*button), GtkDialog *dialog)
  {
 	gtk_dialog_response(dialog,GTK_RESPONSE_APPLY);
+ }
+
+#ifdef WIN32
+static void select_local_file(GtkButton G_GNUC_UNUSED(*button), v3270ft *dialog) {
+#else
+static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, V3270SaveDialog *dialog) {
+#endif // WIN32
+
+	gint format = gtk_combo_box_get_active(GTK_COMBO_BOX(dialog->format));
+	g_autofree gchar * extension = g_strconcat("*",formats[format].extension,NULL);
+
+	g_autofree gchar *filename =
+					v3270_select_file(
+						GTK_WIDGET(dialog),
+						_("Select file to save"),
+						_("Select"),
+						GTK_FILE_CHOOSER_ACTION_SAVE,
+						gtk_entry_get_text(GTK_ENTRY(dialog->filename)),
+						gettext(formats[format].name), extension,
+						NULL
+					);
+
+	if(filename)
+		gtk_entry_set_text(GTK_ENTRY(dialog->filename),filename);
+
  }
 
  static void V3270SaveDialog_init(V3270SaveDialog *dialog)
@@ -122,13 +163,13 @@
 
 #ifdef WIN32
 		widget = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_BUTTON);
-		//g_signal_connect(G_OBJECT(widget),"clicked",G_CALLBACK(select_local_file),dialog);
+		g_signal_connect(G_OBJECT(widget),"clicked",G_CALLBACK(select_local_file),dialog);
 		gtk_grid_attach(grid,widget,6,0,1,1);
 #else
 		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,"document-open");
 		gtk_entry_set_icon_activatable(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,TRUE);
 		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,_("Select file"));
-		// g_signal_connect(G_OBJECT(dialog->filename),"icon-press",G_CALLBACK(icon_press),dialog);
+		g_signal_connect(G_OBJECT(dialog->filename),"icon-press",G_CALLBACK(icon_press),dialog);
 #endif // WIN32
 
 		gtk_entry_set_width_chars(GTK_ENTRY(dialog->filename),60);
@@ -138,18 +179,6 @@
 
 	// Charset drop-down
 	{
-		static const struct _charsets
-		{
-			const gchar *name;
-			const gchar *description;
-		} charsets[] =
-		{
-			// http://en.wikipedia.org/wiki/Character_encoding
-			{ "UTF-8",		N_( "UTF-8"	)								},
-			{ "ISO-8859-1", N_( "Western Europe (ISO 8859-1)" ) 		},
-			{ "CP1252",		N_( "Windows Western languages (CP1252)" )	},
-		};
-
 		size_t ix;
 		const gchar	* scharset	= NULL;
 
@@ -251,6 +280,8 @@
 
  GtkWidget * v3270_save_dialog_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, const gchar *filename)
  {
+ 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+
  	static const gchar * titles[] =
  	{
  		N_("Save terminal contents"),
@@ -269,7 +300,8 @@
 										NULL)
 									);
 
-	dialog->mode = mode;
+	dialog->mode		= mode;
+	dialog->terminal	= widget;
 
 	if( (size_t) mode < G_N_ELEMENTS(titles))
 	{
@@ -286,9 +318,117 @@
 	return GTK_WIDGET(dialog);
  }
 
+ void v3270_save_dialog_apply(GtkWidget *widget, GError **error)
+ {
+ 	V3270SaveDialog * dialog = V3270_SAVE_DIALOG(widget);
+
+ 	if(!v3270_is_connected(dialog->terminal))
+	{
+		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,"%s",strerror(ENOTCONN));
+		return;
+	}
+
+	// Get selection
+	GList 		* dynamic	= NULL;
+	const GList * selection = NULL;
+
+	switch(dialog->mode)
+	{
+	case LIB3270_CONTENT_ALL:
+		break;
+
+	case LIB3270_CONTENT_COPY:
+		selection = v3270_get_selection_blocks(dialog->terminal);
+		break;
+
+	case LIB3270_CONTENT_SELECTED:
+		dynamic = g_new0(GList,1);
+		dynamic->data = (gpointer) lib3270_get_selection(v3270_get_session(dialog->terminal),0);
+		selection = dynamic;
+		break;
+
+	default:
+		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,_( "Unexpected mode %d" ),(int) dialog->mode);
+		return;
+	}
+
+	if(!selection)
+	{
+		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,"%s",strerror(ENODATA));
+	}
+	else
+	{
+		const gchar			* encoding	= gtk_combo_box_get_active_id(GTK_COMBO_BOX(dialog->charset));
+		g_autofree gchar 	* text		= NULL;
+
+		debug("Encoding: %s",encoding);
+
+		switch(gtk_combo_box_get_active(GTK_COMBO_BOX(dialog->format)))
+		{
+		case 0: // "Plain text"
+			text = v3270_get_selection_as_text(GTK_V3270(dialog->terminal), selection, encoding);
+			break;
+
+		case 1: // "Comma-separated values (CSV)"
+			text = v3270_get_selection_as_table(GTK_V3270(dialog->terminal),selection,";",encoding);
+			break;
+
+		case 2: // "HyperText Markup Language (HTML)"
+			text = v3270_get_selection_as_html_div(GTK_V3270(dialog->terminal),selection,encoding);
+			break;
+
+		default:
+			*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,_( "Unexpected format %d" ),(int) gtk_combo_box_get_active(GTK_COMBO_BOX(dialog->format)));
+		}
+
+		if(text)
+		{
+			debug("%s",text);
+
+			g_file_set_contents(
+				gtk_entry_get_text(GTK_ENTRY(dialog->filename)),
+				text,
+				-1,
+				error
+			);
+
+		}
+
+	}
+
+	if(dynamic)
+		g_list_free_full(dynamic,(GDestroyNotify) lib3270_free);
+
+ }
+
  void v3270_save_dialog_run(GtkWidget *widget)
  {
-	gtk_dialog_run(GTK_DIALOG(widget));
+	if(gtk_dialog_run(GTK_DIALOG(widget)) == GTK_RESPONSE_APPLY)
+	{
+		GError * error 	= NULL;
+		v3270_save_dialog_apply(widget,&error);
+
+		if(error)
+		{
+			GtkWidget *popup = gtk_message_dialog_new_with_markup(
+				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+				GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
+				_("Can't save %s"),gtk_entry_get_text(GTK_ENTRY(V3270_SAVE_DIALOG(widget)->filename))
+			);
+
+			gtk_window_set_title(GTK_WINDOW(popup),_("Operation has failed"));
+
+			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",error->message);
+			g_error_free(error);
+
+			gtk_dialog_run(GTK_DIALOG(popup));
+			gtk_widget_destroy(popup);
+
+		}
+
+	}
+
  }
 
 

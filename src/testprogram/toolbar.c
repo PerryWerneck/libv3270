@@ -129,12 +129,12 @@ static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *termin
 
  }
 
- static void paste_clicked(GtkButton *button, GtkWidget *terminal)
+ static void paste_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
 	v3270_paste(terminal);
  }
 
- static void copy_clicked(GtkButton *button, GtkWidget *terminal)
+ static void copy_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
 	v3270_copy_selection(terminal,V3270_SELECT_TEXT,FALSE);
  }

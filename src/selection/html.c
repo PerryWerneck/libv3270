@@ -214,14 +214,24 @@ static gchar * get_as_table(v3270 * terminal, const GList *selection)
 
 }
 
+gchar * v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding)
+{
+	g_autofree char * text = get_as_div(terminal, selection);
+	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
+}
+
+gchar * v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding)
+{
+	g_autofree char * text = get_as_table(terminal, selection);
+	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
+}
+
 gchar * v3270_get_copy_as_html(v3270 * terminal, const gchar *encoding)
 {
-	g_autofree char * text = NULL;
 
 	if(terminal->selection.format == V3270_SELECT_TABLE)
-		text = get_as_table(terminal, terminal->selection.blocks);
-	else
-		text = get_as_div(terminal, terminal->selection.blocks);
+		return v3270_get_selection_as_html_table(terminal, terminal->selection.blocks, encoding);
 
-	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
+	return v3270_get_selection_as_html_div(terminal, terminal->selection.blocks, encoding);
+
 }

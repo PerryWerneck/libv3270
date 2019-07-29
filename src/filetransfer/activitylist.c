@@ -455,7 +455,7 @@
 	V3270FTActivityList * list = GTK_V3270_FT_ACTIVITY_LIST(widget);
 
 	gchar * filename = v3270_select_file(
-								widget,
+								gtk_widget_get_toplevel(widget),
 								_("Save queue to file"),
 								_("Save"),
 								GTK_FILE_CHOOSER_ACTION_SAVE,
