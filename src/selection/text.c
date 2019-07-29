@@ -33,14 +33,13 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /// @brief Get formatted contents as single text.
-static gchar * get_as_text(v3270 * terminal)
+gchar * v3270_get_selection_as_text(v3270 * terminal, const GList *selection, const gchar *encoding)
 {
-	GList	* element	= terminal->selection.blocks;
-	GString	* string	= g_string_new("");
+	GString	* string = g_string_new("");
 
-	while(element)
+	while(selection)
 	{
-		lib3270_selection * block = ((lib3270_selection *) element->data);
+		lib3270_selection * block = ((lib3270_selection *) selection->data);
 		unsigned int row, col, src = 0;
 
 		for(row=0; row < block->bounds.height; row++)
@@ -56,20 +55,20 @@ static gchar * get_as_text(v3270 * terminal)
 			g_string_append_c(string,'\n');
 		}
 
-		element = g_list_next(element);
+		selection = g_list_next(selection);
 	}
 
 	g_autofree char * text = g_string_free(string,FALSE);
-	return g_convert(text, -1, "UTF-8", lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
+
+	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 
 }
 
-gchar * v3270_get_copy_as_text(v3270 * terminal)
+gchar * v3270_get_copy_as_text(v3270 * terminal, const gchar *encoding)
 {
 	if(terminal->selection.format == V3270_SELECT_TABLE)
-		return v3270_get_copy_as_table(terminal,"\t");
-
-	return get_as_text(terminal);
+		return v3270_get_copy_as_table(terminal,"\t",encoding);
+	return v3270_get_selection_as_text(terminal, terminal->selection.blocks, encoding);
 }
 
 LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const gchar *encoding)
@@ -205,6 +204,6 @@ LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const
 LIB3270_EXPORT gchar * v3270_get_copy(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
-	return v3270_get_copy_as_text(GTK_V3270(widget));
+	return v3270_get_copy_as_text(GTK_V3270(widget),NULL);
 }
 

@@ -49,12 +49,12 @@ static void get_element_colors(v3270 * terminal, unsigned short attr, gchar **fg
 }
 
 /// @brief Get formatted contents as HTML DIV.
-static gchar * get_as_div(v3270 * terminal)
+static gchar * get_as_div(v3270 * terminal, const GList *selection)
 {
-	GList	* element	= terminal->selection.blocks;
-	GString	* string	= g_string_new("");
-	gchar 	* bgColor	= gdk_rgba_to_string(terminal->color+V3270_COLOR_BACKGROUND);
-	gchar 	* fgColor;
+	const GList	* element	= selection;
+	GString		* string	= g_string_new("");
+	gchar 		* bgColor	= gdk_rgba_to_string(terminal->color+V3270_COLOR_BACKGROUND);
+	gchar 		* fgColor;
 
 	g_string_append_printf(
 		string,
@@ -67,7 +67,7 @@ static gchar * get_as_div(v3270 * terminal)
 
 	while(element)
 	{
-		lib3270_selection * block = ((lib3270_selection *) element->data);
+		const lib3270_selection * block = ((const lib3270_selection *) element->data);
 		unsigned int row, col, src = 0;
 		unsigned short flags = block->contents[0].attribute.visual;
 
@@ -144,9 +144,9 @@ static gchar * get_as_div(v3270 * terminal)
 }
 
 /// @brief Get formatted contents as HTML TABLE.
-static gchar * get_as_table(v3270 * terminal)
+static gchar * get_as_table(v3270 * terminal, const GList *selection)
 {
-	GList				* element	= terminal->selection.blocks;
+	const GList			* element	= selection;
 	GString				* string	= g_string_new("<table><tbody>");
 
 	unsigned int		  width		= lib3270_get_width(terminal->host);
@@ -155,11 +155,11 @@ static gchar * get_as_table(v3270 * terminal)
 	GList 				* column;
 
 	// Get contents
-	GList * columns = v3270_getColumns_from_selection(terminal);
+	GList * columns = v3270_getColumns_from_selection(terminal, selection);
 
 	while(element)
 	{
-		lib3270_selection * block = ((lib3270_selection *) element->data);
+		const lib3270_selection * block = ((const lib3270_selection *) element->data);
 
 		unsigned int row, col, src = 0;
 
@@ -214,14 +214,14 @@ static gchar * get_as_table(v3270 * terminal)
 
 }
 
-gchar * v3270_get_copy_as_html(v3270 * terminal)
+gchar * v3270_get_copy_as_html(v3270 * terminal, const gchar *encoding)
 {
 	g_autofree char * text = NULL;
 
 	if(terminal->selection.format == V3270_SELECT_TABLE)
-		text = get_as_table(terminal);
+		text = get_as_table(terminal, terminal->selection.blocks);
 	else
-		text = get_as_div(terminal);
+		text = get_as_div(terminal, terminal->selection.blocks);
 
-	return g_convert(text, -1, "UTF-8", lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
+	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 }

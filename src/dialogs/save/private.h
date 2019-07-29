@@ -41,6 +41,8 @@
 
 	GtkWidget				* terminal;
 	GtkWidget				* filename;
+	GtkWidget				* charset;
+	GtkWidget				* format;
 	LIB3270_CONTENT_OPTION	  mode;
 
  };

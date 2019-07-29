@@ -34,13 +34,11 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /// @brief Check if column has data.
-static gboolean hasDataOnColumn(v3270 * terminal, unsigned int col)
+static gboolean hasDataOnColumn(v3270 * terminal, unsigned int col, const GList *selection)
 {
-	GList * element	= terminal->selection.blocks;
-
-	while(element)
+	while(selection)
 	{
-		lib3270_selection * block = ((lib3270_selection *) element->data);
+		const lib3270_selection * block = ((const lib3270_selection *) selection->data);
 
 		if( (col >= block->bounds.col) && ( col < (block->bounds.col + block->bounds.width)) )
 		{
@@ -58,14 +56,14 @@ static gboolean hasDataOnColumn(v3270 * terminal, unsigned int col)
 
 		}
 
-		element = g_list_next(element);
+		selection = g_list_next(selection);
 	}
 
 	return FALSE;
 }
 
 /// @brief Get column list.
-GList * v3270_getColumns_from_selection(v3270 * terminal)
+GList * v3270_getColumns_from_selection(v3270 * terminal, const GList *selection)
 {
 	unsigned int col = 0;
 	GList *rc = NULL;
@@ -75,7 +73,7 @@ GList * v3270_getColumns_from_selection(v3270 * terminal)
 		// debug("col(%u): %s", col, hasDataOnColumn(terminal,col) ? "yes" : "no");
 
 		// Get first column.
-		while(!hasDataOnColumn(terminal,col)) {
+		while(!hasDataOnColumn(terminal,col,selection)) {
 			if(col >= lib3270_get_width(terminal->host))
 				return rc;
 			col++;
@@ -87,7 +85,7 @@ GList * v3270_getColumns_from_selection(v3270 * terminal)
 		rc = g_list_append(rc,columndescription);
 
 		// Get width.
-		while(hasDataOnColumn(terminal,col++)) {
+		while(hasDataOnColumn(terminal,col++,selection)) {
 			columndescription->width++;
 			if(col >= lib3270_get_width(terminal->host))
 				return rc;
@@ -98,12 +96,11 @@ GList * v3270_getColumns_from_selection(v3270 * terminal)
 
 }
 
-/// @brief Get formatted contents as single text.
-gchar * v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter)
+gchar * v3270_get_selection_as_table(v3270 * terminal, const GList *selection, const gchar *delimiter, const gchar *encoding)
 {
 	GString	* string = g_string_new("");
 
-	GList * columns = v3270_getColumns_from_selection(terminal);
+	GList * columns = v3270_getColumns_from_selection(terminal, selection);
 
 	debug("columns=%p",columns);
 
@@ -121,7 +118,7 @@ gchar * v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter)
 	}
 #endif // DEBUG
 
-	GList				* element	= terminal->selection.blocks;
+	GList				* element	= selection;
 	unsigned int		  width		= lib3270_get_width(terminal->host);
 	g_autofree gchar	* line		= g_malloc0(width+1);
 	GList 				* column;
@@ -167,5 +164,12 @@ gchar * v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter)
 	g_list_free_full(columns,g_free);
 
 	g_autofree char * text = g_string_free(string,FALSE);
-	return g_convert(text, -1, "UTF-8", lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
+	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 }
+
+/// @brief Get formatted contents as single text.
+gchar * v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter, const gchar *encoding)
+{
+	return v3270_get_selection_as_table(terminal, terminal->selection.blocks, delimiter, encoding);
+}
+
