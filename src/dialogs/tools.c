@@ -99,6 +99,12 @@
 
  }
 
+ void v3270_dialog_close(GtkDialog *dialog, gpointer G_GNUC_UNUSED(user_data) )
+ {
+ 	debug("%s",__FUNCTION__);
+	gtk_dialog_response(dialog,GTK_RESPONSE_CANCEL);
+ }
+
  #if ! GLIB_CHECK_VERSION(2,44,0)
 
  // Reference: https://github.com/ImageMagick/glib/blob/master/glib/glib-autocleanups.h

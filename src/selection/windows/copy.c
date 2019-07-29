@@ -57,14 +57,14 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 	{
 	case CLIPBOARD_TYPE_TEXT:   // Get clipboard contents as text
 		{
-			g_autofree gchar *text = v3270_get_copy_as_text(terminal);
+			g_autofree gchar *text = v3270_get_copy_as_text(terminal,"UTF-8");
 			gtk_selection_data_set_text(selection,text,-1);
 		}
 		break;
 
 	case CLIPBOARD_TYPE_CSV:
 		{
-			g_autofree gchar *text = v3270_get_copy_as_table(terminal,";");
+			g_autofree gchar *text = v3270_get_copy_as_table(terminal,";","UTF-8");
 			debug("Selection:\n%s",text);
 			gtk_selection_data_set(
 				selection,
@@ -78,7 +78,7 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 
 	case CLIPBOARD_TYPE_HTML:
 		{
-			g_autofree gchar *text = v3270_get_copy_as_html(terminal);
+			g_autofree gchar *text = v3270_get_copy_as_html(terminal,"UTF-8");
 			//debug("Selection:\n%s",text);
 			gtk_selection_data_set(
 				selection,

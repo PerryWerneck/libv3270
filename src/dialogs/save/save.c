@@ -100,34 +100,7 @@
 	gtk_dialog_response(dialog,GTK_RESPONSE_APPLY);
  }
 
- /*
- static GtkFileChooserConfirmation confirm_overwrite(GtkFileChooser *chooser, V3270SaveDialog G_GNUC_UNUSED(*widget))
- {
-	GtkFileChooserConfirmation ret = GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME;
-
-	GtkWidget * dialog = gtk_message_dialog_new_with_markup(
-							GTK_WINDOW(chooser),
-							GTK_DIALOG_DESTROY_WITH_PARENT,
-							GTK_MESSAGE_QUESTION,GTK_BUTTONS_OK_CANCEL,
-							"%s",_("The file already exists. Replace it?")
-						);
-
-
-	if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_OK)
-		ret = GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN;
-
-	gtk_widget_destroy(dialog);
-
-	return ret;
-
- }
- */
-
-#ifdef WIN32
-static void select_local_file(GtkButton G_GNUC_UNUSED(*button), V3270SaveDialog *widget) {
-#else
-static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, V3270SaveDialog *widget) {
-#endif // WIN32
+ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, V3270SaveDialog *widget) {
 
 	//gint format = gtk_combo_box_get_active(GTK_COMBO_BOX(widget->format));
 	//g_autofree gchar * extension = g_strconcat("*",formats[format].extension,NULL);
@@ -142,6 +115,9 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 				NULL );
 
 
+	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
+	g_signal_connect(G_OBJECT(dialog),"close",G_CALLBACK(v3270_dialog_close),NULL);
+
 	const gchar *filename = gtk_entry_get_text(GTK_ENTRY(widget->filename));
 
 	if(filename && *filename)
@@ -154,9 +130,7 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 
 	gtk_widget_destroy(dialog);
 
-
  }
-
 
  static void V3270SaveDialog_init(V3270SaveDialog *dialog)
  {
@@ -194,16 +168,18 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 		gtk_grid_attach(grid,widget,0,0,1,1);
 		gtk_label_set_mnemonic_widget(GTK_LABEL(widget),dialog->filename);
 
+/*
 #ifdef WIN32
 		widget = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_BUTTON);
 		g_signal_connect(G_OBJECT(widget),"clicked",G_CALLBACK(select_local_file),dialog);
 		gtk_grid_attach(grid,widget,4,0,1,1);
 #else
+*/
 		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,"document-open");
 		gtk_entry_set_icon_activatable(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,TRUE);
 		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,_("Select file"));
 		g_signal_connect(G_OBJECT(dialog->filename),"icon-press",G_CALLBACK(icon_press),dialog);
-#endif // WIN32
+// #endif // WIN32
 
 		gtk_entry_set_width_chars(GTK_ENTRY(dialog->filename),60);
 		gtk_entry_set_max_length(GTK_ENTRY(dialog->filename),PATH_MAX);
@@ -261,6 +237,7 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 		gtk_grid_attach(grid,widget,2,1,1,1);
 
 		dialog->format = gtk_combo_box_text_new();
+
 		gtk_grid_attach(grid,dialog->format,3,1,1,1);
 
 		for(ix=0;ix<G_N_ELEMENTS(formats);ix++)
@@ -280,7 +257,9 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 
 	// Buttons
 	// https://developer.gnome.org/icon-naming-spec/
-#if GTK_CHECK_VERSION(3,14,0)
+#ifdef _WIN32
+	widget = NULL;
+#elif GTK_CHECK_VERSION(3,14,0)
 	widget = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
 #else
 	widget = NULL;
@@ -301,6 +280,11 @@ static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIcon
 	}
 	else
 	{
+		gtk_box_set_spacing(
+			GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+			18
+		);
+
 		gtk_dialog_add_buttons(
 			GTK_DIALOG (dialog),
 			_("_Cancel"), GTK_RESPONSE_CANCEL,

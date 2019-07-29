@@ -29,6 +29,7 @@
  */
 
 #include "../private.h"
+#include <internals.h>
 #include <stdarg.h>
 #include <gdk/gdkwin32.h>
 #include <lib3270/log.h>
@@ -158,6 +159,9 @@ gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *bu
 			button, GTK_RESPONSE_ACCEPT,
 			NULL
 		);
+
+	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
+	g_signal_connect(G_OBJECT(chooser),"close",G_CALLBACK(v3270_dialog_close),NULL);
 
 	if(filename && *filename)
 		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(chooser),filename);
