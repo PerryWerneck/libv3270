@@ -329,32 +329,7 @@ static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const
 
 static int print(H3270 *session, LIB3270_CONTENT_OPTION mode)
 {
-	GtkWidget	* widget = GTK_WIDGET(lib3270_get_user_data(session));
-	GError		* error = NULL;
-
-	v3270_print(widget, mode, &error);
-
-	if(error)
-	{
-		GtkWidget *dialog =
-			gtk_message_dialog_new_with_markup(
-						GTK_WINDOW(gtk_widget_get_toplevel(widget)),
-						GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
-						_( "Operation has failed" ));
-
-		gtk_window_set_title(GTK_WINDOW(dialog),_("Can't print"));
-
-		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"%s",error->message);
-
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
-
-		g_error_free(error);
-		return -1;
-
-	}
-
-	return 0;
+	return v3270_print(GTK_WIDGET(lib3270_get_user_data(session)), mode, NULL);
 }
 
 static int save(H3270 *session, LIB3270_CONTENT_OPTION mode, const char *filename)

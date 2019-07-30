@@ -63,6 +63,12 @@
 		<Unit filename="src/dialogs/print/begin.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/print/convenience.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dialogs/print/custom.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/print/draw.c">
 			<Option compilerVar="CC" />
 		</Unit>

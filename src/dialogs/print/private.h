@@ -58,11 +58,12 @@
 	size_t					  pages;				///< @brief Number of pages.
 	gboolean				  show_selection;		///< @brief Print selection box?
 
-    struct
+	struct
 	{
-		size_t	  width;							///< @brief Width of the contents (in columns);
-		size_t	  height;							///< @brief Height of the contents (in rows);
-		column 	**text;								///< @brief Report contents.
+		unsigned int		  width;				///< @brief Max line width.
+		unsigned int		  height;				///< @brief Number of lines to print.
+		GList 				* dynamic;
+		const GList 		* selection;
 	} contents;
 
     struct
@@ -75,7 +76,9 @@
 
 /*--[ Prototypes ]-----------------------------------------------------------------------------------*/
 
- G_GNUC_INTERNAL void V3270PrintOperation_begin_print(GtkPrintOperation *prt, GtkPrintContext *context);
- G_GNUC_INTERNAL void V3270PrintOperation_draw_page(GtkPrintOperation *prt, GtkPrintContext *context, gint page);
+ G_GNUC_INTERNAL void		  V3270PrintOperation_begin_print(GtkPrintOperation *prt, GtkPrintContext *context);
+ G_GNUC_INTERNAL void		  V3270PrintOperation_draw_page(GtkPrintOperation *prt, GtkPrintContext *context, gint page);
+ G_GNUC_INTERNAL GtkWidget	* V3270PrintOperation_custom_widget_new(GtkPrintOperation *prt);
+ G_GNUC_INTERNAL void		  V3270PrintOperation_custom_widget_apply(GtkPrintOperation *prt, GtkWidget *widget);
 
 

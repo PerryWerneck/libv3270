@@ -34,7 +34,7 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /// @brief Check if column has data.
-static gboolean hasDataOnColumn(v3270 * terminal, unsigned int col, const GList *selection, gboolean all)
+static gboolean hasDataOnColumn(v3270 * G_GNUC_UNUSED(terminal), unsigned int col, const GList *selection, gboolean all)
 {
 	while(selection)
 	{
@@ -118,7 +118,7 @@ gchar * v3270_get_selection_as_table(v3270 * terminal, const GList *selection, c
 	}
 #endif // DEBUG
 
-	GList				* element	= selection;
+	const GList			* element	= selection;
 	unsigned int		  width		= lib3270_get_width(terminal->host);
 	g_autofree gchar	* line		= g_malloc0(width+1);
 	GList 				* column;

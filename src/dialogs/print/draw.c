@@ -29,29 +29,60 @@
 
  #include "private.h"
  #include <string.h>
+ #include <lib3270/selection.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+ static gint get_row(const V3270PrintOperation * operation, gint row, const lib3270_selection **block)
+ {
+	const GList					* element = NULL;
+	const lib3270_selection		* selection = NULL;
+
+	debug("Searching for row %u", row);
+
+	for(element = operation->contents.selection; element; element = element->next)
+	{
+		selection = (const lib3270_selection *) element->data;
+
+		if(((unsigned int) row) < selection->bounds.height)
+		{
+			// Found block.
+			debug("Found row %u",row);
+			*block = selection;
+			return row;
+		}
+
+		debug("Skipping block with %u rows",selection->bounds.height);
+		row -= (int) selection->bounds.height;
+	}
+
+	return -1;
+ }
+
  void V3270PrintOperation_draw_page(GtkPrintOperation *prt, GtkPrintContext *context, gint page)
  {
- 	cairo_t				* cr = gtk_print_context_get_cairo_context(context);
 	V3270PrintOperation	* operation	= GTK_V3270_PRINT_OPERATION(prt);
+ 	cairo_t				* cr = gtk_print_context_get_cairo_context(context);
 
-    size_t from = page * operation->lpp;
-
-    if(from > operation->contents.height)
+ 	// Convert page number in rows.
+    gint row = page * operation->lpp;
+    if(((unsigned int) row) > operation->contents.height)
 		return;
 
-	// Create a rectangle with the size of 1 character.
+	debug("%s: page=%d skip_rows=%d",__FUNCTION__,page,row);
+
+	// Get block
+	const lib3270_selection	* selection = NULL;
+	row = get_row(operation,row,&selection);
+
+	// Setup a rectangle with the size of 1 character.
 	GdkRectangle rect;
 	memset(&rect,0,sizeof(rect));
 	rect.y 		= 2;
 	rect.height	= operation->font.info.height + operation->font.info.descent;
 	rect.width	= operation->font.info.width;
 
-	// Draw "operation->lpp" lines starting from "from"
-
-	// Clear contents.
+	// Clear drawing area.
 	gdk_cairo_set_source_rgba(cr,operation->colors + V3270_COLOR_BACKGROUND);
 	cairo_rectangle(
 			cr,
@@ -62,6 +93,70 @@
 
 	cairo_fill(cr);
 	cairo_stroke(cr);
+
+	// Draw LPP lines
+	size_t drawing;
+
+	for(drawing = 0; drawing < operation->lpp; drawing++)
+	{
+		size_t pos = (row * selection->bounds.width);
+		debug("Drawing: %u row=%u selection=%p pos=%u", (unsigned int) drawing, row, selection, (unsigned int) pos);
+
+		if(((unsigned int) ++row) > selection->bounds.height)
+		{
+			debug("Searching for next block (first line=%u)",(unsigned int) (page * operation->lpp) + drawing);
+			row = get_row(operation,(page * operation->lpp) + drawing, &selection);
+			if(row < 0)
+			{
+				break;
+			}
+		}
+
+		// Draw columns
+		size_t col;
+		rect.x = operation->font.info.left;
+
+		for(col = 0; col < selection->bounds.width;col++)
+		{
+			if(selection->contents[pos].chr)
+			{
+				// Draw character.
+				unsigned short attr = selection->contents[pos].attribute.visual;
+
+				if(!operation->show_selection)
+					attr &= ~LIB3270_ATTR_SELECTED;
+
+				v3270_draw_element(
+					cr,
+					selection->contents[pos].chr,
+					attr,
+					operation->session,
+					&operation->font.info,
+					&rect,
+					operation->colors
+				);
+
+			}
+            pos++;
+
+			// Advance to the next char
+			rect.x += (rect.width-1);
+
+		}
+
+		// Advance to the next row
+		rect.y += (rect.height-1);
+
+	}
+
+ 	/*
+
+
+	// Create a rectangle with the size of 1 character.
+
+	// Draw "operation->lpp" lines starting from "from"
+
+	// Clear contents.
 
 	// draw "lpp" lines starting from "from"
     size_t r;
@@ -107,5 +202,6 @@
 		rect.y += (rect.height-1);
 
 	}
+	*/
 
  }
