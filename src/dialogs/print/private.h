@@ -49,14 +49,15 @@
  struct _V3270PrintOperation
  {
  	GtkPrintOperation		  parent;
-	GdkRGBA					  colors[V3270_COLOR_COUNT];
     LIB3270_CONTENT_OPTION	  mode;
     v3270					* widget;
     H3270					* session;
+	gboolean				  show_selection;		///< @brief Print selection box?
+
+    V3270PrintSettings		* settings;				///< @brief Custom configuration.
 
 	size_t					  lpp;					///< @brief Lines per page (in rows).
 	size_t					  pages;				///< @brief Number of pages.
-	gboolean				  show_selection;		///< @brief Print selection box?
 
 	struct
 	{
@@ -68,17 +69,32 @@
 
     struct
     {
-		gchar			* name;
 		v3270FontInfo	  info;
     } font;
 
  };
 
+ struct _V3270PrintSettingsClass
+ {
+ 	GtkFrameClass parent_class;
+
+ };
+
+struct _V3270PrintSettings
+ {
+ 	GtkFrame				  parent;
+	GdkRGBA					  colors[V3270_COLOR_COUNT];	///< @brief Color scheme for printing.
+
+	GtkWidget				* font;					///< @brief Font selection widget.
+	GtkWidget				* color;				///< @brief Color scheme selecting widget.
+	GtkWidget 				* selected;				///< @brief Checkbox.
+
+ };
+
+
 /*--[ Prototypes ]-----------------------------------------------------------------------------------*/
 
  G_GNUC_INTERNAL void		  V3270PrintOperation_begin_print(GtkPrintOperation *prt, GtkPrintContext *context);
  G_GNUC_INTERNAL void		  V3270PrintOperation_draw_page(GtkPrintOperation *prt, GtkPrintContext *context, gint page);
- G_GNUC_INTERNAL GtkWidget	* V3270PrintOperation_custom_widget_new(GtkPrintOperation *prt);
- G_GNUC_INTERNAL void		  V3270PrintOperation_custom_widget_apply(GtkPrintOperation *prt, GtkWidget *widget);
 
 

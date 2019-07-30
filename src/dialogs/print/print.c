@@ -36,11 +36,38 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+
  static void done(GtkPrintOperation *prt, GtkPrintOperationResult result)
  {
  	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(prt);
 
 	debug("%s",__FUNCTION__);
+
+	if(result == GTK_PRINT_OPERATION_RESULT_ERROR)
+	{
+		GError * err		= NULL;
+
+		gtk_print_operation_get_error(prt,&err);
+
+		GtkWidget *dialog = gtk_message_dialog_new_with_markup(
+										GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(operation->widget))),
+										GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+										GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
+										"%s",_( "Print operation failed" )
+								);
+
+		g_warning("%s",err->message);
+
+		gtk_window_set_title(GTK_WINDOW(dialog),_("Error"));
+
+		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"%s",err->message);
+
+		gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+
+		g_error_free(err);
+
+	}
 
 	if(operation->widget)
 		g_signal_emit(GTK_WIDGET(operation->widget), v3270_widget_signal[V3270_SIGNAL_PRINT_DONE], 0, prt, (guint) result);
@@ -53,10 +80,18 @@
 
 	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(object);
 
+	/*
+	if(operation->settings)
+	{
+		gtk_widget_destroy(GTK_WIDGET(operation->settings));
+		operation->settings = NULL;
+	}
+	*/
+
 	if(operation->font.info.scaled)
 		cairo_scaled_font_destroy(operation->font.info.scaled);
 
-	g_free(operation->font.name);
+//	g_free(operation->font.name);
 
 	if(operation->contents.dynamic)
 	{
@@ -67,20 +102,33 @@
 
 	G_OBJECT_CLASS(V3270PrintOperation_parent_class)->dispose(object);
 
+
  }
+
+#ifndef _WIN32
+ static GtkWidget * custom_widget_new(GtkPrintOperation *prt)
+ {
+    return GTK_WIDGET(GTK_V3270_PRINT_OPERATION(prt)->settings);
+ }
+
+ static void custom_widget_apply(GtkPrintOperation *prt, GtkWidget *widget)
+ {
+
+ }
+#endif // _WIN32
 
  static void V3270PrintOperation_class_init(V3270PrintOperationClass *klass)
  {
 	GtkPrintOperationClass	* operation	= GTK_PRINT_OPERATION_CLASS(klass);
 
 	G_OBJECT_CLASS(klass)->dispose = dispose;
-	operation->done = done;
-	operation->begin_print = V3270PrintOperation_begin_print;
-	operation->draw_page = V3270PrintOperation_draw_page;
+	operation->done 		= done;
+	operation->begin_print	= V3270PrintOperation_begin_print;
+	operation->draw_page	= V3270PrintOperation_draw_page;
 
 #ifndef _WIN32
-	operation->create_custom_widget = V3270PrintOperation_custom_widget_new;
-	operation->custom_widget_apply  = V3270PrintOperation_custom_widget_apply;
+	operation->create_custom_widget = custom_widget_new;
+	operation->custom_widget_apply  = custom_widget_apply;
 #endif // _WIN32
 
  }
@@ -95,9 +143,8 @@
 
  	// Setup defaults
     widget->mode 			= LIB3270_CONTENT_ALL;
-    widget->show_selection	= FALSE;
-    widget->font.name		= NULL; // g_strdup(v3270_default_font);
-	v3270_set_mono_color_table(widget->colors,"#000000","#FFFFFF");
+//    widget->show_selection	= FALSE;
+//    widget->font.name		= NULL; // g_strdup(v3270_default_font);
 
  }
 
@@ -110,7 +157,7 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTE
 	operation->mode			= mode;
 	operation->widget		= GTK_V3270(widget);
 	operation->session		= v3270_get_session(widget);
-	operation->font.name	= g_strdup(v3270_get_font_family(widget));
+	operation->settings 	= V3270_print_settings_new(widget);
 
 	// Get contents.
 	switch(operation->mode)
@@ -140,6 +187,9 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTE
 	for(element = operation->contents.selection; element; element = element->next)
 	{
 		const lib3270_selection * selection = (const lib3270_selection *) element->data;
+
+		if(!selection)
+			break;
 
 		if(selection->bounds.width > operation->contents.width)
 			operation->contents.width = selection->bounds.width;

@@ -84,3 +84,46 @@
 	return widget;
  }
 
+ LIB3270_EXPORT gboolean v3270_font_selection_set_family(GtkWidget *widget, const gchar *fontname)
+ {
+	GtkTreeModel	* model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
+	GtkTreeIter		  iter;
+
+	if(gtk_tree_model_get_iter_first(model,&iter))
+	{
+		do
+		{
+			GValue value = { 0, };
+
+			gtk_tree_model_get_value(model,&iter,0,&value);
+
+			if(!g_ascii_strcasecmp(fontname,g_value_get_string(&value)))
+			{
+				gtk_combo_box_set_active_iter(GTK_COMBO_BOX(widget),&iter);
+				return TRUE;
+			}
+
+		} while(gtk_tree_model_iter_next(model,&iter));
+	}
+
+	return FALSE;
+
+ }
+
+ LIB3270_EXPORT const gchar * v3270_font_selection_get_family(GtkWidget *widget)
+ {
+	GtkTreeIter	iter;
+
+	if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget),&iter))
+	{
+		GValue value = { 0, };
+
+		gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget)),&iter,0,&value);
+		return g_value_get_string(&value);
+
+	}
+
+	return "monospace";
+
+ }
+

@@ -38,8 +38,11 @@
 
  	trace("%s",__FUNCTION__);
 
+	// Setup options.
+	operation->show_selection = v3270_print_settings_get_show_selection(GTK_WIDGET(operation->settings));
+
  	// Setup FONT
-	PangoFontDescription * fontDescription = pango_font_description_from_string(operation->font.name);
+	PangoFontDescription * fontDescription = pango_font_description_from_string(v3270_font_selection_get_family(operation->settings->font));
 
 	cairo_select_font_face(
 		cr,

@@ -66,9 +66,6 @@
 		<Unit filename="src/dialogs/print/convenience.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/dialogs/print/custom.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/dialogs/print/draw.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -76,6 +73,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/print/private.h" />
+		<Unit filename="src/dialogs/print/settings.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/private.h" />
 		<Unit filename="src/dialogs/save/convenience.c">
 			<Option compilerVar="CC" />

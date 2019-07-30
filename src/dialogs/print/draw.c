@@ -83,7 +83,7 @@
 	rect.width	= operation->font.info.width;
 
 	// Clear drawing area.
-	gdk_cairo_set_source_rgba(cr,operation->colors + V3270_COLOR_BACKGROUND);
+	gdk_cairo_set_source_rgba(cr,operation->settings->colors + V3270_COLOR_BACKGROUND);
 	cairo_rectangle(
 			cr,
 			operation->font.info.left-1,0,
@@ -132,7 +132,7 @@
 					operation->session,
 					&operation->font.info,
 					&rect,
-					operation->colors
+					operation->settings->colors
 				);
 
 			}

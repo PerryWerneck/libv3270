@@ -38,7 +38,6 @@
 
 /*--[ Print Operation ]------------------------------------------------------------------------------*/
 
-
  #define GTK_TYPE_V3270_PRINT_OPERATION				(V3270PrintOperation_get_type())
  #define GTK_V3270_PRINT_OPERATION(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_PRINT_OPERATION, V3270PrintOperation))
  #define GTK_V3270_PRINT_OPERATION_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_PRINT_OPERATION, V3270PrintOperationClass))
@@ -49,12 +48,36 @@
  typedef struct _V3270PrintOperation			V3270PrintOperation;
  typedef struct _V3270PrintOperationClass		V3270PrintOperationClass;
 
+/*--[ Print Settings ]-------------------------------------------------------------------------------*/
+
+ #define GTK_TYPE_V3270_PRINT_SETTINGS				(V3270PrintSettings_get_type())
+ #define GTK_V3270_PRINT_SETTINGS(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_PRINT_SETTINGS, V3270PrintSettings))
+ #define GTK_V3270_PRINT_SETTINGS_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_PRINT_SETTINGS, V3270PrintSettingsClass))
+ #define GTK_IS_V3270_PRINT_SETTINGS(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_PRINT_SETTINGS))
+ #define GTK_IS_V3270_PRINT_SETTINGS_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_PRINT_SETTINGS))
+ #define GTK_V3270_PRINT_SETTINGS_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_PRINT_SETTINGS, V3270V3270SettingsClass))
+
+ typedef struct _V3270PrintSettings				V3270PrintSettings;
+ typedef struct _V3270PrintSettingsClass		V3270PrintSettingsClass;
+
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
- LIB3270_EXPORT V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode);
- LIB3270_EXPORT GtkTreeModel		* v3270_font_family_model_new(GtkWidget *widget, const gchar *selected, GtkTreeIter * active);
- LIB3270_EXPORT GtkWidget			* v3270_font_selection_new(const gchar *fontname);
  LIB3270_EXPORT GType				  V3270PrintOperation_get_type(void);
+ LIB3270_EXPORT V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode);
+
+ LIB3270_EXPORT GtkTreeModel		* v3270_font_family_model_new(GtkWidget *widget, const gchar *selected, GtkTreeIter * active);
+
+ LIB3270_EXPORT GtkWidget			* v3270_font_selection_new(const gchar *fontname);
+ LIB3270_EXPORT gboolean			  v3270_font_selection_set_family(GtkWidget *widget, const gchar *fontname);
+ LIB3270_EXPORT const gchar 		* v3270_font_selection_get_family(GtkWidget *widget);
+
+ LIB3270_EXPORT GType				  V3270PrintSettings_get_type(void);
+ LIB3270_EXPORT GtkWidget			* V3270_print_settings_new(GtkWidget *widget);
+ LIB3270_EXPORT gboolean			  v3270_print_settings_get_show_selection(GtkWidget *widget);
+ LIB3270_EXPORT void				  v3270_print_settings_set_show_selection(GtkWidget *widget, gboolean is_active);
+ LIB3270_EXPORT gchar 				* v3270_print_settings_get_color_scheme(GtkWidget *widget);
+ LIB3270_EXPORT void				  v3270_print_settings_set_color_scheme(GtkWidget *widget, const gchar *colors);
+
 
  G_END_DECLS
 
