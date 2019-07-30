@@ -293,11 +293,11 @@ static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
 	return TRUE;
 }
 
-#ifdef WIN32
-static void select_local_file(GtkButton G_GNUC_UNUSED(*button), v3270ft *dialog) {
-#else
+//#ifdef WIN32
+//static void select_local_file(GtkButton G_GNUC_UNUSED(*button), v3270ft *dialog) {
+//#else
 static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, v3270ft *dialog) {
-#endif // WIN32
+//#endif // WIN32
 
 	debug("%s",__FUNCTION__);
 
@@ -567,16 +567,16 @@ static void v3270ft_init(v3270ft *dialog) {
 
 	gtk_widget_set_hexpand(GTK_WIDGET(dialog->local),TRUE);
 
-#ifdef WIN32
-	widget = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_BUTTON);
-	g_signal_connect(G_OBJECT(widget),"clicked",G_CALLBACK(select_local_file),dialog);
-	gtk_grid_attach(grid,widget,2,1,1,1);
-#else
+//#ifdef WIN32
+//	widget = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_BUTTON);
+//	g_signal_connect(G_OBJECT(widget),"clicked",G_CALLBACK(select_local_file),dialog);
+//	gtk_grid_attach(grid,widget,2,1,1,1);
+//#else
 	gtk_entry_set_icon_from_icon_name(dialog->local,GTK_ENTRY_ICON_SECONDARY,"document-open");
 	gtk_entry_set_icon_activatable(dialog->local,GTK_ENTRY_ICON_SECONDARY,TRUE);
 	gtk_entry_set_icon_tooltip_text(dialog->local,GTK_ENTRY_ICON_SECONDARY,_("Select file"));
 	g_signal_connect(G_OBJECT(dialog->local),"icon-press",G_CALLBACK(icon_press),dialog);
-#endif // WIN32
+//#endif // WIN32
 
 	g_signal_connect(G_OBJECT(dialog->local),"changed",G_CALLBACK(local_file_changed),dialog);
 

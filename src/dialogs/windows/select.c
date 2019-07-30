@@ -165,6 +165,8 @@ gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *bu
 
 	if(filename && *filename)
 		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(chooser),filename);
+	else
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), _("Untitled document"));
 
 	// Setup filters
 	/*
