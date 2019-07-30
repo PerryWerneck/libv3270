@@ -339,7 +339,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
  	{
  		N_("Save terminal contents"),
  		N_("Save selected area"),
- 		N_("Save copied data"),
+ 		N_("Save copy"),
  	};
 
 	gboolean use_header;
