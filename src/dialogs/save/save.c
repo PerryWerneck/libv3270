@@ -155,7 +155,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
 	g_signal_connect(G_OBJECT(dialog),"close",G_CALLBACK(v3270_dialog_close),NULL);
 
-	const gchar *filename = gtk_entry_get_text(GTK_ENTRY(dialog->filename));
+	const gchar *filename = gtk_entry_get_text(entry);
 
 	if(filename && *filename)
 		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog),filename);
@@ -163,7 +163,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), _("Untitled document"));
 
 	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
-		gtk_entry_set_text(GTK_ENTRY(dialog->filename),gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
+		gtk_entry_set_text(entry,gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
 
 	gtk_widget_destroy(dialog);
 
