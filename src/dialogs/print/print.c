@@ -29,8 +29,8 @@
 
  #include "private.h"
  #include <sys/param.h>
- #include <terminal.h>
  #include <lib3270/selection.h>
+ #include <clipboard.h>
 
  G_DEFINE_TYPE(V3270PrintOperation, V3270PrintOperation, GTK_TYPE_PRINT_OPERATION);
 
@@ -124,7 +124,7 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTE
 
 	case LIB3270_CONTENT_COPY:
 		debug("%s","LIB3270_CONTENT_COPY");
-		operation->contents.selection = v3270_get_selection_blocks(operation->widget);
+		operation->contents.selection = v3270_get_selection_blocks(GTK_WIDGET(operation->widget));
 		break;
 
 	case LIB3270_CONTENT_SELECTED:
