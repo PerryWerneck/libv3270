@@ -200,6 +200,44 @@
 		{
 			v3270_copy_selection(widget, V3270_SELECT_TABLE, FALSE);
 		}
+		else if(!g_ascii_strcasecmp(arg,"append"))
+		{
+			v3270_append_selection(widget,FALSE);
+		}
+		else
+		{
+			return errno = EINVAL;
+		}
+
+		return 0;
+
+	}
+
+ 	if(g_str_has_prefix(cmdline,"print"))
+	{
+
+		gchar * arg = cmdline+5;
+		g_strstrip(arg);
+
+		if(!(*arg && g_ascii_strcasecmp(arg,"all")))
+		{
+			// No argument or "text" copy text.
+			v3270_print_all(widget,NULL);
+		}
+		else if(!g_ascii_strcasecmp(arg,"selected"))
+		{
+			v3270_print_selected(widget,NULL);
+		}
+		else if(!g_ascii_strcasecmp(arg,"copy"))
+		{
+			v3270_print_copy(widget,NULL);
+		}
+		else
+		{
+			return errno = EINVAL;
+		}
+
+		return 0;
 
 	}
 
