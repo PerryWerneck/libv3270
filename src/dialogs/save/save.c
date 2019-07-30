@@ -61,18 +61,6 @@
 	}
  };
 
- static const struct _charsets
- {
-	const gchar *name;
-	const gchar *description;
- } charsets[] =
- {
-	// http://en.wikipedia.org/wiki/Character_encoding
-	{ "UTF-8",		N_( "UTF-8"	)								},
-	{ "ISO-8859-1", N_( "Western Europe (ISO 8859-1)" ) 		},
-	{ "CP1252",		N_( "Windows Western languages (CP1252)" )	},
- };
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /*
@@ -224,42 +212,13 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	// Charset drop-down
 	{
-		size_t ix;
-		const gchar	* scharset	= NULL;
-
 		widget = gtk_label_new_with_mnemonic (_("C_haracter Coding"));
 		gtk_widget_set_halign(widget,GTK_ALIGN_END);
 		gtk_widget_set_valign(widget,GTK_ALIGN_CENTER);
 		gtk_grid_attach(grid,widget,0,1,1,1);
 
-		dialog->charset =  gtk_combo_box_text_new();
-
-		g_get_charset(&scharset);
-
-		g_autofree gchar * text = g_strdup_printf(_("Current (%s)"),scharset);
-		gtk_combo_box_text_insert(
-			GTK_COMBO_BOX_TEXT(dialog->charset),
-			0,
-			scharset,
-			text
-		);
-
-		gtk_combo_box_set_active(GTK_COMBO_BOX(dialog->charset),0);
-
+		dialog->charset = v3270_charset_combo_box_new();
 		gtk_grid_attach(grid,dialog->charset,1,1,1,1);
-
-		for(ix=0;ix<G_N_ELEMENTS(charsets);ix++)
-		{
-			if(g_ascii_strcasecmp(charsets[ix].name,scharset))
-			{
-				gtk_combo_box_text_insert(
-					GTK_COMBO_BOX_TEXT(dialog->charset),
-					ix+1,
-					charsets[ix].name,
-					gettext(charsets[ix].description)
-				);
-			}
-		}
 
 	}
 

@@ -124,3 +124,52 @@
  }
 
  #endif //! GTK 3.16
+
+ GtkWidget	* v3270_charset_combo_box_new()
+ {
+	static const struct _charsets
+	{
+		const gchar *name;
+		const gchar *description;
+	} charsets[] =
+	{
+		// http://en.wikipedia.org/wiki/Character_encoding
+		{ "UTF-8",		N_( "UTF-8"	)								},
+		{ "ISO-8859-1", N_( "Western Europe (ISO 8859-1)" ) 		},
+		{ "CP1252",		N_( "Windows Western languages (CP1252)" )	},
+	};
+
+	size_t		  ix;
+	const gchar	* scharset	= NULL;
+	GtkWidget	* widget	= gtk_combo_box_text_new();
+
+	g_get_charset(&scharset);
+
+	g_autofree gchar * text = g_strdup_printf(_("Current (%s)"),scharset);
+	gtk_combo_box_text_insert(
+		GTK_COMBO_BOX_TEXT(widget),
+		0,
+		scharset,
+		text
+	);
+
+	gtk_combo_box_set_active(GTK_COMBO_BOX(widget),0);
+
+	for(ix=0;ix<G_N_ELEMENTS(charsets);ix++)
+	{
+		if(g_ascii_strcasecmp(charsets[ix].name,scharset))
+		{
+			gtk_combo_box_text_insert(
+				GTK_COMBO_BOX_TEXT(widget),
+				ix+1,
+				charsets[ix].name,
+				gettext(charsets[ix].description)
+			);
+		}
+	}
+
+	return widget;
+
+ }
+
+

@@ -108,6 +108,8 @@
  G_GNUC_INTERNAL void			  v3270_dialog_close(GtkDialog *dialog, gpointer user_data);
 
 
+/*--[ Internal Widgets & Tools ]---------------------------------------------------------------------*/
+
 #if GTK_CHECK_VERSION(3,12,0)
  G_GNUC_INTERNAL GtkHeaderBar	* v3270_dialog_get_header_bar(GtkWidget * widget);
  G_GNUC_INTERNAL void			  v3270_dialog_cancel(GtkButton G_GNUC_UNUSED(*button), GtkWidget *dialog);
@@ -135,11 +137,14 @@
 
  G_GNUC_INTERNAL gchar		* v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, const gchar *filter, ... ) G_GNUC_NULL_TERMINATED;
 
- #if ! GTK_CHECK_VERSION(3,16,0)
-
+#if ! GTK_CHECK_VERSION(3,16,0)
  G_GNUC_INTERNAL void gtk_text_view_set_monospace (GtkTextView *text_view, gboolean monospace);
+#endif //! GTK 3.16
 
- #endif //! GTK 3.16
+ G_GNUC_INTERNAL GtkWidget	* v3270_charset_combo_box_new();
+
+/*--[ Internal Methods ]-----------------------------------------------------------------------------*/
+
 
  const GtkWidgetClass		* v3270_get_parent_class(void);
 
