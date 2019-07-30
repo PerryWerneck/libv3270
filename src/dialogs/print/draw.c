@@ -99,22 +99,21 @@
 
 	for(drawing = 0; drawing < operation->lpp; drawing++)
 	{
-		size_t pos = (row * selection->bounds.width);
-		debug("Drawing: %u row=%u selection=%p pos=%u", (unsigned int) drawing, row, selection, (unsigned int) pos);
-
-		if(((unsigned int) ++row) > selection->bounds.height)
+		if(((unsigned int) row) >= selection->bounds.height)
 		{
 			debug("Searching for next block (first line=%u)",(unsigned int) (page * operation->lpp) + drawing);
 			row = get_row(operation,(page * operation->lpp) + drawing, &selection);
 			if(row < 0)
-			{
 				break;
-			}
+
 		}
 
 		// Draw columns
+		size_t pos = (row * selection->bounds.width);
 		size_t col;
 		rect.x = operation->font.info.left;
+
+		debug("Drawing: %u row=%u selection=%p pos=%u", (unsigned int) drawing, row, selection, (unsigned int) pos);
 
 		for(col = 0; col < selection->bounds.width;col++)
 		{
@@ -146,6 +145,7 @@
 
 		// Advance to the next row
 		rect.y += (rect.height-1);
+		row++;
 
 	}
 
