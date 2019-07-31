@@ -157,7 +157,7 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTE
 	operation->mode			= mode;
 	operation->widget		= GTK_V3270(widget);
 	operation->session		= v3270_get_session(widget);
-	operation->settings 	= V3270_print_settings_new(widget);
+	operation->settings 	= GTK_V3270_PRINT_SETTINGS(V3270_print_settings_new(widget));
 
 	// Get contents.
 	switch(operation->mode)

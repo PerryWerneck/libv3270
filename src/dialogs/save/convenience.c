@@ -59,7 +59,7 @@
 				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
 				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 				GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
-				message
+				"%s", message
 			);
 
 			gtk_window_set_title(GTK_WINDOW(popup),_("Operation has failed"));
