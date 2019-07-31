@@ -152,3 +152,12 @@ LIB3270_EXPORT void v3270_print_settings_set_color_scheme(GtkWidget *widget, con
 	v3270_color_scheme_set_text(GTK_V3270_COLOR_SCHEME(GTK_V3270_PRINT_SETTINGS(widget)->color), colors);
 }
 
+LIB3270_EXPORT const gchar * v3270_print_settings_get_font_family(GtkWidget *widget)
+{
+	return v3270_font_selection_get_family(GTK_V3270_PRINT_SETTINGS(widget)->font);
+}
+
+LIB3270_EXPORT gboolean v3270_print_settings_set_font_family(GtkWidget *widget, const gchar *fontname)
+{
+	return v3270_font_selection_set_family(GTK_V3270_PRINT_SETTINGS(widget)->font,fontname);
+}

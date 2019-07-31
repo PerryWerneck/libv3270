@@ -77,7 +77,8 @@
  LIB3270_EXPORT void				  v3270_print_settings_set_show_selection(GtkWidget *widget, gboolean is_active);
  LIB3270_EXPORT gchar 				* v3270_print_settings_get_color_scheme(GtkWidget *widget);
  LIB3270_EXPORT void				  v3270_print_settings_set_color_scheme(GtkWidget *widget, const gchar *colors);
-
+ LIB3270_EXPORT const gchar			* v3270_print_settings_get_font_family(GtkWidget *widget);
+ LIB3270_EXPORT gboolean			  v3270_print_settings_set_font_family(GtkWidget *widget, const gchar *fontname);
 
  G_END_DECLS
 
