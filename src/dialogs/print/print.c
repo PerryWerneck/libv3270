@@ -125,8 +125,17 @@
 
  static void custom_widget_apply(GtkPrintOperation *prt, GtkWidget *widget)
  {
+	v3270_print_operation_apply_settings(prt,gtk_bin_get_child(GTK_BIN(widget)));
+ }
+
+#endif // !_WIN32
+
+ void v3270_print_operation_apply_settings(GtkPrintOperation *prt, GtkWidget *settings)
+ {
+ 	g_return_if_fail(GTK_IS_V3270_PRINT_OPERATION(prt));
+ 	g_return_if_fail(GTK_IS_V3270_PRINT_SETTINGS(settings));
+
 	V3270PrintOperation	* operation	= GTK_V3270_PRINT_OPERATION(prt);
- 	GtkWidget			* settings	= gtk_bin_get_child(GTK_BIN(widget));
 
 	// Setup options.
 	operation->show_selection	= v3270_print_settings_get_show_selection(settings);
@@ -135,7 +144,6 @@
 	v3270_print_settings_get_rgba(settings, operation->settings.colors, V3270_COLOR_COUNT);
 
  }
-#endif // !_WIN32
 
  static void V3270PrintOperation_class_init(V3270PrintOperationClass *klass)
  {
@@ -163,9 +171,15 @@
 
  	// Setup defaults
     widget->mode 			= LIB3270_CONTENT_ALL;
-//    widget->show_selection	= FALSE;
-//    widget->font.name		= NULL; // g_strdup(v3270_default_font);
+    widget->show_selection	= FALSE;
+    widget->font.name		= NULL; // g_strdup(v3270_default_font);
 
+ }
+
+ GtkWidget * v3270_print_operation_get_terminal(GtkPrintOperation *operation)
+ {
+	g_return_val_if_fail(GTK_IS_V3270_PRINT_OPERATION(operation),NULL);
+	return GTK_WIDGET(GTK_V3270_PRINT_OPERATION(operation)->widget);
  }
 
 GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)

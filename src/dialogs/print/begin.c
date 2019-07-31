@@ -39,6 +39,13 @@
  	trace("%s",__FUNCTION__);
 
  	// Setup FONT
+ 	if(!operation->font.name)
+	{
+		operation->font.name = g_strdup("monospace");
+		debug("No font, assuming %s !!!!!!!!!!!!!!!!!!!!!!!!!!",operation->font.name);
+		g_warning("No font, assuming %s",operation->font.name);
+	}
+
 	PangoFontDescription * fontDescription = pango_font_description_from_string(operation->font.name);
 
 	cairo_select_font_face(
