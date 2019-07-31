@@ -235,3 +235,35 @@ GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 	return GTK_PRINT_OPERATION(operation);
 }
 
+gboolean v3270_print_operation_set_font_family(GtkPrintOperation *operation, const gchar *fontname)
+{
+	g_return_val_if_fail(GTK_IS_V3270_PRINT_OPERATION(operation),FALSE);
+
+	V3270PrintOperation * opr = GTK_V3270_PRINT_OPERATION(operation);
+
+	if(opr->font.name)
+		g_free(opr->font.name);
+
+	opr->font.name = g_strdup(fontname);
+
+	return TRUE;
+
+}
+
+gchar * v3270_print_operation_get_font_family(GtkPrintOperation *operation)
+{
+	g_return_val_if_fail(GTK_IS_V3270_PRINT_OPERATION(operation),NULL);
+	return g_strdup(GTK_V3270_PRINT_OPERATION(operation)->font.name);
+}
+
+void v3270_print_operation_set_color_scheme(GtkPrintOperation *operation, const gchar *colors)
+{
+	g_return_if_fail(GTK_IS_V3270_PRINT_OPERATION(operation));
+	v3270_translate_text_to_rgba(colors,GTK_V3270_PRINT_OPERATION(operation)->settings.colors);
+}
+
+gchar * v3270_print_operation_get_color_scheme(GtkPrintOperation *operation)
+{
+	g_return_val_if_fail(GTK_IS_V3270_PRINT_OPERATION(operation),NULL);
+	return v3270_translate_rgba_to_text(GTK_V3270_PRINT_OPERATION(operation)->settings.colors);
+}

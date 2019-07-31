@@ -238,6 +238,10 @@
  G_GNUC_INTERNAL GSource	* IO_source_new(H3270 *session, int fd, LIB3270_IO_FLAG flag, void(*call)(H3270 *, int, LIB3270_IO_FLAG, void *), void *userdata);
  G_GNUC_INTERNAL void		  IO_source_set_state(GSource *source, gboolean enable);
 
+ // Tools
+ G_GNUC_INTERNAL void 		  v3270_translate_text_to_rgba(const gchar *colors, GdkRGBA *clr);
+ G_GNUC_INTERNAL gchar		* v3270_translate_rgba_to_text(GdkRGBA *clr);
+
 G_END_DECLS
 
 #endif // V3270_INTERNALS_H_INCLUDED

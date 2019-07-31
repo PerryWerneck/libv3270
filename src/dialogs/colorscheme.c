@@ -363,33 +363,40 @@
  gchar * v3270_color_scheme_get_text(GtkWidget *widget)
  {
 	GdkRGBA		* clr		= NULL;
-	GValue		  value	= { 0, };
+	gchar		* rc		= NULL;
+	GValue		  value		= { 0, };
 	GtkTreeIter	  iter;
-	int			  f;
 
 	if(!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget),&iter))
 		return NULL;
 
 	gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget)),&iter,1,&value);
 	clr = g_value_get_pointer(&value);
-	GString *str = g_string_new("");
 
 	if(clr)
-	{
-		for(f=0;f<V3270_COLOR_COUNT;f++)
-		{
-			if(f)
-				g_string_append_c(str,';');
-
-			g_autofree gchar * color = gdk_rgba_to_string(clr+f);
-			g_string_append_printf(str,"%s",color);
-		}
-	}
+		rc = v3270_translate_rgba_to_text(clr);
 
 	g_value_unset(&value);
 
-	return g_string_free(str,FALSE);
+	return rc;
 
+ }
+
+ gchar * v3270_translate_rgba_to_text(GdkRGBA *clr)
+ {
+ 	int f;
+	GString *str = g_string_new("");
+
+	for(f=0;f<V3270_COLOR_COUNT;f++)
+	{
+		if(f)
+			g_string_append_c(str,';');
+
+		g_autofree gchar * color = gdk_rgba_to_string(clr+f);
+		g_string_append_printf(str,"%s",color);
+	}
+
+	return g_string_free(str,FALSE);
  }
 
  void v3270_color_scheme_set_rgba(GtkWidget *widget, const GdkRGBA *colors)
@@ -416,14 +423,22 @@
 		} while(gtk_tree_model_iter_next(model,&iter));
 	}
 
-	debug("%s: Can't identify color scheme", __FUNCTION__);
+	g_message("Can't find color scheme for %s",colors);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(widget),-1);
+
+	// TODO: Create an entry for this scheme as "custom" and select it.
 
  }
 
  void v3270_color_scheme_set_text(GtkWidget *widget, const gchar *colors)
  {
-	GdkRGBA		  clr[V3270_COLOR_COUNT];
+	GdkRGBA clr[V3270_COLOR_COUNT];
+	v3270_translate_text_to_rgba(colors,clr);
+	v3270_color_scheme_set_rgba(widget,clr);
+ }
+
+ void v3270_translate_text_to_rgba(const gchar *colors, GdkRGBA *clr)
+ {
 	gchar		**str = g_strsplit(colors,";",V3270_COLOR_BASE);
 	size_t 		  f;
 
@@ -455,8 +470,6 @@
 	}
 
 	g_strfreev(str);
-
-	v3270_color_scheme_set_rgba(widget,clr);
 
  }
 

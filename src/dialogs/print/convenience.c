@@ -43,34 +43,6 @@
 		return errno = EINVAL;
 	}
 
-	/*
- 	if(!v3270_is_connected(widget))
-	{
-		if(error)
-		{
-			*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,"%s",strerror(ENOTCONN));
-		}
-		else
-		{
-			GtkWidget *popup = gtk_message_dialog_new_with_markup(
-				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
-				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
-				_("Can't print data")
-			);
-
-			gtk_window_set_title(GTK_WINDOW(popup),_("Operation has failed"));
-
-			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",strerror(ENOTCONN));
-
-			gtk_dialog_run(GTK_DIALOG(popup));
-			gtk_widget_destroy(popup);
-		}
-
-		return errno = ENOTCONN;
-	}
-	*/
-
 	lib3270_trace_event(v3270_get_session(widget),"print action activated (type=%d)",(int) mode);
 
 	// Print operation.

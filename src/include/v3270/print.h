@@ -64,8 +64,15 @@
 
  LIB3270_EXPORT GType				  V3270PrintOperation_get_type(void);
  LIB3270_EXPORT GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode);
- LIB3270_EXPORT GtkWidget			* v3270_print_operation_get_terminal(GtkPrintOperation *operation);
  LIB3270_EXPORT void				  v3270_print_operation_apply_settings(GtkPrintOperation *operation, GtkWidget *settings);
+
+ LIB3270_EXPORT GtkWidget			* v3270_print_operation_get_terminal(GtkPrintOperation *operation);
+
+ LIB3270_EXPORT gboolean			  v3270_print_operation_set_font_family(GtkPrintOperation *operation, const gchar *fontname);
+ LIB3270_EXPORT gchar				* v3270_print_operation_get_font_family(GtkPrintOperation *operation);
+
+ LIB3270_EXPORT void				  v3270_print_operation_set_color_scheme(GtkPrintOperation *operation, const gchar *colors);
+ LIB3270_EXPORT gchar 				* v3270_print_operation_get_color_scheme(GtkPrintOperation *operation);
 
  LIB3270_EXPORT GtkTreeModel		* v3270_font_family_model_new(GtkWidget *widget, const gchar *selected, GtkTreeIter * active);
 
