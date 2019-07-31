@@ -63,7 +63,7 @@
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
  LIB3270_EXPORT GType				  V3270PrintOperation_get_type(void);
- LIB3270_EXPORT V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode);
+ LIB3270_EXPORT GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode);
 
  LIB3270_EXPORT GtkTreeModel		* v3270_font_family_model_new(GtkWidget *widget, const gchar *selected, GtkTreeIter * active);
 

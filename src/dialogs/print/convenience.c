@@ -74,14 +74,14 @@
 	lib3270_trace_event(v3270_get_session(widget),"print action activated (type=%d)",(int) mode);
 
 	// Print operation.
-	V3270PrintOperation * operation = v3270_print_operation_new(widget, mode);
+	GtkPrintOperation * operation = v3270_print_operation_new(widget, mode);
 
-	gtk_print_operation_set_show_progress(GTK_PRINT_OPERATION(operation),TRUE);
+	gtk_print_operation_set_show_progress(operation,TRUE);
 
 	if(error)
 	{
 		gtk_print_operation_run(
-				GTK_PRINT_OPERATION(operation),
+				operation,
 				GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
 				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
 				error
@@ -95,7 +95,7 @@
 		GError *err = NULL;
 
 		gtk_print_operation_run(
-				GTK_PRINT_OPERATION(operation),
+				operation,
 				GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
 				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
 				&err
@@ -112,7 +112,7 @@
 
 			gtk_window_set_title(GTK_WINDOW(popup),_("Operation has failed"));
 
-			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",strerror(ENOTCONN));
+			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",err->message);
 
 			gtk_dialog_run(GTK_DIALOG(popup));
 			gtk_widget_destroy(popup);

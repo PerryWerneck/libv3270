@@ -168,7 +168,7 @@
 
  }
 
-V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
+GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
@@ -218,6 +218,6 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTE
 		operation->contents.height += selection->bounds.height;
 	}
 
-	return operation;
+	return GTK_PRINT_OPERATION(operation);
 }
 
