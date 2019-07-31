@@ -82,6 +82,8 @@
 
  LIB3270_EXPORT GType				  V3270PrintSettings_get_type(void);
  LIB3270_EXPORT GtkWidget			* V3270_print_settings_new(GtkWidget *widget);
+ LIB3270_EXPORT GtkWidget			* V3270_print_settings_new_from_operation(GtkPrintOperation *operation);
+
  LIB3270_EXPORT gboolean			  v3270_print_settings_get_show_selection(GtkWidget *widget);
  LIB3270_EXPORT void				  v3270_print_settings_set_show_selection(GtkWidget *widget, gboolean is_active);
  LIB3270_EXPORT gchar 				* v3270_print_settings_get_color_scheme(GtkWidget *widget);

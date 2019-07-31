@@ -52,7 +52,6 @@
     LIB3270_CONTENT_OPTION	  mode;
     v3270					* widget;
     H3270					* session;
-	gboolean				  show_selection;		///< @brief Print selection box?
 
 	size_t					  lpp;					///< @brief Lines per page (in rows).
 	size_t					  pages;				///< @brief Number of pages.
@@ -60,6 +59,7 @@
 	struct
 	{
 		GdkRGBA				  colors[V3270_COLOR_COUNT];	///< @brief Color scheme for printing.
+		gboolean			  show_selection;				///< @brief Print selection box?
 
 	} settings;
 

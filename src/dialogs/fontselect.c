@@ -89,6 +89,9 @@
 	GtkTreeModel	* model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
 	GtkTreeIter		  iter;
 
+	if(!fontname)
+		fontname = "monospace";
+
 	if(gtk_tree_model_get_iter_first(model,&iter))
 	{
 		do

@@ -102,7 +102,7 @@
  static GtkWidget * custom_widget_new(GtkPrintOperation *prt)
  {
  	GtkWidget * widget		= gtk_frame_new("");
- 	GtkWidget * settings	= V3270_print_settings_new(GTK_WIDGET(GTK_V3270_PRINT_OPERATION(prt)->widget));
+ 	GtkWidget * settings	= V3270_print_settings_new_from_operation(prt);
 
 	GtkWidget *label = gtk_label_new(NULL);
 	gtk_label_set_markup(GTK_LABEL(label),_("<b>Text options</b>"));
@@ -138,8 +138,8 @@
 	V3270PrintOperation	* operation	= GTK_V3270_PRINT_OPERATION(prt);
 
 	// Setup options.
-	operation->show_selection	= v3270_print_settings_get_show_selection(settings);
-	operation->font.name		= v3270_print_settings_get_font_family(settings);
+	operation->settings.show_selection	= v3270_print_settings_get_show_selection(settings);
+	operation->font.name				= v3270_print_settings_get_font_family(settings);
 
 	v3270_print_settings_get_rgba(settings, operation->settings.colors, V3270_COLOR_COUNT);
 
@@ -170,9 +170,9 @@
 	gtk_print_operation_set_default_page_setup(GTK_PRINT_OPERATION(widget),gtk_page_setup_new());
 
  	// Setup defaults
-    widget->mode 			= LIB3270_CONTENT_ALL;
-    widget->show_selection	= FALSE;
-    widget->font.name		= NULL; // g_strdup(v3270_default_font);
+    widget->mode 					= LIB3270_CONTENT_ALL;
+    widget->settings.show_selection	= FALSE;
+    widget->font.name				= NULL; // g_strdup(v3270_default_font);
 
  }
 

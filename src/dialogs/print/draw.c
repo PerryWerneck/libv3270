@@ -122,7 +122,7 @@
 				// Draw character.
 				unsigned short attr = selection->contents[pos].attribute.visual;
 
-				if(!operation->show_selection)
+				if(!operation->settings.show_selection)
 					attr &= ~LIB3270_ATTR_SELECTED;
 
 				v3270_draw_element(

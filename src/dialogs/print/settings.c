@@ -120,6 +120,21 @@ LIB3270_EXPORT GtkWidget * V3270_print_settings_new(GtkWidget *widget)
 
 }
 
+LIB3270_EXPORT GtkWidget * V3270_print_settings_new_from_operation(GtkPrintOperation *operation)
+{
+    g_return_val_if_fail(GTK_IS_V3270_PRINT_OPERATION(operation),NULL);
+
+    V3270PrintOperation	* opr		= GTK_V3270_PRINT_OPERATION(operation);
+	V3270PrintSettings	* settings	= GTK_V3270_PRINT_SETTINGS(g_object_new(GTK_TYPE_V3270_PRINT_SETTINGS, NULL));
+
+	v3270_font_selection_set_family(settings->font, opr->font.name);
+ 	v3270_color_scheme_set_rgba(settings->color,opr->settings.colors);
+ 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(settings->selected),opr->settings.show_selection);
+
+	return GTK_WIDGET(settings);
+
+}
+
 LIB3270_EXPORT int v3270_print_settings_get_rgba(GtkWidget *widget, GdkRGBA *colors, size_t num_colors)
 {
 	V3270PrintSettings * settings = GTK_V3270_PRINT_SETTINGS(widget);
