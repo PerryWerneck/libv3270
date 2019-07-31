@@ -54,10 +54,14 @@
     H3270					* session;
 	gboolean				  show_selection;		///< @brief Print selection box?
 
-    V3270PrintSettings		* settings;				///< @brief Custom configuration.
-
 	size_t					  lpp;					///< @brief Lines per page (in rows).
 	size_t					  pages;				///< @brief Number of pages.
+
+	struct
+	{
+		GdkRGBA				  colors[V3270_COLOR_COUNT];	///< @brief Color scheme for printing.
+
+	} settings;
 
 	struct
 	{
@@ -69,21 +73,21 @@
 
     struct
     {
-		v3270FontInfo	  info;
+    	gchar				* name;
+		v3270FontInfo		  info;
     } font;
 
  };
 
  struct _V3270PrintSettingsClass
  {
- 	GtkFrameClass parent_class;
+ 	GtkGridClass parent_class;
 
  };
 
 struct _V3270PrintSettings
  {
- 	GtkFrame				  parent;
-	GdkRGBA					  colors[V3270_COLOR_COUNT];	///< @brief Color scheme for printing.
+ 	GtkGrid					  parent;
 
 	GtkWidget				* font;					///< @brief Font selection widget.
 	GtkWidget				* color;				///< @brief Color scheme selecting widget.

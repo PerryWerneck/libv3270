@@ -35,7 +35,7 @@
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
- G_DEFINE_TYPE(V3270PrintSettings, V3270PrintSettings, GTK_TYPE_FRAME);
+ G_DEFINE_TYPE(V3270PrintSettings, V3270PrintSettings, GTK_TYPE_GRID);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -57,6 +57,7 @@ static void V3270PrintSettings_class_init(V3270PrintSettingsClass *klass)
 
 }
 
+/*
 static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA *colors, V3270PrintSettings *settings)
 {
 
@@ -67,6 +68,7 @@ static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*widget), const GdkRGBA
 		settings->colors[f] = colors[f];
 
 }
+*/
 
 static void V3270PrintSettings_init(V3270PrintSettings *widget)
 {
@@ -77,46 +79,32 @@ static void V3270PrintSettings_init(V3270PrintSettings *widget)
 	};
 
 	size_t f;
-	GtkGrid 			* grid = GTK_GRID(gtk_grid_new());
-
 	widget->font 		= v3270_font_selection_new("monospace");
 	widget->color 		= v3270_color_scheme_new();
 	widget->selected 	= gtk_check_button_new_with_label( _("Print selection box") );
 
-	// The print dialog doesn't follow the guidelines from https://developer.gnome.org/hig/stable/visual-layout.html.en )-:
-	gtk_frame_set_shadow_type(GTK_FRAME(widget),GTK_SHADOW_NONE);
+	// https://developer.gnome.org/hig/stable/visual-layout.html.en
+ 	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
+ 	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
 
-	GtkWidget *label = gtk_label_new(NULL);
-
-	gtk_label_set_markup(GTK_LABEL(label),_("<b>Text options</b>"));
-	gtk_frame_set_label_widget(GTK_FRAME(widget),label);
-
- 	gtk_container_set_border_width(GTK_CONTAINER(widget),12);
- 	gtk_container_set_border_width(GTK_CONTAINER(grid),6);
-
- 	g_object_set(G_OBJECT(grid),"margin-start",8,NULL);
-
- 	gtk_grid_set_row_spacing(grid,6);
- 	gtk_grid_set_column_spacing(grid,12);
-
-	g_signal_connect(G_OBJECT(widget->color),"update-colors",G_CALLBACK(color_scheme_changed),widget);
+	// g_signal_connect(G_OBJECT(widget->color),"update-colors",G_CALLBACK(color_scheme_changed),widget);
 	// g_signal_connect(G_OBJECT(widget->selected),"toggled",G_CALLBACK(toggle_show_selection),widget);
 
 	for(f=0;f<G_N_ELEMENTS(text);f++)
 	{
 		GtkWidget *label = gtk_label_new_with_mnemonic(gettext(text[f]));
 		gtk_widget_set_halign(label,GTK_ALIGN_START);
-		gtk_grid_attach(grid,label,0,f,1,1);
+		gtk_grid_attach(GTK_GRID(widget),label,0,f,1,1);
 	}
 
-	gtk_grid_attach(grid,widget->font,1,0,1,1);
-	gtk_grid_attach(grid,widget->color,1,1,1,1);
-	gtk_grid_attach(grid,widget->selected,1,2,1,1);
+	gtk_grid_attach(GTK_GRID(widget),widget->font,1,0,1,1);
+	gtk_grid_attach(GTK_GRID(widget),widget->color,1,1,1,1);
+	gtk_grid_attach(GTK_GRID(widget),widget->selected,1,2,1,1);
 
-	gtk_container_add(GTK_CONTAINER(widget),GTK_WIDGET(grid));
-
-	v3270_set_mono_color_table(widget->colors,"#000000","#FFFFFF");
- 	v3270_color_scheme_set_rgba(widget->color,widget->colors);
+	// Set color scheme
+	GdkRGBA colors[V3270_COLOR_COUNT];
+	v3270_set_mono_color_table(colors,"#000000","#FFFFFF");
+ 	v3270_color_scheme_set_rgba(widget->color,colors);
 
 	gtk_widget_show_all(GTK_WIDGET(widget));
 
@@ -130,6 +118,12 @@ LIB3270_EXPORT GtkWidget * V3270_print_settings_new(GtkWidget *widget)
 
 	return GTK_WIDGET(settings);
 
+}
+
+LIB3270_EXPORT int v3270_print_settings_get_rgba(GtkWidget *widget, GdkRGBA *colors, size_t num_colors)
+{
+	V3270PrintSettings * settings = GTK_V3270_PRINT_SETTINGS(widget);
+	return v3270_color_scheme_get_rgba(settings->color, colors, num_colors);
 }
 
 LIB3270_EXPORT gboolean v3270_print_settings_get_show_selection(GtkWidget *widget)

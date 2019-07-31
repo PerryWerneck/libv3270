@@ -454,3 +454,31 @@
 	v3270_color_scheme_set_rgba(widget,clr);
 
  }
+
+ int v3270_color_scheme_get_rgba(GtkWidget *widget, GdkRGBA *colors, size_t num_colors)
+ {
+ 	if(num_colors > V3270_COLOR_COUNT)
+		num_colors = V3270_COLOR_COUNT;
+
+	GdkRGBA		* clr		= NULL;
+	GValue		  value	= { 0, };
+	GtkTreeIter	  iter;
+	size_t		  f;
+
+	if(!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget),&iter))
+		return errno = ENODATA;
+
+	gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget)),&iter,1,&value);
+	clr = g_value_get_pointer(&value);
+
+	if(!clr)
+		return errno = ENODATA;
+
+	for(f=0;f<num_colors;f++)
+	{
+		colors[f] = clr[f];
+	}
+
+ 	return 0;
+ }
+

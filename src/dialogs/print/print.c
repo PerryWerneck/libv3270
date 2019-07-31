@@ -80,18 +80,11 @@
 
 	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(object);
 
-	/*
-	if(operation->settings)
-	{
-		gtk_widget_destroy(GTK_WIDGET(operation->settings));
-		operation->settings = NULL;
-	}
-	*/
-
 	if(operation->font.info.scaled)
 		cairo_scaled_font_destroy(operation->font.info.scaled);
 
-//	g_free(operation->font.name);
+	if(operation->font.name)
+		g_free(operation->font.name);
 
 	if(operation->contents.dynamic)
 	{
@@ -108,11 +101,38 @@
 #ifndef _WIN32
  static GtkWidget * custom_widget_new(GtkPrintOperation *prt)
  {
-    return GTK_WIDGET(GTK_V3270_PRINT_OPERATION(prt)->settings);
+ 	GtkWidget * widget		= gtk_frame_new("");
+ 	GtkWidget * settings	= V3270_print_settings_new(GTK_WIDGET(GTK_V3270_PRINT_OPERATION(prt)->widget));
+
+	GtkWidget *label = gtk_label_new(NULL);
+	gtk_label_set_markup(GTK_LABEL(label),_("<b>Text options</b>"));
+	gtk_frame_set_label_widget(GTK_FRAME(widget),label);
+
+ 	gtk_container_set_border_width(GTK_CONTAINER(widget),12);
+
+	// The print dialog doesn't follow the guidelines from https://developer.gnome.org/hig/stable/visual-layout.html.en )-:
+	gtk_frame_set_shadow_type(GTK_FRAME(widget),GTK_SHADOW_NONE);
+
+ 	gtk_container_set_border_width(GTK_CONTAINER(settings),6);
+ 	g_object_set(G_OBJECT(settings),"margin-start",8,NULL);
+
+	gtk_container_add(GTK_CONTAINER(widget),settings);
+
+	gtk_widget_show_all(widget);
+
+    return widget;
  }
 
  static void custom_widget_apply(GtkPrintOperation *prt, GtkWidget *widget)
  {
+	V3270PrintOperation	* operation	= GTK_V3270_PRINT_OPERATION(prt);
+ 	GtkWidget			* settings	= gtk_bin_get_child(GTK_BIN(widget));
+
+	// Setup options.
+	operation->show_selection	= v3270_print_settings_get_show_selection(settings);
+	operation->font.name		= g_strdup(v3270_font_selection_get_family(settings));
+
+	v3270_print_settings_get_rgba(settings, operation->settings.colors, V3270_COLOR_COUNT);
 
  }
 #endif // _WIN32
@@ -157,7 +177,8 @@ V3270PrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTE
 	operation->mode			= mode;
 	operation->widget		= GTK_V3270(widget);
 	operation->session		= v3270_get_session(widget);
-	operation->settings 	= GTK_V3270_PRINT_SETTINGS(V3270_print_settings_new(widget));
+
+	v3270_set_mono_color_table(operation->settings.colors,"#000000","#FFFFFF");
 
 	// Get contents.
 	switch(operation->mode)
