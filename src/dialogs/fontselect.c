@@ -100,8 +100,11 @@
 			if(!g_ascii_strcasecmp(fontname,g_value_get_string(&value)))
 			{
 				gtk_combo_box_set_active_iter(GTK_COMBO_BOX(widget),&iter);
+				g_value_unset(&value);
 				return TRUE;
 			}
+
+			g_value_unset(&value);
 
 		} while(gtk_tree_model_iter_next(model,&iter));
 	}
@@ -110,7 +113,7 @@
 
  }
 
- LIB3270_EXPORT const gchar * v3270_font_selection_get_family(GtkWidget *widget)
+ LIB3270_EXPORT gchar * v3270_font_selection_get_family(GtkWidget *widget)
  {
 	GtkTreeIter	iter;
 
@@ -119,7 +122,12 @@
 		GValue value = { 0, };
 
 		gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget)),&iter,0,&value);
-		return g_value_get_string(&value);
+
+		gchar * rc = g_value_dup_string(&value);
+
+		g_value_unset(&value);
+
+		return rc;
 
 	}
 

@@ -88,6 +88,8 @@
 	debug("%s=%p",__FUNCTION__,clr);
 	g_signal_emit(widget, color_signal[CHANGED], 0, clr);
 
+	g_value_unset(&value);
+
  }
 
  static void V3270ColorScheme_class_init(G_GNUC_UNUSED V3270ColorSchemeClass *klass)
@@ -370,18 +372,21 @@
 
 	gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget)),&iter,1,&value);
 	clr = g_value_get_pointer(&value);
-	if(!clr)
-		return g_strdup("");
-
 	GString *str = g_string_new("");
-	for(f=0;f<V3270_COLOR_COUNT;f++)
-	{
-		if(f)
-			g_string_append_c(str,';');
 
-		g_autofree gchar * color = gdk_rgba_to_string(clr+f);
-		g_string_append_printf(str,"%s",color);
+	if(clr)
+	{
+		for(f=0;f<V3270_COLOR_COUNT;f++)
+		{
+			if(f)
+				g_string_append_c(str,';');
+
+			g_autofree gchar * color = gdk_rgba_to_string(clr+f);
+			g_string_append_printf(str,"%s",color);
+		}
 	}
+
+	g_value_unset(&value);
 
 	return g_string_free(str,FALSE);
 

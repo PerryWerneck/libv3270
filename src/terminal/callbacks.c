@@ -329,7 +329,7 @@ static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const
 
 static int print(H3270 *session, LIB3270_CONTENT_OPTION mode)
 {
-	return v3270_print(GTK_WIDGET(lib3270_get_user_data(session)), mode, NULL);
+	return v3270_print_dialog(GTK_WIDGET(lib3270_get_user_data(session)), mode, NULL);
 }
 
 static int save(H3270 *session, LIB3270_CONTENT_OPTION mode, const char *filename)

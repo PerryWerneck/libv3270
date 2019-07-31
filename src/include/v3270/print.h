@@ -69,7 +69,7 @@
 
  LIB3270_EXPORT GtkWidget			* v3270_font_selection_new(const gchar *fontname);
  LIB3270_EXPORT gboolean			  v3270_font_selection_set_family(GtkWidget *widget, const gchar *fontname);
- LIB3270_EXPORT const gchar 		* v3270_font_selection_get_family(GtkWidget *widget);
+ LIB3270_EXPORT gchar		 		* v3270_font_selection_get_family(GtkWidget *widget);
 
  LIB3270_EXPORT GType				  V3270PrintSettings_get_type(void);
  LIB3270_EXPORT GtkWidget			* V3270_print_settings_new(GtkWidget *widget);
@@ -77,7 +77,7 @@
  LIB3270_EXPORT void				  v3270_print_settings_set_show_selection(GtkWidget *widget, gboolean is_active);
  LIB3270_EXPORT gchar 				* v3270_print_settings_get_color_scheme(GtkWidget *widget);
  LIB3270_EXPORT void				  v3270_print_settings_set_color_scheme(GtkWidget *widget, const gchar *colors);
- LIB3270_EXPORT const gchar			* v3270_print_settings_get_font_family(GtkWidget *widget);
+ LIB3270_EXPORT gchar				* v3270_print_settings_get_font_family(GtkWidget *widget);
  LIB3270_EXPORT gboolean			  v3270_print_settings_set_font_family(GtkWidget *widget, const gchar *fontname);
  LIB3270_EXPORT int					  v3270_print_settings_get_rgba(GtkWidget *widget, GdkRGBA *colors, size_t num_colors);
 

@@ -189,6 +189,7 @@
 
 	update_color_chooser(widget,g_value_get_int(&value));
 
+	g_value_unset(&value);
  }
 
 

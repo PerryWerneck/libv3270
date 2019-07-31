@@ -34,7 +34,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- int v3270_print(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, GError **error)
+ int v3270_print_dialog(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, GError **error)
  {
  	int rc;
 
@@ -75,6 +75,8 @@
 
 	// Print operation.
 	V3270PrintOperation * operation = v3270_print_operation_new(widget, mode);
+
+	gtk_print_operation_set_show_progress(GTK_PRINT_OPERATION(operation),TRUE);
 
 	if(error)
 	{
@@ -127,18 +129,24 @@
 
  }
 
+ int v3270_print(GtkWidget *widget, GError **error)
+ {
+	return v3270_print_dialog(widget,(lib3270_has_selection(GTK_V3270(widget)->host) ? LIB3270_CONTENT_SELECTED : LIB3270_CONTENT_ALL),error);
+ }
+
+
  int v3270_print_all(GtkWidget *widget, GError **error)
  {
-	return v3270_print(widget,LIB3270_CONTENT_ALL,error);
+	return v3270_print_dialog(widget,LIB3270_CONTENT_ALL,error);
  }
 
  int v3270_print_selected(GtkWidget *widget, GError **error)
  {
-	return v3270_print(widget,LIB3270_CONTENT_SELECTED,error);
+	return v3270_print_dialog(widget,LIB3270_CONTENT_SELECTED,error);
  }
 
  int v3270_print_copy(GtkWidget *widget, GError **error)
  {
-	return v3270_print(widget,LIB3270_CONTENT_COPY,error);
+	return v3270_print_dialog(widget,LIB3270_CONTENT_COPY,error);
  }
 

@@ -40,7 +40,7 @@
 
  static void print_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
-	lib3270_print_all(v3270_get_session(terminal));
+ 	v3270_print(terminal,NULL);
  }
 
  static void host_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)

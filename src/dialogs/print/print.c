@@ -130,12 +130,12 @@
 
 	// Setup options.
 	operation->show_selection	= v3270_print_settings_get_show_selection(settings);
-	operation->font.name		= g_strdup(v3270_font_selection_get_family(settings));
+	operation->font.name		= v3270_print_settings_get_font_family(settings);
 
 	v3270_print_settings_get_rgba(settings, operation->settings.colors, V3270_COLOR_COUNT);
 
  }
-#endif // _WIN32
+#endif // !_WIN32
 
  static void V3270PrintOperation_class_init(V3270PrintOperationClass *klass)
  {
@@ -149,7 +149,7 @@
 #ifndef _WIN32
 	operation->create_custom_widget = custom_widget_new;
 	operation->custom_widget_apply  = custom_widget_apply;
-#endif // _WIN32
+#endif // !_WIN32
 
  }
 
