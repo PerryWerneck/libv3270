@@ -144,11 +144,11 @@ LIB3270_EXPORT void v3270_print_settings_set_show_selection(GtkWidget *widget, g
 
 LIB3270_EXPORT gchar * v3270_print_settings_get_color_scheme(GtkWidget *widget)
 {
-	return v3270_color_scheme_get_text(GTK_V3270_COLOR_SCHEME(GTK_V3270_PRINT_SETTINGS(widget)->color));
+	return v3270_color_scheme_get_text((GTK_V3270_PRINT_SETTINGS(widget)->color));
 }
 
 LIB3270_EXPORT void v3270_print_settings_set_color_scheme(GtkWidget *widget, const gchar *colors)
 {
-	v3270_color_scheme_set_text(GTK_V3270_COLOR_SCHEME(GTK_V3270_PRINT_SETTINGS(widget)->color), colors);
+	v3270_color_scheme_set_text(GTK_V3270_PRINT_SETTINGS(widget)->color, colors);
 }
 

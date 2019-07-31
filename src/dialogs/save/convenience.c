@@ -27,10 +27,10 @@
  *
  */
 
- #include <config.h>
+ #include "private.h"
+ #include <internals.h>
  #include <errno.h>
  #include <string.h>
- #include "private.h"
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
