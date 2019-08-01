@@ -60,6 +60,9 @@
 		<Unit filename="src/dialogs/linux/select.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/popups.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/print/begin.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -153,9 +156,11 @@
 		<Unit filename="src/include/v3270.h" />
 		<Unit filename="src/include/v3270/accessible.h" />
 		<Unit filename="src/include/v3270/colorscheme.h" />
+		<Unit filename="src/include/v3270/dialogs.h" />
 		<Unit filename="src/include/v3270/filetransfer.h" />
 		<Unit filename="src/include/v3270/ftprogress.h" />
 		<Unit filename="src/include/v3270/print.h" />
+		<Unit filename="src/include/v3270/security.h" />
 		<Unit filename="src/include/v3270/trace.h" />
 		<Unit filename="src/selection/copy.c">
 			<Option compilerVar="CC" />

@@ -423,8 +423,8 @@
 		} while(gtk_tree_model_iter_next(model,&iter));
 	}
 
-	g_message("Can't find color scheme for %s",colors);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(widget),-1);
+	g_message("Can't find color scheme");
+	//gtk_combo_box_set_active(GTK_COMBO_BOX(widget),-1);
 
 	// TODO: Create an entry for this scheme as "custom" and select it.
 

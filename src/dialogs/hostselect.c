@@ -29,6 +29,7 @@
 
  #include "private.h"
  #include <hostselect.h>
+ #include <v3270/dialogs.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 

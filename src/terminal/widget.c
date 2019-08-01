@@ -136,50 +136,6 @@ void get_preferred_width(GtkWidget *widget, gint *minimum_width, gint *natural_w
 		*natural_width = 600;
 }
 
-void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *title, const gchar *message, const gchar *text)
-{
-	GtkWidget		* dialog;
-	GtkWidget		* toplevel	= NULL;
-	GtkMessageType	  msgtype	= GTK_MESSAGE_WARNING;
-	GtkButtonsType	  buttons	= GTK_BUTTONS_OK;
-
-	if(widget && GTK_IS_WIDGET(widget))
-		toplevel = gtk_widget_get_toplevel(GTK_WIDGET(widget));
-
-	if(!GTK_IS_WINDOW(toplevel))
-		toplevel = NULL;
-
-	if(type == LIB3270_NOTIFY_CRITICAL)
-	{
-		msgtype	= GTK_MESSAGE_ERROR;
-		buttons = GTK_BUTTONS_CLOSE;
-	}
-
-	if(!title)
-		title = _( "Error" );
-
-	if(message)
-	{
-		dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(toplevel),GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,msgtype,buttons,"%s",message);
-		if(text && *text)
-			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"%s",text);
-	}
-	else if(text && *text)
-	{
-		dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(toplevel),GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,msgtype,buttons,"%s",text);
-	}
-	else
-	{
-		dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(toplevel),GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,msgtype,buttons,"%s",title);
-	}
-
-	gtk_window_set_title(GTK_WINDOW(dialog),title);
-	gtk_widget_show_all(dialog);
-	gtk_dialog_run(GTK_DIALOG (dialog));
-	gtk_widget_destroy(dialog);
-
-}
-
 gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, G_GNUC_UNUSED gboolean keyboard_tooltip, GtkTooltip *tooltip)
 {
 	if(y >= GTK_V3270(widget)->oia.rect->y)

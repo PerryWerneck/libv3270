@@ -32,6 +32,7 @@
  #include <v3270/filetransfer.h>
  #include <v3270/ftprogress.h>
  #include <v3270/colorscheme.h>
+ #include <v3270/dialogs.h>
  #include <v3270/trace.h>
  #include <lib3270/log.h>
  #include <stdlib.h>
@@ -65,6 +66,8 @@ static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *termin
 
  static void ft_clicked(GtkButton *button, GtkWidget *terminal)
  {
+ 	v3270_error_popup(terminal,"title","summary","body");
+
 	/*
 	GtkWidget * dialog	= v3270_dialog_new(terminal, _("test"), _("test"));
 	GtkWidget * trace = v3270_trace_new(terminal);
@@ -100,6 +103,7 @@ static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *termin
 	v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP);
 	*/
 
+	/*
  	//
  	// Test settings dialog
  	//
@@ -110,6 +114,7 @@ static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *termin
 	// V5.1 dialog
 	//
 	GtkWidget *dialog = v3270ft_new(GTK_WIDGET(button));
+	*/
 
 	/*
 	//
@@ -123,9 +128,11 @@ static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *termin
 	v3270_ft_worker_start(worker);
 	*/
 
+	/*
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
+	*/
 
  }
 

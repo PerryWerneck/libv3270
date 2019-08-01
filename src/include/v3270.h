@@ -18,14 +18,12 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como v3270.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
  * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- * licinio@bb.com.br		(Licínio Luis Branco)
- * kraucer@bb.com.br		(Kraucer Fernandes Mazuco)
  *
  */
 
@@ -261,7 +259,6 @@
  LIB3270_EXPORT void			  v3270_popup_security_dialog(GtkWidget *widget);
 
  // Auxiliary widgets
- LIB3270_EXPORT GtkWidget		* v3270_host_select_new(GtkWidget *widget);
  LIB3270_EXPORT void			  v3270_select_host(GtkWidget *widget);
 
  // Print
@@ -279,8 +276,6 @@
 
  // Misc
  LIB3270_EXPORT int				  v3270_exec_command(GtkWidget *widget, const gchar *cmdline);
-
- LIB3270_EXPORT GtkWidget		* v3270_dialog_new(GtkWidget *widget, const gchar *title, const gchar *apply);
 
  // Convenience
  LIB3270_EXPORT void			  gtk_entry_set_printf(GtkEntry *entry, const gchar *fmt, ...) G_GNUC_PRINTF(2,3);
