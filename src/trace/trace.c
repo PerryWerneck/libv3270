@@ -254,11 +254,14 @@
  	{
  		widget->buttons =  gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 
+		// https://developer.gnome.org/hig/stable/visual-layout.html.en
+		gtk_container_set_border_width(GTK_CONTAINER(widget->buttons), 12);
+		gtk_box_set_spacing(GTK_BOX(widget->buttons),12);
+
 		gtk_button_box_set_layout(GTK_BUTTON_BOX(widget->buttons), GTK_BUTTONBOX_START);
-		gtk_box_set_spacing(GTK_BOX(widget->buttons),8);
 
 		gtk_widget_set_valign(widget->buttons,GTK_ALIGN_START);
-		gtk_box_pack_start(GTK_BOX(widget),widget->buttons,FALSE,FALSE,4);
+		gtk_box_pack_start(GTK_BOX(widget),widget->buttons,FALSE,FALSE,0);
 
  	}
 
