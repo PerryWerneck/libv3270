@@ -626,7 +626,7 @@ static AtkAttributeSet * v3270_accessible_get_run_attributes(AtkText *text, gint
 	// Either "true" or "false" indicating whether text is editable or not
 	attributes = add_attribute(	attributes,
 								ATK_TEXT_ATTR_EDITABLE,
-								lib3270_is_protected(host,offset) ? "false" : "true" );
+								lib3270_get_is_protected(host,offset) ? "false" : "true" );
 
 	// The background color. The value is an RGB value of the format "u,u,u"
 	// ATK_TEXT_ATTR_BG_COLOR

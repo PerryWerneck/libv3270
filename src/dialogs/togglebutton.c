@@ -29,6 +29,7 @@
 
  #include <internals.h>
  #include <lib3270.h>
+ #include <lib3270/toggle.h>
 
  /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
@@ -44,6 +45,7 @@
 
  	H3270			* hSession;
  	LIB3270_TOGGLE	  id;
+ 	const void		* hListener;
 
  };
 
@@ -56,6 +58,12 @@
 	debug("%s",__FUNCTION__);
 
 	V3270ToggleButton * widget = GTK_V3270_TOGGLE_BUTTON(object);
+
+	if(widget->hListener)
+	{
+		lib3270_unregister_toggle_listener(widget->hSession,widget->id,widget->hListener);
+		widget->hListener = NULL;
+	}
 
 	G_OBJECT_CLASS(V3270ToggleButton_parent_class)->dispose(object);
 
@@ -86,8 +94,14 @@
 
  }
 
- static void V3270ToggleButton_init(V3270ToggleButton *widget)
+ static void V3270ToggleButton_init(V3270ToggleButton G_GNUC_UNUSED(*widget))
  {
+ }
+
+ static void toggle_listener(H3270 G_GNUC_UNUSED(*hSession), LIB3270_TOGGLE toggle, char state, void *button)
+ {
+ 	g_message("%s is %s\n", lib3270_get_toggle_name(toggle),(state ? "ON" : "OFF"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),(state == 0 ? FALSE : TRUE));
  }
 
  GtkWidget * v3270_toggle_button_new(GtkWidget *terminal, LIB3270_TOGGLE toggle)
@@ -98,6 +112,8 @@
 
  	widget->hSession = v3270_get_session(terminal);
 	widget->id = toggle;
+
+	widget->hListener = lib3270_register_toggle_listener(widget->hSession, widget->id,toggle_listener,widget);
 
 	gtk_widget_set_name(GTK_WIDGET(widget),lib3270_get_toggle_name(toggle));
 	gtk_button_set_label(GTK_BUTTON(widget),gettext(lib3270_get_toggle_label(toggle)));

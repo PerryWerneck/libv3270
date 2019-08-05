@@ -40,6 +40,7 @@
  #include <lib3270/actions.h>
  #include <lib3270/log.h>
  #include <lib3270/properties.h>
+ #include <lib3270/toggle.h>
  #include <stdlib.h>
  #include <errno.h>
  #include <v3270.h>

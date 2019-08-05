@@ -93,6 +93,9 @@
 		<Unit filename="src/dialogs/settingsdialog.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/togglebutton.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/tools.c">
 			<Option compilerVar="CC" />
 		</Unit>

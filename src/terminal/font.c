@@ -31,7 +31,7 @@
  #include <terminal.h>
  #include <lib3270.h>
  #include <lib3270/log.h>
-
+ #include <lib3270/toggle.h>
 
  #define VIEW_HEIGTH_FROM_FONT(font_height) (( ((unsigned int) font_height) * (rows+1)) + OIA_TOP_MARGIN + 2)
  #define VIEW_WIDTH_FROM_FONT(max_x_advance) ( ((unsigned int) max_x_advance) * cols)

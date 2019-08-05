@@ -76,6 +76,7 @@
  	GtkTextView			* view;			///< @brief Text view;
 	GtkTextBuffer		* text;			///< @brief Trace window contents.
 	GtkEntry			* entry;		///< @brief Command line entry.
+	GtkWidget 			* buttons;		///< @brief Button bar.
 
  	gchar 				* filename;		///< @brief Selected file name.
 
@@ -245,82 +246,19 @@
 
  }
 
- static void toggle_ds_trace(GtkToggleButton *button, V3270Trace *trace) {
-	v3270_set_toggle(trace->terminal,LIB3270_TOGGLE_DS_TRACE,gtk_toggle_button_get_active(button));
- }
-
- static void toggle_event_trace(GtkToggleButton *button, V3270Trace *trace) {
-	v3270_set_toggle(trace->terminal,LIB3270_TOGGLE_EVENT_TRACE,gtk_toggle_button_get_active(button));
- }
-
- static void toggle_ssl_trace(GtkToggleButton *button, V3270Trace *trace) {
-	v3270_set_toggle(trace->terminal,LIB3270_TOGGLE_SSL_TRACE,gtk_toggle_button_get_active(button));
- }
-
- static void toggle_screen_trace(GtkToggleButton *button, V3270Trace *trace) {
-	v3270_set_toggle(trace->terminal,LIB3270_TOGGLE_SCREEN_TRACE,gtk_toggle_button_get_active(button));
- }
-
  static void V3270Trace_init(V3270Trace *widget)
  {
  	gtk_orientable_set_orientation(GTK_ORIENTABLE(widget),GTK_ORIENTATION_VERTICAL);
 
  	// Create toolbar
  	{
- 		size_t ix;
+ 		widget->buttons =  gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 
-		GtkWidget * toolbar	= gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-		gtk_button_box_set_layout(GTK_BUTTON_BOX(toolbar), GTK_BUTTONBOX_START);
-		gtk_box_set_spacing(GTK_BOX(toolbar),8);
+		gtk_button_box_set_layout(GTK_BUTTON_BOX(widget->buttons), GTK_BUTTONBOX_START);
+		gtk_box_set_spacing(GTK_BOX(widget->buttons),8);
 
-		static const struct _toggles
-		{
-			const gchar * label;
-			const gchar * tooltip;
-			GCallback 	  callback;
-		}
-		toggles[] =
-		{
-			{
-				N_("DS Trace"),
-				N_("Toggle DS Trace"),
-				G_CALLBACK(toggle_ds_trace)
-			},
-			{
-				N_("Event Trace"),
-				N_("Toggle Event Trace"),
-				G_CALLBACK(toggle_event_trace)
-			},
-			{
-				N_("Screen Trace"),
-				N_("Toggle Screen Trace"),
-				G_CALLBACK(toggle_screen_trace)
-			},
-			{
-				N_("SSL Trace"),
-				N_("Toggle SSL Trace"),
-				G_CALLBACK(toggle_ssl_trace)
-			}
-
-		};
-
-		for(ix = 0; ix < G_N_ELEMENTS(toggles); ix++)
-		{
-			GtkWidget * item = gtk_toggle_button_new_with_label(toggles[ix].label);
-
-			gtk_widget_set_can_focus(item,FALSE);
-			gtk_widget_set_can_default(item,FALSE);
-			gtk_widget_set_focus_on_click(item,FALSE);
-
-			g_signal_connect(item, "toggled", G_CALLBACK(toggles[ix].callback), widget);
-
-			gtk_widget_set_tooltip_text(item,toggles[ix].tooltip);
-			gtk_box_pack_start(GTK_BOX(toolbar),item,FALSE,FALSE,4);
-
-		}
-
-		gtk_widget_set_valign(toolbar,GTK_ALIGN_START);
-		gtk_box_pack_start(GTK_BOX(widget),toolbar,FALSE,FALSE,4);
+		gtk_widget_set_valign(widget->buttons,GTK_ALIGN_START);
+		gtk_box_pack_start(GTK_BOX(widget),widget->buttons,FALSE,FALSE,4);
 
  	}
 
@@ -374,26 +312,6 @@
 
  }
 
- LIB3270_EXPORT	void v3270_trace_set_terminal(GtkWidget *widget, GtkWidget *terminal)
- {
-	V3270Trace * trace = GTK_V3270_TRACE(widget);
-
-	if(trace->terminal == terminal)
-		return;
-
-	g_clear_object(&trace->terminal);
-
-	if(terminal)
-	{
-		trace->terminal = terminal;
-		g_object_ref_sink(G_OBJECT(terminal));
-	}
-
-	set_session(trace, v3270_get_session(trace->terminal));
-
-	gtk_widget_set_sensitive(GTK_WIDGET(trace->entry),trace->terminal != NULL);
-
- }
 
  LIB3270_EXPORT	GtkWidget * v3270_trace_new(GtkWidget *terminal)
  {
@@ -401,7 +319,32 @@
 
 	V3270Trace * widget = GTK_V3270_TRACE(g_object_new(GTK_TYPE_V3270_TRACE, NULL));
 
-	v3270_trace_set_terminal(GTK_WIDGET(widget),terminal);
+	// Set terminal widget
+	{
+		widget->terminal = terminal;
+		g_object_ref_sink(G_OBJECT(terminal));
+		set_session(widget, v3270_get_session(widget->terminal));
+	}
+
+	// Create toggle buttons
+	{
+ 		size_t ix;
+
+		static const LIB3270_TOGGLE toggles[] = { LIB3270_TOGGLE_DS_TRACE,  LIB3270_TOGGLE_EVENT_TRACE, LIB3270_TOGGLE_SSL_TRACE, LIB3270_TOGGLE_SCREEN_TRACE};
+
+		for(ix = 0; ix < G_N_ELEMENTS(toggles); ix++)
+		{
+			GtkWidget * item = v3270_toggle_button_new(widget->terminal,toggles[ix]);
+
+			gtk_widget_set_can_focus(item,FALSE);
+			gtk_widget_set_can_default(item,FALSE);
+			gtk_widget_set_focus_on_click(item,FALSE);
+
+			gtk_box_pack_start(GTK_BOX(widget->buttons),item,FALSE,FALSE,4);
+
+		}
+	}
+
 
 	return GTK_WIDGET(widget);
  }

@@ -33,6 +33,7 @@
 
  #include <lib3270.h>
  #include <lib3270/log.h>
+ #include <lib3270/toggle.h>
  #include <lib3270/actions.h>
  #include <internals.h>
 

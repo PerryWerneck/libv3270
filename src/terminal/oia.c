@@ -45,6 +45,7 @@
  #include <lib3270.h>
  #include <lib3270/session.h>
  #include <lib3270/log.h>
+ #include <lib3270/toggle.h>
  #include <config.h>
  #include <string.h>
  #include <errno.h>

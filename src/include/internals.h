@@ -117,6 +117,19 @@
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_button_new(GtkWidget *dialog, const gchar *mnemonic, GCallback callback);
 #endif // ! GTK 3.12
 
+ // Toggle button widget
+ #define GTK_TYPE_V3270_TOGGLE_BUTTON				(V3270ToggleButton_get_type ())
+ #define GTK_V3270_TOGGLE_BUTTON(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_TOGGLE_BUTTON, V3270ToggleButton))
+ #define GTK_V3270_TOGGLE_BUTTON_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_TOGGLE_BUTTON, V3270ToggleButtonClass))
+ #define GTK_IS_V3270_TOGGLE_BUTTON(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_TOGGLE_BUTTON))
+ #define GTK_IS_V3270_TOGGLE_BUTTON_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_TOGGLE_BUTTON))
+ #define GTK_V3270_TOGGLE_BUTTON_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_TOGGLE_BUTTON, V3270ToggleButtonClass))
+
+ typedef struct _V3270ToggleButton		V3270ToggleButton;
+ typedef struct _V3270ToggleButtonClass	V3270ToggleButtonClass;
+
+ G_GNUC_INTERNAL GtkWidget * v3270_toggle_button_new(GtkWidget *widget, LIB3270_TOGGLE toggle);
+
  // Activity list widget.
  #define GTK_TYPE_V3270_FT_ACTIVITY_LIST				(V3270FTActivityList_get_type ())
  #define GTK_V3270_FT_ACTIVITY_LIST(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_FT_ACTIVITY_LIST, V3270FTActivityList))

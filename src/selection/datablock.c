@@ -189,7 +189,7 @@ gboolean v3270_set_from_data_block(v3270 * terminal, const struct SelectionHeade
 			raw_pos += (sizeof(struct SelectionFieldHeader) + field->length);
 			for(column = 0; column < field->length; column++)
 			{
-                if(lib3270_is_protected(terminal->host,field->baddr+column))
+                if(lib3270_get_is_protected(terminal->host,field->baddr+column))
 				{
 					debug("Column %d is protected",column);
 					found = FALSE;
