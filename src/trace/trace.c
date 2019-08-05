@@ -293,7 +293,6 @@
 		gtk_widget_grab_focus(GTK_WIDGET(widget->entry));
 
 		gtk_entry_set_activates_default(widget->entry,TRUE);
-		gtk_widget_set_sensitive(GTK_WIDGET(widget->entry),FALSE);
 		gtk_widget_set_vexpand(GTK_WIDGET(widget->entry),FALSE);
 		gtk_widget_set_hexpand(GTK_WIDGET(widget->entry),TRUE);
 
@@ -410,84 +409,18 @@
 	va_end(arg_ptr);
  }
 
- static void menu_item_new(GtkWidget *menu, const gchar *label, GCallback callback, gpointer data)
+ const gchar * v3270_trace_get_filename(GtkWidget *widget)
  {
-	GtkWidget *widget = gtk_menu_item_new_with_mnemonic(label);
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu),widget);
-	g_signal_connect(G_OBJECT(widget), "activate", callback, data);
- }
-
- static void menu_save(G_GNUC_UNUSED GtkWidget *button, GtkWidget *trace)
- {
-	v3270_trace_save(trace);
- }
-
- static void menu_save_as(G_GNUC_UNUSED GtkWidget *button, GtkWidget *trace)
- {
-	v3270_trace_select_file(trace);
- }
-
- static void menu_close(G_GNUC_UNUSED GtkWidget *button, GtkWidget *window)
- {
-	debug("%s",__FUNCTION__);
-	gtk_widget_destroy(window);
- }
-
- LIB3270_EXPORT GtkWidget * v3270_trace_window_new(GtkWidget *widget, const gchar *header)
- {
-	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
-
- 	GtkWidget 	* window	= gtk_window_new(GTK_WINDOW_TOPLEVEL);
- 	GtkWidget 	* vbox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
- 	GtkWidget	* trace		= v3270_trace_new(widget);
-
- 	// Set window title and default size
- 	{
-		const gchar 		* url 	= lib3270_get_url(v3270_get_session(widget));
-		g_autofree gchar 	* title = NULL;
-
-		if(url)
-			title = g_strdup_printf("%s - %s - Trace", v3270_get_session_name(widget), url);
-		else
-			title = g_strdup_printf("%s - Trace", v3270_get_session_name(widget));
-
-		gtk_window_set_title(GTK_WINDOW(window), title);
-		gtk_window_set_default_size(GTK_WINDOW(window),590,430);
- 	}
-
-	// Top menu
-	{
-		GtkWidget * menubar = gtk_menu_bar_new();
-		GtkWidget * topitem	= gtk_menu_item_new_with_mnemonic(_("_File"));
-		GtkWidget * submenu	= gtk_menu_new();
-
-		gtk_menu_item_set_submenu(GTK_MENU_ITEM(topitem), submenu);
-		gtk_menu_shell_append(GTK_MENU_SHELL(menubar), topitem);
-
-		menu_item_new(submenu,_("_Save"),G_CALLBACK(menu_save),trace);
-		menu_item_new(submenu,_("Save _As"),G_CALLBACK(menu_save_as),trace);
-		menu_item_new(submenu,_("_Close"),G_CALLBACK(menu_close),window);
-
-		gtk_box_pack_start(GTK_BOX(vbox),menubar,FALSE,TRUE,0);
-	}
-
-	// Trace window
-	gtk_box_pack_start(GTK_BOX(vbox),GTK_WIDGET(trace),TRUE,TRUE,0);
-
-	gtk_container_add(GTK_CONTAINER(window),vbox);
-	gtk_widget_show_all(window);
-
-	if(header)
-		v3270_trace_append_text(trace,header);
-
- 	return window;
+ 	g_return_val_if_fail(GTK_IS_V3270_TRACE(widget),NULL);
+  	return GTK_V3270_TRACE(widget)->filename;
  }
 
  LIB3270_EXPORT void v3270_trace_save(GtkWidget *widget)
  {
+ 	const gchar *filename = v3270_trace_get_filename(widget);
  	V3270Trace * trace = GTK_V3270_TRACE(widget);
 
-	if(trace && trace->filename)
+	if(filename)
 	{
 		GError		* error = NULL;
 		gchar		* text;
@@ -511,7 +444,7 @@
 						GTK_MESSAGE_ERROR,
 						GTK_BUTTONS_CLOSE,
 						_( "Can't save %s" ),
-						trace->filename
+						filename
 				);
 
 			gtk_window_set_title(GTK_WINDOW(popup),_("Can't save file"));
@@ -550,4 +483,3 @@
 	}
 
  }
-

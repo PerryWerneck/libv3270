@@ -260,7 +260,10 @@
 		<Unit filename="src/trace/exec.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/trace/widget.c">
+		<Unit filename="src/trace/trace.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/trace/tracewindow.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
