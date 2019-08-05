@@ -62,13 +62,13 @@
 
  struct _V3270TraceClass
  {
- 	GtkGridClass parent_class;
+ 	GtkBoxClass parent_class;
 
  };
 
  struct _V3270Trace
  {
- 	GtkGrid				  parent;
+ 	GtkBox				  parent;
  	H3270				* hSession;		///< @brief TN3270 Session.
  	GtkWidget			* terminal;		///< @brief V3270 Widget.
  	GtkScrolledWindow	* scroll;
@@ -91,7 +91,7 @@
 
  G_END_DECLS
 
- G_DEFINE_TYPE(V3270Trace, V3270Trace, GTK_TYPE_GRID);
+ G_DEFINE_TYPE(V3270Trace, V3270Trace, GTK_TYPE_BOX);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -245,10 +245,84 @@
 
  }
 
+ static void toggle_ds_trace(GtkToggleButton *button, V3270Trace *trace) {
+	v3270_set_toggle(trace->terminal,LIB3270_TOGGLE_DS_TRACE,gtk_toggle_button_get_active(button));
+ }
+
+ static void toggle_event_trace(GtkToggleButton *button, V3270Trace *trace) {
+	v3270_set_toggle(trace->terminal,LIB3270_TOGGLE_EVENT_TRACE,gtk_toggle_button_get_active(button));
+ }
+
+ static void toggle_ssl_trace(GtkToggleButton *button, V3270Trace *trace) {
+	v3270_set_toggle(trace->terminal,LIB3270_TOGGLE_SSL_TRACE,gtk_toggle_button_get_active(button));
+ }
+
+ static void toggle_screen_trace(GtkToggleButton *button, V3270Trace *trace) {
+	v3270_set_toggle(trace->terminal,LIB3270_TOGGLE_SCREEN_TRACE,gtk_toggle_button_get_active(button));
+ }
+
  static void V3270Trace_init(V3270Trace *widget)
  {
-	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
-	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
+ 	gtk_orientable_set_orientation(GTK_ORIENTABLE(widget),GTK_ORIENTATION_VERTICAL);
+
+ 	// Create toolbar
+ 	{
+ 		size_t ix;
+
+		GtkWidget * toolbar	= gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+		gtk_button_box_set_layout(GTK_BUTTON_BOX(toolbar), GTK_BUTTONBOX_START);
+		gtk_box_set_spacing(GTK_BOX(toolbar),8);
+
+		static const struct _toggles
+		{
+			const gchar * label;
+			const gchar * tooltip;
+			GCallback 	  callback;
+		}
+		toggles[] =
+		{
+			{
+				N_("DS Trace"),
+				N_("Toggle DS Trace"),
+				G_CALLBACK(toggle_ds_trace)
+			},
+			{
+				N_("Event Trace"),
+				N_("Toggle Event Trace"),
+				G_CALLBACK(toggle_event_trace)
+			},
+			{
+				N_("Screen Trace"),
+				N_("Toggle Screen Trace"),
+				G_CALLBACK(toggle_screen_trace)
+			},
+			{
+				N_("SSL Trace"),
+				N_("Toggle SSL Trace"),
+				G_CALLBACK(toggle_ssl_trace)
+			}
+
+		};
+
+		for(ix = 0; ix < G_N_ELEMENTS(toggles); ix++)
+		{
+			GtkWidget * item = gtk_toggle_button_new_with_label(toggles[ix].label);
+
+			gtk_widget_set_can_focus(item,FALSE);
+			gtk_widget_set_can_default(item,FALSE);
+			gtk_widget_set_focus_on_click(item,FALSE);
+
+			g_signal_connect(item, "toggled", G_CALLBACK(toggles[ix].callback), widget);
+
+			gtk_widget_set_tooltip_text(item,toggles[ix].tooltip);
+			gtk_box_pack_start(GTK_BOX(toolbar),item,FALSE,FALSE,4);
+
+		}
+
+		gtk_widget_set_valign(toolbar,GTK_ALIGN_START);
+		gtk_box_pack_start(GTK_BOX(widget),toolbar,FALSE,FALSE,4);
+
+ 	}
 
 	// Create text view
 	{
@@ -256,7 +330,8 @@
 		gtk_scrolled_window_set_policy(widget->scroll,GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
 		gtk_widget_set_vexpand(GTK_WIDGET(widget->scroll),TRUE);
 		gtk_widget_set_hexpand(GTK_WIDGET(widget->scroll),TRUE);
-		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->scroll),0,0,10,1);
+
+		gtk_box_pack_start(GTK_BOX(widget),GTK_WIDGET(widget->scroll),TRUE,TRUE,4);
 
 		widget->view = GTK_TEXT_VIEW(gtk_text_view_new());
 
@@ -287,7 +362,7 @@
 		gtk_entry_set_icon_from_icon_name(widget->entry,GTK_ENTRY_ICON_SECONDARY,"system-run");
 		gtk_entry_set_placeholder_text(widget->entry,_("Command to execute"));
 
-		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->entry),0,1,10,1);
+		gtk_box_pack_end(GTK_BOX(widget),GTK_WIDGET(widget->entry),FALSE,FALSE,4);
 
 		g_signal_connect(G_OBJECT(widget->entry),"icon-press",G_CALLBACK(execute_command),widget);
 		g_signal_connect(G_OBJECT(widget->entry),"activate",G_CALLBACK(entry_activated),widget);

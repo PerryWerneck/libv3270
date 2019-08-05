@@ -43,39 +43,7 @@
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- static void toggle_ds_trace(GtkToggleButton *button, GtkWidget *terminal) {
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_DS_TRACE,gtk_toggle_button_get_active(button));
- }
-
- static void toggle_event_trace(GtkToggleButton *button, GtkWidget *terminal) {
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_EVENT_TRACE,gtk_toggle_button_get_active(button));
- }
-
- static void toggle_ssl_trace(GtkToggleButton *button, GtkWidget *terminal) {
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_SSL_TRACE,gtk_toggle_button_get_active(button));
- }
-
- static void toggle_screen_trace(GtkToggleButton *button, GtkWidget *terminal) {
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_SCREEN_TRACE,gtk_toggle_button_get_active(button));
- }
-
- static GtkWidget * create_toggle_button(GtkWidget *terminal, const gchar *label, const gchar *tooltip, GCallback callback) {
-
-	GtkWidget * item = gtk_toggle_button_new_with_label(label);
-
-	gtk_widget_set_can_focus(item,FALSE);
-	gtk_widget_set_can_default(item,FALSE);
-	gtk_widget_set_focus_on_click(item,FALSE);
-
-	g_signal_connect(item, "toggled", G_CALLBACK(callback), terminal);
-
-	if(tooltip)
-		gtk_widget_set_tooltip_text(item,tooltip);
-
-	return item;
-}
-
-static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
+ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();
@@ -100,22 +68,7 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	// Create trace window
 	{
-		GtkWidget	* box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,8);
-		GtkWidget	* trace 	= v3270_trace_new(terminal);
-
-		GtkWidget	* toolbar	= gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-		gtk_button_box_set_layout(GTK_BUTTON_BOX(toolbar), GTK_BUTTONBOX_START);
-		gtk_box_set_spacing(GTK_BOX(toolbar),8);
-
-		gtk_box_pack_start(GTK_BOX(toolbar),create_toggle_button(terminal, "DS Trace","Toggle DS Trace",G_CALLBACK(toggle_ds_trace)),FALSE,FALSE,4);
-		gtk_box_pack_start(GTK_BOX(toolbar),create_toggle_button(terminal, "Event Trace","Toggle Event Trace",G_CALLBACK(toggle_event_trace)),FALSE,FALSE,4);
-		gtk_box_pack_start(GTK_BOX(toolbar),create_toggle_button(terminal, "Screen Trace","Toggle Screen Trace",G_CALLBACK(toggle_screen_trace)),FALSE,FALSE,4);
-		gtk_box_pack_start(GTK_BOX(toolbar),create_toggle_button(terminal, "SSL Trace","Toggle SSL Trace",G_CALLBACK(toggle_ssl_trace)),FALSE,FALSE,4);
-
-		gtk_box_pack_start(GTK_BOX(box),toolbar,FALSE,FALSE,0);
-
-		gtk_box_pack_start(GTK_BOX(box),trace,TRUE,TRUE,0);
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),box,gtk_label_new("Trace"));
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),v3270_trace_new(terminal),gtk_label_new("Trace"));
 	}
 
 	// Setup and show main window
