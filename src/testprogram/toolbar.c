@@ -200,7 +200,10 @@ static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *termin
 		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(button),-1);
 		gtk_widget_set_can_focus(button,FALSE);
 		gtk_widget_set_can_default(button,FALSE);
+#if GTK_CHECK_VERSION(3,20,0)
 		gtk_widget_set_focus_on_click(button,FALSE);
+#endif // GTK 3,20,0
+
 	}
 	gtk_widget_set_can_focus(toolbar,FALSE);
 

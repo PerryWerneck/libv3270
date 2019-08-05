@@ -56,7 +56,10 @@
 	// Create Terminal window
 	{
 		gtk_widget_set_can_default(terminal,TRUE);
+
+#if GTK_CHECK_VERSION(3,20,0)
 		gtk_widget_set_focus_on_click(terminal,TRUE);
+#endif // GTK 3,20,0
 
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),terminal,gtk_label_new("Terminal"));
 

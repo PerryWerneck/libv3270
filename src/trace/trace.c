@@ -340,7 +340,10 @@
 
 			gtk_widget_set_can_focus(item,FALSE);
 			gtk_widget_set_can_default(item,FALSE);
+
+#if GTK_CHECK_VERSION(3,20,0)
 			gtk_widget_set_focus_on_click(item,FALSE);
+#endif // GTK 3,20,0
 
 			gtk_box_pack_start(GTK_BOX(widget->buttons),item,FALSE,FALSE,4);
 
