@@ -237,14 +237,16 @@ $(OBJDIR)/marshal/%.o: \
 all: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a \
-	$(POTDIR)/lib3270.pot
+	$(POTDIR)/$(LIBNAME).pot
 
 Release: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a
 
 $(BINRLS)/$(SONAME): \
-	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
+	$(OBJDIR)/marshal/v3270.o \
+	$(OBJDIR)/marshal/v3270ft.o
 
 	@$(MKDIR) $(dir $@)
 	@echo $< ...
@@ -252,7 +254,7 @@ $(BINRLS)/$(SONAME): \
 		@DLL_LDFLAGS@ \
 		-o $@ \
 		$(LDFLAGS) \
-		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
+		$^ \
 		-L$(BINRLS) \
 		$(LIBS)
 
@@ -410,9 +412,7 @@ $(BINDBG)/$(SONAME): \
 		-o $@ \
 		-L$(BINDBG) \
 		$(LDFLAGS) \
-		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
-		$(OBJDIR)/marshal/v3270.o \
-		$(OBJDIR)/marshal/v3270ft.o \
+		$^ \
 		$(LIBS)
 
 
