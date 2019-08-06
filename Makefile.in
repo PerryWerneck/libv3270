@@ -26,6 +26,7 @@
 
 #---[ Library configuration ]------------------------------------------------------------
 
+SONAME=@SONAME@
 LIBNAME=libv@LIB3270_NAME@
 
 SOURCES= \
@@ -123,7 +124,7 @@ $(OBJDBG)/%.o: \
 	$(DEPENDS)
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 
 	@$(CC) \
 		$(CFLAGS) \
@@ -135,7 +136,7 @@ $(OBJDBG)/%.o: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(WINDRES) $< -O coff -o $@
 
 #---[ Release Rules ]--------------------------------------------------------------------
@@ -145,7 +146,7 @@ $(OBJRLS)/%.o: \
 	$(DEPENDS)
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(CC) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
@@ -155,7 +156,7 @@ $(OBJRLS)/%.o: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(WINDRES) $< -O coff -o $@
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
@@ -164,7 +165,7 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	%.c
 
 	@echo $(notdir $@) ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(XGETTEXT) \
 		--language=C \
 		--keyword=_ \
@@ -178,7 +179,7 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@touch $@
 
 
@@ -188,7 +189,7 @@ src/terminal/marshal.h: \
 	src/terminal/marshal
 
 	@echo $@ ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 
 	@$(GENMARSHAL) --prefix=v3270 --header $< > $@
 
@@ -196,7 +197,7 @@ $(OBJDIR)/marshal/v3270.c: \
 	src/terminal/marshal
 
 	@echo $@ ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 
 	@$(GENMARSHAL) --prefix=v3270 --body $< > $@
 
@@ -205,7 +206,7 @@ src/filetransfer/marshal.h: \
 	src/filetransfer/marshal
 
 	@echo $@ ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 
 	@$(GENMARSHAL) --prefix=v3270ft --header $< > $@
 
@@ -213,7 +214,7 @@ $(OBJDIR)/marshal/v3270ft.c: \
 	src/filetransfer/marshal
 
 	@echo $@ ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 
 	@$(GENMARSHAL) --prefix=v3270ft --body $< > $@
 
@@ -222,7 +223,7 @@ $(OBJDIR)/marshal/%.o: \
 	$(DEPENDS)
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 
 	@$(CC) \
 		$(CFLAGS) \
@@ -234,51 +235,24 @@ $(OBJDIR)/marshal/%.o: \
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a \
-	$(POTDIR)/$(LIBNAME).pot
-
-x: \
-	$(BINDIR)/icons/16x16/logo.png \
-	$(BINDIR)/icons/22x22/logo.png
-
-
+	$(POTDIR)/lib3270.pot
 
 Release: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@ \
+	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a
 
-$(BINRLS)/$(LIBNAME)@DLLEXT@: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+$(BINRLS)/$(SONAME): \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
-	@echo $< ...
-	@rm -f $@
-	@$(LN_S) \
-		$^ \
-		$@
-
-$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@rm -f $@
-	@$(LN_S) \
-		$^ \
-		$@
-
-$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
-	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
-	$(OBJDIR)/marshal/v3270.o \
-	$(OBJDIR)/marshal/v3270ft.o
-
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@echo $< ...
 	@$(LD) \
 		@DLL_LDFLAGS@ \
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
-		$(OBJDIR)/marshal/v3270.o \
-		$(OBJDIR)/marshal/v3270ft.o \
 		-L$(BINRLS) \
 		$(LIBS)
 
@@ -286,7 +260,7 @@ $(BINRLS)/static/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@echo $@ ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(dir $@)
 	@$(AR) rcs $@ $^
 
 
@@ -299,15 +273,14 @@ install: \
 	install-dev
 
 install-shared: \
-	$(BINRLS)/$(LIBNAME)@DLLEXT@
+	$(BINRLS)/$(SONAME)
 
 	# Install library
-	@mkdir -p $(DESTDIR)$(libdir)
+	@$(MKDIR) $(DESTDIR)$(libdir)
 
 	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$(DESTDIR)$(libdir)
-
+		$(BINRLS)/$(SONAME) \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
 
 	@$(LN_S) \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
@@ -316,6 +289,7 @@ install-shared: \
 	@$(LN_S) \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
 
 	# Install default configs
 	@mkdir -p $(DESTDIR)$(datarootdir)/pw3270
@@ -389,7 +363,7 @@ Debug: \
 
 $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
-	$(BINDBG)/$(LIBNAME)@DLLEXT@
+	$(BINDBG)/$(SONAME)
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
@@ -399,9 +373,8 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 		-L$(BINDBG) \
 		-Wl,-rpath,$(BINDBG) \
 		$(LDFLAGS) \
-		$(LIBS) \
-		-lv@LIB3270_NAME@
-
+		$(LIBS)
+ 
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@
 
@@ -425,24 +398,7 @@ else
 endif
 
 
-$(BINDBG)/$(LIBNAME)@DLLEXT@: \
-	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
-
-	@echo $< ...
-	@rm -f $@
-	@$(LN_S) \
-		$^ \
-		$@
-
-$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
-	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@rm -f $@
-	@$(LN_S) \
-		$^ \
-		$@
-
-$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+$(BINDBG)/$(SONAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
 	$(OBJDIR)/marshal/v3270.o \
 	$(OBJDIR)/marshal/v3270ft.o
@@ -458,15 +414,6 @@ $(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 		$(OBJDIR)/marshal/v3270.o \
 		$(OBJDIR)/marshal/v3270ft.o \
 		$(LIBS)
-
-zip-debug: \
-	$(LIBNAME)-debug-@PACKAGE_VERSION@-@host_cpu@.zip
-
-$(LIBNAME)-debug-@PACKAGE_VERSION@-@host_cpu@.zip: \
-	$(BINDBG)/$(LIBNAME)@EXEEXT@ \
-	$(BINDBG)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@$(ZIP) -9 -j $@ $^
 
 
 #---[ Clean Targets ]--------------------------------------------------------------------

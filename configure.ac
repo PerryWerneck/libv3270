@@ -115,6 +115,7 @@ case "$host" in
 
 esac
 
+
 AC_SUBST(DATADIR,$app_cv_datadir)
 AC_SUBST(CONFDIR,$app_cv_confdir)
 AC_SUBST(OSNAME,$app_cv_osname)
@@ -284,10 +285,26 @@ dnl ---------------------------------------------------------------------------
 dnl Lib3270 flags
 dnl ---------------------------------------------------------------------------
 
+
 AC_ARG_WITH([libname], [AS_HELP_STRING([--with-libname], [Setup library name])], [ app_cv_libname="$withval" ],[ app_cv_libname="3270" ])
 
 AC_DEFINE(LIB3270_NAME,$app_cv_libname)
 AC_SUBST(LIB3270_NAME,$app_cv_libname)
+
+
+case "$host" in
+	*-mingw32|*-pc-msys)
+		AC_SUBST(SONAME,libv$app_cv_libname.dll)
+		;;
+
+ 	s390x-*)
+		AC_SUBST(SONAME,libv$app_cv_libname.so)
+		;;
+
+ 	*)
+		AC_SUBST(SONAME,libv$app_cv_libname.so.$app_vrs_major.$app_vrs_minor)
+
+esac
 
 AC_ARG_WITH([sdk-version], [AS_HELP_STRING([--with-sdk-version], [Setup library version for SDK])], [ app_cv_sdkversion="$withval" ],[ app_cv_sdkversion=$VERSION ])
 
@@ -309,7 +326,7 @@ AC_ARG_WITH([inet-ntop], [AS_HELP_STRING([--with-inet-ntop], [Assume that inet_n
 if test "$app_cv_inet_ntop" == "auto"; then
 
 	case "$host" in
-	*-mingw32)
+	*-mingw32|*-pc-msys)
 		app_cv_inet_ntop="yes"
 		;;
 
