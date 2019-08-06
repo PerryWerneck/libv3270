@@ -35,7 +35,7 @@
 
  #include <terminal.h>
  #include <internals.h>
- #include <save.h>
+ #include <v3270/dialogs.h>
 
  #include <gtk/gtk.h>
  #include <libintl.h>
@@ -337,11 +337,26 @@ static int save(H3270 *session, LIB3270_CONTENT_OPTION mode, const char *filenam
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
 
 	if(!GTK_IS_V3270(widget))
-		return EINVAL;
+		return errno = EINVAL;
 
 	GtkWidget *dialog = v3270_save_dialog_new(widget,mode,filename);
 	gtk_widget_show_all(dialog);
 	v3270_save_dialog_run(dialog);
+	gtk_widget_destroy(dialog);
+
+	return 0;
+}
+
+static int load(H3270 *session, const char *filename)
+{
+	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
+
+	if(!GTK_IS_V3270(widget))
+		return errno = EINVAL;
+
+	GtkWidget *dialog = v3270_load_dialog_new(widget,filename);
+	gtk_widget_show_all(dialog);
+	v3270_load_dialog_run(dialog);
 	gtk_widget_destroy(dialog);
 
 	return 0;
@@ -493,6 +508,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->update_ssl			= update_ssl;
 	cbk->print				= print;
 	cbk->save				= save;
+	cbk->load				= load;
 	cbk->popup_ssl_error	= popup_ssl_error;
 
 }

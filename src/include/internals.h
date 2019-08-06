@@ -107,6 +107,8 @@
 
  G_GNUC_INTERNAL void			  v3270_dialog_close(GtkDialog *dialog, gpointer user_data);
 
+ G_GNUC_INTERNAL gchar 			* v3270_convert_to_3270_charset(GtkWidget *widget, const gchar *text, const gchar *encoding, GError **error);
+
 
 /*--[ Internal Widgets & Tools ]---------------------------------------------------------------------*/
 

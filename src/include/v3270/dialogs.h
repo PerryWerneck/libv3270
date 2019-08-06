@@ -39,6 +39,15 @@
  LIB3270_EXPORT GtkWidget		* v3270_dialog_new(GtkWidget *widget, const gchar *title, const gchar *apply);
  LIB3270_EXPORT void			  v3270_error_popup(GtkWidget *widget, const gchar *title, const gchar *summary, const gchar *body);
 
+ LIB3270_EXPORT GtkWidget		* v3270_save_dialog_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, const gchar *filename);
+ LIB3270_EXPORT void			  v3270_save_dialog_run(GtkWidget *widget);
+
+ LIB3270_EXPORT GtkWidget		* v3270_load_dialog_new(GtkWidget *widget, const gchar *filename);
+ LIB3270_EXPORT void			  v3270_load_dialog_run(GtkWidget *widget);
+
+ LIB3270_EXPORT void			  v3270_popup_gerror(GtkWidget *widget, GError *error, const gchar *title, const gchar *fmt, ...) G_GNUC_PRINTF(4,5);
+
+
  G_END_DECLS
 
 #endif // V3270_DIALOGS_H_INCLUDED

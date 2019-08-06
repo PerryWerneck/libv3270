@@ -31,37 +31,6 @@
 
  #define V3270SAVE_H_INCLUDED 1
 
- #include <config.h>
- #define ENABLE_NLS
 
- #ifndef GETTEXT_PACKAGE
-        #define GETTEXT_PACKAGE PACKAGE_NAME
- #endif
-
- #include <libintl.h>
- #include <glib/gi18n.h>
- #include <gtk/gtk.h>
- #include <lib3270.h>
-
- G_BEGIN_DECLS
-
-/*--[ Progress widget ]------------------------------------------------------------------------------*/
-
- #define GTK_TYPE_V3270SaveDialog			(V3270SaveDialog_get_type ())
- #define V3270_SAVE_DIALOG(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270SaveDialog, V3270SaveDialog))
- #define V3270SaveDialog_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270SaveDialog, V3270SaveDialogClass))
- #define IS_V3270SaveDialog(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270SaveDialog))
- #define IS_V3270SaveDialog_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270SaveDialog))
- #define V3270SaveDialog_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270SaveDialog, V3270SaveDialogClass))
-
- typedef struct _V3270SaveDialog		V3270SaveDialog;
- typedef struct _V3270SaveDialogClass	V3270SaveDialogClass;
-
-/*--[ Prototipes ]-----------------------------------------------------------------------------------*/
-
- GtkWidget * v3270_save_dialog_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, const gchar *filename);
- void v3270_save_dialog_run(GtkWidget *widget);
-
- G_END_DECLS
 
 #endif // V3270SAVE_H_INCLUDED

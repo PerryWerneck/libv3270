@@ -100,3 +100,34 @@
 
  }
 
+ void v3270_popup_gerror(GtkWidget *widget, GError *error, const gchar *title, const gchar *fmt, ...)
+ {
+
+	// Format message.
+ 	va_list arg_ptr;
+	va_start(arg_ptr, fmt);
+	g_autofree gchar *text = g_strdup_vprintf(fmt,arg_ptr);
+	va_end(arg_ptr);
+
+	GtkWidget *dialog = gtk_message_dialog_new(
+							GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+							GTK_DIALOG_DESTROY_WITH_PARENT,
+							GTK_MESSAGE_ERROR,
+							GTK_BUTTONS_OK,
+							"%s",text
+						);
+
+	if(title)
+		gtk_window_set_title(GTK_WINDOW(dialog), title);
+	else
+		gtk_window_set_title(GTK_WINDOW(dialog), (title ? title : _("Operation failed")));
+
+	if(error)
+		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",error->message);
+
+	g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
+	g_signal_connect(dialog,"response",G_CALLBACK(gtk_widget_destroy),NULL);
+
+	gtk_widget_show_all(dialog);
+
+ }

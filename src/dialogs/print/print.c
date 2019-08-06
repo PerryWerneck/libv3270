@@ -30,6 +30,7 @@
  #include "private.h"
  #include <sys/param.h>
  #include <lib3270/selection.h>
+ #include <v3270/dialogs.h>
  #include <clipboard.h>
 
  G_DEFINE_TYPE(V3270PrintOperation, V3270PrintOperation, GTK_TYPE_PRINT_OPERATION);
@@ -45,25 +46,16 @@
 
 	if(result == GTK_PRINT_OPERATION_RESULT_ERROR)
 	{
-		GError * err		= NULL;
+		GError * err = NULL;
 
 		gtk_print_operation_get_error(prt,&err);
 
-		GtkWidget *dialog = gtk_message_dialog_new_with_markup(
-										GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(operation->widget))),
-										GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-										GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
-										"%s",_( "Print operation failed" )
-								);
-
-		g_warning("%s",err->message);
-
-		gtk_window_set_title(GTK_WINDOW(dialog),_("Error"));
-
-		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"%s",err->message);
-
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
+		v3270_popup_gerror(
+				GTK_WIDGET(operation->widget),
+				err,
+				NULL,
+				"%s",_( "Print operation failed" )
+		);
 
 		g_error_free(err);
 

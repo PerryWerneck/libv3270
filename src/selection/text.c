@@ -29,6 +29,7 @@
 
  #include <clipboard.h>
  #include <lib3270/selection.h>
+ #include <v3270/dialogs.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -71,48 +72,50 @@ gchar * v3270_get_copy_as_text(v3270 * terminal, const gchar *encoding)
 	return v3270_get_selection_as_text(terminal, terminal->selection.blocks, encoding, FALSE);
 }
 
-LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const gchar *encoding)
+gchar * v3270_convert_to_3270_charset(GtkWidget *widget, const gchar *text, const gchar *encoding, GError **error)
 {
- 	gchar 		* buffer 	= NULL;
- 	H3270		* session 	= v3270_get_session(widget);
-	const gchar * charset 	= lib3270_get_display_charset(session);
- 	gboolean	  next;
+	if(*error || !text)
+		return NULL;
 
- 	if(!text)
-		return;
-	else if(g_ascii_strcasecmp(encoding,charset))
-		buffer = g_convert(text, -1, charset, encoding, NULL, NULL, NULL);
-	else
-		buffer = g_strdup(text);
+	const gchar * charset = lib3270_get_display_charset(v3270_get_session(widget));
+	if(!encoding || (g_ascii_strcasecmp(encoding,charset) == 0))
+	{
+		// No conversion needed.
+		return g_strdup(text);
+	}
 
-    if(!buffer)
-    {
-    	/* Conversion failed, update special chars and try again */
-    	size_t f;
+	gchar *converted = g_convert(text, -1, charset, encoding, NULL, NULL, NULL);
+	if(converted)
+		return converted;
 
-    	static const struct _xlat
-    	{
-    		const gchar *from;
-    		const gchar *to;
-    	} xlat[] =
-    	{
-    		{ "–",		"-"		},
-    		{ "→",		"->"	},
-    		{ "←",		"<-" 	},
-    		{ "©",		"(c)"	},
-    		{ "↔",		"<->"	},
-    		{ "™",		"(TM)"	},
-    		{ "®",		"(R)"	},
-    		{ "“",		"\""	},
-    		{ "”",		"\""	},
-    		{ "…",		"..."	},
-    		{ "•",		"*"		},
-    		{ "․",		"."		},
-    		{ "·",		"*"		},
+	// Conversion failed, update UTF-8 special chars and try again
+	if(!g_ascii_strcasecmp(encoding,"UTF-8"))
+	{
+		size_t f;
 
-    	};
+		static const struct _xlat
+		{
+			const gchar *from;
+			const gchar *to;
+		} xlat[] =
+		{
+			{ "–",		"-"		},
+			{ "→",		"->"	},
+			{ "←",		"<-" 	},
+			{ "©",		"(c)"	},
+			{ "↔",		"<->"	},
+			{ "™",		"(TM)"	},
+			{ "®",		"(R)"	},
+			{ "“",		"\""	},
+			{ "”",		"\""	},
+			{ "…",		"..."	},
+			{ "•",		"*"		},
+			{ "․",		"."		},
+			{ "·",		"*"		},
 
-		gchar *string = g_strdup(text);
+		};
+
+		g_autofree gchar *string = g_strdup(text);
 
 		// FIXME (perry#1#): Is there any better way for a "sed" here?
 		for(f=0;f<G_N_ELEMENTS(xlat);f++)
@@ -129,52 +132,55 @@ LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const
 			}
 		}
 
-		buffer = g_convert(string, -1, charset, encoding, NULL, NULL, NULL);
+		converted = g_convert(string, -1, charset, encoding, NULL, NULL, NULL);
 
-		if(!buffer)
+		if(converted)
+			return converted;
+
+	}
+
+	/*
+	// Still failing, convert line by line
+	{
+		size_t f;
+		gchar **ln = g_strsplit(text,"\n",-1);
+
+		for(f=0;ln[f];f++)
 		{
-			// Still failing, convert line by line
-			gchar **ln = g_strsplit(string,"\n",-1);
+			GError	*error	= NULL;
+			gchar	*str	= g_convert(ln[f], -1, charset, encoding, NULL, NULL, error);
 
-			for(f=0;ln[f];f++)
+			if(!str)
 			{
-				GError	*error	= NULL;
-				gchar	*str	= g_convert(ln[f], -1, charset, encoding, NULL, NULL, &error);
-
-				if(!str)
-				{
-					GtkWidget *dialog = gtk_message_dialog_new(	GTK_WINDOW( gtk_widget_get_toplevel(widget)),
-																GTK_DIALOG_DESTROY_WITH_PARENT,
-																GTK_MESSAGE_ERROR,
-																GTK_BUTTONS_OK,
-																_(  "Can't convert line %lu from %s to %s" ),(unsigned long) (f+1), encoding, charset);
-
-					gtk_window_set_title(GTK_WINDOW(dialog), _( "Charset error" ) );
-
-					if(error)
-					{
-						gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s\n%s",error->message, ln[f]);
-						g_error_free(error);
-						error = NULL;
-					}
-
-					gtk_dialog_run(GTK_DIALOG (dialog));
-					gtk_widget_destroy(dialog);
-
-					break;
-				}
-				else
-				{
-					g_free(str);
-				}
-
+				g_strfreev(ln);
+				return NULL;
 			}
-			g_strfreev(ln);
+
+			g_free(str);
 
 		}
+		g_strfreev(ln);
 
-		g_free(string);
-    }
+	}
+	*/
+
+	// Can't convert, use fallbacks
+	return g_convert_with_fallback(
+				text,
+				-1,
+				charset,
+				encoding,
+				" ",
+				NULL,
+				NULL,
+				error
+			);
+}
+
+LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const gchar *encoding)
+{
+	GError * error	= NULL;
+	g_autofree gchar * buffer = v3270_convert_to_3270_charset(widget,text,encoding,&error);
 
 	if(buffer)
 	{
@@ -187,17 +193,27 @@ LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const
 				*ptr = ' ';
 		}
 	}
-    else
+
+	if(error)
 	{
 		g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_PASTENEXT], 0, FALSE);
+		v3270_popup_gerror(widget,error,NULL,"%s",_("Can't paste text"));
+		g_error_free(error);
 		return;
 	}
 
-	next = lib3270_paste(session,(unsigned char *) buffer) ? TRUE : FALSE;
+	// Do paste.
+	gboolean next = lib3270_paste(
+						v3270_get_session(widget),
+						(unsigned char *) buffer
+					) ? TRUE : FALSE;
 
-	g_free(buffer);
-
-	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_PASTENEXT], 0, next);
+	g_signal_emit(
+		v3270_get_session(widget),
+		v3270_widget_signal[V3270_SIGNAL_PASTENEXT],
+		0,
+		next
+	);
 
 }
 

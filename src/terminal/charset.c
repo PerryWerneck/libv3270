@@ -32,6 +32,7 @@
  #include <lib3270/charset.h>
  #include <lib3270/log.h>
  #include <lib3270/X11keysym.h>
+ #include <v3270/dialogs.h>
 
  #define ERROR_DOMAIN g_quark_from_static_string(PACKAGE_NAME)
 
@@ -454,26 +455,16 @@
 
 	if(error)
 	{
-		GtkWidget	* dialog;
-		gchar		* name = g_path_get_basename(path);
+		g_autofree gchar * name = g_path_get_basename(path);
 
-		dialog = gtk_message_dialog_new(	NULL,
-											GTK_DIALOG_DESTROY_WITH_PARENT,
-											GTK_MESSAGE_WARNING,
-											GTK_BUTTONS_OK,
-											_(  "Can't parse %s" ), name);
-
-		g_free(name);
-
-		gtk_window_set_title(GTK_WINDOW(dialog), _( "Remap Failed" ) );
-
-		if(error->message)
-			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "%s", error->message);
+		v3270_popup_gerror(
+				widget,
+				error,
+				_( "Remap Failed" ),
+				_(  "Can't parse %s" ), name
+		);
 
 		g_error_free(error);
-
-		gtk_dialog_run(GTK_DIALOG (dialog));
-		gtk_widget_destroy(dialog);
 
 	} else {
 

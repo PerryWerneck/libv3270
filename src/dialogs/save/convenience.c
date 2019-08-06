@@ -72,7 +72,6 @@
 		return errno = ENOTCONN;
 	}
 
-	lib3270_trace_event(v3270_get_session(widget),"save action activated (type=%d)",(int) mode);
 	int rc = lib3270_save(v3270_get_session(widget),mode,filename);
 
 	if(!rc)

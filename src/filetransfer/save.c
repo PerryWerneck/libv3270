@@ -109,19 +109,14 @@ static const gchar * getNameByFlag(LIB3270_FT_OPTION opt, LIB3270_FT_OPTION mask
 
 	if(!g_file_set_contents(filename,text,-1,&error)) {
 
-		GtkWidget *popup = gtk_message_dialog_new_with_markup(
-				GTK_WINDOW(widget),
-				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
-				_("Can't save %s"),filename);
+		v3270_popup_gerror(
+				widget,
+				error,
+				NULL,
+				_("Can't save %s"),filename
+		);
 
-		gtk_window_set_title(GTK_WINDOW(popup),_("Operation has failed"));
-
-		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",error->message);
 		g_error_free(error);
-
-		gtk_dialog_run(GTK_DIALOG(popup));
-		gtk_widget_destroy(popup);
 
 	}
 

@@ -32,6 +32,7 @@
 
  #include <ctype.h>
  #include <stdlib.h>
+ #include <v3270/dialogs.h>
 
 
 /*--[ Statics ]--------------------------------------------------------------------------------------*/
@@ -263,22 +264,14 @@ LIB3270_EXPORT void v3270ft_load(GtkWidget *widget,const gchar *filename) {
 
 	if(error) {
 
-		GtkWidget *popup = gtk_message_dialog_new_with_markup(
-				GTK_WINDOW(widget),
-				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_ERROR,GTK_BUTTONS_CLOSE,
-				_("Can't load %s"),filename);
-
-		gtk_window_set_title(GTK_WINDOW(popup),_("Operation has failed"));
-
-		if(error->message && *error->message) {
-			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(popup),"%s",error->message);
-		}
+		v3270_popup_gerror(
+				widget,
+				error,
+				NULL,
+				_("Can't load %s"),filename
+		);
 
 		g_error_free(error);
-
-		gtk_dialog_run(GTK_DIALOG(popup));
-		gtk_widget_destroy(popup);
 
 	}
 

@@ -59,9 +59,14 @@
 	lib3270_disconnect(v3270_get_session(terminal));
  }
 
-static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
  	lib3270_save_all(v3270_get_session(terminal),NULL);
+ }
+
+ static void load_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ {
+ 	lib3270_load(v3270_get_session(terminal),NULL);
  }
 
  static void ft_clicked(GtkButton *button, GtkWidget *terminal)
@@ -176,25 +181,28 @@ static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *termin
 
 	// https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
 	static const struct _buttons {
-		const gchar * icon;
+		const gchar * icon;			// https://specifications.freedesktop.org/icon-naming-spec/latest/ar01s04.html
 		GCallback	  callback;
 		const gchar * tooltip;
 	} buttons[] = {
-		{ "gtk-connect",		G_CALLBACK(connect_clicked),	"Connect to host"  				},
-		{ "gtk-disconnect",		G_CALLBACK(disconnect_clicked),	"Disconnect from host"  		},
-		{ "gtk-select-color",	G_CALLBACK(color_clicked),		"Edit or change color scheme"	},
-		{ "gtk-home",			G_CALLBACK(host_clicked),		"Configure host"				},
-		{ "gtk-print",			G_CALLBACK(print_clicked),		"Print screen contents"			},
-		{ "gtk-harddisk",		G_CALLBACK(ft_clicked),			"Open file transfer dialog"		},
-		{ "gtk-copy",			G_CALLBACK(copy_clicked),		"Copy data"						},
-		{ "gtk-paste",			G_CALLBACK(paste_clicked),		"Paste data"					},
-		{ "gtk-save",			G_CALLBACK(save_all_clicked),	"Save screen"					}
+		{ "gtk-connect",			G_CALLBACK(connect_clicked),		"Connect to host"  				},
+		{ "gtk-disconnect",			G_CALLBACK(disconnect_clicked),		"Disconnect from host"  		},
+		{ "gtk-select-color",		G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
+		{ "network-server",			G_CALLBACK(host_clicked),			"Configure host"				},
+		{ "gtk-print",				G_CALLBACK(print_clicked),			"Print screen contents"			},
+		{ "gtk-harddisk",			G_CALLBACK(ft_clicked),				"Open file transfer dialog"		},
+		{ "gtk-copy",				G_CALLBACK(copy_clicked),			"Copy data"						},
+		{ "gtk-paste",				G_CALLBACK(paste_clicked),			"Paste data"					},
+		{ "document-save",			G_CALLBACK(save_all_clicked),		"Save screen"					},
+		{ "document-open",			G_CALLBACK(load_clicked),			"Paste file"					},
+
 	};
 
 	GtkWidget * toolbar = gtk_toolbar_new();
 	for(f = 0; f < G_N_ELEMENTS(buttons); f++)
 	{
-		GtkWidget * button = GTK_WIDGET(gtk_tool_button_new_from_stock(buttons[f].icon));
+		GtkWidget * button = gtk_tool_button_new(gtk_image_new_from_icon_name(buttons[f].icon,GTK_ICON_SIZE_SMALL_TOOLBAR),"-");
+
 		gtk_widget_set_tooltip_markup(button,buttons[f].tooltip);
 		g_signal_connect(G_OBJECT(button),"clicked",buttons[f].callback,terminal);
 		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),GTK_TOOL_ITEM(button),-1);
