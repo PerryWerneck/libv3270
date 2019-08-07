@@ -52,6 +52,9 @@
  LIB3270_EXPORT void				  v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args);
  LIB3270_EXPORT void				  v3270_trace_printf(GtkWidget *widget, const char *fmt, ... );
 
+ LIB3270_EXPORT GtkWidget			* v3270_trace_get_button_box(GtkWidget *widget);
+ LIB3270_EXPORT void				  v3270_trace_button_box_insert(GtkWidget *widget, GtkWidget *button);
+
  LIB3270_EXPORT void				  v3270_trace_save(GtkWidget *widget);
  LIB3270_EXPORT void				  v3270_trace_select_file(GtkWidget *widget);
 

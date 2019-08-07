@@ -201,7 +201,7 @@
 	GtkWidget * toolbar = gtk_toolbar_new();
 	for(f = 0; f < G_N_ELEMENTS(buttons); f++)
 	{
-		GtkWidget * button = gtk_tool_button_new(gtk_image_new_from_icon_name(buttons[f].icon,GTK_ICON_SIZE_SMALL_TOOLBAR),"-");
+		GtkWidget * button = GTK_WIDGET(gtk_tool_button_new(gtk_image_new_from_icon_name(buttons[f].icon,GTK_ICON_SIZE_SMALL_TOOLBAR),"-"));
 
 		gtk_widget_set_tooltip_markup(button,buttons[f].tooltip);
 		g_signal_connect(G_OBJECT(button),"clicked",buttons[f].callback,terminal);

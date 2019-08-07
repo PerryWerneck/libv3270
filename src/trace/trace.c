@@ -316,10 +316,32 @@
  }
 
 
+ LIB3270_EXPORT GtkWidget * v3270_trace_get_button_box(GtkWidget *widget)
+ {
+	g_return_val_if_fail(GTK_IS_V3270_TRACE(widget),NULL);
+
+	return GTK_V3270_TRACE(widget)->buttons;
+
+ }
+
+ LIB3270_EXPORT void v3270_trace_button_box_insert(GtkWidget *widget, GtkWidget *button)
+ {
+	g_return_if_fail(GTK_IS_V3270_TRACE(widget));
+
+	gtk_widget_set_can_focus(button,FALSE);
+	gtk_widget_set_can_default(button,FALSE);
+
+#if GTK_CHECK_VERSION(3,20,0)
+	gtk_widget_set_focus_on_click(button,FALSE);
+#endif // GTK 3,20,0
+
+	gtk_box_pack_start(GTK_BOX(GTK_V3270_TRACE(widget)->buttons),button,FALSE,FALSE,0);
+
+ }
+
  LIB3270_EXPORT	GtkWidget * v3270_trace_new(GtkWidget *terminal)
  {
 	g_return_val_if_fail(GTK_IS_V3270(terminal),NULL);
-
 	V3270Trace * widget = GTK_V3270_TRACE(g_object_new(GTK_TYPE_V3270_TRACE, NULL));
 
 	// Set terminal widget
@@ -346,7 +368,7 @@
 			gtk_widget_set_focus_on_click(item,FALSE);
 #endif // GTK 3,20,0
 
-			gtk_box_pack_start(GTK_BOX(widget->buttons),item,FALSE,FALSE,4);
+			gtk_box_pack_start(GTK_BOX(widget->buttons),item,FALSE,FALSE,0);
 
 		}
 	}
