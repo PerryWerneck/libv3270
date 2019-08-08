@@ -27,7 +27,7 @@
 #---[ Library configuration ]------------------------------------------------------------
 
 SONAME=@SONAME@
-LIBNAME=libv@LIB3270_NAME@
+LIBNAME=libv3270
 
 SOURCES= \
 	$(wildcard src/terminal/*.c) \
@@ -320,7 +320,7 @@ install-dev: \
 	# Install PKG-CONFIG files
 	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
 	@$(INSTALL_DATA) \
-		libv3270.pc \
+		sdk/libv3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/libv3270.pc
 
 	# Install translation files
