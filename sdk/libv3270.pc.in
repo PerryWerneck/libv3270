@@ -10,5 +10,6 @@ Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
 Libs: -L\@libdir@ -lv3270
+Libs.private: @LIBS@ @GTK_LIBS@ @GLIB_LIBS@ @LIBICONV@ @INTL_LIBS@ @LIB3270_LIBS@
 Cflags: -I@includedir@
 
