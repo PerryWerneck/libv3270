@@ -9,6 +9,6 @@ version_minor=@PACKAGE_MINOR_VERSION@
 Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
-Libs: -L\@libdir@ -lv3270 @LIB3270_LIBS@
+Libs: -L\@libdir@ -lv3270
 Cflags: -I@includedir@
 
