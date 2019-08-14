@@ -46,7 +46,7 @@
 		rc = TRUE;
 	}
 
-	if(lib3270_get_secure(widget->host) == LIB3270_SSL_NEGOTIATING)
+	if(lib3270_get_ssl_state(widget->host) == LIB3270_SSL_NEGOTIATING)
 	{
 		GdkRectangle	* r;
 		cairo_t			* cr = v3270_oia_set_update_region(widget,&r,V3270_OIA_SSL);
@@ -57,16 +57,6 @@
 
 		rc = TRUE;
 	}
-
- 	/*
-	if(!widget->script.id)
-		return FALSE;
-
-	update_text_field(widget,1,V3270_OIA_SCRIPT,widget->script.blink ? 'S' : ' ');
-	widget->script.blink = !widget->script.blink;
-
-	return TRUE;
-	*/
 
  	return rc;
 

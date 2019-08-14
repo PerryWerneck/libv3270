@@ -347,15 +347,13 @@ static void draw_xbm(cairo_t *cr, GdkRectangle *rect, int width, int height, uns
 
 void v3270_draw_ssl_status(v3270 *widget, cairo_t *cr, GdkRectangle *rect)
 {
-	// v3270_draw_ssl_status(cr,terminal->host,&terminal->font,terminal->color,r);
-
 	gdk_cairo_set_source_rgba(cr,widget->color+V3270_COLOR_OIA_BACKGROUND);
 
 	cairo_translate(cr, rect->x, rect->y);
 	cairo_rectangle(cr, 0, 0, rect->width, rect->height);
 	cairo_fill(cr);
 
-	switch(lib3270_get_secure(widget->host))
+	switch(lib3270_get_ssl_state(widget->host))
 	{
 	case LIB3270_SSL_UNDEFINED:			// Undefined.
 		break;

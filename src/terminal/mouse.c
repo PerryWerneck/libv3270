@@ -269,7 +269,7 @@ gboolean v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event)
 
 		if(event->x >= terminal->oia.rect[V3270_OIA_SSL].x && event->x <= (terminal->oia.rect[V3270_OIA_SSL].x + terminal->oia.rect[V3270_OIA_SSL].width))
 		{
-			switch(lib3270_get_secure(terminal->host))
+			switch(lib3270_get_ssl_state(terminal->host))
 			{
 			case LIB3270_SSL_UNSECURE:	/**< No secure connection */
 				id = LIB3270_POINTER_QUESTION;
