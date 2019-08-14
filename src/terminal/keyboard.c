@@ -231,7 +231,7 @@
 
 	if(utf)
 	{
-		lib3270_set_string(host, (const unsigned char *) utf);
+		lib3270_set_string(host, (const unsigned char *) utf, -1);
 		g_free(utf);
 	}
 
