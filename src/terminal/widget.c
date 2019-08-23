@@ -868,10 +868,10 @@ static void v3270_activate(GtkWidget *widget)
 
 	if(lib3270_connected(terminal->host))
 		lib3270_enter(terminal->host);
-	else if(lib3270_get_hostname(terminal->host))
+	else if(lib3270_get_url(terminal->host))
 		v3270_reconnect(widget);
 	else
-		g_warning("Terminal widget %p activated without connection or valid hostname",terminal);
+		g_warning("Terminal widget %p activated without connection or valid url",terminal);
 }
 
 const GtkWidgetClass * v3270_get_parent_class(void)
@@ -900,13 +900,7 @@ LIB3270_EXPORT void v3270_set_url(GtkWidget *widget, const gchar *uri)
 	lib3270_set_url(GTK_V3270(widget)->host,uri);
 }
 
-LIB3270_EXPORT const gchar * v3270_get_hostname(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),"");
-	return lib3270_get_hostname(GTK_V3270(widget)->host);
-}
-
-LIB3270_EXPORT const gchar	* v3270_get_luname(GtkWidget *widget)
+LIB3270_EXPORT const gchar * v3270_get_luname(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),"");
 	return lib3270_get_luname(GTK_V3270(widget)->host);

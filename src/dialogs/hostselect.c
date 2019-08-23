@@ -30,6 +30,7 @@
  #include "private.h"
  #include <hostselect.h>
  #include <v3270/dialogs.h>
+ #include <lib3270/log.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
@@ -241,12 +242,37 @@ LIB3270_EXPORT void v3270_host_select_set_session(GtkWidget *w, GtkWidget *sessi
 	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
 	widget->hSession = v3270_get_session(session);
 
-	gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],lib3270_get_hostname(widget->hSession));
-	gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],lib3270_get_srvcname(widget->hSession));
+	g_autofree gchar * url = g_strdup(lib3270_get_url(widget->hSession));
+	debug("URL=[%s]",url);
+
+	gchar *hostname = strstr(url,"://");
+	if(!hostname)
+	{
+		g_message("Invalid URL: \"%s\" (no scheme)",url);
+	}
+	else
+	{
+        hostname += 3;
+
+        gchar *srvcname = strchr(hostname,':');
+
+        if(srvcname)
+		{
+			*(srvcname++) = 0;
+		}
+		else
+		{
+			srvcname = "telnet";
+		}
+
+		gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],hostname);
+		gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],srvcname);
+
+	}
 
 	LIB3270_HOST_TYPE type = lib3270_get_host_type(widget->hSession);
 
-	gtk_toggle_button_set_active(widget->input.ssl,lib3270_get_secure_host(widget->hSession) != 0);
+	gtk_toggle_button_set_active(widget->input.ssl,g_str_has_prefix(url,"tn3270s://") != 0);
 
 	// Set host type
 	{
@@ -349,10 +375,25 @@ int v3270_host_select_apply(GtkWidget *w)
 
 	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
 
+	g_autofree gchar * url =
+		g_strconcat(
+						(gtk_toggle_button_get_active(widget->input.ssl) ? "tn3270s://" : "tn3270://"),
+						gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]),
+						":",
+						gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]),
+						NULL
+					);
+
+	debug("URL=[%s]",url);
+	lib3270_set_url(widget->hSession,url);
+
+	/*
 	lib3270_set_hostname(widget->hSession,gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]));
 	lib3270_set_srvcname(widget->hSession,gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]));
-	lib3270_set_host_type(widget->hSession,widget->type);
+	*/
 
+	lib3270_set_host_type(widget->hSession,widget->type);
 	return lib3270_reconnect(widget->hSession,0);
+
 }
 
