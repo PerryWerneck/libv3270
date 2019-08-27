@@ -900,6 +900,12 @@ LIB3270_EXPORT void v3270_set_url(GtkWidget *widget, const gchar *uri)
 	lib3270_set_url(GTK_V3270(widget)->host,uri);
 }
 
+LIB3270_EXPORT const gchar * v3270_get_url(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+	return lib3270_get_url(GTK_V3270(widget)->host);
+}
+
 LIB3270_EXPORT const gchar * v3270_get_luname(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),"");
@@ -969,6 +975,7 @@ LIB3270_EXPORT int v3270_set_host_charset(GtkWidget *widget, const gchar *name)
 	return lib3270_set_host_charset(GTK_V3270(widget)->host,name);
 }
 
+/*
 LIB3270_EXPORT GtkWidget * v3270_get_default_widget(void)
 {
 	H3270 * hSession = lib3270_get_default_session_handle();
@@ -989,6 +996,7 @@ LIB3270_EXPORT GtkWidget * v3270_get_default_widget(void)
 
 	return GTK_WIDGET(widget);
 }
+*/
 
 void v3270_set_cursor(GtkWidget *widget, LIB3270_POINTER id)
 {
