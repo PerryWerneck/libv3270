@@ -242,37 +242,44 @@ LIB3270_EXPORT void v3270_host_select_set_session(GtkWidget *w, GtkWidget *sessi
 	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
 	widget->hSession = v3270_get_session(session);
 
-	g_autofree gchar * url = g_strdup(lib3270_get_url(widget->hSession));
-	debug("URL=[%s]",url);
+	const gchar * u = lib3270_get_url(widget->hSession);
 
-	gchar *hostname = strstr(url,"://");
-	if(!hostname)
-	{
-		g_message("Invalid URL: \"%s\" (no scheme)",url);
-	}
-	else
-	{
-        hostname += 3;
+	if(u)
+    {
 
-        gchar *srvcname = strchr(hostname,':');
+        g_autofree gchar * url = g_strdup(u);
+        debug("URL=[%s]",url);
 
-        if(srvcname)
-		{
-			*(srvcname++) = 0;
-		}
-		else
-		{
-			srvcname = "telnet";
-		}
+        gchar *hostname = strstr(url,"://");
+        if(!hostname)
+        {
+            g_message("Invalid URL: \"%s\" (no scheme)",url);
+        }
+        else
+        {
+            hostname += 3;
 
-		gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],hostname);
-		gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],srvcname);
+            gchar *srvcname = strchr(hostname,':');
 
-	}
+            if(srvcname)
+            {
+                *(srvcname++) = 0;
+            }
+            else
+            {
+                srvcname = "telnet";
+            }
+
+            gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],hostname);
+            gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],srvcname);
+
+        }
+
+    }
 
 	LIB3270_HOST_TYPE type = lib3270_get_host_type(widget->hSession);
 
-	gtk_toggle_button_set_active(widget->input.ssl,g_str_has_prefix(url,"tn3270s://") != 0);
+    gtk_toggle_button_set_active(widget->input.ssl,lib3270_get_secure_host(widget->hSession) != 0);
 
 	// Set host type
 	{
