@@ -48,10 +48,13 @@
 
  enum _v3270_internal_property
  {
-	V3270_PROPERTY_FONT_FAMILY	= 2,	///< @brief Name of the font-family used by widget.
-	V3270_PROPERTY_CLIPBOARD	= 3,	///< @brief Name of the selected clipboard.
-	V3270_PROPERTY_SESSION_NAME	= 4,	///< @brief Widget's session name.
-	V3270_PROPERTY_DYNAMIC		= 5		///< @brief Id of the first LIB3270 internal property.
+	V3270_PROPERTY_FONT_FAMILY		= 2,	///< @brief Name of the font-family used by widget.
+	V3270_PROPERTY_CLIPBOARD		= 3,	///< @brief Name of the selected clipboard.
+	V3270_PROPERTY_SESSION_NAME		= 4,	///< @brief Widget's session name.
+	V3270_PROPERTY_AUTO_DISCONNECT	= 5,	///< @brief Auto disconnect.
+
+
+	V3270_PROPERTY_DYNAMIC			= 6		///< @brief Id of the first LIB3270 internal property.
  };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -139,6 +142,10 @@
 			v3270_set_session_name(GTK_WIDGET(object), g_value_get_string(value));
 			break;
 
+		case V3270_PROPERTY_AUTO_DISCONNECT:
+			v3270_set_auto_disconnect(GTK_WIDGET(object), g_value_get_uint(value));
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 
@@ -212,6 +219,10 @@
 
 		case V3270_PROPERTY_SESSION_NAME:
 			g_value_set_string(value,v3270_get_session_name(GTK_WIDGET(object)));
+			break;
+
+		case V3270_PROPERTY_AUTO_DISCONNECT:
+			g_value_set_uint(value,window->activity.disconnect);
 			break;
 
 		default:
@@ -294,6 +305,21 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_SESSION_NAME,
+		spec
+	);
+
+	// Auto disconnect
+	spec = g_param_spec_string(
+							"auto_disconnect",
+							"auto_disconnect",
+							_("IDLE minutes for automatic disconnection"),
+							FALSE,
+							G_PARAM_READABLE|G_PARAM_WRITABLE
+						);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_AUTO_DISCONNECT,
 		spec
 	);
 

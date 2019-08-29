@@ -34,7 +34,7 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 /// @brief Check if column has data.
-static gboolean hasDataOnColumn(v3270 * G_GNUC_UNUSED(terminal), unsigned int col, const GList *selection, gboolean all)
+static gboolean hasDataOnColumn(v3270 G_GNUC_UNUSED(* terminal), unsigned int col, const GList *selection, gboolean all)
 {
 	while(selection)
 	{
