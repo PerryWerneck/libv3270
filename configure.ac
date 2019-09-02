@@ -143,11 +143,6 @@ dnl ---------------------------------------------------------------------------
 
 AC_SUBST(PACKAGE_DESCRIPTION,"3270 Virtual Terminal for GTK")
 
-AC_ARG_WITH([product-name], [AS_HELP_STRING([--with-product-name], [Set product name])], [ app_cv_product="$withval" ],[ app_cv_product="pw3270" ])
-
-AC_DEFINE_UNQUOTED(PRODUCT_NAME, $app_cv_product)
-AC_SUBST(PRODUCT_NAME,$app_cv_product)
-
 app_vrs_major=$(echo $VERSION | cut -d. -f1)
 app_vrs_minor=$(echo $VERSION | cut -d. -f2)
 
@@ -243,6 +238,10 @@ PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(HAVE_LIB3270), AC_MSG_ERROR([
 
 AC_SUBST(LIB3270_LIBS)
 AC_SUBST(LIB3270_CFLAGS)
+
+AC_ARG_WITH([product-name], [AS_HELP_STRING([--with-product-name], [Set product name])], [ app_cv_product="$withval" ],[ app_cv_product=`pkg-config --variable=product_name lib3270` ])
+AC_DEFINE_UNQUOTED(PRODUCT_NAME, $app_cv_product)
+AC_SUBST(PRODUCT_NAME,$app_cv_product)
 
 dnl ---------------------------------------------------------------------------
 dnl Check for GTK
