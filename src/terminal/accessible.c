@@ -438,7 +438,7 @@ static gchar * v3270_accessible_get_text(AtkText *atk_text, gint start_pos, gint
 	if(!host)
 		return NULL;
 
-	if(!lib3270_connected(host))
+	if(!lib3270_is_connected(host))
 		return g_strdup( "" );
 
 	text = lib3270_get_string_at_address(host,start_pos,end_pos < start_pos ? -1 : (end_pos - start_pos),'\n');

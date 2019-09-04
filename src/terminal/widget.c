@@ -147,7 +147,7 @@ gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, G_GNUC_UNUSED g
 		{
 			H3270 *hSession = GTK_V3270(widget)->host;
 
-			if(!lib3270_connected(hSession))
+			if(!lib3270_is_connected(hSession))
 			{
 #ifndef _WIN32
 				gtk_tooltip_set_icon_from_icon_name(tooltip,"gtk-disconnect",GTK_ICON_SIZE_DIALOG);

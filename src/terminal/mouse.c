@@ -127,7 +127,7 @@ void v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event)
 
 	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_POPUP], 0,
 									(attr & LIB3270_ATTR_SELECTED) ? TRUE : FALSE,
-									lib3270_connected(widget->host) ? TRUE : FALSE,
+									lib3270_is_connected(widget->host) ? TRUE : FALSE,
 									event,
 									&handled);
 
@@ -196,7 +196,7 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 			gboolean handled = FALSE;
 
 			g_signal_emit(widget,	v3270_widget_signal[V3270_SIGNAL_FIELD], 0,
-									lib3270_connected(GTK_V3270(widget)->host) ? TRUE : FALSE,
+									lib3270_is_connected(GTK_V3270(widget)->host) ? TRUE : FALSE,
 									GTK_V3270(widget)->oia.selected,
 									event,
 									&handled);
@@ -238,7 +238,7 @@ gboolean v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event)
 	v3270		* terminal	= GTK_V3270(widget);
 	int			  baddr;
 
-	if(!lib3270_connected(terminal->host))
+	if(!lib3270_is_connected(terminal->host))
 	{
 		v3270_set_cursor(widget,LIB3270_POINTER_LOCKED);
 		return FALSE;
