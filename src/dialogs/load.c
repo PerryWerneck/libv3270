@@ -290,7 +290,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	if(*error)
 		return;
 
-	gboolean next = lib3270_paste(
+	gboolean next = lib3270_paste_text(
 						v3270_get_session(dialog->terminal),
 						(unsigned char *) converted
 					) ? TRUE : FALSE;

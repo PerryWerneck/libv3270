@@ -208,7 +208,7 @@ LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const
 	}
 
 	// Do paste.
-	gboolean next = lib3270_paste(
+	gboolean next = lib3270_paste_text(
 						v3270_get_session(widget),
 						(unsigned char *) buffer
 					) ? TRUE : FALSE;

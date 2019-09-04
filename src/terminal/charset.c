@@ -31,7 +31,7 @@
  #include <v3270.h>
  #include <lib3270/charset.h>
  #include <lib3270/log.h>
- #include <lib3270/X11keysym.h>
+// #include <lib3270/X11keysym.h>
  #include <v3270/dialogs.h>
 
  #define ERROR_DOMAIN g_quark_from_static_string(PACKAGE_NAME)
@@ -54,6 +54,22 @@
 
  };
 
+ static unsigned short getChar(const gchar *id, GError **error) {
+
+ 	if(*error) {
+		return 0;
+	}
+
+	unsigned short chr = lib3270_translate_char(id);
+
+	if(!chr) {
+		*error = g_error_new(ERROR_DOMAIN,EINVAL,"%s",_( "Can't parse character value" ));
+	}
+
+	return chr;
+ }
+
+ /*
  static unsigned short getChar(const gchar *id, GError **error) {
 
 	static struct
@@ -303,6 +319,7 @@
 
  	return (unsigned short) *id;
  }
+ */
 
  static lib3270_remap_scope getRemapScope(const gchar *str, GError **error) {
 
