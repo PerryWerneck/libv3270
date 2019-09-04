@@ -866,7 +866,7 @@ static void v3270_activate(GtkWidget *widget)
 
 	terminal->activity.timestamp = time(0);
 
-	if(lib3270_connected(terminal->host))
+	if(lib3270_is_connected(terminal->host))
 		lib3270_enter(terminal->host);
 	else if(lib3270_get_url(terminal->host))
 		v3270_reconnect(widget);
@@ -966,7 +966,7 @@ LIB3270_EXPORT int v3270_set_host_type_by_name(GtkWidget *widget, const char *na
 LIB3270_EXPORT gboolean v3270_is_connected(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
-	return lib3270_connected(GTK_V3270(widget)->host) ? TRUE : FALSE;
+	return lib3270_is_connected(GTK_V3270(widget)->host) ? TRUE : FALSE;
 }
 
 LIB3270_EXPORT int v3270_set_host_charset(GtkWidget *widget, const gchar *name)
