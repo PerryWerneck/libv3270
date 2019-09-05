@@ -301,7 +301,7 @@ install-shared: \
 	@mkdir -p $(DESTDIR)$(datadir)
 
 	@$(INSTALL_DATA) \
-		conf/colors.conf
+		conf/colors.conf \
 		$(DESTDIR)$(datadir)/colors.conf
 
 install-static: \
