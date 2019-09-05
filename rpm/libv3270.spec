@@ -22,6 +22,12 @@
 %define MINOR_VERSION 2
 
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+%define _product %(pkg-config --variable=product_name lib3270)
+
+#Compat macro for new _fillupdir macro introduced in Nov 2017
+%if ! %{defined _fillupdir}
+  %define _fillupdir /var/adm/fillup-templates
+%endif
 
 #---[ Macros ]--------------------------------------------------------------------------------------------------------
 
@@ -31,19 +37,22 @@
 
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
-Summary:	3270 Virtual Terminal for GTK
-Name:		libv3270-%{_libvrs}
-Version:	5.2
-Release:	0
-License:	LGPL-3.0
-Source:		libv3270-%{version}.tar.xz
+Summary:		3270 Virtual Terminal for GTK
+Name:			libv3270-%{_libvrs}
+Version:		5.2
+Release:		0
+License:        LGPL-3.0
+Source:			libv3270-%{version}.tar.xz
 
-Url:		https://github.com/PerryWerneck/libv3270.git
+Url:			https://github.com/PerryWerneck/libv3270.git
 
-Group:		Development/Libraries/C and C++
-BuildRoot:	/var/tmp/%{name}-%{version}
+Group:			Development/Libraries/C and C++
+BuildRoot:		/var/tmp/%{name}-%{version}
 
-BuildRequires:	lib3270-devel
+Provides:	libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
+Conflicts:	otherproviders(libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
+
+BuildRequires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils
@@ -69,11 +78,6 @@ BuildRequires:	gtk3-devel
 BuildRequires:	libgladeui-2-6
 %endif
 
-%if 0%{?centos_version}
-# centos requires python for genmarshal
-BuildRequires:  python
-%endif
-
 %description
 
 Originally designed as part of the pw3270 application this library provides a TN3270 virtual terminal widget for GTK 3.
@@ -82,15 +86,18 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
-%package -n libv3270-devel
+%package devel
 
 Summary:	3270 Virtual Terminal for GTK development files
-Group:		System/Libraries
+Group:		Development/Libraries/C and C++
 
 Requires:	%{name} = %{version}
-Requires:	lib3270-devel
+Requires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
 
-%description -n libv3270-devel
+Provides:	libv3270-devel = %{version}
+Conflicts:	otherproviders(libv3270-devel)
+
+%description devel
 
 3270 Virtual Terminal for GTK development files.
 
@@ -139,6 +146,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
+
+# https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
 %if 0%{?sle_version} > 120200
 %doc AUTHORS README.md
 %license LICENSE
@@ -149,7 +158,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libv3270.so.%{MAJOR_VERSION}
 %{_libdir}/libv3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%files -n libv3270-devel
+%config %{_datadir}/%{_product}/colors.conf
+
+%files devel
 %defattr(-,root,root)
 
 %{_libdir}/libv3270.so
@@ -159,7 +170,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/v3270
 
 %{_libdir}/*.a
-%{_datadir}/pw3270/pot/*.pot
+%{_datadir}/%{_product}/pot/*.pot
 
 %files -n glade-catalog-v3270
 %defattr(-,root,root)
