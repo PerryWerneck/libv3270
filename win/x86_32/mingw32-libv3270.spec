@@ -20,6 +20,7 @@
 %define MINOR_VERSION 2
 
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+%define _product %(i686-w64-mingw32-pkg-config --variable=product_name lib3270)
 
 %define __strip %{_mingw32_strip}
 %define __objdump %{_mingw32_objdump}
@@ -39,7 +40,7 @@ License:        GPL-2.0
 
 Source:			libv3270-%{version}.tar.xz
 
-Url:			https://portal.softwarepublico.gov.br/social/pw3270/
+Url:			https://github.com/PerryWerneck/libv3270.git
 
 Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
@@ -67,7 +68,7 @@ BuildRequires:	mingw32(pkg:gtk+-win32-3.0)
 BuildRequires:	mingw32(lib:iconv)
 BuildRequires:	mingw32(lib:intl)
 
-BuildRequires:	mingw32-lib3270-devel = %{MAJOR_VERSION}.%{MINOR_VERSION}
+BuildRequires:	mingw32-lib3270-%{_libvrs}-devel
 
 %description
 
@@ -132,7 +133,7 @@ make all
 
 %{_mingw32_strip} \
 	--strip-all \
-    .bin/Release/*.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+    .bin/Release/*.dll
 
 %install
 %{_mingw32_makeinstall}
@@ -158,7 +159,8 @@ rm -rf %{buildroot}
 %{_mingw32_libdir}/pkgconfig/*.pc
 %{_mingw32_libdir}/*.a
 
-%{_mingw32_datadir}/pw3270/pot/*.pot
+%{_mingw32_datadir}/%{_product}/pot/*.pot
+%{_mingw32_datadir}/%{_product}/colors.conf
 
 %files -n mingw32-glade-catalog-v3270
 %defattr(-,root,root)

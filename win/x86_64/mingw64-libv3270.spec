@@ -20,6 +20,7 @@
 %define MINOR_VERSION 2
 
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+%define _product %(x86_64-w64-mingw32-pkg-config --variable=product_name lib3270)
 
 %define __strip %{_mingw64_strip}
 %define __objdump %{_mingw64_objdump}
@@ -39,13 +40,16 @@ License:        GPL-2.0
 
 Source:			libv3270-%{version}.tar.xz
 
-Url:			https://portal.softwarepublico.gov.br/social/pw3270/
+Url:			https://github.com/PerryWerneck/libv3270.git
 
 Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
 
 Provides:		mingw64-libv3270
 Conflicts:		otherproviders(mingw64-libv3270)
+
+Provides:		mingw64(lib:v3270)
+Provides:		mingw64(lib:v3270-%{_libvrs})
 
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -129,7 +133,7 @@ make all
 
 %{_mingw64_strip} \
 	--strip-all \
-    .bin/Release/*.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+    .bin/Release/*.dll
 
 %install
 %{_mingw64_makeinstall}
@@ -154,7 +158,8 @@ rm -rf %{buildroot}
 
 %{_mingw64_libdir}/pkgconfig/*.pc
 %{_mingw64_libdir}/*.a
-%{_mingw64_datadir}/pw3270/pot/*.pot
+%{_mingw64_datadir}/%{_product}/pot/*.pot
+%{_mingw64_datadir}/%{_product}/colors.conf
 
 %files -n mingw64-glade-catalog-v3270
 %defattr(-,root,root)
