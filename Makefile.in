@@ -28,6 +28,7 @@
 
 SONAME=@SONAME@
 LIBNAME=libv3270
+PRODUCT_NAME=@PRODUCT_NAME@
 
 SOURCES= \
 	$(wildcard src/terminal/*.c) \
@@ -77,8 +78,6 @@ datarootdir=@datarootdir@
 localedir=@localedir@
 docdir=@docdir@
 sysconfdir=@sysconfdir@
-datadir=$(datarootdir)/@PRODUCT_NAME@
-confdir=$(sysconfdir)/@PRODUCT_NAME@
 
 BASEDIR=@BASEDIR@
 
@@ -298,11 +297,11 @@ install-shared: \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 	# Install default configs
-	@mkdir -p $(DESTDIR)$(datadir)
+	@mkdir -p $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
 
 	@$(INSTALL_DATA) \
 		conf/colors.conf \
-		$(DESTDIR)$(datadir)/colors.conf
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/colors.conf
 
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
@@ -332,8 +331,8 @@ install-dev: \
 		$(DESTDIR)$(libdir)/pkgconfig/libv3270.pc
 
 	# Install translation files
-	@$(MKDIR) $(DESTDIR)$(datadir)/pot
-	@$(INSTALL_DATA) $(POTDIR)/$(LIBNAME).pot $(DESTDIR)$(datadir)/pot/$(LIBNAME).pot
+	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
+	@$(INSTALL_DATA) $(POTDIR)/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/$(LIBNAME).pot
 
 install-glade:
 
