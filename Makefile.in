@@ -296,12 +296,20 @@ install-shared: \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
+	# Install remaps
+	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
+
+	@$(INSTALL_DATA) \
+		remap/*.xml \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
+
 	# Install default configs
-	@mkdir -p $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
+	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
 
 	@$(INSTALL_DATA) \
 		conf/colors.conf \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/colors.conf
+
 
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
