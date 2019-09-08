@@ -62,6 +62,7 @@ LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWid
 	g_return_if_fail(GTK_IS_V3270_SETTINGS(widget));
 
     GTK_V3270_SETTINGS(widget)->terminal = terminal;
+    GTK_V3270_SETTINGS_GET_CLASS(widget)->load(widget,terminal);
 }
 
  LIB3270_EXPORT void v3270_settings_apply(GtkWidget *widget)

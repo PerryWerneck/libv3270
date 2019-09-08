@@ -52,6 +52,7 @@
  typedef struct _V3270SettingsClass	{
  	GtkGridClass parent_class;
 
+ 	void (*load)(GtkWidget *widget, GtkWidget *terminal);
  	void (*apply)(GtkWidget *widget, GtkWidget *terminal);
  	void (*revert)(GtkWidget *widget, GtkWidget *terminal);
 
