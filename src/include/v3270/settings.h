@@ -64,7 +64,8 @@
  LIB3270_EXPORT void v3270_settings_apply(GtkWidget *widget);
  LIB3270_EXPORT void v3270_settings_revert(GtkWidget *widget);
 
- LIB3270_EXPORT void v3270_settings_dialog_run(GtkWidget *widget, GtkWidget *terminal);
+ LIB3270_EXPORT GtkWidget * v3270_settings_dialog_new(GtkWidget *terminal, GtkWidget *settings);
+ // LIB3270_EXPORT gint v3270_settings_dialog_run(GtkWidget *widget, GtkWidget *terminal);
 
  G_END_DECLS
 
