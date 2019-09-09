@@ -172,6 +172,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.a
 %{_datadir}/%{_product}/pot/*.pot
 
+%dir %{_datadir}/%{_product}/remap/
+%{_datadir}/%{_product}/remap/*.xml
+
 %files -n glade-catalog-v3270
 %defattr(-,root,root)
 /usr/share/glade/catalogs/v3270.xml
