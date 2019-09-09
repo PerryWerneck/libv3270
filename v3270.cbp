@@ -79,6 +79,9 @@
 		<Unit filename="src/dialogs/print/settings.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/print/settingsdialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/private.h" />
 		<Unit filename="src/dialogs/save/convenience.c">
 			<Option compilerVar="CC" />
@@ -91,9 +94,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/settings.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/dialogs/settingsdialog.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/togglebutton.c">

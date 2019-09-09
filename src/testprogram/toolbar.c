@@ -153,6 +153,9 @@
 
  static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
+	v3270_edit_color_table(terminal);
+
+ 	/*
 	GtkWidget * dialog	= v3270_dialog_new(terminal, _("Color setup"), _("_Save"));
 	GtkWidget * colors = v3270_color_selection_new(terminal);
 
@@ -171,7 +174,7 @@
 	}
 
 	gtk_widget_destroy(dialog);
-
+	*/
 
  }
 

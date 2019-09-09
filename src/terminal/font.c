@@ -107,6 +107,7 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 			cairo_set_font_size(cr,s);
 			cairo_font_extents(cr,&extents);
 
+			/*
 			debug("font_size=%lf x_advance=%lf y_advance=%lf font_extents=%u+%u font_height=%u view_height=%u view_width=%u",
 					s,
 					extents.max_x_advance,
@@ -116,6 +117,7 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 					height,
 					VIEW_WIDTH_FROM_FONT(extents.max_x_advance)
 			);
+			*/
 
 		} while( (VIEW_HEIGTH_FROM_FONT( (extents.height+extents.descent) ) < height) && (VIEW_WIDTH_FROM_FONT(extents.max_x_advance) < width) );
 
@@ -171,6 +173,7 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 				terminal->minimum_height = ((rows+1) * (extents.height + extents.descent)) + (OIA_TOP_MARGIN+2);
 			}
 
+			/*
 			debug("font_size=%d x_advance=%lf y_advance=%lf font_extents=%u+%u font_height=%u view_height=%u view_width=%u",
 					font_size[f],
 					extents.max_x_advance,
@@ -180,6 +183,7 @@ void v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width,
 					height,
 					VIEW_WIDTH_FROM_FONT(extents.max_x_advance)
 			);
+			*/
 
 			if( VIEW_HEIGTH_FROM_FONT((extents.height + extents.descent)) < height && VIEW_WIDTH_FROM_FONT(extents.max_x_advance) < width)
 				size = font_size[f];

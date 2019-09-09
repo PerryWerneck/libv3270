@@ -29,6 +29,8 @@
 
  #include "private.h"
  #include <v3270/colorscheme.h>
+ #include <v3270/settings.h>
+ #include <v3270/dialogs.h>
  #include <lib3270/log.h>
 
  #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -37,15 +39,14 @@
 
  struct _V3270ColorSelectionClass
  {
- 	GtkGridClass parent_class;
+ 	V3270SettingsClass parent_class;
 
  };
 
  struct _V3270ColorSelection
  {
- 	GtkGrid	  parent;
+ 	V3270Settings		  parent;
 
- 	GtkWidget			* terminal;
 	int 			  	  selected;
 
 	struct {
@@ -64,15 +65,9 @@
 
  };
 
- G_DEFINE_TYPE(V3270ColorSelection, V3270ColorSelection, GTK_TYPE_GRID);
+ G_DEFINE_TYPE(V3270ColorSelection, V3270ColorSelection, GTK_TYPE_V3270_SETTINGS);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
-
- static void V3270ColorSelection_class_init(G_GNUC_UNUSED V3270ColorSelectionClass *klass)
- {
-
-
- }
 
  static void update_color_chooser(V3270ColorSelection *widget, int id)
  {
@@ -88,7 +83,7 @@
 		return;
 	}
 
-	GdkRGBA	* clr = v3270_get_color(widget->terminal,id);
+	GdkRGBA	* clr = v3270_get_color(GTK_V3270_SETTINGS(widget)->terminal,id);
 
 #if USE_GTK_COLOR_CHOOSER
     {
@@ -111,167 +106,30 @@
 	gtk_widget_set_sensitive(widget->colors.editor,TRUE);
 #endif // GTK_CHECK_VERSION
 
- }
+}
 
- static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*dunno), const GdkRGBA *colors, V3270ColorSelection *widget) {
+static void cancel(GtkWidget *widget, GtkWidget *terminal)
+{
+	debug("V3270ColorSelection::%s",__FUNCTION__);
 
-	debug("%s=%p",__FUNCTION__,colors);
-
-	int f;
-	for(f=0;f<V3270_COLOR_COUNT;f++)
-		v3270_set_color(widget->terminal,f,colors+f);
-
-	update_color_chooser(widget,widget->selected);
-
-	v3270_reload(widget->terminal);
-	gtk_widget_queue_draw(widget->terminal);
-
- }
-
- LIB3270_EXPORT void v3270_color_selection_reset(GtkWidget *widget)
- {
 	V3270ColorSelection * sel = GTK_V3270_COLOR_SELECTION(widget);
 
 	int f;
 	for(f=0;f<V3270_COLOR_COUNT;f++)
-		v3270_set_color(sel->terminal,f,sel->saved+f);
+		v3270_set_color(terminal,f,sel->saved+f);
 
 	update_color_chooser(sel,sel->selected);
 
-	v3270_reload(sel->terminal);
-	gtk_widget_queue_draw(sel->terminal);
+	v3270_reload(terminal);
+	gtk_widget_queue_draw(terminal);
 
- }
+}
 
+static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
+{
+	debug("V3270ColorSelection::%s",__FUNCTION__);
 
-#if USE_GTK_COLOR_CHOOSER
- static void color_activated(GtkColorChooser *chooser, GdkRGBA *clr, V3270ColorSelection *widget)
- {
-	if(widget->selected < 0 || widget->selected >= V3270_COLOR_COUNT)
-		return;
-
-    trace("Updating color %d",widget->selected);
-
-	v3270_set_color(widget->terminal,widget->selected,clr);
-	v3270_reload(widget->terminal);
-	v3270_color_scheme_set_rgba(widget->colors.scheme,v3270_get_color_table(widget->terminal));
-	gtk_widget_queue_draw(widget->terminal);
-
- }
-#else
- static void color_changed(GtkWidget *colorselection, V3270ColorSelection *widget)
- {
- 	GdkRGBA	clr;
-
-	if(widget->selected < 0 || widget->selected >= V3270_COLOR_COUNT)
-		return;
-
-	gtk_color_selection_get_current_rgba(GTK_COLOR_SELECTION(colorselection),&clr);
-
-	v3270_set_color(widget->terminal,widget->selected,&clr);
-	v3270_reload(widget->terminal);
-	v3270_color_scheme_set_rgba(widget->colors.scheme,v3270_get_color_table(widget->terminal));
-	gtk_widget_queue_draw(widget->terminal);
-
- }
-#endif // GTK_CHECK_VERSION
-
- static void color_selected(GtkTreeSelection *selection, V3270ColorSelection *widget)
- {
-	GValue			  value		= { 0, };
-	GtkTreeModel	* model;
-	GtkTreeIter		  iter;
-
-	if(!gtk_tree_selection_get_selected(selection,&model,&iter))
-		return;
-
-	gtk_tree_model_get_value(model,&iter,1,&value);
-
-	update_color_chooser(widget,g_value_get_int(&value));
-
-	g_value_unset(&value);
- }
-
-
- static void V3270ColorSelection_init(V3270ColorSelection *widget)
- {
-	// https://developer.gnome.org/hig/stable/visual-layout.html.en
- 	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
- 	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
-
-	{
-		// Create colors list view.
-		widget->colors.list = (GtkTreeModel *) gtk_tree_store_new(2,G_TYPE_STRING,G_TYPE_INT);
-		widget->colors.view = gtk_tree_view_new_with_model(widget->colors.list);
-
-		gtk_widget_set_tooltip_markup(widget->colors.view,_("Terminal colors"));
-
-		gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(widget->colors.view),FALSE);
-		gtk_tree_view_insert_column_with_attributes(	GTK_TREE_VIEW(widget->colors.view),
-														-1,
-														"color",gtk_cell_renderer_text_new(),"text",
-														0, NULL );
-
-		// Setup selection mode.
-		GtkTreeSelection * select = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget->colors.view));
-		gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
-		g_signal_connect(G_OBJECT(select),"changed",G_CALLBACK(color_selected),widget);
-
-		// Put the view inside a scrolled window.
-		GtkWidget * box	= gtk_scrolled_window_new(NULL,NULL);
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(box),GTK_POLICY_NEVER,GTK_POLICY_ALWAYS);
-		gtk_container_add(GTK_CONTAINER(box),widget->colors.view);
-
-		gtk_widget_set_vexpand(box,TRUE);
-		gtk_widget_set_hexpand(box,TRUE);
-
-		gtk_grid_attach(GTK_GRID(widget),box,0,0,1,5);
-
-	}
-
-#ifdef USE_GTK_COLOR_CHOOSER
-	{
-		// Create color chooser widget
-		widget->colors.chooser = gtk_color_chooser_widget_new();
-
-		gtk_widget_set_sensitive(widget->colors.chooser,0);
-		g_signal_connect(G_OBJECT(widget->colors.chooser),"color-activated",G_CALLBACK(color_activated),widget);
-
-		gtk_grid_attach(GTK_GRID(widget),widget->colors.chooser,1,0,5,5);
-	}
-#else
-	{
-		widget->colors.editor = gtk_color_selection_new();
-		gtk_color_selection_set_has_opacity_control(GTK_COLOR_SELECTION(widget->colors.editor),FALSE);
-		gtk_color_selection_set_has_palette(GTK_COLOR_SELECTION(widget->colors.editor),TRUE);
-
-		gtk_widget_set_sensitive(widget->colors.editor,0);
-		g_signal_connect(G_OBJECT(widget->colors.editor),"color-changed",G_CALLBACK(color_changed),widget);
-
-		gtk_grid_attach(GTK_GRID(widget),widget->colors.editor,1,0,5,5);
-	}
-#endif // USE_GTK_COLOR_CHOOSER
-
-	{
-		// Create scheme selector
-		widget->colors.scheme = v3270_color_scheme_new();
-		gtk_widget_set_tooltip_markup(widget->colors.scheme,_("Predefined color schemes"));
-		gtk_grid_attach(GTK_GRID(widget),widget->colors.scheme,0,6,6,1);
-
-		g_signal_connect(G_OBJECT(widget->colors.scheme),"update-colors",G_CALLBACK(color_scheme_changed),widget);
-
-	}
-
-
- }
-
- LIB3270_EXPORT GtkWidget * v3270_color_selection_new(GtkWidget *terminal)
- {
- 	g_return_val_if_fail(GTK_IS_V3270(terminal),NULL);
-
-	V3270ColorSelection * widget = GTK_V3270_COLOR_SELECTION(g_object_new(GTK_TYPE_V3270_COLOR_SELECTION, NULL));
-
-	widget->terminal = terminal;
+	V3270ColorSelection * widget = GTK_V3270_COLOR_SELECTION(w);
 
 	// Load colors
 	{
@@ -352,7 +210,164 @@
 
 	v3270_color_scheme_set_rgba(widget->colors.scheme,v3270_get_color_table(terminal));
 
-	gtk_widget_show_all(GTK_WIDGET(widget));
- 	return GTK_WIDGET(widget);
+}
+
+ static void V3270ColorSelection_class_init(G_GNUC_UNUSED V3270ColorSelectionClass *klass)
+ {
+	GTK_V3270_SETTINGS_CLASS(klass)->load = load;
+	GTK_V3270_SETTINGS_CLASS(klass)->cancel = cancel;
  }
 
+ static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*dunno), const GdkRGBA *colors, V3270ColorSelection *widget) {
+
+	GtkWidget * terminal = GTK_V3270_SETTINGS(widget)->terminal;
+
+	int f;
+	for(f=0;f<V3270_COLOR_COUNT;f++)
+		v3270_set_color(terminal,f,colors+f);
+
+	update_color_chooser(widget,widget->selected);
+
+	v3270_reload(terminal);
+	gtk_widget_queue_draw(terminal);
+
+ }
+
+
+
+#if USE_GTK_COLOR_CHOOSER
+ static void color_activated(GtkColorChooser *chooser, GdkRGBA *clr, V3270ColorSelection *widget)
+ {
+	if(widget->selected < 0 || widget->selected >= V3270_COLOR_COUNT)
+		return;
+
+    trace("Updating color %d",widget->selected);
+
+	v3270_set_color(widget->terminal,widget->selected,clr);
+	v3270_reload(widget->terminal);
+	v3270_color_scheme_set_rgba(widget->colors.scheme,v3270_get_color_table(widget->terminal));
+	gtk_widget_queue_draw(widget->terminal);
+
+ }
+#else
+ static void color_changed(GtkWidget *colorselection, V3270ColorSelection *widget)
+ {
+ 	GdkRGBA	clr;
+	GtkWidget * terminal = GTK_V3270_SETTINGS(widget)->terminal;
+
+	if(widget->selected < 0 || widget->selected >= V3270_COLOR_COUNT)
+		return;
+
+	gtk_color_selection_get_current_rgba(GTK_COLOR_SELECTION(colorselection),&clr);
+
+	v3270_set_color(terminal,widget->selected,&clr);
+	v3270_reload(terminal);
+	v3270_color_scheme_set_rgba(widget->colors.scheme,v3270_get_color_table(terminal));
+	gtk_widget_queue_draw(terminal);
+
+ }
+#endif // GTK_CHECK_VERSION
+
+ static void color_selected(GtkTreeSelection *selection, V3270ColorSelection *widget)
+ {
+	GValue			  value		= { 0, };
+	GtkTreeModel	* model;
+	GtkTreeIter		  iter;
+
+	if(!gtk_tree_selection_get_selected(selection,&model,&iter))
+		return;
+
+	gtk_tree_model_get_value(model,&iter,1,&value);
+
+	update_color_chooser(widget,g_value_get_int(&value));
+
+	g_value_unset(&value);
+ }
+
+
+ static void V3270ColorSelection_init(V3270ColorSelection *widget)
+ {
+	{
+		// Create colors list view.
+		widget->colors.list = (GtkTreeModel *) gtk_tree_store_new(2,G_TYPE_STRING,G_TYPE_INT);
+		widget->colors.view = gtk_tree_view_new_with_model(widget->colors.list);
+
+		gtk_widget_set_tooltip_markup(widget->colors.view,_("Terminal colors"));
+
+		gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(widget->colors.view),FALSE);
+		gtk_tree_view_insert_column_with_attributes(	GTK_TREE_VIEW(widget->colors.view),
+														-1,
+														"color",gtk_cell_renderer_text_new(),"text",
+														0, NULL );
+
+		// Setup selection mode.
+		GtkTreeSelection * select = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget->colors.view));
+		gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+		g_signal_connect(G_OBJECT(select),"changed",G_CALLBACK(color_selected),widget);
+
+		// Put the view inside a scrolled window.
+		GtkWidget * box	= gtk_scrolled_window_new(NULL,NULL);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(box),GTK_POLICY_NEVER,GTK_POLICY_ALWAYS);
+		gtk_container_add(GTK_CONTAINER(box),widget->colors.view);
+
+		gtk_widget_set_vexpand(box,TRUE);
+		gtk_widget_set_hexpand(box,TRUE);
+
+		gtk_grid_attach(GTK_GRID(widget),box,0,0,1,5);
+
+	}
+
+#ifdef USE_GTK_COLOR_CHOOSER
+	{
+		// Create color chooser widget
+		widget->colors.chooser = gtk_color_chooser_widget_new();
+
+		gtk_widget_set_sensitive(widget->colors.chooser,0);
+		g_signal_connect(G_OBJECT(widget->colors.chooser),"color-activated",G_CALLBACK(color_activated),widget);
+
+		gtk_grid_attach(GTK_GRID(widget),widget->colors.chooser,1,0,5,5);
+	}
+#else
+	{
+		widget->colors.editor = gtk_color_selection_new();
+		gtk_color_selection_set_has_opacity_control(GTK_COLOR_SELECTION(widget->colors.editor),FALSE);
+		gtk_color_selection_set_has_palette(GTK_COLOR_SELECTION(widget->colors.editor),TRUE);
+
+		gtk_widget_set_sensitive(widget->colors.editor,0);
+		g_signal_connect(G_OBJECT(widget->colors.editor),"color-changed",G_CALLBACK(color_changed),widget);
+
+		gtk_grid_attach(GTK_GRID(widget),widget->colors.editor,1,0,5,5);
+	}
+#endif // USE_GTK_COLOR_CHOOSER
+
+	{
+		// Create scheme selector
+		widget->colors.scheme = v3270_color_scheme_new();
+		gtk_widget_set_tooltip_markup(widget->colors.scheme,_("Predefined color schemes"));
+		gtk_grid_attach(GTK_GRID(widget),widget->colors.scheme,0,6,6,1);
+
+		g_signal_connect(G_OBJECT(widget->colors.scheme),"update-colors",G_CALLBACK(color_scheme_changed),widget);
+
+	}
+
+
+ }
+
+ LIB3270_EXPORT GtkWidget * v3270_color_selection_new()
+ {
+ 	return GTK_WIDGET(g_object_new(GTK_TYPE_V3270_COLOR_SELECTION, NULL));
+ }
+
+ LIB3270_EXPORT void v3270_edit_color_table(GtkWidget *terminal)
+ {
+	g_return_if_fail(GTK_IS_V3270(terminal));
+
+	GtkWidget * dialog = v3270_settings_dialog_new(terminal, v3270_color_selection_new());
+
+	v3270_dialog_setup(dialog,_("Color setup"),_("_Save"));
+
+	gtk_widget_show_all(dialog);
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+
+ }

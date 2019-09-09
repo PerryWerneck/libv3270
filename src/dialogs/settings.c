@@ -142,7 +142,7 @@ LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWid
 	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),18);
 
     gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
-    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+    //gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
     gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 
     return dialog;
