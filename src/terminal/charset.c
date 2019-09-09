@@ -33,6 +33,10 @@
  #include <lib3270/log.h>
  #include <v3270/dialogs.h>
 
+#ifdef _WIN32
+	#include <lmcons.h>
+#endif // _WIN32
+
  #define ERROR_DOMAIN g_quark_from_static_string(PACKAGE_NAME)
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -187,7 +191,29 @@
 	const gchar * const * system_data_dirs = g_get_system_data_dirs();
 
 #ifdef _WIN32
-	#error Implementar.
+	{
+		char wc_fn[MAX_PATH];
+
+		if(GetModuleFileName(NULL, wc_fn, MAX_PATH))
+		{
+			char *p;
+
+			if((p = strrchr(wc_fn, '\\')) != NULL)
+				*p = '\0';
+
+			if((p = strrchr(wc_fn, '/')) != NULL)
+				*p = '\0';
+
+			gchar *filename = g_build_filename(wc_fn,G_STRINGIFY(PRODUCT_NAME),"remap",name,NULL);
+
+			debug("%s.win32=%s",__FUNCTION__,filename);
+			if(g_file_test(filename,G_FILE_TEST_IS_REGULAR))
+				return filename;
+
+			g_free(filename);
+		}
+
+	}
 #endif // _WIN32
 
 	for(ix=0;system_data_dirs[ix];ix++)
