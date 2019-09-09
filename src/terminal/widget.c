@@ -186,6 +186,12 @@ static void finalize(GObject *object)
 
 	v3270 * terminal = GTK_V3270(object);
 
+	if(terminal->remap_filename)
+	{
+		g_free(terminal->remap_filename);
+		terminal->remap_filename = NULL;
+	}
+
 	if(terminal->host)
 	{
 		// Release session

@@ -285,6 +285,14 @@
 		return lib3270_disconnect(hSession);
 	}
 
+ 	if(g_str_has_prefix(cmdline,"remap"))
+	{
+		gchar *txtptr = cmdline+5;
+		g_strstrip(txtptr);
+		v3270_set_remap_filename(widget,txtptr);
+		return 0;
+	}
+
  	if(g_str_has_prefix(cmdline,"set"))
 	{
 		gchar *txtptr = cmdline+3;

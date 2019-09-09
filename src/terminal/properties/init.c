@@ -27,211 +27,9 @@
  *
  */
 
-#ifdef WIN32
-	#include <winsock2.h>
-	#include <windows.h>
-	#include <ws2tcpip.h>
-#endif // WIN32
-
- #include <gtk/gtk.h>
- #include <limits.h>
- #include <lib3270.h>
- #include <lib3270/session.h>
- #include <lib3270/actions.h>
- #include <lib3270/log.h>
- #include <lib3270/properties.h>
- #include <lib3270/toggle.h>
- #include <stdlib.h>
- #include <errno.h>
- #include <v3270.h>
- #include <terminal.h>
-
- enum _v3270_internal_property
- {
-	V3270_PROPERTY_FONT_FAMILY		= 2,	///< @brief Name of the font-family used by widget.
-	V3270_PROPERTY_CLIPBOARD		= 3,	///< @brief Name of the selected clipboard.
-	V3270_PROPERTY_SESSION_NAME		= 4,	///< @brief Widget's session name.
-	V3270_PROPERTY_AUTO_DISCONNECT	= 5,	///< @brief Auto disconnect.
-
-
-	V3270_PROPERTY_DYNAMIC			= 6		///< @brief Id of the first LIB3270 internal property.
- };
+ #include "private.h"
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
-
- static void v3270_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
- {
-	v3270 		* window	= GTK_V3270(object);
- 	v3270Class	* klass		= GTK_V3270_GET_CLASS(object);
-
- 	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
-
- 	if(prop_id >= klass->properties.type.str)
-	{
-		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - klass->properties.type.str));
-		debug("%s.%s.%s=%s",__FUNCTION__,"string",prop->name,g_value_get_string(value));
-
-		if(prop->set)
-			prop->set(window->host,g_value_get_string(value));
-
-	}
-	else if(prop_id >= klass->properties.type.uint)
-	{
-		const LIB3270_UINT_PROPERTY * prop = (lib3270_get_unsigned_properties_list()+(prop_id - klass->properties.type.uint));
-		debug("%s.%s.%s",__FUNCTION__,"unsigned",prop->name);
-
-		if(prop->set)
-			prop->set(window->host,g_value_get_uint(value));
-
-	}
-	else if(prop_id >= klass->properties.type.integer)
-	{
-		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - klass->properties.type.integer));
-		debug("%s.%s.%s",__FUNCTION__,"integer",prop->name);
-
-		if(prop->set)
-			prop->set(window->host,g_value_get_int(value));
-
-	}
-	else if(prop_id >= klass->properties.type.boolean)
-	{
-		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - klass->properties.type.boolean));
-		debug("%s.%s.%s",__FUNCTION__,"boolean",prop->name);
-
-		if(prop->set)
-			prop->set(window->host,g_value_get_boolean(value) ? 1 : 0);
-
-	}
- 	else if(prop_id >= klass->properties.type.toggle)
-	{
-		debug("%s.%s",__FUNCTION__,"toggle");
-		lib3270_set_toggle(window->host,prop_id - klass->properties.type.toggle, (int) g_value_get_boolean (value));
-
-	}
-	else
-	{
-		// Check for internal properties.
-		switch(prop_id) {
-		case V3270_PROPERTY_FONT_FAMILY:	// Font-family
-			v3270_set_font_family(GTK_WIDGET(object), g_value_get_string(value));
-			break;
-
-		case V3270_PROPERTY_CLIPBOARD:	// Clipboard
-			{
-				const gchar * name = g_value_get_string(value);
-				if(!*name) {
-					g_message("Setting default clipboard");
-					window->selection.target = GDK_SELECTION_CLIPBOARD;
-				}
-				else
-			{
-					GdkAtom clipboard = gdk_atom_intern(name,TRUE);
-					if(clipboard == GDK_NONE)
-					{
-						g_warning("\"%s\" is not a valid clipboard name",name);
-					}
-					else
-					{
-						window->selection.target = clipboard;
-					}
-				}
-			}
-			break;
-
-		case V3270_PROPERTY_SESSION_NAME:	// Session Name
-			v3270_set_session_name(GTK_WIDGET(object), g_value_get_string(value));
-			break;
-
-		case V3270_PROPERTY_AUTO_DISCONNECT:
-			v3270_set_auto_disconnect(GTK_WIDGET(object), g_value_get_uint(value));
-			break;
-
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-
-		}
-
-	}
-
-
- }
-
- static void v3270_get_property(GObject *object,guint prop_id, GValue *value, GParamSpec *pspec)
- {
-	v3270		* window	= GTK_V3270(object);
- 	v3270Class	* klass		= GTK_V3270_GET_CLASS(object);
-
- 	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
-
- 	if(prop_id >= klass->properties.type.str)
-	{
-		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - klass->properties.type.str));
-		debug("%s.%s.%s",__FUNCTION__,"string",prop->name);
-
-		if(prop->get)
-			g_value_set_string(value,prop->get(window->host));
-
-	}
-	else if(prop_id >= klass->properties.type.uint)
-	{
-		const LIB3270_UINT_PROPERTY * prop = (lib3270_get_unsigned_properties_list()+(prop_id - klass->properties.type.uint));
-		debug("%s.%s.%s",__FUNCTION__,"unsigned",prop->name);
-
-		if(prop->get)
-			g_value_set_uint(value,prop->get(window->host));
-
-	}
-	else if(prop_id >= klass->properties.type.integer)
-	{
-		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - klass->properties.type.integer));
-		debug("%s.%s.%s",__FUNCTION__,"integer",prop->name);
-
-		if(prop->get)
-			g_value_set_int(value,prop->get(window->host));
-
-	}
-	else if(prop_id >= klass->properties.type.boolean)
-	{
-		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - klass->properties.type.boolean));
-		debug("%s.%s.%s",__FUNCTION__,"boolean",prop->name);
-
-		if(prop->get)
-			g_value_set_boolean(value,prop->get(window->host) != 0 ? TRUE : FALSE);
-
-	}
- 	else if(prop_id >= klass->properties.type.toggle)
-	{
-		debug("%s.%s.%s",__FUNCTION__,"toggle",lib3270_get_toggle_name(prop_id - klass->properties.type.toggle));
-		g_value_set_boolean(value,lib3270_get_toggle(window->host,prop_id - klass->properties.type.toggle) ? TRUE : FALSE );
-
-	}
-	else
-	{
-		// Check for internal properties.
-		switch(prop_id) {
-		case V3270_PROPERTY_FONT_FAMILY:	// Font-family
-			g_value_set_string(value,v3270_get_font_family(GTK_WIDGET(object)));
-			break;
-
-		case V3270_PROPERTY_CLIPBOARD:	// Clipboard
-			g_value_take_string(value,gdk_atom_name(window->selection.target));
-			break;
-
-		case V3270_PROPERTY_SESSION_NAME:
-			g_value_set_string(value,v3270_get_session_name(GTK_WIDGET(object)));
-			break;
-
-		case V3270_PROPERTY_AUTO_DISCONNECT:
-			g_value_set_uint(value,window->activity.disconnect);
-			break;
-
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-
-		}
-	}
-
- }
 
  void v3270_install_property(GObjectClass *oclass, guint property_id, GParamSpec *pspec)
  {
@@ -335,6 +133,21 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_CLIPBOARD,
+		spec
+	);
+
+	// Remap file
+	spec = g_param_spec_string(
+							"remap",
+							"remap",
+							_("XML file with remap table"),
+							FALSE,
+							G_PARAM_READABLE|G_PARAM_WRITABLE
+						);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_REMAP_FILE,
 		spec
 	);
 
@@ -449,37 +262,4 @@
 	}
 
  }
-
- LIB3270_EXPORT void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)
- {
-	g_return_if_fail(GTK_IS_V3270(widget));
- 	GTK_V3270(widget)->activity.disconnect = minutes;
- }
-
- LIB3270_EXPORT guint v3270_get_auto_disconnect(GtkWidget *widget)
- {
-	g_return_val_if_fail(GTK_IS_V3270(widget),0);
- 	return GTK_V3270(widget)->activity.disconnect;
- }
-
-LIB3270_EXPORT gboolean v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
-
-	if(ix < LIB3270_TOGGLE_COUNT)
-		return lib3270_get_toggle(GTK_V3270(widget)->host,ix) ? TRUE : FALSE;
-
-	return FALSE;
-}
-
-LIB3270_EXPORT gboolean	v3270_set_toggle(GtkWidget *widget, LIB3270_TOGGLE ix, gboolean state)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
-
-	if(ix < LIB3270_TOGGLE_COUNT)
-		return lib3270_set_toggle(GTK_V3270(widget)->host,ix,state ? 1 : 0) ? TRUE : FALSE;
-
-	return FALSE;
-
-}
 

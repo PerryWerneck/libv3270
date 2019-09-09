@@ -246,7 +246,8 @@
 
  LIB3270_EXPORT void			  v3270_set_session_host_type(GtkWidget *widget, LIB3270_HOST_TYPE);
 
- LIB3270_EXPORT void			  v3270_remap_from_xml(GtkWidget *widget, const gchar *path);
+ LIB3270_EXPORT	void			  v3270_set_remap_filename(GtkWidget *widget, const gchar *path);
+ LIB3270_EXPORT const gchar		* v3270_get_remap_filename(GtkWidget *widget);
 
  // Keyboard & Mouse special actions
  LIB3270_EXPORT void			  v3270_set_scroll_action(GtkWidget *widget, GdkScrollDirection direction, GtkAction *action);

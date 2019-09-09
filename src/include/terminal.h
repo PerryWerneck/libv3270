@@ -164,6 +164,7 @@ G_BEGIN_DECLS
 	// Session
 	H3270   				* host;							/**< Related 3270 session */
 	gchar					* session_name;					/**< Session name (for window title) */
+	gchar					* remap_filename;				/**< @brief XML file with remap table. */
 
 	// Auto disconnect
 	struct

@@ -31,7 +31,6 @@
  #include <v3270.h>
  #include <lib3270/charset.h>
  #include <lib3270/log.h>
-// #include <lib3270/X11keysym.h>
  #include <v3270/dialogs.h>
 
  #define ERROR_DOMAIN g_quark_from_static_string(PACKAGE_NAME)
@@ -68,258 +67,6 @@
 
 	return chr;
  }
-
- /*
- static unsigned short getChar(const gchar *id, GError **error) {
-
-	static struct
-	{
-		const char		* name;
-		unsigned short	  keysym;
-	} latin[] =
-	{
-		{ "space", XK_space },
-		{ "exclam", XK_exclam },
-		{ "quotedbl", XK_quotedbl },
-		{ "numbersign", XK_numbersign },
-		{ "dollar", XK_dollar },
-		{ "percent", XK_percent },
-		{ "ampersand", XK_ampersand },
-		{ "apostrophe", XK_apostrophe },
-		{ "quoteright", XK_quoteright },
-		{ "parenleft", XK_parenleft },
-		{ "parenright", XK_parenright },
-		{ "asterisk", XK_asterisk },
-		{ "plus", XK_plus },
-		{ "comma", XK_comma },
-		{ "minus", XK_minus },
-		{ "period", XK_period },
-		{ "slash", XK_slash },
-		{ "0", XK_0 },
-		{ "1", XK_1 },
-		{ "2", XK_2 },
-		{ "3", XK_3 },
-		{ "4", XK_4 },
-		{ "5", XK_5 },
-		{ "6", XK_6 },
-		{ "7", XK_7 },
-		{ "8", XK_8 },
-		{ "9", XK_9 },
-		{ "colon", XK_colon },
-		{ "semicolon", XK_semicolon },
-		{ "less", XK_less },
-		{ "equal", XK_equal },
-		{ "greater", XK_greater },
-		{ "question", XK_question },
-		{ "at", XK_at },
-		{ "A", XK_A },
-		{ "B", XK_B },
-		{ "C", XK_C },
-		{ "D", XK_D },
-		{ "E", XK_E },
-		{ "F", XK_F },
-		{ "G", XK_G },
-		{ "H", XK_H },
-		{ "I", XK_I },
-		{ "J", XK_J },
-		{ "K", XK_K },
-		{ "L", XK_L },
-		{ "M", XK_M },
-		{ "N", XK_N },
-		{ "O", XK_O },
-		{ "P", XK_P },
-		{ "Q", XK_Q },
-		{ "R", XK_R },
-		{ "S", XK_S },
-		{ "T", XK_T },
-		{ "U", XK_U },
-		{ "V", XK_V },
-		{ "W", XK_W },
-		{ "X", XK_X },
-		{ "Y", XK_Y },
-		{ "Z", XK_Z },
-		{ "bracketleft", XK_bracketleft },
-		{ "backslash", XK_backslash },
-		{ "bracketright", XK_bracketright },
-		{ "asciicircum", XK_asciicircum },
-		{ "underscore", XK_underscore },
-		{ "grave", XK_grave },
-		{ "quoteleft", XK_quoteleft },
-		{ "a", XK_a },
-		{ "b", XK_b },
-		{ "c", XK_c },
-		{ "d", XK_d },
-		{ "e", XK_e },
-		{ "f", XK_f },
-		{ "g", XK_g },
-		{ "h", XK_h },
-		{ "i", XK_i },
-		{ "j", XK_j },
-		{ "k", XK_k },
-		{ "l", XK_l },
-		{ "m", XK_m },
-		{ "n", XK_n },
-		{ "o", XK_o },
-		{ "p", XK_p },
-		{ "q", XK_q },
-		{ "r", XK_r },
-		{ "s", XK_s },
-		{ "t", XK_t },
-		{ "u", XK_u },
-		{ "v", XK_v },
-		{ "w", XK_w },
-		{ "x", XK_x },
-		{ "y", XK_y },
-		{ "z", XK_z },
-		{ "braceleft", XK_braceleft },
-		{ "bar", XK_bar },
-		{ "braceright", XK_braceright },
-		{ "asciitilde", XK_asciitilde },
-		{ "nobreakspace", XK_nobreakspace },
-		{ "exclamdown", XK_exclamdown },
-		{ "cent", XK_cent },
-		{ "sterling", XK_sterling },
-		{ "currency", XK_currency },
-		{ "yen", XK_yen },
-		{ "brokenbar", XK_brokenbar },
-		{ "section", XK_section },
-		{ "diaeresis", XK_diaeresis },
-		{ "copyright", XK_copyright },
-		{ "ordfeminine", XK_ordfeminine },
-		{ "guillemotleft", XK_guillemotleft },
-		{ "notsign", XK_notsign },
-		{ "hyphen", XK_hyphen },
-		{ "registered", XK_registered },
-		{ "macron", XK_macron },
-		{ "degree", XK_degree },
-		{ "plusminus", XK_plusminus },
-		{ "twosuperior", XK_twosuperior },
-		{ "threesuperior", XK_threesuperior },
-		{ "acute", XK_acute },
-		{ "mu", XK_mu },
-		{ "paragraph", XK_paragraph },
-		{ "periodcentered", XK_periodcentered },
-		{ "cedilla", XK_cedilla },
-		{ "onesuperior", XK_onesuperior },
-		{ "masculine", XK_masculine },
-		{ "guillemotright", XK_guillemotright },
-		{ "onequarter", XK_onequarter },
-		{ "onehalf", XK_onehalf },
-		{ "threequarters", XK_threequarters },
-		{ "questiondown", XK_questiondown },
-		{ "Agrave", XK_Agrave },
-		{ "Aacute", XK_Aacute },
-		{ "Acircumflex", XK_Acircumflex },
-		{ "Atilde", XK_Atilde },
-		{ "Adiaeresis", XK_Adiaeresis },
-		{ "Aring", XK_Aring },
-		{ "AE", XK_AE },
-		{ "Ccedilla", XK_Ccedilla },
-		{ "Egrave", XK_Egrave },
-		{ "Eacute", XK_Eacute },
-		{ "Ecircumflex", XK_Ecircumflex },
-		{ "Ediaeresis", XK_Ediaeresis },
-		{ "Igrave", XK_Igrave },
-		{ "Iacute", XK_Iacute },
-		{ "Icircumflex", XK_Icircumflex },
-		{ "Idiaeresis", XK_Idiaeresis },
-		{ "ETH", XK_ETH },
-		{ "Eth", XK_Eth },
-		{ "Ntilde", XK_Ntilde },
-		{ "Ograve", XK_Ograve },
-		{ "Oacute", XK_Oacute },
-		{ "Ocircumflex", XK_Ocircumflex },
-		{ "Otilde", XK_Otilde },
-		{ "Odiaeresis", XK_Odiaeresis },
-		{ "multiply", XK_multiply },
-		{ "Ooblique", XK_Ooblique },
-		{ "Ugrave", XK_Ugrave },
-		{ "Uacute", XK_Uacute },
-		{ "Ucircumflex", XK_Ucircumflex },
-		{ "Udiaeresis", XK_Udiaeresis },
-		{ "Yacute", XK_Yacute },
-		{ "THORN", XK_THORN },
-		{ "Thorn", XK_Thorn },
-		{ "ssharp", XK_ssharp },
-		{ "agrave", XK_agrave },
-		{ "aacute", XK_aacute },
-		{ "acircumflex", XK_acircumflex },
-		{ "atilde", XK_atilde },
-		{ "adiaeresis", XK_adiaeresis },
-		{ "aring", XK_aring },
-		{ "ae", XK_ae },
-		{ "ccedilla", XK_ccedilla },
-		{ "egrave", XK_egrave },
-		{ "eacute", XK_eacute },
-		{ "ecircumflex", XK_ecircumflex },
-		{ "ediaeresis", XK_ediaeresis },
-		{ "igrave", XK_igrave },
-		{ "iacute", XK_iacute },
-		{ "icircumflex", XK_icircumflex },
-		{ "idiaeresis", XK_idiaeresis },
-		{ "eth", XK_eth },
-		{ "ntilde", XK_ntilde },
-		{ "ograve", XK_ograve },
-		{ "oacute", XK_oacute },
-		{ "ocircumflex", XK_ocircumflex },
-		{ "otilde", XK_otilde },
-		{ "odiaeresis", XK_odiaeresis },
-		{ "division", XK_division },
-		{ "oslash", XK_oslash },
-		{ "ugrave", XK_ugrave },
-		{ "uacute", XK_uacute },
-		{ "ucircumflex", XK_ucircumflex },
-		{ "udiaeresis", XK_udiaeresis },
-		{ "yacute", XK_yacute },
-		{ "thorn", XK_thorn },
-		{ "ydiaeresis", XK_ydiaeresis },
-
-		// The following are, umm, hacks to allow symbolic names for
-		// control codes.
-	#if !defined(_WIN32)
-		{ "BackSpace", 0x08 },
-		{ "Tab", 0x09 },
-		{ "Linefeed", 0x0a },
-		{ "Return", 0x0d },
-		{ "Escape", 0x1b },
-		{ "Delete", 0x7f },
-	#endif
-	};
-
-	size_t ix;
-
-	if(*error) {
-		return 0;
-	}
-
- 	if(g_str_has_prefix(id,"0x")) {
-
-        unsigned int rc = 0;
-
-		if(sscanf(id + 2, "%x", &rc) != 1)
-		{
-			*error = g_error_new(ERROR_DOMAIN,EINVAL,"%s",_( "Can't parse character value" ));
-			return 0;
-		}
-
-		return (unsigned short) rc;
-
- 	}
-
- 	for(ix=0;ix < G_N_ELEMENTS(latin);ix++) {
-		if(!g_ascii_strcasecmp(id,latin[ix].name))
-			return latin[ix].keysym;
- 	}
-
- 	if(strlen(id) != 1)
-	{
-		*error = g_error_new(ERROR_DOMAIN,EINVAL,"%s",_( "Invalid character value" ));
-		return 0;
-	}
-
- 	return (unsigned short) *id;
- }
- */
 
  static lib3270_remap_scope getRemapScope(const gchar *str, GError **error) {
 
@@ -434,7 +181,37 @@
  {
  }
 
- LIB3270_EXPORT	void v3270_remap_from_xml(GtkWidget *widget, const gchar *path)
+ static gchar * get_filename(const gchar *name)
+ {
+ 	size_t ix;
+	const gchar * const * system_data_dirs = g_get_system_data_dirs();
+
+#ifdef _WIN32
+	#error Implementar.
+#endif // _WIN32
+
+	for(ix=0;system_data_dirs[ix];ix++)
+	{
+        gchar * filename = g_build_filename(system_data_dirs[ix],G_STRINGIFY(PRODUCT_NAME),"remap",name,NULL);
+
+        debug("%s(%s)",__FUNCTION__,filename);
+
+        if(g_file_test(filename,G_FILE_TEST_IS_REGULAR))
+			return filename;
+
+		g_free(filename);
+	}
+
+	return g_build_filename("remap",name,NULL);
+
+ }
+
+ LIB3270_EXPORT	const char * v3270_get_remap_filename(GtkWidget *widget)
+ {
+ 	return GTK_V3270(widget)->remap_filename;
+ }
+
+ LIB3270_EXPORT	void v3270_set_remap_filename(GtkWidget *widget, const gchar *path)
  {
 	static const GMarkupParser parser =
 	{
@@ -454,12 +231,46 @@
 	};
 
  	GError				* error		= NULL;
- 	gchar				* text 		= NULL;
+ 	g_autofree gchar	* text 		= NULL;
+	v3270 				* terminal = GTK_V3270(widget);
 	struct parse		  cfg;
+
+	debug("%s(%s)",__FUNCTION__,path);
+
+	g_return_if_fail(GTK_IS_V3270(widget));
+
+	if(terminal->remap_filename)
+	{
+		g_free(terminal->remap_filename);
+		terminal->remap_filename = NULL;
+	}
+
+	if(!(path && *path))
+	{
+		lib3270_reset_charset(terminal->host,NULL,NULL,LIB3270_DEFAULT_CGEN | LIB3270_DEFAULT_CSET);
+		return;
+	}
 
 	memset(&cfg,0,sizeof(cfg));
 
-	if(g_file_get_contents(path,&text,NULL,&error))
+	if(g_file_test(path,G_FILE_TEST_IS_REGULAR))
+	{
+        terminal->remap_filename = g_strdup(path);
+	}
+	else if(g_str_has_suffix(path,".xml"))
+	{
+        terminal->remap_filename = get_filename(path);
+	}
+	else
+	{
+        g_autofree gchar *name = g_strconcat(path,".xml",NULL);
+        terminal->remap_filename = get_filename(name);
+	}
+
+	debug("Loading \"%s\"",terminal->remap_filename);
+	g_file_get_contents(terminal->remap_filename,&text,NULL,&error);
+
+	if(text && !error)
 	{
 
 		GMarkupParseContext	* context = g_markup_parse_context_new(&parser,G_MARKUP_TREAT_CDATA_AS_TEXT|G_MARKUP_PREFIX_ERROR_POSITION,&cfg,NULL);
@@ -470,42 +281,30 @@
 
 	debug("error=%p",error);
 
+	lib3270_reset_charset(terminal->host,NULL,NULL,LIB3270_DEFAULT_CGEN | LIB3270_DEFAULT_CSET);
+
 	if(error)
 	{
-		g_autofree gchar * name = g_path_get_basename(path);
-
 		v3270_popup_gerror(
 				widget,
 				error,
 				_( "Remap Failed" ),
-				_(  "Can't parse %s" ), name
+				_(  "Can't parse %s" ), path
 		);
 
 		g_error_free(error);
 
 	} else {
 
-		H3270 * hSession = v3270_get_session(widget);
+		unsigned int i;
 
-
-		if(hSession)
+		for(i=0;i < cfg.len; i++)
 		{
-			unsigned int i;
-
-			lib3270_reset_charset(hSession, cfg.host, cfg.display, cfg.cgcsgid);
-
-			for(i=0;i < cfg.len; i++)
-			{
-				lib3270_remap_char(hSession,cfg.map[i].ebc,cfg.map[i].iso, BOTH, 0);
-			}
-
+			lib3270_remap_char(terminal->host,cfg.map[i].ebc,cfg.map[i].iso, BOTH, 0);
 		}
-
 
 	}
 
-
-	g_free(text);
 	g_free(cfg.host);
 	g_free(cfg.display);
 

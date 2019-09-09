@@ -34,6 +34,7 @@
 	#undef PACKAGE_NAME
 	#undef PACKAGE_VERSION
 	#undef PACKAGE_RELEASE
+	#undef PRODUCT_NAME
 
 	#undef HAVE_LIBM
 	#undef HAVE_GNOME
