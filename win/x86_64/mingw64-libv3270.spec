@@ -161,6 +161,9 @@ rm -rf %{buildroot}
 %{_mingw64_datadir}/%{_product}/pot/*.pot
 %{_mingw64_datadir}/%{_product}/colors.conf
 
+%dir %{_mingw64_datadir}/%{_product}/remap
+%{_mingw64_datadir}/%{_product}/remap/*.xml
+
 %files -n mingw64-glade-catalog-v3270
 %defattr(-,root,root)
 
