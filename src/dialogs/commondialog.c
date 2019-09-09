@@ -28,6 +28,7 @@
  */
 
  #include "private.h"
+ #include <v3270/dialogs.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -84,12 +85,25 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *titl
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 	}
 
+	gtk_box_set_spacing(
+		GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
+		18
+	);
+
+	v3270_dialog_setup(dialog,title,apply);
+
+	return dialog;
+}
+
+LIB3270_EXPORT void v3270_dialog_setup(GtkWidget *dialog, const gchar *title, const gchar *apply)
+{
+
 #if GTK_CHECK_VERSION(3,12,0)
 
-	if(use_header)
-	{
-		GtkWidget * header = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
+	GtkWidget * header = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
 
+	if(header)
+	{
 		gtk_header_bar_set_title(GTK_HEADER_BAR(header),title);
 		gtk_header_bar_pack_start(GTK_HEADER_BAR(header),v3270_dialog_button_new(dialog,_("_Cancel"),G_CALLBACK(v3270_dialog_cancel)));
 		gtk_header_bar_pack_end(GTK_HEADER_BAR(header),v3270_dialog_button_new(dialog,apply,G_CALLBACK(v3270_dialog_apply)));
@@ -97,11 +111,6 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *titl
 	else
 	{
 		gtk_window_set_title(GTK_WINDOW(dialog), title);
-
-		gtk_box_set_spacing(
-			GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
-			18
-		);
 
 		gtk_dialog_add_buttons(
 			GTK_DIALOG (dialog),
@@ -129,7 +138,6 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *titl
 
 #endif // GTK 3.12
 
-	return dialog;
 }
 
 #if GTK_CHECK_VERSION(3,12,0)

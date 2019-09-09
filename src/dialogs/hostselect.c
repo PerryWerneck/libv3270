@@ -30,6 +30,7 @@
  #include "private.h"
  #include <hostselect.h>
  #include <v3270/dialogs.h>
+ #include <v3270/settings.h>
  #include <lib3270/log.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
@@ -57,9 +58,7 @@
 
  struct _V3270HostSelectWidget
  {
- 	GtkGrid parent;
-
-	LIB3270_HOST_TYPE	type;									/**< @brief Connect option */
+ 	V3270Settings parent;
 
 	struct
 	{
@@ -69,60 +68,183 @@
 
 	} input;
 
-	unsigned short		  colors;								/**< @brief Number of colors */
-	H3270				* hSession;								/**< @brief lib3270's session handle */
-
  };
 
  struct _V3270HostSelectWidgetClass
  {
-	GtkGridClass parent_class;
+	V3270SettingsClass parent_class;
  };
 
 
- G_DEFINE_TYPE(V3270HostSelectWidget, V3270HostSelectWidget, GTK_TYPE_GRID);
+ G_DEFINE_TYPE(V3270HostSelectWidget, V3270HostSelectWidget, GTK_TYPE_V3270_SETTINGS);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+static void apply(GtkWidget *w, GtkWidget *terminal)
+{
+	debug("V3270HostSelectWidget::%s",__FUNCTION__);
+
+	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
+	H3270 *hSession = v3270_get_session(terminal);
+
+	// Apply URL
+	{
+		g_autofree gchar * url =
+			g_strconcat(
+							(gtk_toggle_button_get_active(widget->input.ssl) ? "tn3270s://" : "tn3270://"),
+							gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]),
+							":",
+							gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]),
+							NULL
+						);
+
+		debug("URL=[%s]",url);
+		lib3270_set_url(hSession,url);
+
+	}
+
+	// Apply Host type
+	{
+		GtkTreeIter	iter;
+
+		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget->input.combo[0]), &iter))
+		{
+			GValue value = { 0, };
+			gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget->input.combo[0])),&iter,1,&value);
+
+			lib3270_set_host_type(hSession,g_value_get_int(&value));
+
+			g_value_unset(&value);
+
+		}
+
+	}
+
+	// Apply color type
+	{
+		GtkTreeIter	iter;
+
+		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget->input.combo[1]), &iter))
+		{
+			GValue value   = { 0, };
+
+			gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget->input.combo[1])),&iter,1,&value);
+
+			lib3270_set_color_type(hSession,g_value_get_int(&value));
+
+			g_value_unset(&value);
+
+		}
+
+	}
+
+}
+
+static void load(GtkWidget *w, GtkWidget *terminal)
+{
+	debug("V3270HostSelectWidget::%s",__FUNCTION__);
+
+	H3270 *hSession = v3270_get_session(terminal);
+	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
+
+	const gchar * u = lib3270_get_url(hSession);
+
+	if(u)
+    {
+
+        g_autofree gchar * url = g_strdup(u);
+        debug("URL=[%s]",url);
+
+		gtk_toggle_button_set_active(widget->input.ssl,g_str_has_prefix(u,"tn3270s"));
+
+        gchar *hostname = strstr(url,"://");
+        if(!hostname)
+        {
+            g_message("Invalid URL: \"%s\" (no scheme)",url);
+        }
+        else
+        {
+            hostname += 3;
+
+            gchar *srvcname = strchr(hostname,':');
+
+            if(srvcname)
+            {
+                *(srvcname++) = 0;
+            }
+            else
+            {
+                srvcname = "telnet";
+            }
+
+            gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],hostname);
+            gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],srvcname);
+
+        }
+
+    }
+
+	LIB3270_HOST_TYPE type = lib3270_get_host_type(hSession);
+
+	// Set host type
+	{
+		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combo[0]);
+		GtkTreeIter		  iter;
+
+		if(gtk_tree_model_get_iter_first(model,&iter))
+		{
+			do
+			{
+				GValue		value   = { 0, };
+
+				gtk_tree_model_get_value(model,&iter,1,&value);
+
+				if(g_value_get_int(&value) == (int) type)
+				{
+					gtk_combo_box_set_active_iter(widget->input.combo[0],&iter);
+					break;
+				}
+
+			} while(gtk_tree_model_iter_next(model,&iter));
+		}
+	}
+
+	// Set color type
+	{
+		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combo[1]);
+		GtkTreeIter		  iter;
+		int				  colors = (int) lib3270_get_color_type(hSession);
+
+		if(gtk_tree_model_get_iter_first(model,&iter))
+		{
+			do
+			{
+				GValue		value   = { 0, };
+
+				gtk_tree_model_get_value(model,&iter,1,&value);
+
+				if(g_value_get_int(&value) == colors)
+				{
+					gtk_combo_box_set_active_iter(widget->input.combo[1],&iter);
+					break;
+				}
+
+			} while(gtk_tree_model_iter_next(model,&iter));
+		}
+	}
+
+}
+
+
 static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidgetClass *klass)
 {
-}
-
-static void systype_changed(GtkComboBox *widget, V3270HostSelectWidget *dialog)
-{
-	GValue		value   = { 0, };
-	GtkTreeIter iter;
-
-	if(!gtk_combo_box_get_active_iter(widget,&iter))
-		return;
-
-	gtk_tree_model_get_value(gtk_combo_box_get_model(widget),&iter,1,&value);
-
-	dialog->type = g_value_get_int(&value);
-
-}
-
-static void colortable_changed(GtkComboBox *widget, V3270HostSelectWidget *dialog)
-{
-	GValue		value   = { 0, };
-	GtkTreeIter iter;
-
-	if(!gtk_combo_box_get_active_iter(widget,&iter))
-		return;
-
-	gtk_tree_model_get_value(gtk_combo_box_get_model(widget),&iter,1,&value);
-
-	dialog->colors = g_value_get_int(&value);
-
+	GTK_V3270_SETTINGS_CLASS(klass)->apply = apply;
+	GTK_V3270_SETTINGS_CLASS(klass)->load = load;
 }
 
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
 	int f;
-
-	// https://developer.gnome.org/hig/stable/visual-layout.html.en
- 	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
- 	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
 
  	// Entry fields
 	GtkWidget * label[ENTRY_COUNT] =
@@ -157,8 +279,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	gtk_grid_attach(GTK_GRID(widget),label[1],0,1,1,1);
 	gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.entry[ENTRY_SRVCNAME]),1,1,1,1);
 
-	// gtk_widget_set_hexpand(GTK_WIDGET(widget->input.ssl),TRUE);
-
 	// SSL checkbox
 	{
 		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
@@ -185,8 +305,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(entry[f].description), 1, entry[f].type, -1);
 		}
 
-		g_signal_connect(G_OBJECT(widget->input.combo[0]),"changed",G_CALLBACK(systype_changed),widget);
-
 	}
 
 	// Color table
@@ -206,8 +324,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(colortable[f].description), 1, colortable[f].colors, -1);
 		}
 
-		g_signal_connect(G_OBJECT(widget->input.combo[1]),"changed",G_CALLBACK(colortable_changed),widget);
-
 	}
 
 	// Host options
@@ -223,114 +339,9 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 }
 
-LIB3270_EXPORT GtkWidget * v3270_host_select_new(GtkWidget *widget)
+LIB3270_EXPORT GtkWidget * v3270_host_select_new()
 {
-	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
-
-	GtkWidget * selector = GTK_WIDGET(g_object_new(GTK_TYPE_V3270HostSelectWidget, NULL));
-
-	v3270_host_select_set_session(selector,widget);
-
-	return selector;
-}
-
-LIB3270_EXPORT void v3270_host_select_set_session(GtkWidget *w, GtkWidget *session)
-{
-	g_return_if_fail(GTK_IS_V3270(session));
-	g_return_if_fail(GTK_IS_V3270HostSelectWidget(w));
-
-	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
-	widget->hSession = v3270_get_session(session);
-
-	const gchar * u = lib3270_get_url(widget->hSession);
-
-	if(u)
-    {
-
-        g_autofree gchar * url = g_strdup(u);
-        debug("URL=[%s]",url);
-
-        gchar *hostname = strstr(url,"://");
-        if(!hostname)
-        {
-            g_message("Invalid URL: \"%s\" (no scheme)",url);
-        }
-        else
-        {
-            hostname += 3;
-
-            gchar *srvcname = strchr(hostname,':');
-
-            if(srvcname)
-            {
-                *(srvcname++) = 0;
-            }
-            else
-            {
-                srvcname = "telnet";
-            }
-
-            gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],hostname);
-            gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],srvcname);
-
-        }
-
-    }
-
-	LIB3270_HOST_TYPE type = lib3270_get_host_type(widget->hSession);
-
-    gtk_toggle_button_set_active(widget->input.ssl,lib3270_get_secure_host(widget->hSession) != 0);
-
-	// Set host type
-	{
-		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combo[0]);
-		GtkTreeIter		  iter;
-
-		if(gtk_tree_model_get_iter_first(model,&iter))
-		{
-			do
-			{
-				GValue		value   = { 0, };
-
-				gtk_tree_model_get_value(model,&iter,1,&value);
-
-				if(g_value_get_int(&value) == (int) type)
-				{
-					gtk_combo_box_set_active_iter(widget->input.combo[0],&iter);
-					break;
-				}
-
-			} while(gtk_tree_model_iter_next(model,&iter));
-		}
-	}
-
-	// Set color type
-	{
-		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combo[1]);
-		GtkTreeIter		  iter;
-		int				  colors = (int) lib3270_get_color_type(widget->hSession);
-
-		if(gtk_tree_model_get_iter_first(model,&iter))
-		{
-			do
-			{
-				GValue		value   = { 0, };
-
-				gtk_tree_model_get_value(model,&iter,1,&value);
-
-				if(g_value_get_int(&value) == colors)
-				{
-					gtk_combo_box_set_active_iter(widget->input.combo[1],&iter);
-					break;
-				}
-
-			} while(gtk_tree_model_iter_next(model,&iter));
-		}
-	}
-
-	// Just in case
-	widget->type = type;
-
+	return GTK_WIDGET(g_object_new(GTK_TYPE_V3270HostSelectWidget, NULL));
 }
 
 LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
@@ -343,64 +354,36 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 		return;
 	}
 
-	GtkWidget * dialog	= v3270_host_select_new(widget);
-	GtkWidget * win	= v3270_dialog_new(widget, _("Setup host"), _("C_onnect"));
+	debug("V3270HostSelectWidget::%s",__FUNCTION__);
 
-	gtk_window_set_default_size(GTK_WINDOW(win), 700, 150);
+	GtkWidget * dialog = v3270_settings_dialog_new(widget, v3270_host_select_new());
 
-	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(win))),dialog,FALSE,FALSE,2);
+	v3270_dialog_setup(dialog,_("Setup host"),_("C_onnect"));
+
+	gtk_window_set_default_size(GTK_WINDOW(dialog), 700, 150);
 	gtk_widget_show_all(dialog);
 
 	gboolean again = TRUE;
  	while(again)
  	{
- 		gtk_widget_set_sensitive(win,TRUE);
+ 		gtk_widget_set_sensitive(dialog,TRUE);
+		gtk_widget_set_visible(dialog,TRUE);
 
-		gtk_widget_set_visible(win,TRUE);
-
- 		switch(gtk_dialog_run(GTK_DIALOG(win)))
+ 		switch(gtk_dialog_run(GTK_DIALOG(dialog)))
  		{
 		case GTK_RESPONSE_APPLY:
-			gtk_widget_set_visible(win,FALSE);
-			gtk_widget_set_sensitive(win,FALSE);
-			again = v3270_host_select_apply(dialog) != 0;
+			debug("V3270HostSelectWidget::%s=%s",__FUNCTION__,"GTK_RESPONSE_APPLY");
+			again = lib3270_reconnect(v3270_get_session(widget),0);
 			break;
 
 		case GTK_RESPONSE_CANCEL:
 			again = FALSE;
+			debug("V3270HostSelectWidget::%s=%s",__FUNCTION__,"GTK_RESPONSE_CANCEL");
 			break;
  		}
  	}
 
-	gtk_widget_destroy(win);
+ 	debug("%s end",__FUNCTION__);
+	gtk_widget_destroy(dialog);
 
 }
-
-int v3270_host_select_apply(GtkWidget *w)
-{
-	g_return_val_if_fail(GTK_IS_V3270HostSelectWidget(w),EINVAL);
-
-	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
-
-	g_autofree gchar * url =
-		g_strconcat(
-						(gtk_toggle_button_get_active(widget->input.ssl) ? "tn3270s://" : "tn3270://"),
-						gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]),
-						":",
-						gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]),
-						NULL
-					);
-
-	debug("URL=[%s]",url);
-	lib3270_set_url(widget->hSession,url);
-
-	/*
-	lib3270_set_hostname(widget->hSession,gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]));
-	lib3270_set_srvcname(widget->hSession,gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]));
-	*/
-
-	lib3270_set_host_type(widget->hSession,widget->type);
-	return lib3270_reconnect(widget->hSession,0);
-
-}
-

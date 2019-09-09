@@ -37,7 +37,7 @@
 
 /*--[ Progress widget ]------------------------------------------------------------------------------*/
 
- #define GTK_TYPE_V3270_SETTINGS     				(V3270Settings_get_type ())
+ #define GTK_TYPE_V3270_SETTINGS     				(V3270Settings_get_type())
  #define GTK_V3270_SETTINGS(obj)	    			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_SETTINGS, V3270Settings))
  #define GTK_V3270_SETTINGS_CLASS(klass)	    	(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_SETTINGS, V3270SettingsClass))
  #define GTK_IS_V3270_SETTINGS(obj)			        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_SETTINGS))
@@ -52,17 +52,21 @@
  typedef struct _V3270SettingsClass	{
  	GtkGridClass parent_class;
 
- 	void (*load)(GtkWidget *widget, GtkWidget *terminal);
- 	void (*apply)(GtkWidget *widget, GtkWidget *terminal);
- 	void (*revert)(GtkWidget *widget, GtkWidget *terminal);
+ 	void (*load)(GtkWidget *widget, GtkWidget *terminal);	///< @brief Method to load the properties from terminal widget
+ 	void (*apply)(GtkWidget *widget, GtkWidget *terminal);	///< @brief Method for GTK_RESPONSE_APPLY
+ 	void (*cancel)(GtkWidget *widget, GtkWidget *terminal);	///< @brief Method for GTK_RESPONSE_CANCEL
 
  } V3270SettingsClass;
 
 /*--[ Prototypes ]-----------------------------------------------------------------------------------*/
 
  LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal);
+ LIB3270_EXPORT GType V3270Settings_get_type(void);
  LIB3270_EXPORT void v3270_settings_apply(GtkWidget *widget);
- LIB3270_EXPORT void v3270_settings_revert(GtkWidget *widget);
+ LIB3270_EXPORT void v3270_settings_cancel(GtkWidget *widget);
+
+ /// @brief Callback for GtkDialog's "response" signal.
+ LIB3270_EXPORT void v3270_settings_on_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget *settings);
 
  LIB3270_EXPORT GtkWidget * v3270_settings_dialog_new(GtkWidget *terminal, GtkWidget *settings);
  // LIB3270_EXPORT gint v3270_settings_dialog_run(GtkWidget *widget, GtkWidget *terminal);
