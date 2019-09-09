@@ -158,7 +158,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libv3270.so.%{MAJOR_VERSION}
 %{_libdir}/libv3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%config %{_datadir}/%{_product}/colors.conf
+%{_datadir}/%{_product}/colors.conf
 
 %files devel
 %defattr(-,root,root)
