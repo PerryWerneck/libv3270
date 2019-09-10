@@ -1,5 +1,5 @@
 #
-# spec file for packages libv3270
+# spec file for package libv3270
 #
 # Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -24,11 +24,6 @@
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 %define _product %(pkg-config --variable=product_name lib3270)
 
-#Compat macro for new _fillupdir macro introduced in Nov 2017
-%if ! %{defined _fillupdir}
-  %define _fillupdir /var/adm/fillup-templates
-%endif
-
 #---[ Macros ]--------------------------------------------------------------------------------------------------------
 
 %if ! %{defined _release}
@@ -49,17 +44,17 @@ Url:			https://github.com/PerryWerneck/libv3270.git
 Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
 
-Provides:	libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
-Conflicts:	otherproviders(libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
+Provides:		libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
+Conflicts:		otherproviders(libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
 
 BuildRequires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
-BuildRequires:  autoconf >= 2.61
-BuildRequires:  automake
-BuildRequires:  binutils
-BuildRequires:  coreutils
-BuildRequires:  gcc-c++
-BuildRequires:  gettext-devel
-BuildRequires:  m4
+BuildRequires:	autoconf >= 2.61
+BuildRequires:	automake
+BuildRequires:	binutils
+BuildRequires:	coreutils
+BuildRequires:	gcc-c++
+BuildRequires:	gettext-devel
+BuildRequires:	m4
 
 %if 0%{?fedora} ||  0%{?suse_version} > 1200
 
@@ -76,7 +71,9 @@ BuildRequires:	gtk3-devel
 # https://en.opensuse.org/openSUSE:Build_Service_cross_distribution_howto
 %if %{undefined fedora} && %{undefined rhel_version} && %{undefined centos_version}
 BuildRequires:	libgladeui-2-6
+%endif
 
+%if 0%{?centos_version}
 # CENTOS Genmarshal doesn't depends on python!
 BuildRequires:	python
 %endif
@@ -136,7 +133,9 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 NOCONFIGURE=1 ./autogen.sh
 
 %configure \
-	--with-sdk-version=%{version}
+	--with-sdk-version=%{version} \
+	--disable-static \
+	--enable-pic
 
 %build
 make clean
@@ -163,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_datadir}/%{_product}/colors.conf
 
+%dir %{_datadir}/%{_product}/remap/
+%{_datadir}/%{_product}/remap/*.xml
+
 %files devel
 %defattr(-,root,root)
 
@@ -172,11 +174,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/v3270.h
 %{_includedir}/v3270
 
-%{_libdir}/*.a
 %{_datadir}/%{_product}/pot/*.pot
-
-%dir %{_datadir}/%{_product}/remap/
-%{_datadir}/%{_product}/remap/*.xml
 
 %files -n glade-catalog-v3270
 %defattr(-,root,root)
