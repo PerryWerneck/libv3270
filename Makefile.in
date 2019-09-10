@@ -29,6 +29,7 @@
 SONAME=@SONAME@
 LIBNAME=libv3270
 PRODUCT_NAME=@PRODUCT_NAME@
+INSTALL_PACKAGES=@INSTALL_PACKAGES@
 
 SOURCES= \
 	$(wildcard src/terminal/*.c) \
@@ -274,10 +275,7 @@ $(BINRLS)/static/$(LIBNAME).a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-shared \
-	install-static \
-	install-glade \
-	install-dev
+	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
 install-shared: \
 	$(BINRLS)/$(SONAME)

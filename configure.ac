@@ -16,6 +16,7 @@ dnl obter mais detalhes.
 dnl
 dnl Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
 dnl programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
+
 dnl Place, Suite 330, Boston, MA, 02111-1307, USA
 dnl
 dnl Contatos:
@@ -73,6 +74,7 @@ APP_RESOURCES=""
 APP_LDFLAGS=""
 DLL_LDFLAGS="-shared -Wl,-soname,\$(@F)"
 STATIC_LDFLAGS=""
+INSTALL_PACKAGES="shared dev glade"
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
@@ -89,6 +91,8 @@ case "$host" in
 		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def"
 		DLLEXT=".dll"
 
+		app_cv_static='yes'
+
 		app_win32_revision=$(date +%-y.%-m.%-d.%-H)
 		AC_SUBST(WIN32_VERSION,$app_win32_revision)
 
@@ -98,19 +102,14 @@ case "$host" in
 		AC_CONFIG_FILES(src/terminal/windows/resources.rc)
 		;;
 
- 	s390x-*)
-		CFLAGS="$CFLAGS -pthread"
-		LDFLAGS="$LDFLAGS -pthread"
-		app_cv_osname="linux"
-		LOGDIR="/var/log"
-		;;
-
  	*)
 		CFLAGS="$CFLAGS -pthread"
 		LDFLAGS="$LDFLAGS -pthread"
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
+
+		app_cv_static='no'
 
 esac
 
@@ -185,6 +184,21 @@ case "$host" in
 
 esac
 
+dnl ---------------------------------------------------------------------------
+dnl Check for static library options
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_ENABLE([static],
+ 	[AS_HELP_STRING([--enable-static], [Enable build and install the static library])],
+[
+ 	app_cv_static="$enableval"
+],[
+	AC_MSG_NOTICE([Keep default selection for static library.])
+])
+
+if test "$app_cv_static" == "yes"; then
+	INSTALL_PACKAGES="$INSTALL_PACKAGES static"
+fi
 
 dnl ---------------------------------------------------------------------------
 dnl Check for libm (Required for spinner)
@@ -336,6 +350,8 @@ AC_SUBST(BASEDIR,$app_cv_buildir)
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
+
+AC_SUBST(INSTALL_PACKAGES)
 
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(sdk/libv3270.pc)
