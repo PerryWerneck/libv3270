@@ -135,6 +135,10 @@ G_BEGIN_DECLS
 	cairo_surface_t			* surface;
 	v3270FontInfo			  font;
 
+	struct {
+		double step;						///< @brief Steps for zoom in/out.
+	} zoom;
+
 	gint     				  minimum_width;
 	gint					  minimum_height;
 

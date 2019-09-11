@@ -93,7 +93,6 @@
 /*--[ Constants ]------------------------------------------------------------------------------------*/
 
  G_GNUC_INTERNAL const gchar	* v3270_default_colors;
- G_GNUC_INTERNAL const gchar	* v3270_default_font;
 
 /*--[ Internal methods ]-----------------------------------------------------------------------------*/
 
@@ -216,7 +215,8 @@
 
  G_GNUC_INTERNAL void		  v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor);
 
- G_GNUC_INTERNAL void		  v3270_update_font_metrics(v3270 *terminal, cairo_t *cr, unsigned int width, unsigned int height);
+ G_GNUC_INTERNAL void		  v3270_update_font_metrics(v3270 *terminal, unsigned int width, unsigned int height);
+ G_GNUC_INTERNAL void		  v3270_compute_font_size(v3270 *terminal, cairo_t *cr, unsigned int width, unsigned int height);
 
  G_GNUC_INTERNAL void		  v3270_update_cursor_rect(v3270 *widget, GdkRectangle *rect, const struct v3270_character *element);
 

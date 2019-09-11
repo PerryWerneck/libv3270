@@ -217,7 +217,14 @@
 		<Unit filename="src/terminal/draw.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/terminal/font.c">
+		<Unit filename="src/terminal/font/compute.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/font/metrics.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/font/private.h" />
+		<Unit filename="src/terminal/font/properties.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/get.c">

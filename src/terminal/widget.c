@@ -503,6 +503,9 @@ static void v3270_init(v3270 *widget)
 	// Setup clipboard.
 	widget->selection.target		= GDK_SELECTION_CLIPBOARD;
 
+	// Setup zoom
+	widget->zoom.step				= 0.1;
+
 	// Reset timer
 	widget->activity.timestamp		= time(0);
 	widget->activity.disconnect		= 0;
@@ -529,7 +532,7 @@ static void v3270_init(v3270 *widget)
 	widget->drawing	= 1;
 
 	// Set defaults
-	widget->font.family = g_strdup(v3270_default_font);
+	widget->font.family = g_strdup(v3270_get_default_font_name());
 	v3270_set_color_table(widget->color,v3270_default_colors);
 
 }

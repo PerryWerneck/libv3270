@@ -367,7 +367,8 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 
 	// Update the created image
 	cr = cairo_create(terminal->surface);
-	v3270_update_font_metrics(terminal, cr, width, height);
+	v3270_compute_font_size(terminal, cr, width, height);
+	v3270_update_font_metrics(terminal, width, height);
 
 	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_BACKGROUND);
 	cairo_rectangle(cr, 0, 0, width, height);
