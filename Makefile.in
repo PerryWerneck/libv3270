@@ -36,6 +36,7 @@ SOURCES= \
 	$(wildcard src/terminal/@OSNAME@/*.rc) \
 	$(wildcard src/terminal/@OSNAME@/*.c) \
 	$(wildcard src/terminal/properties/*.c) \
+	$(wildcard src/terminal/drawing/*.c) \
 	$(wildcard src/terminal/font/*.c) \
 	$(wildcard src/filetransfer/*.c) \
 	$(wildcard src/selection/*.c) \

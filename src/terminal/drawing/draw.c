@@ -27,11 +27,13 @@
  *
  */
 
+ /*
 #ifdef WIN32
 	#include <winsock2.h>
 	#include <windows.h>
 	#include <ws2tcpip.h>
 #endif // WIN32
+*/
 
  #include <gtk/gtk.h>
  #include <math.h>
@@ -46,6 +48,20 @@
  #include <terminal.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
+
+void v3270_cursor_draw(v3270 *widget)
+{
+	int 			pos = lib3270_get_cursor_address(widget->host);
+	unsigned char	c;
+	unsigned short	attr;
+
+	lib3270_get_contents(widget->host,pos,pos,&c,&attr);
+	v3270_update_cursor_surface(widget,c,attr);
+	v3270_queue_draw_area(	GTK_WIDGET(widget),
+							widget->cursor.rect.x,widget->cursor.rect.y,
+							widget->cursor.rect.width,widget->cursor.rect.height);
+
+}
 
 gboolean v3270_draw(GtkWidget * widget, cairo_t * cr)
 {

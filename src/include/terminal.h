@@ -187,6 +187,8 @@ G_BEGIN_DECLS
 
  };
 
+ G_GNUC_INTERNAL void v3270_activate(GtkWidget *widget);
+
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
 G_END_DECLS

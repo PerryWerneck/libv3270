@@ -132,3 +132,71 @@
 
  }
 
+/**
+ * v3270_set_url:
+ *
+ * @widget:	V3270 widget.
+ * @uri:	a valid tn3270 URL.
+ *
+ * Set the default URL for the tn3270e host.
+ *
+ * Since: 5.0
+ **/
+LIB3270_EXPORT void v3270_set_url(GtkWidget *widget, const gchar *uri)
+{
+	g_return_if_fail(GTK_IS_V3270(widget));
+	lib3270_set_url(GTK_V3270(widget)->host,uri);
+}
+
+LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
+{
+	g_return_if_fail(GTK_IS_V3270(widget));
+	g_return_if_fail(name != NULL);
+
+	if(GTK_V3270(widget)->session_name) {
+
+		debug("Old session name was \"%s\"",GTK_V3270(widget)->session_name);
+
+		if(!strcmp(GTK_V3270(widget)->session_name,name)) {
+			// Same session name, keep it.
+			return;
+		}
+
+		g_free(GTK_V3270(widget)->session_name);
+
+	}
+
+	GTK_V3270(widget)->session_name = g_strdup(name);
+
+	debug("New session name is \"%s\"",GTK_V3270(widget)->session_name);
+
+	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_SESSION_CHANGED], 0);
+
+}
+
+LIB3270_EXPORT int v3270_set_host_type(GtkWidget *widget, LIB3270_HOST_TYPE type)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
+	return lib3270_set_host_type(GTK_V3270(widget)->host, type);
+}
+
+LIB3270_EXPORT int v3270_set_host_type_by_name(GtkWidget *widget, const char *name)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
+	return lib3270_set_host_type_by_name(GTK_V3270(widget)->host,name);
+}
+
+LIB3270_EXPORT int v3270_set_host_charset(GtkWidget *widget, const gchar *name)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
+	return lib3270_set_host_charset(GTK_V3270(widget)->host,name);
+}
+
+void v3270_set_cursor(GtkWidget *widget, LIB3270_POINTER id)
+{
+	gdk_window_set_cursor(
+		gtk_widget_get_window(widget),
+		GTK_V3270_GET_CLASS(widget)->cursors[id % LIB3270_POINTER_COUNT]
+	);
+}
+

@@ -71,29 +71,12 @@
 static void			  v3270_realize				(	GtkWidget		* widget) ;
 static void			  v3270_size_allocate		(	GtkWidget		* widget,
 													GtkAllocation	* allocation );
-// Signals
-static void v3270_activate			(GtkWidget *widget);
+static gboolean		  v3270_focus_in_event(GtkWidget *widget, GdkEventFocus *event);
+static gboolean		  v3270_focus_out_event(GtkWidget *widget, GdkEventFocus *event);
 
-gboolean v3270_focus_in_event(GtkWidget *widget, GdkEventFocus *event);
-gboolean v3270_focus_out_event(GtkWidget *widget, GdkEventFocus *event);
-
-static void 	v3270_destroy		(GtkWidget		* object);
+static void			  v3270_destroy		(GtkWidget		* object);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
-
-void v3270_cursor_draw(v3270 *widget)
-{
-	int 			pos = lib3270_get_cursor_address(widget->host);
-	unsigned char	c;
-	unsigned short	attr;
-
-	lib3270_get_contents(widget->host,pos,pos,&c,&attr);
-	v3270_update_cursor_surface(widget,c,attr);
-	v3270_queue_draw_area(	GTK_WIDGET(widget),
-							widget->cursor.rect.x,widget->cursor.rect.y,
-							widget->cursor.rect.width,widget->cursor.rect.height);
-
-}
 
 static gboolean v3270_popup_menu(GtkWidget * widget)
 {
@@ -767,33 +750,6 @@ G_GNUC_INTERNAL void gtk_widget_get_allocation(GtkWidget *widget, GtkAllocation 
 #endif // !GTK(2,18)
 
 
-LIB3270_EXPORT void v3270_disconnect(GtkWidget *widget)
-{
-	g_return_if_fail(GTK_IS_V3270(widget));
-	v3270_disable_updates(widget);
-	debug("%s",__FUNCTION__);
-	lib3270_unselect(GTK_V3270(widget)->host);
-	debug("%s",__FUNCTION__);
-	lib3270_disconnect(GTK_V3270(widget)->host);
-	debug("%s",__FUNCTION__);
-	v3270_enable_updates(widget);
-	debug("%s",__FUNCTION__);
-}
-
-LIB3270_EXPORT H3270 * v3270_get_session(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
-
-	return GTK_V3270(widget)->host;
-}
-
-LIB3270_EXPORT int v3270_reconnect(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
-
-	return lib3270_reconnect(GTK_V3270(widget)->host,0);
-}
-
 static gboolean notify_focus(GtkWidget *widget, GdkEventFocus *event)
 {
 	GtkAccessible *obj = GTK_V3270(widget)->accessible;
@@ -803,6 +759,7 @@ static gboolean notify_focus(GtkWidget *widget, GdkEventFocus *event)
 
 	return FALSE;
 }
+
 gboolean v3270_focus_in_event(GtkWidget *widget, GdkEventFocus *event)
 {
 	v3270 * terminal = GTK_V3270(widget);
@@ -821,20 +778,6 @@ gboolean v3270_focus_out_event(GtkWidget *widget, GdkEventFocus *event)
 	return notify_focus(widget,event);
 }
 
-static void v3270_activate(GtkWidget *widget)
-{
-	v3270 * terminal = GTK_V3270(widget);
-
-	terminal->activity.timestamp = time(0);
-
-	if(lib3270_is_connected(terminal->host))
-		lib3270_enter(terminal->host);
-	else if(lib3270_get_url(terminal->host))
-		v3270_reconnect(widget);
-	else
-		g_warning("Terminal widget %p activated without connection or valid url",terminal);
-}
-
 const GtkWidgetClass * v3270_get_parent_class(void)
 {
 	return GTK_WIDGET_CLASS(v3270_parent_class);
@@ -843,127 +786,5 @@ const GtkWidgetClass * v3270_get_parent_class(void)
 LIB3270_EXPORT GtkIMContext * v3270_get_im_context(GtkWidget *widget)
 {
 	return GTK_V3270(widget)->input_method;
-}
-
-/**
- * v3270_set_url:
- *
- * @widget:	V3270 widget.
- * @uri:	a valid tn3270 URL.
- *
- * Set the default URL for the tn3270e host.
- *
- * Since: 5.0
- **/
-LIB3270_EXPORT void v3270_set_url(GtkWidget *widget, const gchar *uri)
-{
-	g_return_if_fail(GTK_IS_V3270(widget));
-	lib3270_set_url(GTK_V3270(widget)->host,uri);
-}
-
-LIB3270_EXPORT const gchar * v3270_get_url(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
-	return lib3270_get_url(GTK_V3270(widget)->host);
-}
-
-LIB3270_EXPORT const gchar * v3270_get_luname(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),"");
-	return lib3270_get_luname(GTK_V3270(widget)->host);
-}
-
-LIB3270_EXPORT const gchar	* v3270_get_session_name(GtkWidget *widget)
-{
-#ifdef DEBUG
-	v3270 * terminal = GTK_V3270(widget);
-	debug("Session name: [%s] Application name: [%s]",terminal->session_name, g_get_application_name());
-#endif // DEBUG
-
-	if(!(GTK_IS_V3270(widget) && GTK_V3270(widget)->session_name))
-		return g_get_application_name();
-
-	return GTK_V3270(widget)->session_name;
-}
-
-LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
-{
-	g_return_if_fail(GTK_IS_V3270(widget));
-	g_return_if_fail(name != NULL);
-
-	if(GTK_V3270(widget)->session_name) {
-
-		debug("Old session name was \"%s\"",GTK_V3270(widget)->session_name);
-
-		if(!strcmp(GTK_V3270(widget)->session_name,name)) {
-			// Same session name, keep it.
-			return;
-		}
-
-		g_free(GTK_V3270(widget)->session_name);
-
-	}
-
-	GTK_V3270(widget)->session_name = g_strdup(name);
-
-	debug("New session name is \"%s\"",GTK_V3270(widget)->session_name);
-
-	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_SESSION_CHANGED], 0);
-
-}
-
-LIB3270_EXPORT int v3270_set_host_type(GtkWidget *widget, LIB3270_HOST_TYPE type)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
-	return lib3270_set_host_type(GTK_V3270(widget)->host, type);
-}
-
-LIB3270_EXPORT int v3270_set_host_type_by_name(GtkWidget *widget, const char *name)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
-	return lib3270_set_host_type_by_name(GTK_V3270(widget)->host,name);
-}
-
-LIB3270_EXPORT gboolean v3270_is_connected(GtkWidget *widget)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
-	return lib3270_is_connected(GTK_V3270(widget)->host) ? TRUE : FALSE;
-}
-
-LIB3270_EXPORT int v3270_set_host_charset(GtkWidget *widget, const gchar *name)
-{
-	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
-	return lib3270_set_host_charset(GTK_V3270(widget)->host,name);
-}
-
-/*
-LIB3270_EXPORT GtkWidget * v3270_get_default_widget(void)
-{
-	H3270 * hSession = lib3270_get_default_session_handle();
-
-	if(!hSession)
-	{
-		g_warning("%s: No default session available",__FUNCTION__);
-		return NULL;
-	}
-
-	GtkWidget *widget = lib3270_get_user_data(hSession);
-
-	if(!(widget && GTK_IS_V3270(widget)))
-	{
-		g_warning("%s: Can't determine default widget",__FUNCTION__);
-		return NULL;
-	}
-
-	return GTK_WIDGET(widget);
-}
-*/
-
-void v3270_set_cursor(GtkWidget *widget, LIB3270_POINTER id)
-{
-	gdk_window_set_cursor(
-		gtk_widget_get_window(widget),
-		GTK_V3270_GET_CLASS(widget)->cursors[id % LIB3270_POINTER_COUNT]
-	);
 }
 

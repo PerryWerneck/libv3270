@@ -40,7 +40,7 @@
  * * Recreate the surface.
  * * Compute the new font size & metrics.
  * * Redraw contents.
- * * Emite "GDK_CONFIGURE" event.
+ * * Emit "GDK_CONFIGURE" event.
  *
  */
 void v3270_reconfigure(v3270 * terminal)

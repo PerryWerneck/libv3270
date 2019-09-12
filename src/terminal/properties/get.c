@@ -111,3 +111,42 @@
 	}
 
  }
+
+LIB3270_EXPORT const gchar * v3270_get_url(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+	return lib3270_get_url(GTK_V3270(widget)->host);
+}
+
+LIB3270_EXPORT const gchar * v3270_get_luname(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),"");
+	return lib3270_get_luname(GTK_V3270(widget)->host);
+}
+
+LIB3270_EXPORT const gchar	* v3270_get_session_name(GtkWidget *widget)
+{
+#ifdef DEBUG
+	v3270 * terminal = GTK_V3270(widget);
+	debug("Session name: [%s] Application name: [%s]",terminal->session_name, g_get_application_name());
+#endif // DEBUG
+
+	if(!(GTK_IS_V3270(widget) && GTK_V3270(widget)->session_name))
+		return g_get_application_name();
+
+	return GTK_V3270(widget)->session_name;
+}
+
+LIB3270_EXPORT H3270 * v3270_get_session(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+
+	return GTK_V3270(widget)->host;
+}
+
+LIB3270_EXPORT gboolean v3270_is_connected(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
+	return lib3270_is_connected(GTK_V3270(widget)->host) ? TRUE : FALSE;
+}
+
