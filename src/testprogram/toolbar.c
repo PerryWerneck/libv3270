@@ -178,6 +178,21 @@
 
  }
 
+ static void zoom_in_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ {
+	v3270_zoom_in(terminal);
+ }
+
+ static void zoom_out_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ {
+	v3270_zoom_out(terminal);
+ }
+
+ static void zoom_best_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ {
+	v3270_zoom_best(terminal);
+ }
+
  GtkWidget * create_toolbar(GtkWidget *terminal) {
 
 	size_t f;
@@ -199,6 +214,9 @@
 		{ "document-save",			G_CALLBACK(save_all_clicked),		"Save screen"					},
 		{ "document-open",			G_CALLBACK(load_clicked),			"Paste file"					},
 
+		{ "zoom-in",				G_CALLBACK(zoom_in_clicked),		"Zoom in"						},
+		{ "zoom-out",				G_CALLBACK(zoom_out_clicked),		"Zoom out"						},
+		{ "zoom-fit-best",			G_CALLBACK(zoom_best_clicked),		"Zoom best"						},
 	};
 
 	GtkWidget * toolbar = gtk_toolbar_new();

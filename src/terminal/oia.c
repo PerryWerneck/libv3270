@@ -581,18 +581,18 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 	};
 
 	int f;
-	int rCol = terminal->font.left+(cols*terminal->font.width);
-	int lCol = terminal->font.left+1;
+	int rCol = terminal->font.margin.left+(cols*terminal->font.width);
+	int lCol = terminal->font.margin.left+1;
 
 	row += OIA_TOP_MARGIN;
 	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_SEPARATOR);
-	cairo_rectangle(cr, terminal->font.left, row, cols*terminal->font.width, 1);
+	cairo_rectangle(cr, terminal->font.margin.left, row, cols*terminal->font.width, 1);
 	cairo_fill(cr);
 
 	row += 2;
 
 	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_BACKGROUND);
-	cairo_rectangle(cr, terminal->font.left, row, cols*terminal->font.width, terminal->font.spacing);
+	cairo_rectangle(cr, terminal->font.margin.left, row, cols*terminal->font.width, terminal->font.spacing);
 	cairo_fill(cr);
 
 	for(f=0;f< (int) G_N_ELEMENTS(right);f++)
@@ -770,8 +770,8 @@ void v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col,
 	// Update cursor rectangle
 	saved = terminal->cursor.rect;
 
-	terminal->cursor.rect.x          = terminal->font.left + (col * terminal->cursor.rect.width);
-	terminal->cursor.rect.y          = terminal->font.top  + (row * terminal->font.spacing);
+	terminal->cursor.rect.x          = terminal->font.margin.left + (col * terminal->cursor.rect.width);
+	terminal->cursor.rect.y          = terminal->font.margin.top  + (row * terminal->font.spacing);
 	terminal->cursor.rect.width      = terminal->font.width;
 	terminal->cursor.rect.height     = terminal->font.height+terminal->font.descent;
 	terminal->cursor.show |= 1;

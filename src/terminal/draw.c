@@ -122,7 +122,7 @@ static void get_element_colors(unsigned short attr, GdkRGBA **fg, GdkRGBA **bg, 
 	}
 }
 
-LIB3270_EXPORT void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *fontInfo, GdkRectangle *rect, GdkRGBA *color)
+void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *fontInfo, GdkRectangle *rect, GdkRGBA *color)
 {
 	GdkRGBA *fg;
 	GdkRGBA *bg;
@@ -341,55 +341,40 @@ cairo_surface_t *gdk_window_create_similar_surface(GdkWindow *window, cairo_cont
 }
 #endif // GTK_CHECK_VERSION(2, 22, 0)
 
-LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
+/// @brief Draw terminal contents.
+///
+/// @param terminal	Terminal widget.
+/// @param cr		a cairo context.
+/// @param width	the width of the rectangle.
+/// @param height	the height of the rectangle.
+///
+void v3270_redraw(v3270 *terminal, cairo_t * cr, gint width, gint height)
 {
-	v3270 * terminal = GTK_V3270(widget);
-
-	gint width	= gtk_widget_get_allocated_width(widget);
-	gint height	= gtk_widget_get_allocated_height(widget);
-
+	unsigned int rows, cols, r;
 	GdkRectangle rect;
 	int addr, cursor;
-	unsigned int rows, cols, r;
-
-	cairo_t * cr;
-
-	if(!(gtk_widget_get_realized(widget) && terminal->drawing))
-	{
-		return;
-	}
-
-	// Create new terminal image
-	if(terminal->surface)
-		cairo_surface_destroy(terminal->surface);
-
-	terminal->surface = (cairo_surface_t *) gdk_window_create_similar_surface(gtk_widget_get_window(widget),CAIRO_CONTENT_COLOR,width,height);
-
-	// Update the created image
-	cr = cairo_create(terminal->surface);
-	v3270_compute_font_size(terminal, cr, width, height);
-	v3270_update_font_metrics(terminal, width, height);
 
 	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_BACKGROUND);
 	cairo_rectangle(cr, 0, 0, width, height);
 	cairo_fill(cr);
 	cairo_stroke(cr);
 
-    // Draw terminal contents
 	lib3270_get_screen_size(terminal->host,&rows,&cols);
 
 	memset(&rect,0,sizeof(rect));
-	rect.y		= terminal->font.top;
+	rect.y		= terminal->font.margin.top;
 	rect.width	= terminal->font.width;
 	rect.height	= terminal->font.spacing;
 	addr 		= 0;
 	cursor		= lib3270_get_cursor_address(terminal->host);
 
+	cairo_set_scaled_font(cr,terminal->font.scaled);
+
 	for(r = 0; r < rows; r++)
 	{
 		unsigned int c;
 
-		rect.x = terminal->font.left;
+		rect.x = terminal->font.margin.left;
 
 		for(c=0;c < cols;c++)
 		{
@@ -410,11 +395,47 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 
 	}
 
-	cairo_set_scaled_font(cr,terminal->font.scaled);
 	v3270_draw_oia(terminal, cr, rect.y, cols);
+
+}
+
+LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
+{
+	v3270 * terminal = GTK_V3270(widget);
+
+	if(!(gtk_widget_get_realized(widget) && terminal->drawing))
+		return;
+
+	gint width	= gtk_widget_get_allocated_width(widget);
+	gint height	= gtk_widget_get_allocated_height(widget);
+
+	cairo_t * cr = cairo_create(terminal->surface);
+
+	v3270_redraw(terminal, cr, width, height);
 
     cairo_destroy(cr);
 
+	/*
+	v3270 * terminal = GTK_V3270(widget);
+	cairo_t * cr;
+
+
+
+	// Create new terminal image
+	if(terminal->surface)
+		cairo_surface_destroy(terminal->surface);
+
+	terminal->surface = (cairo_surface_t *) gdk_window_create_similar_surface(gtk_widget_get_window(widget),CAIRO_CONTENT_COLOR,width,height);
+
+	// Update the created image
+	cr = cairo_create(terminal->surface);
+	v3270_compute_font_size(terminal, cr, width, height);
+	v3270_update_font_metrics(terminal, width, height);
+
+	v3270_redraw(terminal, cr, width, height);
+
+    cairo_destroy(cr);
+    */
 }
 
 void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor)
@@ -441,8 +462,8 @@ void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned sho
 	lib3270_get_screen_size(terminal->host,&rows,&cols);
 
 	memset(&rect,0,sizeof(rect));
-	rect.x          = terminal->font.left + ((addr % cols) * terminal->font.width);
-	rect.y          = terminal->font.top  + ((addr / cols) * terminal->font.spacing);
+	rect.x          = terminal->font.margin.left + ((addr % cols) * terminal->font.width);
+	rect.y          = terminal->font.margin.top  + ((addr / cols) * terminal->font.spacing);
 	rect.width      = terminal->font.width;
 	rect.height     = terminal->font.spacing;
 

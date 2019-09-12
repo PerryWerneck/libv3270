@@ -157,10 +157,46 @@
 
  G_GNUC_INTERNAL GtkWidget	* v3270_charset_combo_box_new();
 
+
+/*--[ Font Info ]------------------------------------------------------------------------------------*/
+
+  typedef struct _v3270FontInfo {
+
+	double					  size;						///< @brief Current font size.
+	double					  step;						///< @brief Steps for zoom in/out.
+
+	guint					  width;
+	guint					  height;
+	guint					  ascent;
+	guint					  descent;
+
+	guint					  spacing;
+
+	struct
+	{
+		gint				  left;
+		gint				  top;
+
+	} margin;
+
+	gchar 					* family;
+	cairo_font_face_t 		* face;
+	cairo_font_weight_t		  weight;
+	cairo_scaled_font_t		* scaled;
+
+ } v3270FontInfo;
+
+G_GNUC_INTERNAL void v3270_font_info_init(v3270FontInfo *info);
+G_GNUC_INTERNAL void v3270_font_info_unset(v3270FontInfo *info);
+
+G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *font, GdkRectangle *rect, GdkRGBA *color);
+
 /*--[ Internal Methods ]-----------------------------------------------------------------------------*/
 
 
  const GtkWidgetClass		* v3270_get_parent_class(void);
+
+ G_GNUC_INTERNAL void		  v3270_reconfigure(v3270 * terminal);
 
  G_GNUC_INTERNAL gboolean	  v3270_draw(GtkWidget * widget, cairo_t * cr);
  G_GNUC_INTERNAL void		  v3270_cursor_draw(v3270 *widget);
@@ -208,6 +244,8 @@
 
  G_GNUC_INTERNAL void		  v3270_start_timer(GtkWidget *terminal);
  G_GNUC_INTERNAL void		  v3270_stop_timer(GtkWidget *terminal);
+
+ G_GNUC_INTERNAL void		  v3270_redraw(v3270 *terminal, cairo_t * cr, gint width, gint height);
 
  G_GNUC_INTERNAL void		  v3270_draw_connection(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, const GdkRectangle *rect);
 

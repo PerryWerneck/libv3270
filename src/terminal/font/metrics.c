@@ -67,12 +67,16 @@ void v3270_update_font_metrics(v3270 *terminal, unsigned int width, unsigned int
 	// Center image
 
 	size = VIEW_WIDTH_FROM_FONT(terminal->font.width);
-	terminal->font.left = ((width - size) / 2);
+	terminal->font.margin.left = (width/2) - (size/2);
+
+	debug("%d",(width - size));
 
 	size = VIEW_HEIGTH_FROM_FONT(terminal->font.spacing);
-	terminal->font.top = ((height - size) /2);
+	terminal->font.margin.top = (height/2) - (size/2);
 
-	debug("screen_height=%u content_height=%u top=%d",height, size, terminal->font.top);
+	debug("%d",(height - size));
+
+	debug("screen_height=%u content_height=%d top=%d left=%d size=%lf",height, size, terminal->font.margin.top, terminal->font.margin.left, terminal->font.size);
 
 }
 

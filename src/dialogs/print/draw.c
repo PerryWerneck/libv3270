@@ -29,6 +29,7 @@
 
  #include "private.h"
  #include <string.h>
+ #include <internals.h>
  #include <lib3270/selection.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -86,7 +87,7 @@
 	gdk_cairo_set_source_rgba(cr,operation->settings.colors + V3270_COLOR_BACKGROUND);
 	cairo_rectangle(
 			cr,
-			operation->font.info.left-1,0,
+			operation->font.info.margin.left-1,0,
 			(rect.width * operation->contents.width) + 4,
 			(rect.height * operation->contents.height) + 4
 	);
@@ -111,7 +112,7 @@
 		// Draw columns
 		size_t pos = (row * selection->bounds.width);
 		size_t col;
-		rect.x = operation->font.info.left;
+		rect.x = operation->font.info.margin.left;
 
 		debug("Drawing: %u row=%u selection=%p pos=%u", (unsigned int) drawing, row, selection, (unsigned int) pos);
 

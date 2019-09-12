@@ -325,8 +325,8 @@ static void v3270_accessible_get_character_extents(	AtkText      *text,
 	gdk_window_get_origin(window, x, y);
 
 	// Get screen position
-	*x     	+= widget->font.left + ((offset%cols) * widget->font.width);
-	*y      += widget->font.top  + ((offset/cols) * widget->font.spacing);
+	*x     	+= widget->font.margin.left + ((offset%cols) * widget->font.width);
+	*y      += widget->font.margin.top  + ((offset/cols) * widget->font.spacing);
 	*width	 = widget->font.width;
 	*height	 = widget->font.spacing;
 

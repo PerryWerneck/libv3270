@@ -63,25 +63,6 @@
  typedef struct _v3270			v3270;
  typedef struct _v3270Class		v3270Class;
 
- typedef struct _v3270FontInfo {
-
-	guint					  width;
-	guint					  height;
-	guint					  ascent;
-	guint					  descent;
-
-	guint					  spacing;
-
-	guint					  left;
-	guint					  top;
-
-	gchar 					* family;
-	cairo_font_face_t 		* face;
-	cairo_font_weight_t		  weight;
-	cairo_scaled_font_t		* scaled;
-
- } v3270FontInfo;
-
  enum V3270_COLOR
  {
 	V3270_COLOR_BACKGROUND,
@@ -218,7 +199,6 @@
  LIB3270_EXPORT void 			  v3270_set_color_table(GdkRGBA *table, const gchar *colors);
  LIB3270_EXPORT const GdkRGBA	* v3270_get_color_table(GtkWidget *widget);
  LIB3270_EXPORT void 			  v3270_set_mono_color_table(GdkRGBA *table, const gchar *fg, const gchar *bg);
- LIB3270_EXPORT void		  	  v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *font, GdkRectangle *rect, GdkRGBA *color);
  LIB3270_EXPORT void			  v3270_set_color(GtkWidget *widget, enum V3270_COLOR id, const GdkRGBA *color);
  LIB3270_EXPORT GdkRGBA 		* v3270_get_color(GtkWidget *widget, enum V3270_COLOR id);
 
@@ -277,6 +257,9 @@
 
  // Misc
  LIB3270_EXPORT int				  v3270_exec_command(GtkWidget *widget, const gchar *cmdline);
+ LIB3270_EXPORT void			  v3270_zoom_best(GtkWidget *widget);
+ LIB3270_EXPORT void			  v3270_zoom_in(GtkWidget *widget);
+ LIB3270_EXPORT void			  v3270_zoom_out(GtkWidget *widget);
 
  // Convenience
  LIB3270_EXPORT void			  gtk_entry_set_printf(GtkEntry *entry, const gchar *fmt, ...) G_GNUC_PRINTF(2,3);

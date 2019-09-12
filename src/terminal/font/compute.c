@@ -67,27 +67,25 @@
 	cairo_set_font_face(cr,terminal->font.face);
 
 	{
-		double s = terminal->zoom.step;
-		double selected = 0;
+		double s = terminal->font.step;
 
 		do
 		{
-			selected = s;
+			terminal->font.size = s;
 
-			s += terminal->zoom.step;
+			s += terminal->font.step;
 			cairo_set_font_size(cr,s);
 			cairo_font_extents(cr,&extents);
 
 		} while( (VIEW_HEIGTH_FROM_FONT( (extents.height+extents.descent) ) < height) && (VIEW_WIDTH_FROM_FONT(extents.max_x_advance) < width) );
 
-		debug("Selected size=%lf",selected);
-
-		cairo_set_font_size(cr,selected);
-		cairo_font_extents(cr,&extents);
+		debug("Selected size=%lf",terminal->font.size);
 
 	}
 
 	// Save scaled font for use on next drawings
+	cairo_set_font_size(cr,terminal->font.size);
+
 	if(terminal->font.scaled)
 		cairo_scaled_font_destroy(terminal->font.scaled);
 

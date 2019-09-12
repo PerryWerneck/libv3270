@@ -28,12 +28,36 @@
  */
 
  #include <config.h>
- #include <terminal.h>
- #include <internals.h>
- #include <lib3270.h>
- #include <lib3270/log.h>
- #include <lib3270/toggle.h>
+ #include "private.h"
 
- #define VIEW_HEIGTH_FROM_FONT(font_height) (( ((unsigned int) font_height) * (rows+1)) + OIA_TOP_MARGIN + 2)
- #define VIEW_WIDTH_FROM_FONT(max_x_advance) ( ((unsigned int) max_x_advance) * cols)
+/*--[ Implement ]------------------------------------------------------------------------------------*/
 
+void v3270_font_info_init(v3270FontInfo *info)
+{
+	memset(info,0,sizeof(v3270FontInfo));
+
+	info->family	= g_strdup(v3270_get_default_font_name());
+	info->step		= 0.1;
+	info->size		= 0.1;
+}
+
+void v3270_font_info_unset(v3270FontInfo *info)
+{
+	if(info->family)
+	{
+		g_free(info->family);
+		info->family = NULL;
+	}
+
+	if(info->scaled)
+	{
+		cairo_scaled_font_destroy(info->scaled);
+		info->scaled = NULL;
+	}
+
+	if(info->face) {
+		cairo_font_face_destroy(info->face);
+		info->face = NULL;
+	}
+
+}

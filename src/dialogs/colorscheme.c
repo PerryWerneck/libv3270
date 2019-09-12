@@ -268,9 +268,9 @@
 	GtkTreeModel	* model		= gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
 
 #ifdef DEBUG
-	lib3270_autoptr(char) filename = lib3270_strdup_printf("%s/%s",".","colors.conf");
+	g_autofree gchar * filename = g_build_filename("conf","colors.conf",NULL);
 #else
-	lib3270_autoptr(char) filename = lib3270_build_data_filename("colors.conf");
+	lib3270_autoptr(char) filename = lib3270_build_data_filename("colors.conf",NULL);
 #endif // DEBUG
 
  	if(!g_file_test(filename,G_FILE_TEST_IS_REGULAR))

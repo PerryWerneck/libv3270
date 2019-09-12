@@ -217,7 +217,13 @@
 		<Unit filename="src/terminal/draw.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/font/actions.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/font/compute.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/font/info.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/font/metrics.c">
@@ -260,6 +266,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/security.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/surface.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/widget.c">

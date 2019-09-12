@@ -55,8 +55,8 @@ gint v3270_get_offset_at_point(v3270 *widget, gint x, gint y)
 
 	if(x > 0 && y > 0)
 	{
-		point.x = ((x-widget->font.left)/widget->font.width);
-		point.y = ((y-widget->font.top)/widget->font.spacing);
+		point.x = ((x-widget->font.margin.left)/widget->font.width);
+		point.y = ((y-widget->font.margin.top)/widget->font.spacing);
 
 		lib3270_get_screen_size(widget->host,&r,&c);
 

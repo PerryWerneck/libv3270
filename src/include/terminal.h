@@ -108,12 +108,14 @@ G_BEGIN_DECLS
 	int scaled_fonts	: 1;	/**< Use scaled fonts */
 	int drawing			: 1;	/**< Draw widget? */
 
+	/*
 #if GTK_CHECK_VERSION(3,0,0)
 
 #else
     gint width;
     gint height;
 #endif // GTK_CHECK_VERSION(3,0,0)
+	*/
 
 	GSource					* timer;
 	GtkIMContext			* input_method;
@@ -134,10 +136,6 @@ G_BEGIN_DECLS
 	// Font info
 	cairo_surface_t			* surface;
 	v3270FontInfo			  font;
-
-	struct {
-		double step;						///< @brief Steps for zoom in/out.
-	} zoom;
 
 	gint     				  minimum_width;
 	gint					  minimum_height;

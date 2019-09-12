@@ -41,8 +41,7 @@
  	// Setup FONT
  	if(!operation->font.name)
 	{
-		operation->font.name = g_strdup("monospace");
-		debug("No font, assuming %s !!!!!!!!!!!!!!!!!!!!!!!!!!",operation->font.name);
+		operation->font.name = g_strdup(v3270_get_default_font_name());
 		g_warning("No font, assuming %s",operation->font.name);
 	}
 
@@ -85,9 +84,9 @@
 
 	operation->font.info.width++;
 
-	operation->font.info.left = (gtk_print_context_get_width(context)- (operation->font.info.width * operation->contents.width))/2;
-	if(operation->font.info.left < 2)
-		operation->font.info.left = 2;
+	operation->font.info.margin.left = (gtk_print_context_get_width(context)- (operation->font.info.width * operation->contents.width))/2;
+	if(operation->font.info.margin.left < 2)
+		operation->font.info.margin.left = 2;
 
 	// Setup page size
 	operation->lpp	= (gtk_print_context_get_height(context) / (extents.height + extents.descent));

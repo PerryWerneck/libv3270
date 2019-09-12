@@ -31,6 +31,7 @@
  #include <v3270/print.h>
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
+ #include <internals.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 

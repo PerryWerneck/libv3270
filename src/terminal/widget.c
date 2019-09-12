@@ -71,8 +71,6 @@
 static void			  v3270_realize				(	GtkWidget		* widget) ;
 static void			  v3270_size_allocate		(	GtkWidget		* widget,
 													GtkAllocation	* allocation );
-static void			  v3270_send_configure		(	v3270			* terminal );
-
 // Signals
 static void v3270_activate			(GtkWidget *widget);
 
@@ -503,9 +501,6 @@ static void v3270_init(v3270 *widget)
 	// Setup clipboard.
 	widget->selection.target		= GDK_SELECTION_CLIPBOARD;
 
-	// Setup zoom
-	widget->zoom.step				= 0.1;
-
 	// Reset timer
 	widget->activity.timestamp		= time(0);
 	widget->activity.disconnect		= 0;
@@ -532,7 +527,7 @@ static void v3270_init(v3270 *widget)
 	widget->drawing	= 1;
 
 	// Set defaults
-	widget->font.family = g_strdup(v3270_get_default_font_name());
+	v3270_font_info_init(&widget->font);
 	v3270_set_color_table(widget->color,v3270_default_colors);
 
 }
@@ -562,22 +557,7 @@ static void v3270_destroy(GtkWidget *widget)
 		terminal->accessible = NULL;
 	}
 
-	if(terminal->font.family)
-	{
-		g_free(terminal->font.family);
-		terminal->font.family = 0;
-	}
-
-	if(terminal->font.scaled)
-	{
-		cairo_scaled_font_destroy(terminal->font.scaled);
-		terminal->font.scaled = NULL;
-	}
-
-	if(terminal->font.face) {
-		cairo_font_face_destroy(terminal->font.face);
-		terminal->font.face = NULL;
-	}
+	v3270_font_info_unset(&terminal->font);
 
 	if(terminal->surface)
 	{
@@ -736,9 +716,7 @@ static void v3270_realize(GtkWidget	* widget)
 	gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
 #endif // !GTK3
 
-	v3270_reload(widget);
-
-	v3270_send_configure(GTK_V3270(widget));
+	v3270_reconfigure(GTK_V3270(widget));
 
 	if(!GTK_V3270(widget)->cursor.timer)
 	{
@@ -776,8 +754,8 @@ static void v3270_size_allocate(GtkWidget * widget, GtkAllocation * allocation)
 		if(gtk_widget_get_has_window(widget))
 			gdk_window_move_resize(gtk_widget_get_window (widget),allocation->x, allocation->y,allocation->width, allocation->height);
 
-		v3270_reload(widget);
-		v3270_send_configure(GTK_V3270(widget));
+		v3270_reconfigure(GTK_V3270(widget));
+
 	}
 }
 
@@ -788,32 +766,6 @@ G_GNUC_INTERNAL void gtk_widget_get_allocation(GtkWidget *widget, GtkAllocation 
 }
 #endif // !GTK(2,18)
 
-
-static void v3270_send_configure(v3270 * terminal)
-{
-	GtkAllocation allocation;
-	GtkWidget *widget;
-	GdkEvent *event = gdk_event_new(GDK_CONFIGURE);
-
-	widget = GTK_WIDGET(terminal);
-
-	gtk_widget_get_allocation(widget, &allocation);
-
-	event->configure.window = g_object_ref(gtk_widget_get_window(widget));
-	event->configure.send_event = TRUE;
-	event->configure.x = allocation.x;
-	event->configure.y = allocation.y;
-	event->configure.width = allocation.width;
-	event->configure.height = allocation.height;
-
-#if( !GTK_CHECK_VERSION(3,0,0))
-	terminal->width  = allocation.width;
-	terminal->height = allocation.height;
-#endif
-
-	gtk_widget_event(widget, event);
-	gdk_event_free(event);
-}
 
 LIB3270_EXPORT void v3270_disconnect(GtkWidget *widget)
 {
