@@ -350,7 +350,7 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 
 	if(v3270_is_connected(widget))
 	{
-		gdk_display_beep(gdk_display_get_default());
+		gtk_widget_error_bell(widget);
 		return;
 	}
 

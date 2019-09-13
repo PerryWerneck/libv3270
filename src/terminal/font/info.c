@@ -37,7 +37,7 @@ void v3270_font_info_init(v3270FontInfo *info)
 	memset(info,0,sizeof(v3270FontInfo));
 
 	info->family	= g_strdup(v3270_get_default_font_name());
-	info->step		= 0.1;
+	info->step		= 1;
 	info->size		= 0.1;
 }
 

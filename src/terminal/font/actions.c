@@ -64,7 +64,7 @@ void v3270_zoom_best(GtkWidget *widget)
 	v3270 * terminal = GTK_V3270(widget);
 	if(!(gtk_widget_get_realized(widget) && terminal->drawing && lib3270_is_connected(terminal->host)))
 	{
-		gdk_display_beep(gdk_display_get_default());
+		gtk_widget_error_bell(widget);
 		return;
 	}
 
@@ -84,24 +84,16 @@ void v3270_zoom_best(GtkWidget *widget)
 
 }
 
-static void zoom(GtkWidget *widget, double step)
+static void zoom(v3270 *terminal, double step)
 {
 	debug("%s",__FUNCTION__);
-
-	g_return_if_fail(GTK_IS_V3270(widget));
-	v3270 * terminal = GTK_V3270(widget);
-	if(!(gtk_widget_get_realized(widget) && terminal->drawing && lib3270_is_connected(terminal->host)))
-	{
-		gtk_widget_error_bell(widget);
-		return;
-	}
 
 	terminal->font.size += step;
 
 	// Redraw window
 
-	gint width	= gtk_widget_get_allocated_width(widget);
-	gint height	= gtk_widget_get_allocated_height(widget);
+	gint width	= gtk_widget_get_allocated_width((GtkWidget *) terminal);
+	gint height	= gtk_widget_get_allocated_height((GtkWidget *) terminal);
 
 	cairo_t *cr = cairo_create(terminal->surface);
 
@@ -120,18 +112,35 @@ static void zoom(GtkWidget *widget, double step)
 
     cairo_destroy(cr);
 
-	gtk_widget_queue_draw(GTK_WIDGET(terminal));
+	gtk_widget_queue_draw((GtkWidget *) terminal);
 
 }
 
 void v3270_zoom_in(GtkWidget *widget)
 {
-	zoom(widget,1);
+	g_return_if_fail(GTK_IS_V3270(widget));
+	v3270 * terminal = GTK_V3270(widget);
+	if(!(gtk_widget_get_realized(widget) && terminal->drawing && lib3270_is_connected(terminal->host)))
+	{
+		gtk_widget_error_bell(widget);
+		return;
+	}
+
+	zoom(terminal,terminal->font.step);
 }
 
 void v3270_zoom_out(GtkWidget *widget)
 {
-	debug("%s",__FUNCTION__);
-	zoom(widget,-1);
+	g_return_if_fail(GTK_IS_V3270(widget));
+	v3270 * terminal = GTK_V3270(widget);
+	if(!(gtk_widget_get_realized(widget) && terminal->drawing && lib3270_is_connected(terminal->host)))
+	{
+		gtk_widget_error_bell(widget);
+		return;
+	}
+
+	if(terminal->font.size > terminal->font.step)
+		zoom(terminal,-terminal->font.step);
+
 }
 

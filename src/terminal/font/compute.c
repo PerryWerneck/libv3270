@@ -67,13 +67,13 @@
 	cairo_set_font_face(cr,terminal->font.face);
 
 	{
-		double s = terminal->font.step;
+		double s = 0.1;
 
 		do
 		{
 			terminal->font.size = s;
 
-			s += terminal->font.step;
+			s += 0.1;
 			cairo_set_font_size(cr,s);
 			cairo_font_extents(cr,&extents);
 
