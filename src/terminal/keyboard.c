@@ -143,6 +143,13 @@
 	if(handled)
 		return TRUE;
 
+#ifdef DEBUG
+	{
+		g_autofree gchar * keyname = gtk_accelerator_name(event->keyval, state);
+		debug("Keyname: %s",keyname);
+	}
+#endif // DEBUG
+
 	if(event->keyval >= GDK_F1 && event->keyval <= GDK_F12 && !(state & (GDK_CONTROL_MASK|GDK_ALT_MASK)))
 	{
 		int pfcode = (event->keyval - GDK_F1) + ((state & GDK_SHIFT_MASK) ? 13 : 1);
