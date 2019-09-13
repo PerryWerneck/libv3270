@@ -237,9 +237,12 @@ static void update_connect(H3270 *session, unsigned char connected)
 
 static void update_screen_size(H3270 *session, G_GNUC_UNUSED unsigned short rows, G_GNUC_UNUSED unsigned short cols)
 {
+	debug("%s",__FUNCTION__);
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
-	v3270_reload(widget);
+
+	v3270_reconfigure(GTK_V3270(widget));
 	gtk_widget_queue_draw(widget);
+
 }
 
 static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNUSED int rows, G_GNUC_UNUSED int cols)
