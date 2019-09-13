@@ -42,7 +42,6 @@
 	LIB3270_EXPORT void v3270_autoptr_cleanup_generic_gfree(void *p);
 
 	#define g_autofree __attribute__((cleanup(v3270_autoptr_cleanup_generic_gfree)))
-	#define g_autoptr(TypeName) _GLIB_CLEANUP(_GLIB_AUTOPTR_FUNC_NAME(TypeName)) _GLIB_AUTOPTR_TYPENAME(TypeName)
 
 	static inline void v3270_autoptr_cleanup_GError(GError **error) {
 		if(*error) {
@@ -65,7 +64,7 @@
 	}
 
 	#define V3270_AUTOPTR_FUNC_NAME(TypeName) v3270_autoptr_cleanup_##TypeName
-	#define v3270_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(V3270_AUTOPTR_FUNC_NAME(TypeName))))
+	#define g_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(V3270_AUTOPTR_FUNC_NAME(TypeName))))
 
 #endif // ! GLIB(2,44,0)
 
