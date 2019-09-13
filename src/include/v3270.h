@@ -37,6 +37,39 @@
  #include <lib3270/popup.h>
  #include <lib3270/filetransfer.h>
 
+#if ! GLIB_CHECK_VERSION(2,44,0)
+
+	LIB3270_EXPORT void v3270_autoptr_cleanup_generic_gfree(void *p);
+
+	#define g_autofree __attribute__((cleanup(v3270_autoptr_cleanup_generic_gfree)))
+	#define g_autoptr(TypeName) _GLIB_CLEANUP(_GLIB_AUTOPTR_FUNC_NAME(TypeName)) _GLIB_AUTOPTR_TYPENAME(TypeName)
+
+	static inline void v3270_autoptr_cleanup_GError(GError **error) {
+		if(*error) {
+			g_error_free(*error);
+			*error = NULL;
+		}
+	}
+
+	static inline void v3270_autoptr_cleanup_GObject(GObject **object) {
+		if(*object) {
+			g_object_unref(*object);
+			*object = NULL;
+		}
+	}
+
+	static inline void v3270_autoptr_cleanup_GVariant(GVariant **variant) {
+		if(*variant) {
+			g_variant_unref(*variant)
+			*variant = NULL;
+		}
+	}
+
+	#define V3270_AUTOPTR_FUNC_NAME(TypeName) v3270_autoptr_cleanup_##TypeName
+	#define v3270_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(V3270_AUTOPTR_FUNC_NAME(TypeName))))
+
+#endif // ! GLIB(2,44,0)
+
  G_BEGIN_DECLS
 
  #define GTK_TYPE_V3270				(v3270_get_type ())

@@ -43,15 +43,7 @@
  #include <lib3270/log.h>
  #include <v3270.h>
 
- #if ! GLIB_CHECK_VERSION(2,44,0)
-
-	G_GNUC_INTERNAL void v3270_autoptr_cleanup_generic_gfree(void *p);
-
-	#define g_autofree __attribute__((cleanup(v3270_autoptr_cleanup_generic_gfree)))
-
- #endif // ! GLIB(2,44,0)
-
- G_BEGIN_DECLS
+  G_BEGIN_DECLS
 
 /*--[ Structures ]-----------------------------------------------------------------------------------*/
 
