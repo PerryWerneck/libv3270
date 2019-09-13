@@ -60,7 +60,7 @@
 
 	static inline void v3270_autoptr_cleanup_GVariant(GVariant **variant) {
 		if(*variant) {
-			g_variant_unref(*variant)
+			g_variant_unref(*variant);
 		}
 	}
 
