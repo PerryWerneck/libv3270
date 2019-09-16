@@ -467,7 +467,7 @@ void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned sho
 
 	if(!terminal->surface)
 	{
-		v3270_reload(GTK_WIDGET(terminal));
+		v3270_reconfigure(terminal);
 		gtk_widget_queue_draw(GTK_WIDGET(terminal));
 		return;
 	}

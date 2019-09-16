@@ -179,6 +179,12 @@
 		return 0;
 	}
 
+ 	if(g_str_has_prefix(cmdline,"reconfigure"))
+	{
+		v3270_reconfigure(GTK_V3270(widget));
+		return 0;
+	}
+
  	if(g_str_has_prefix(cmdline,"pattern"))
 	{
 		lib3270_testpattern(hSession);

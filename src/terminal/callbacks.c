@@ -104,7 +104,7 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value
 		break;
 
 	case LIB3270_TOGGLE_BOLD:
-		v3270_reload(widget);
+		v3270_reconfigure(GTK_V3270(widget));
 		gtk_widget_queue_draw(widget);
 		break;
 
