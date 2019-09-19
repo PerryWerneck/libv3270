@@ -168,6 +168,7 @@
 		<Unit filename="src/include/v3270/print.h" />
 		<Unit filename="src/include/v3270/security.h" />
 		<Unit filename="src/include/v3270/settings.h" />
+		<Unit filename="src/include/v3270/toggle.h" />
 		<Unit filename="src/include/v3270/trace.h" />
 		<Unit filename="src/selection/copy.c">
 			<Option compilerVar="CC" />

@@ -42,6 +42,7 @@
  #include <lib3270.h>
  #include <lib3270/log.h>
  #include <v3270.h>
+ #include <v3270/toggle.h>
 
   G_BEGIN_DECLS
 
