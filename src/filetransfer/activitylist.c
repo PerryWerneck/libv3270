@@ -382,9 +382,7 @@
 								widget,
 								_("Load queue from file"),
 								_("Load"), GTK_FILE_CHOOSER_ACTION_OPEN,
-								"",
-								N_("XML file"), "*.xml",
-								NULL );
+								"");
 
 	if(filename) {
 		g_free(list->filename);
@@ -454,9 +452,7 @@
 								_("Save queue to file"),
 								_("Save"),
 								GTK_FILE_CHOOSER_ACTION_SAVE,
-								list->filename,
-								N_("XML file"), "*.xml",
-								NULL );
+								list->filename);
 
 	if(filename) {
 		g_free(list->filename);

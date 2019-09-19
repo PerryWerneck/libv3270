@@ -497,9 +497,7 @@
 			_("Save trace to file"),
 			_("Save"),
 			GTK_FILE_CHOOSER_ACTION_SAVE,
-			trace->filename,
-			N_("Text file"), "*.txt",
-			NULL
+			trace->filename
 		);
 
 	if(filename) {

@@ -196,9 +196,7 @@ static void load_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 								GTK_WIDGET(dialog),
 								_("Load queue from file"),
 								_("Load"), GTK_FILE_CHOOSER_ACTION_OPEN,
-								"",
-								N_("XML file"), "*.xml",
-								NULL );
+								"");
 
 	if(filename) {
 		v3270ft_load(GTK_WIDGET(dialog),filename);
@@ -216,9 +214,7 @@ static void save_file(G_GNUC_UNUSED GtkButton *button, v3270ft *dialog) {
 								_("Save queue to file"),
 								_("Save"),
 								GTK_FILE_CHOOSER_ACTION_SAVE,
-								"",
-								N_("XML file"), "*.xml",
-								NULL );
+								"");
 
 	if(filename) {
 		v3270ft_save(GTK_WIDGET(dialog),filename);
@@ -299,17 +295,14 @@ static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
 static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, v3270ft *dialog) {
 //#endif // WIN32
 
-	debug("%s",__FUNCTION__);
+	debug("%s: action=%d",__FUNCTION__, (int) GTK_FILE_CHOOSER_ACTION_OPEN);
 
 	gchar *filename = v3270_select_file(
 								GTK_WIDGET(dialog),
 								_("Select local file"),
 								_("Select"),
 								GTK_FILE_CHOOSER_ACTION_OPEN,
-								gtk_entry_get_text(dialog->local),
-								N_("All files"), "*.*",
-								N_("Text files"), "*.txt",
-								NULL );
+								gtk_entry_get_text(dialog->local));
 
 	if(filename) {
 

@@ -145,7 +145,7 @@ gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *bu
 }
 */
 
-gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, const gchar *filter, ...)
+gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename)
 {
 	gchar *rc = NULL;
 

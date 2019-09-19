@@ -72,9 +72,7 @@ static void save_activity_clicked(GtkWidget *button, GObject *activity)
 								_("Save transfer activity to file"),
 								_("Save"),
 								GTK_FILE_CHOOSER_ACTION_SAVE,
-								NULL,
-								N_("XML file"), "*.xml",
-								NULL );
+								NULL);
 
 	if(filename)
 	{

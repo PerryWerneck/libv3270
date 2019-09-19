@@ -208,10 +208,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 			_("Select local file"),
 			_("Select"),
 			GTK_FILE_CHOOSER_ACTION_OPEN,
-			gtk_entry_get_text(entry),
-			N_("All files"), "*.*",
-			N_("Text files"), "*.txt",
-			NULL
+			gtk_entry_get_text(entry)
 		);
 
 	if(filename) {

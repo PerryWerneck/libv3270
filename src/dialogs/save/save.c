@@ -113,9 +113,7 @@ static void icon_press(GtkEntry G_GNUC_UNUSED(*entry), G_GNUC_UNUSED GtkEntryIco
 								_( "Select destination file"),
 								_("Select"),
 								GTK_FILE_CHOOSER_ACTION_SAVE,
-								gtk_entry_get_text(GTK_ENTRY(widget->filename)),
-								N_("All files"), "*.*",
-								NULL
+								gtk_entry_get_text(GTK_ENTRY(widget->filename))
 						);
 
 	if(filename && *filename) {

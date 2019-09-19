@@ -33,11 +33,13 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename, const gchar *filter, ...)
+gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *button, GtkFileChooserAction action, const gchar *filename)
 {
 	gchar *rc = NULL;
 
 #if GTK_CHECK_VERSION(3,20,0)
+
+	debug("%s action=%d",__FUNCTION__,(int) action);
 
 	GtkFileChooserNative *native =
 		gtk_file_chooser_native_new
@@ -54,26 +56,6 @@ gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *bu
 	if(filename && *filename)
 		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(native),filename);
 
-	// Setup filters
-	va_list args;
-	va_start (args, filter);
-	while(filter)
-	{
-		const gchar * name = va_arg(args, const gchar *);
-		if(!name)
-			break;
-
-		const gchar * pattern = va_arg(args, const gchar *);
-		if(!pattern)
-			break;
-
-		GtkFileFilter *filter = gtk_file_filter_new();
-		gtk_file_filter_set_name(filter,name);
-		gtk_file_filter_add_pattern(filter, pattern);
-		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(native), filter);
-
-	}
-	va_end(args);
 
 	// Run dialog
 	if(gtk_native_dialog_run(GTK_NATIVE_DIALOG (native)) == GTK_RESPONSE_ACCEPT) {
@@ -83,6 +65,8 @@ gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *bu
 	g_object_unref(native);
 
 #else
+
+	debug("%s action=%d",__FUNCTION__,(int) action);
 
 	GtkWidget * chooser =
 		gtk_file_chooser_dialog_new
@@ -98,33 +82,11 @@ gchar * v3270_select_file(GtkWidget *widget, const gchar *title, const gchar *bu
 	if(filename && *filename)
 		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(chooser),filename);
 
-	// Setup filters
-	va_list args;
-	va_start (args, filter);
-	while(filter)
-	{
-		const gchar * name = va_arg(args, const gchar *);
-		if(!name)
-			break;
-
-		const gchar * pattern = va_arg(args, const gchar *);
-		if(!pattern)
-			break;
-
-		GtkFileFilter *filter = gtk_file_filter_new();
-		gtk_file_filter_set_name(filter,name);
-		gtk_file_filter_add_pattern(filter, pattern);
-		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), filter);
-
-	}
-	va_end(args);
-
 	if(gtk_dialog_run(GTK_DIALOG(chooser)) == GTK_RESPONSE_ACCEPT) {
 		rc = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser));
 	}
 
 	gtk_widget_destroy(chooser);
-
 
 #endif // GTK 3.20
 
