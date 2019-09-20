@@ -138,12 +138,9 @@ NOCONFIGURE=1 ./autogen.sh
 	--enable-pic
 
 %build
-make clean
 make all
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 %makeinstall
 
 %files
@@ -182,16 +179,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/glade/pixmaps/hicolor/16x16/actions/widget-v3270-terminal.png
 /usr/share/glade/pixmaps/hicolor/22x22/actions/widget-v3270-terminal.png
 
-%pre
-/sbin/ldconfig
-exit 0
+%pre -p /sbin/ldconfig
 
-%post
-/sbin/ldconfig
-exit 0
+%post -p /sbin/ldconfig
 
-%postun
-/sbin/ldconfig
-exit 0
+%postun -p /sbin/ldconfig
 
 %changelog
