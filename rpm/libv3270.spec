@@ -16,38 +16,24 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-#---[ Versions ]------------------------------------------------------------------------------------------------------
-
-%define MAJOR_VERSION 5
-%define MINOR_VERSION 2
-
-%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
-%define _product %(pkg-config --variable=product_name lib3270)
-
 #---[ Macros ]--------------------------------------------------------------------------------------------------------
 
 %if ! %{defined _release}
   %define _release suse%{suse_version}
 %endif
 
-#---[ Main package ]--------------------------------------------------------------------------------------------------
+#---[ Package header ]------------------------------------------------------------------------------------------------
 
 Summary:		3270 Virtual Terminal for GTK
-Name:			libv3270-%{_libvrs}
+Name:			libv3270
 Version:		5.2
 Release:		0
 License:        LGPL-3.0
 Source:			libv3270-%{version}.tar.xz
 
 Url:			https://github.com/PerryWerneck/libv3270.git
-
 Group:			Development/Libraries/C and C++
-BuildRoot:		/var/tmp/%{name}-%{version}
 
-Provides:		libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION}
-Conflicts:		otherproviders(libv3270_%{MAJOR_VERSION}_%{MINOR_VERSION})
-
-BuildRequires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
 BuildRequires:	autoconf >= 2.61
 BuildRequires:	automake
 BuildRequires:	binutils
@@ -58,12 +44,12 @@ BuildRequires:	m4
 
 %if 0%{?fedora} ||  0%{?suse_version} > 1200
 
-BuildRequires:  pkgconfig(openssl)
-BuildRequires:  pkgconfig(gtk+-3.0)
+BuildRequires:	pkgconfig(lib3270)
+BuildRequires:	pkgconfig(gtk+-3.0)
 
 %else
 
-BuildRequires:  openssl-devel
+BuildRequires:	lib3270-devel
 BuildRequires:	gtk3-devel
 
 %endif
@@ -84,6 +70,23 @@ Originally designed as part of the pw3270 application this library provides a TN
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
+#---[ Library ]-------------------------------------------------------------------------------------------------------
+
+%define _product %(pkg-config --variable=product_name lib3270)
+%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+
+%package -n %{name}-%{_libvrs}
+Summary:		TN3270 Access library
+Group:			Development/Libraries/C and C++
+
+%description -n %{name}-%{_libvrs}
+
+Originally designed as part of the pw3270 application this library provides a TN3270 virtual terminal widget for GTK 3.
+
+See more details at https://softwarepublico.gov.br/social/pw3270/
+
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
 %package devel
@@ -91,11 +94,13 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 Summary:	3270 Virtual Terminal for GTK development files
 Group:		Development/Libraries/C and C++
 
-Requires:	%{name} = %{version}
-Requires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
+Requires:	%{name}-%{_libvrs} = %{version}
 
-Provides:	libv3270-devel = %{version}
-Conflicts:	otherproviders(libv3270-devel)
+%if 0%{?fedora} ||  0%{?suse_version} > 1200
+Requires:	pkgconfig(lib3270)
+%else
+Requires:	lib3270-devel
+%endif
 
 %description devel
 
@@ -133,7 +138,6 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 NOCONFIGURE=1 ./autogen.sh
 
 %configure \
-	--with-sdk-version=%{version} \
 	--disable-static \
 	--enable-pic
 
@@ -143,7 +147,7 @@ make all
 %install
 %makeinstall
 
-%files
+%files -n %{name}-%{_libvrs}
 %defattr(-,root,root)
 
 # https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
@@ -154,8 +158,8 @@ make all
 %doc AUTHORS README.md LICENSE
 %endif
 
-%{_libdir}/libv3270.so.%{MAJOR_VERSION}
-%{_libdir}/libv3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_libdir}/%{name}.so.%{MAJOR_VERSION}
+%{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %{_datadir}/%{_product}/colors.conf
 
@@ -165,7 +169,7 @@ make all
 %files devel
 %defattr(-,root,root)
 
-%{_libdir}/libv3270.so
+%{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/*.pc
 
 %{_includedir}/v3270.h
@@ -179,10 +183,10 @@ make all
 /usr/share/glade/pixmaps/hicolor/16x16/actions/widget-v3270-terminal.png
 /usr/share/glade/pixmaps/hicolor/22x22/actions/widget-v3270-terminal.png
 
-%pre -p /sbin/ldconfig
+%pre -n %{name}-%{_libvrs} -p /sbin/ldconfig
 
-%post -p /sbin/ldconfig
+%post -n %{name}-%{_libvrs} -p /sbin/ldconfig
 
-%postun -p /sbin/ldconfig
+%postun -n %{name}-%{_libvrs} -p /sbin/ldconfig
 
 %changelog
