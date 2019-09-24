@@ -61,14 +61,12 @@ BuildRequires:	mingw32-cross-gcc
 BuildRequires:	mingw32-cross-gcc-c++
 BuildRequires:	mingw32-cross-pkg-config
 BuildRequires:	mingw32-filesystem
-BuildRequires:	mingw32-libopenssl-devel
-BuildRequires:	mingw32-zlib-devel
 
 BuildRequires:	mingw32(pkg:gtk+-win32-3.0)
 BuildRequires:	mingw32(lib:iconv)
 BuildRequires:	mingw32(lib:intl)
 
-BuildRequires:	mingw32-lib3270-%{_libvrs}-devel
+BuildRequires:	mingw32(pkg:lib3270)
 
 %description
 
@@ -83,12 +81,6 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 Summary:	3270 Virtual Terminal for GTK development files
 Group:		Development/Libraries/C and C++
 
-Requires:	%{name} = %{version}
-Requires:	mingw32-lib3270-%{_libvrs}-devel
-
-Provides:	mingw32-libv3270-devel = %{version}
-Conflicts:	otherproviders(mingw32-libv3270-devel)
-
 %description devel
 
 3270 Virtual Terminal for GTK development files.
@@ -102,7 +94,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 Summary:	Glade catalog for the TN3270 terminal emulator library
 Group:		Development/Libraries/C and C++
 
-Requires:	libv3270-devel = %{version}
+Requires:	mingw32(pkg:lib3270)
 Requires:	glade
 
 %description -n mingw32-glade-catalog-v3270

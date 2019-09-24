@@ -61,14 +61,12 @@ BuildRequires:	mingw64-cross-gcc
 BuildRequires:	mingw64-cross-gcc-c++
 BuildRequires:	mingw64-cross-pkg-config
 BuildRequires:	mingw64-filesystem
-BuildRequires:	mingw64-libopenssl-devel
-BuildRequires:	mingw64-zlib-devel
 
 BuildRequires:	mingw64(pkg:gtk+-win32-3.0)
 BuildRequires:	mingw64(lib:iconv)
 BuildRequires:	mingw64(lib:intl)
 
-BuildRequires:	mingw64-lib3270-%{_libvrs}-devel
+BuildRequires:	mingw64(pkg:lib3270)
 
 %description
 
@@ -84,10 +82,7 @@ Summary:	3270 Virtual Terminal for GTK development files
 Group:		Development/Libraries/C and C++
 
 Requires:	%{name} = %{version}
-Requires:	mingw64-lib3270-%{_libvrs}-devel
-
-Provides:	mingw64-libv3270-devel = %{version}
-Conflicts:	otherproviders(mingw64-libv3270-devel)
+Requires:	mingw64(pkg:lib3270)
 
 %description devel
 
