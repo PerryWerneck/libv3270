@@ -16,11 +16,6 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-%define MAJOR_VERSION 5
-%define MINOR_VERSION 2
-
-%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
-%define _product %(x86_64-w64-mingw32-pkg-config --variable=product_name lib3270)
 
 %define __strip %{_mingw64_strip}
 %define __objdump %{_mingw64_objdump}
@@ -33,8 +28,14 @@
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
 Summary:		3270 Virtual Terminal for GTK
-Name:           mingw64-libv3270-%{_libvrs}
+Name:           mingw64-libv3270
 Version:        5.2
+
+%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+%define _product %(x86_64-w64-mingw32-pkg-config --variable=product_name lib3270)
+
 Release:        0
 License:        GPL-2.0
 
@@ -45,11 +46,7 @@ Url:			https://github.com/PerryWerneck/libv3270.git
 Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
 
-Provides:		mingw64-libv3270
-Conflicts:		otherproviders(mingw64-libv3270)
-
 Provides:		mingw64(lib:v3270)
-Provides:		mingw64(lib:v3270-%{_libvrs})
 
 BuildRequires:	autoconf
 BuildRequires:	automake

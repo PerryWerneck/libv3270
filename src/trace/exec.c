@@ -168,11 +168,6 @@
 
  	debug("cmdline: \"%s\"",cmdline);
 
- 	if(g_str_has_prefix(cmdline,"connect"))
-	{
-		return lib3270_reconnect(hSession,0);
-	}
-
  	if(g_str_has_prefix(cmdline,"reload"))
 	{
 		v3270_reload(widget);
@@ -286,11 +281,6 @@
 		return set_property(widget,cmdline,value);
 	}
 
- 	if(g_str_has_prefix(cmdline,"disconnect"))
-	{
-		return lib3270_disconnect(hSession);
-	}
-
  	if(g_str_has_prefix(cmdline,"remap"))
 	{
 		gchar *txtptr = cmdline+5;
@@ -332,16 +322,23 @@
 	else
 	{
 		// Check for lib3270 actions.
-		const LIB3270_ACTION_ENTRY *actions = lib3270_get_action_table();
+		const LIB3270_ACTION * actions = lib3270_get_actions();
 
 		for(ix=0; actions[ix].name; ix++)
 		{
 			if(!g_ascii_strcasecmp(actions[ix].name,cmdline))
 			{
-				lib3270_trace_event(hSession,"Action: %s\n",actions[ix].name);
-				return actions[ix].call(hSession);
+				if(actions[ix].enabled(hSession))
+				{
+					lib3270_trace_event(hSession,"Activating action \"%s\"\n",actions[ix].name);
+					return actions[ix].activate(hSession);
+				}
+				else
+				{
+					lib3270_trace_event(hSession,"Action \"%s\" is disabled\n",actions[ix].name);
+					return EPERM;
+				}
 			}
-
 		}
 
 	}
