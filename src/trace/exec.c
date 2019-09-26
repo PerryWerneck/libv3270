@@ -157,7 +157,7 @@
 
  int v3270_exec_command(GtkWidget *widget, const gchar *text)
  {
- 	size_t ix;
+// 	size_t ix;
 
  	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
 
@@ -321,6 +321,12 @@
 	}
 	else
 	{
+		const LIB3270_ACTION * action = lib3270_get_action(cmdline);
+
+		if(action)
+			return lib3270_action_activate(action,hSession);
+
+		/*
 		// Check for lib3270 actions.
 		const LIB3270_ACTION * actions = lib3270_get_actions();
 
@@ -340,6 +346,7 @@
 				}
 			}
 		}
+		*/
 
 	}
 
