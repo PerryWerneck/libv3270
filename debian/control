@@ -15,7 +15,7 @@ Description: TN3270 Access library.
 Package: libv3270-dev
 Architecture: any
 Section: libdevel
-Depends: ${misc:Depends}, pkg-config, lib3270-dev, libv3270 (= ${binary:Version})
+Depends: ${misc:Depends}, pkg-config, libgtk-3-dev, lib3270-dev, libv3270 (= ${binary:Version})
 Provides: libv3270-dev (= ${binary:Version})
 Description: TN3270 Access library development files.
  3270 Virtual Terminal for GTK development files.
