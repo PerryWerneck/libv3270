@@ -48,7 +48,7 @@ BuildRequires:	gtk3-devel
 
 %endif
 
-%if 0%{?centos_version}
+%if 0%{?centos_version} && 0%{?centos_version} < 800
 # CENTOS Genmarshal doesn't depends on python!
 BuildRequires:	python
 %endif
@@ -62,19 +62,20 @@ For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 #---[ Library ]-------------------------------------------------------------------------------------------------------
 
+%define _product %(pkg-config --variable=product_name lib3270)
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
 %package -n %{name}-%{_libvrs}
-Summary:		TN3270 access library
-Group:			System/Libraries
+Summary:		TN3270 Access library
+Group:			Development/Libraries/C and C++
 
 %description -n %{name}-%{_libvrs}
-Originally designed as part of the pw3270 application, this library
-provides a TN3270 virtual terminal widget for GTK 3.
 
-For more details, see https://softwarepublico.gov.br/social/pw3270/ .
+Originally designed as part of the pw3270 application this library provides a TN3270 virtual terminal widget for GTK 3.
+
+See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
@@ -104,7 +105,6 @@ Requires:	glade
 
 %description -n glade-catalog-v3270
 This package provides a catalog for Glade to allow the use of V3270
-widgets in Glade.
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
@@ -114,6 +114,7 @@ widgets in Glade.
 NOCONFIGURE=1 ./autogen.sh
 
 %configure \
+	--disable-static \
 	--enable-pic
 
 %build
@@ -121,8 +122,6 @@ make %{?_smp_mflags}
 
 %install
 %make_install
-# configure --disable-static has no effect
-rm -f %{buildroot}/%{_libdir}/*.a
 
 %files -n %{name}-%{_libvrs}
 %defattr(-,root,root)
@@ -138,16 +137,21 @@ rm -f %{buildroot}/%{_libdir}/*.a
 %{_libdir}/%{name}.so.%{MAJOR_VERSION}
 %{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
+%{_datadir}/%{_product}/colors.conf
+
+%dir %{_datadir}/%{_product}/remap/
+%{_datadir}/%{_product}/remap/*.xml
+
 %files devel
 %defattr(-,root,root)
-
-%{_datadir}/pw3270/pot/*.pot
 
 %{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/*.pc
 
 %{_includedir}/v3270.h
 %{_includedir}/v3270
+
+%{_datadir}/%{_product}/pot/*.pot
 
 %files -n glade-catalog-v3270
 %defattr(-,root,root)
