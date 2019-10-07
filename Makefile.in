@@ -69,6 +69,7 @@ GENMARSHAL=@GENMARSHAL@
 CONVERT=@CONVERT@
 OPTIPNG=@OPTIPNG@
 ZIP=@ZIP@
+DLLTOOL=@DLLTOOL@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -342,6 +343,28 @@ install-dev: \
 	# Install translation files
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 	@$(INSTALL_DATA) $(POTDIR)/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/$(LIBNAME).pot
+
+install-winlib: \
+	$(BINRLS)/$(SONAME)
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).dll.a \
+		$(DESTDIR)$(libdir)
+
+	@$(DLLTOOL) \
+		--input-def $(BINRLS)/$(LIBNAME).def \
+		--dllname $(LIBNAME).dll \
+		--output-lib $(DESTDIR)$(libdir)/$(LIBNAME).lib
+
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 install-glade:
 
