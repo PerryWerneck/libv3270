@@ -99,8 +99,6 @@ GTK development files for the 3270 Virtual Terminal.
 
 Summary:	Glade catalog for the TN3270 terminal emulator library
 Group:		Development/Libraries/C and C++
-
-Requires:	libv3270-devel = %{version}
 Requires:	glade
 
 %description -n glade-catalog-v3270
