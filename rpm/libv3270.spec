@@ -83,14 +83,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 Summary:	Header files for the 3270 Virtual Terminal library
 Group:		Development/Libraries/C and C++
-
 Requires:	%{name}-%{_libvrs} = %{version}
-
-%if 0%{?fedora} ||  0%{?suse_version} > 1200
-Requires:	pkgconfig(lib3270)
-%else
-Requires:	lib3270-devel
-%endif
 
 %description devel
 GTK development files for the 3270 Virtual Terminal.
