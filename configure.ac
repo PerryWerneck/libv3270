@@ -291,20 +291,7 @@ AC_ARG_ENABLE([pic],
 [
 	app_cv_pic="$enableval"
 ],[
-
-	case "$host_cpu" in
-	x86_64)
-		app_cv_pic="yes"
-		;;
-
-	aarch64)
-		app_cv_pic="yes"
-		;;
-
-	*)
-		app_cv_pic="no"
-	esac
-
+	app_cv_pic="yes"
 ])
 
 if test "$app_cv_pic" == "yes"; then
