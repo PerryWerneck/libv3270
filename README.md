@@ -60,6 +60,10 @@ Compiling for Windows (With MSYS2)
 
 	* Follow the guide on https://github.com/PerryWerneck/lib3270
 
+2. Install the required libraries
+
+	* pacman -S mingw-w64-x86_64-gtk3
+
 2. Get libv3270 sources from git
 
 	* git clone https://github.com/PerryWerneck/libv3270.git ./v3270
@@ -67,7 +71,7 @@ Compiling for Windows (With MSYS2)
 4. Build library using the mingw shell
 
 	* cd v3270
-	* ./autogen.sh
+	* ./win/configure.sh --64
 	* make all
 
 

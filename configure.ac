@@ -75,7 +75,7 @@ APP_RESOURCES=""
 APP_LDFLAGS=""
 DLL_LDFLAGS="-shared -Wl,-soname,\$(@F)"
 STATIC_LDFLAGS=""
-INSTALL_PACKAGES="shared dev glade"
+INSTALL_PACKAGES="dev glade"
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
@@ -89,9 +89,10 @@ case "$host" in
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
 		LDFLAGS="$LDFLAGS -pthread"
-		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def,--out-implib,\$(@D)/\$(LIBNAME).dll.a"
+		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/\$(LIBNAME).def"
 		DLLEXT=".dll"
-		INSTALL_PACKAGES="${INSTALL_PACKAGES} winlib"
+
+		INSTALL_PACKAGES="windows-lib ${INSTALL_PACKAGES}"
 
 		app_cv_static='yes'
 
@@ -110,6 +111,8 @@ case "$host" in
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
+
+		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
 
 		app_cv_static='no'
 

@@ -148,6 +148,15 @@ $(OBJDBG)/%.o: \
 	@$(MKDIR) $(dir $@)
 	@$(WINDRES) $< -O coff -o $@
 
+%.dll.a: \
+	%.def
+
+	@$(DLLTOOL) \
+		--input-def $(BINRLS)/$(LIBNAME).def \
+		--dllname $(LIBNAME).dll \
+		--kill-at \
+		--output-lib $@
+
 #---[ Release Rules ]--------------------------------------------------------------------
 
 $(OBJRLS)/%.o: \
@@ -280,7 +289,7 @@ $(BINRLS)/static/$(LIBNAME).a: \
 install: \
 	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
-install-shared: \
+install-linux-lib: \
 	$(BINRLS)/$(SONAME)
 
 	# Install library
@@ -344,8 +353,16 @@ install-dev: \
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 	@$(INSTALL_DATA) $(POTDIR)/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/$(LIBNAME).pot
 
-install-winlib: \
-	$(BINRLS)/$(SONAME)
+install-windows-lib: \
+	$(BINRLS)/$(SONAME) \
+	$(BINRLS)/$(LIBNAME).dll.a
+
+	@$(MKDIR) \
+		$(DESTDIR)$(bindir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(SONAME) \
+		$(DESTDIR)$(bindir)/$(SONAME)
 
 	@$(MKDIR) \
 		$(DESTDIR)$(libdir)
@@ -353,11 +370,6 @@ install-winlib: \
 	@$(INSTALL_DATA) \
 		$(BINRLS)/$(LIBNAME).dll.a \
 		$(DESTDIR)$(libdir)
-
-	@$(DLLTOOL) \
-		--input-def $(BINRLS)/$(LIBNAME).def \
-		--dllname $(LIBNAME).dll \
-		--output-lib $(DESTDIR)$(libdir)/$(LIBNAME).lib
 
 	@$(MKDIR) \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
