@@ -66,12 +66,12 @@ Compiling for Windows (With MSYS2)
 
 2. Get libv3270 sources from git
 
-	* git clone https://github.com/PerryWerneck/libv3270.git ./v3270
+	* git clone https://github.com/PerryWerneck/libv3270.git ./libv3270
 
 4. Build library using the mingw shell
 
-	* cd v3270
-	* ./win/configure.sh --64
+	* cd libv3270
+	* ./autogen.sh
 	* make all
 
 
