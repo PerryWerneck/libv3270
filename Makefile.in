@@ -309,7 +309,8 @@ install: \
 	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
 install-linux-lib: \
-	$(BINRLS)/$(SONAME)
+	$(BINRLS)/$(SONAME) \
+	install-conf
 
 	# Install library
 	@$(MKDIR) $(DESTDIR)$(libdir)
@@ -326,20 +327,31 @@ install-linux-lib: \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
-	# Install remaps
-	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
+install-windows-lib: \
+	$(BINRLS)/$(SONAME) \
+	$(BINRLS)/$(LIBNAME).dll.a \
+	install-conf
+
+	@$(MKDIR) \
+		$(DESTDIR)$(bindir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(SONAME) \
+		$(DESTDIR)$(bindir)/$(SONAME)
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
 
 	@$(INSTALL_DATA) \
-		remap/*.xml \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
+		$(BINRLS)/$(LIBNAME).dll.a \
+		$(DESTDIR)$(libdir)
 
-	# Install default configs
-	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 	@$(INSTALL_DATA) \
-		conf/colors.conf \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/colors.conf
-
+		$(BINRLS)/$(LIBNAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
@@ -348,6 +360,25 @@ install-static: \
 	@$(INSTALL_DATA) \
 		$(BINRLS)/static/$(LIBNAME).a \
 		$(DESTDIR)$(libdir)/$(LIBNAME)-static.a
+
+install-conf:
+
+	# Install remaps
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
+
+	@$(INSTALL_DATA) \
+		remap/*.xml \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
+
+	# Install default configs
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
+
+	@$(INSTALL_DATA) \
+		conf/colors.conf \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/colors.conf
+
 
 install-dev: \
 	$(POTDIR)/$(LIBNAME).pot
@@ -371,31 +402,6 @@ install-dev: \
 	# Install translation files
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 	@$(INSTALL_DATA) $(POTDIR)/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/$(LIBNAME).pot
-
-install-windows-lib: \
-	$(BINRLS)/$(SONAME) \
-	$(BINRLS)/$(LIBNAME).dll.a
-
-	@$(MKDIR) \
-		$(DESTDIR)$(bindir)
-
-	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/$(SONAME) \
-		$(DESTDIR)$(bindir)/$(SONAME)
-
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).dll.a \
-		$(DESTDIR)$(libdir)
-
-	@$(MKDIR) \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).def \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 install-glade:
 
