@@ -56,7 +56,7 @@ install: build
 	make all
 
 	# Install libv3270
-	make DESTDIR=$(PWD)/debian/libv3270 install-shared
+	make DESTDIR=$(PWD)/debian/libv3270 install-linux-lib
 	find $(PWD)/debian/libv3270 -type f | sed -e "s@^$(PWD)/debian/libv3270/@/@g" > $(PWD)/debian/libv3270.install
 
 	# Install glade
