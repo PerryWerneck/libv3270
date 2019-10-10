@@ -47,6 +47,8 @@
  typedef struct _V3270Trace		  	  V3270Trace;
  typedef struct _V3270TraceClass	  V3270TraceClass;
 
+ LIB3270_EXPORT GType				  V3270Trace_get_type(void);
+
  LIB3270_EXPORT	GtkWidget			* v3270_trace_new(GtkWidget *terminal);
  LIB3270_EXPORT void				  v3270_trace_append_text(GtkWidget *widget, const gchar *text);
  LIB3270_EXPORT void				  v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args);
@@ -57,6 +59,8 @@
 
  LIB3270_EXPORT void				  v3270_trace_save(GtkWidget *widget);
  LIB3270_EXPORT void				  v3270_trace_select_file(GtkWidget *widget);
+
+ LIB3270_EXPORT int					  v3270_trace_exec_command(GtkWidget *widget, const gchar *cmdline);
 
  LIB3270_EXPORT GtkWidget			* v3270_trace_window_new(GtkWidget *widget, const gchar *header);
 

@@ -27,22 +27,11 @@
  *
  */
 
- #include <gtk/gtk.h>
+ #include "private.h"
 
- #define ENABLE_NLS
- #define GETTEXT_PACKAGE PACKAGE_NAME
-
- #include <libintl.h>
- #include <glib/gi18n.h>
  #include <stdlib.h>
-
- #include <lib3270.h>
- #include <lib3270/log.h>
- #include <lib3270/trace.h>
  #include <lib3270/properties.h>
  #include <lib3270/actions.h>
- #include <v3270.h>
- #include <v3270/trace.h>
  #include <internals.h>
 
  static const gchar * get_word(gchar **ptr)
@@ -155,28 +144,28 @@
 	return 0;
  }
 
- int v3270_exec_command(GtkWidget *widget, const gchar *text)
+ int v3270_trace_exec_command(GtkWidget *t, const gchar *text)
  {
-// 	size_t ix;
 
- 	g_return_val_if_fail(GTK_IS_V3270(widget),EINVAL);
+ 	g_return_val_if_fail(GTK_IS_V3270_TRACE(t),EINVAL);
 
- 	H3270 *hSession = v3270_get_session(widget);
-	g_autofree gchar * cmdline = g_strdup(text);
+ 	V3270Trace			* trace		= GTK_V3270_TRACE(t);
+ 	H3270 				* hSession	= v3270_get_session(trace->terminal);
+	g_autofree gchar	* cmdline	= g_strdup(text);
 
  	g_strstrip(cmdline);
 
- 	debug("cmdline: \"%s\"",cmdline);
+ 	debug("cmdline: \"%s\" widget=%p",cmdline,t);
 
  	if(g_str_has_prefix(cmdline,"reload"))
 	{
-		v3270_reload(widget);
+		v3270_reload(trace->terminal);
 		return 0;
 	}
 
  	if(g_str_has_prefix(cmdline,"reconfigure"))
 	{
-		v3270_reconfigure(GTK_V3270(widget));
+		v3270_reconfigure(GTK_V3270(trace->terminal));
 		return 0;
 	}
 
@@ -195,15 +184,15 @@
 		if(!(*arg && g_ascii_strcasecmp(arg,"text")))
 		{
 			// No argument or "text" copy text.
-			v3270_copy_selection(widget, V3270_SELECT_TEXT, FALSE);
+			v3270_copy_selection(trace->terminal, V3270_SELECT_TEXT, FALSE);
 		}
 		else if(!g_ascii_strcasecmp(arg,"table"))
 		{
-			v3270_copy_selection(widget, V3270_SELECT_TABLE, FALSE);
+			v3270_copy_selection(trace->terminal, V3270_SELECT_TABLE, FALSE);
 		}
 		else if(!g_ascii_strcasecmp(arg,"append"))
 		{
-			v3270_append_selection(widget,FALSE);
+			v3270_append_selection(trace->terminal,FALSE);
 		}
 		else
 		{
@@ -223,15 +212,15 @@
 		if(!(*arg && g_ascii_strcasecmp(arg,"all")))
 		{
 			// No argument or "text" copy text.
-			v3270_print_all(widget,NULL);
+			v3270_print_all(trace->terminal,NULL);
 		}
 		else if(!g_ascii_strcasecmp(arg,"selected"))
 		{
-			v3270_print_selected(widget,NULL);
+			v3270_print_selected(trace->terminal,NULL);
 		}
 		else if(!g_ascii_strcasecmp(arg,"copy"))
 		{
-			v3270_print_copy(widget,NULL);
+			v3270_print_copy(trace->terminal,NULL);
 		}
 		else
 		{
@@ -250,11 +239,11 @@
 
 		if(!*arg)
 		{
-			v3270_paste(widget);
+			v3270_paste(trace->terminal);
 		}
 		else if(!g_ascii_strcasecmp(arg,"text"))
 		{
-			v3270_paste_text(widget);
+			v3270_paste_text(trace->terminal);
 		}
 		else
 		{
@@ -269,7 +258,7 @@
 		gchar * str = strchr(cmdline,'?');
 		*str = 0;
 		g_strstrip(cmdline);
-		return get_property(widget,cmdline);
+		return get_property(trace->terminal,cmdline);
 	}
 
 	if(strchr(cmdline,'='))
@@ -278,14 +267,14 @@
 		*(value++) = 0;
 		g_strstrip(cmdline);
 		g_strstrip(value);
-		return set_property(widget,cmdline,value);
+		return set_property(trace->terminal,cmdline,value);
 	}
 
  	if(g_str_has_prefix(cmdline,"remap"))
 	{
 		gchar *txtptr = cmdline+5;
 		g_strstrip(txtptr);
-		v3270_set_remap_filename(widget,txtptr);
+		v3270_set_remap_filename(trace->terminal,txtptr);
 		return 0;
 	}
 
@@ -294,7 +283,7 @@
 		gchar *txtptr = cmdline+3;
 		const gchar * name = get_word(&txtptr);
 		g_strstrip(txtptr);
-		return set_property(widget,name,(*txtptr ? txtptr : "1"));
+		return set_property(trace->terminal,name,(*txtptr ? txtptr : "1"));
 	}
 
  	if(g_str_has_prefix(cmdline,"get"))
@@ -302,7 +291,7 @@
 		gchar *txtptr = cmdline+3;
 		const gchar * name = get_word(&txtptr);
 		g_strstrip(txtptr);
-		return get_property(widget,name);
+		return get_property(trace->terminal,name);
 	}
 
  	if(g_str_has_prefix(cmdline,"reset"))
@@ -310,45 +299,38 @@
 		gchar *txtptr = cmdline+3;
 		const gchar * name = get_word(&txtptr);
 		g_strstrip(txtptr);
-		return set_property(widget,name,(*txtptr ? txtptr : "0"));
+		return set_property(trace->terminal,name,(*txtptr ? txtptr : "0"));
 	}
 
 	gchar * sep = strchr(cmdline,'=');
 	if(sep)
 	{
 		*(sep++) = 0;
-		return set_property(widget,g_strstrip(cmdline),g_strstrip(sep));
+		return set_property(trace->terminal,g_strstrip(cmdline),g_strstrip(sep));
 	}
 	else
 	{
-		const LIB3270_ACTION * action = lib3270_get_action(cmdline);
+		const LIB3270_ACTION * action = lib3270_action_get_by_name(cmdline);
 
 		if(action)
 			return lib3270_action_activate(action,hSession);
 
-		/*
-		// Check for lib3270 actions.
-		const LIB3270_ACTION * actions = lib3270_get_actions();
-
-		for(ix=0; actions[ix].name; ix++)
-		{
-			if(!g_ascii_strcasecmp(actions[ix].name,cmdline))
-			{
-				if(actions[ix].enabled(hSession))
-				{
-					lib3270_trace_event(hSession,"Activating action \"%s\"\n",actions[ix].name);
-					return actions[ix].activate(hSession);
-				}
-				else
-				{
-					lib3270_trace_event(hSession,"Action \"%s\" is disabled\n",actions[ix].name);
-					return EPERM;
-				}
-			}
-		}
-		*/
-
 	}
+
+	// Check for external interpreters
+	gboolean handled = FALSE;
+	gchar * args = cmdline;
+
+	while(*args && !g_ascii_isspace(*args))
+		args++;
+
+	if(*args)
+		*(args++) = 0;
+
+	g_signal_emit(GTK_WIDGET(trace), v3270_trace_signal[V3270_TRACE_SIGNAL_COMMAND], 0, cmdline, args, &handled);
+
+	if(handled)
+		return 0;
 
 	return errno = ENOENT;
  }

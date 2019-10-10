@@ -104,7 +104,8 @@ DEPENDS= \
 	src/include/v3270/*.h \
 	src/filetransfer/marshal.h \
 	src/filetransfer/private.h \
-	src/terminal/marshal.h
+	src/terminal/marshal.h \
+	src/trace/marshal.h
 
 CFLAGS= \
 	@CFLAGS@ \
@@ -133,7 +134,7 @@ $(OBJDBG)/%.o: \
 	$(DEPENDS)
 
 	@echo $< ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 
 	@$(CC) \
 		$(CFLAGS) \
@@ -145,7 +146,7 @@ $(OBJDBG)/%.o: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 	@$(WINDRES) $< -O coff -o $@
 
 %.dll.a: \
@@ -174,7 +175,7 @@ $(OBJRLS)/%.o: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 	@$(WINDRES) $< -O coff -o $@
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
@@ -183,7 +184,7 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	%.c
 
 	@echo $(notdir $@) ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 	@$(XGETTEXT) \
 		--language=C \
 		--keyword=_ \
@@ -207,7 +208,7 @@ src/terminal/marshal.h: \
 	src/terminal/marshal
 
 	@echo $@ ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 
 	@$(GENMARSHAL) --prefix=v3270 --header $< > $@
 
@@ -215,7 +216,7 @@ $(OBJDIR)/marshal/v3270.c: \
 	src/terminal/marshal
 
 	@echo $@ ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 
 	@$(GENMARSHAL) --prefix=v3270 --body $< > $@
 
@@ -224,7 +225,7 @@ src/filetransfer/marshal.h: \
 	src/filetransfer/marshal
 
 	@echo $@ ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 
 	@$(GENMARSHAL) --prefix=v3270ft --header $< > $@
 
@@ -232,16 +233,33 @@ $(OBJDIR)/marshal/v3270ft.c: \
 	src/filetransfer/marshal
 
 	@echo $@ ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 
 	@$(GENMARSHAL) --prefix=v3270ft --body $< > $@
+
+src/trace/marshal.h: \
+	src/trace/marshal
+
+	@echo $@ ...
+	@$(MKDIR) $(@D)
+
+	@$(GENMARSHAL) --prefix=v3270trace --header $< > $@
+
+$(OBJDIR)/marshal/trace.c: \
+	src/trace/marshal
+
+	@echo $@ ...
+	@$(MKDIR) $(@D)
+
+	@$(GENMARSHAL) --prefix=v3270trace --body $< > $@
+
 
 $(OBJDIR)/marshal/%.o: \
 	$(OBJDIR)/marshal/%.c \
 	$(DEPENDS)
 
 	@echo $< ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 
 	@$(CC) \
 		$(CFLAGS) \
@@ -264,9 +282,10 @@ Release: \
 $(BINRLS)/$(SONAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
 	$(OBJDIR)/marshal/v3270.o \
-	$(OBJDIR)/marshal/v3270ft.o
+	$(OBJDIR)/marshal/v3270ft.o \
+	$(OBJDIR)/marshal/trace.o
 
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
 		@DLL_LDFLAGS@ \
@@ -280,7 +299,7 @@ $(BINRLS)/static/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@echo $@ ...
-	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(@D)
 	@$(AR) rcs $@ $^
 
 
@@ -402,7 +421,7 @@ $(POTDIR)/$(LIBNAME).pot: \
 	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
 
 	@rm -f $@
-	@mkdir -p `dirname $@`
+	@$(MKDIR) $(@D)
 	@$(MSGCAT) --sort-output $^ > $@
 
 locale: \
@@ -418,7 +437,7 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
 	$(BINDBG)/$(SONAME)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
 		-o $@ \
@@ -454,9 +473,10 @@ endif
 $(BINDBG)/$(SONAME): \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
 	$(OBJDIR)/marshal/v3270.o \
-	$(OBJDIR)/marshal/v3270ft.o
+	$(OBJDIR)/marshal/v3270ft.o \
+	$(OBJDIR)/marshal/trace.o
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
 		-shared -Wl,-soname,$(@F) \

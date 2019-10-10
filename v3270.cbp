@@ -294,6 +294,7 @@
 		<Unit filename="src/trace/exec.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/trace/private.h" />
 		<Unit filename="src/trace/trace.c">
 			<Option compilerVar="CC" />
 		</Unit>

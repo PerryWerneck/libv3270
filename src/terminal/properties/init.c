@@ -162,7 +162,7 @@
 	klass->properties.type.toggle = klass->properties.count;
 	for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)
 	{
-		debug("Property %u=%s (Toggle)",(unsigned int) klass->properties.type.toggle + ix, lib3270_get_toggle_name(ix));
+//		debug("Property %u=%s (Toggle)",(unsigned int) klass->properties.type.toggle + ix, lib3270_get_toggle_name(ix));
 
 		klass->properties.toggle[ix] =
 				g_param_spec_boolean(
@@ -183,7 +183,7 @@
 
 	for(ix = 0; bool_props[ix].name; ix++)
 	{
-		debug("Property %u=%s (Boolean)",(unsigned int) klass->properties.type.boolean + ix, bool_props[ix].name);
+//		debug("Property %u=%s (Boolean)",(unsigned int) klass->properties.type.boolean + ix, bool_props[ix].name);
 		spec = g_param_spec_boolean(
 					bool_props[ix].name,
 					bool_props[ix].name,
@@ -202,7 +202,7 @@
 
 	for(ix = 0; int_props[ix].name; ix++)
 	{
-		debug("Property %u=%s (Integer)",(unsigned int) klass->properties.type.integer + ix, int_props[ix].name);
+//		debug("Property %u=%s (Integer)",(unsigned int) klass->properties.type.integer + ix, int_props[ix].name);
 
 		spec = g_param_spec_int(
 			int_props[ix].name,
@@ -224,7 +224,7 @@
 
 	for(ix = 0; uint_props[ix].name; ix++)
 	{
-		debug("Property %u=%s (unsigned)",(unsigned int) klass->properties.type.integer + ix, uint_props[ix].name);
+//		debug("Property %u=%s (unsigned)",(unsigned int) klass->properties.type.integer + ix, uint_props[ix].name);
 
 		spec = g_param_spec_uint(
 			uint_props[ix].name,
@@ -247,7 +247,7 @@
 	for(ix = 0; str_props[ix].name; ix++)
 	{
 
-		debug("Property %u=%s (String)",(unsigned int) klass->properties.type.str + ix, str_props[ix].name);
+//		debug("Property %u=%s (String)",(unsigned int) klass->properties.type.str + ix, str_props[ix].name);
 
 		spec = g_param_spec_string(
 					str_props[ix].name,

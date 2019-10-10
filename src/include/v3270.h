@@ -284,7 +284,6 @@
  LIB3270_EXPORT int				  v3270_save_copy(GtkWidget *widget, const gchar *filename, GError **error);
 
  // Misc
- LIB3270_EXPORT int				  v3270_exec_command(GtkWidget *widget, const gchar *cmdline);
  LIB3270_EXPORT void			  v3270_zoom_best(GtkWidget *widget);
  LIB3270_EXPORT void			  v3270_zoom_in(GtkWidget *widget);
  LIB3270_EXPORT void			  v3270_zoom_out(GtkWidget *widget);

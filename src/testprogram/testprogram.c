@@ -70,7 +70,9 @@
 	}
 
 	// Create trace window
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),v3270_trace_new(terminal),gtk_label_new("Trace"));
+	GtkWidget *trace = v3270_trace_new(terminal);
+	debug("Trace=%p",trace);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),trace,gtk_label_new("Trace"));
 	// v3270_trace_window_new(terminal,NULL);
 
 	// Setup and show main window

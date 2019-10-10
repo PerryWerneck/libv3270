@@ -36,62 +36,17 @@
  *
  */
 
- #include <gtk/gtk.h>
+ #include "private.h"
 
- #define ENABLE_NLS
- #define GETTEXT_PACKAGE PACKAGE_NAME
-
- #include <libintl.h>
- #include <glib/gi18n.h>
-
- #include <v3270.h>
- #include <lib3270.h>
- #include <lib3270/log.h>
- #include <lib3270/trace.h>
+ #include <lib3270/toggle.h>
  #include <lib3270/properties.h>
- #include <v3270/trace.h>
- #include <v3270/dialogs.h>
  #include <internals.h>
-
-#if defined( HAVE_SYSLOG )
- #include <syslog.h>
-#endif // HAVE_SYSLOG
+ #include <v3270/dialogs.h>
+ #include "marshal.h"
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
- G_BEGIN_DECLS
-
- struct _V3270TraceClass
- {
- 	GtkBoxClass parent_class;
-
- };
-
- struct _V3270Trace
- {
- 	GtkBox				  parent;
- 	H3270				* hSession;		///< @brief TN3270 Session.
- 	GtkWidget			* terminal;		///< @brief V3270 Widget.
- 	GtkScrolledWindow	* scroll;
-
- 	GtkTextView			* view;			///< @brief Text view;
-	GtkTextBuffer		* text;			///< @brief Trace window contents.
-	GtkEntry			* entry;		///< @brief Command line entry.
-	GtkWidget 			* buttons;		///< @brief Button bar.
-
- 	gchar 				* filename;		///< @brief Selected file name.
-
-	guint 				  log_handler;	///< @brief GTK Log Handler.
-
-	/// @brief lib3270's saved trace handler.
-	struct {
-			void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
-			void *userdata;
-	} trace;
-
- };
-
- G_END_DECLS
+ guint v3270_trace_signal[V3270_TRACE_SIGNAL_LAST]	= { 0 };
 
  G_DEFINE_TYPE(V3270Trace, V3270Trace, GTK_TYPE_BOX);
 
@@ -151,9 +106,23 @@
 	G_OBJECT_CLASS(V3270Trace_parent_class)->finalize(object);
  }
 
- static void V3270Trace_class_init(G_GNUC_UNUSED V3270TraceClass *klass)
+ static void V3270Trace_class_init(V3270TraceClass *klass)
  {
-	G_OBJECT_CLASS(klass)->finalize = finalize;
+	GObjectClass * gobject_class = G_OBJECT_CLASS(klass);
+
+	gobject_class->finalize = finalize;
+
+	v3270_trace_signal[V3270_TRACE_SIGNAL_COMMAND] =
+		g_signal_new(	"command",
+						G_OBJECT_CLASS_TYPE(klass),
+						G_SIGNAL_RUN_LAST,
+						0,
+						NULL, NULL,
+						v3270trace_BOOLEAN__POINTER_POINTER,
+						G_TYPE_BOOLEAN, 2, G_TYPE_POINTER, G_TYPE_POINTER);
+
+
+
  }
 
  static void v3270_trace_execute(GtkWidget *widget, const gchar *cmd)
@@ -167,7 +136,7 @@
 
 	if(trace->terminal)
 	{
-		int rc = v3270_exec_command(trace->terminal,cmd);
+		int rc = v3270_trace_exec_command(widget,cmd);
 		if(rc)
 			v3270_trace_printf(widget, "rc=%d (%s)\n",rc,strerror(rc));
 	}
@@ -249,6 +218,9 @@
 
  static void V3270Trace_init(V3270Trace *widget)
  {
+
+ 	debug("%s(%p)",__FUNCTION__,widget);
+
  	gtk_orientable_set_orientation(GTK_ORIENTABLE(widget),GTK_ORIENTATION_VERTICAL);
 
  	// Create toolbar
