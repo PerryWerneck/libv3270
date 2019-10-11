@@ -36,8 +36,8 @@
 
  G_BEGIN_DECLS
 
- LIB3270_EXPORT gboolean	v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE ix);
- LIB3270_EXPORT gboolean	v3270_set_toggle(GtkWidget *widget, LIB3270_TOGGLE ix, gboolean state);
+ LIB3270_EXPORT gboolean	v3270_get_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID ix);
+ LIB3270_EXPORT gboolean	v3270_set_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID ix, gboolean state);
 
  G_END_DECLS
 

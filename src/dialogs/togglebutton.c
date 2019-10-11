@@ -43,9 +43,9 @@
  {
  	GtkToggleButton parent;
 
- 	H3270			* hSession;
- 	LIB3270_TOGGLE	  id;
- 	const void		* hListener;
+ 	H3270				* hSession;
+ 	LIB3270_TOGGLE_ID	  id;
+ 	const void			* hListener;
 
  };
 
@@ -98,13 +98,13 @@
  {
  }
 
- static void toggle_listener(H3270 G_GNUC_UNUSED(*hSession), LIB3270_TOGGLE toggle, char state, void *button)
+ static void toggle_listener(H3270 G_GNUC_UNUSED(*hSession), LIB3270_TOGGLE_ID toggle, char state, void *button)
  {
  	g_message("%s is %s\n", lib3270_get_toggle_name(toggle),(state ? "ON" : "OFF"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),(state == 0 ? FALSE : TRUE));
  }
 
- GtkWidget * v3270_toggle_button_new(GtkWidget *terminal, LIB3270_TOGGLE toggle)
+ GtkWidget * v3270_toggle_button_new(GtkWidget *terminal, LIB3270_TOGGLE_ID toggle)
  {
  	g_return_val_if_fail(GTK_IS_V3270(terminal),NULL);
 

@@ -122,7 +122,7 @@
  typedef struct _V3270ToggleButton		V3270ToggleButton;
  typedef struct _V3270ToggleButtonClass	V3270ToggleButtonClass;
 
- G_GNUC_INTERNAL GtkWidget * v3270_toggle_button_new(GtkWidget *widget, LIB3270_TOGGLE toggle);
+ G_GNUC_INTERNAL GtkWidget * v3270_toggle_button_new(GtkWidget *widget, LIB3270_TOGGLE_ID toggle);
 
  // Activity list widget.
  #define GTK_TYPE_V3270_FT_ACTIVITY_LIST				(V3270FTActivityList_get_type ())

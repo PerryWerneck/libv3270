@@ -157,7 +157,7 @@ gboolean v3270_query_tooltip(GtkWidget  *widget, gint x, gint y, G_GNUC_UNUSED g
 	return FALSE;
 }
 
-static void v3270_toggle_changed(G_GNUC_UNUSED v3270 *widget, G_GNUC_UNUSED LIB3270_TOGGLE toggle_id, G_GNUC_UNUSED gboolean toggle_state, G_GNUC_UNUSED const gchar *toggle_name)
+static void v3270_toggle_changed(G_GNUC_UNUSED v3270 *widget, G_GNUC_UNUSED LIB3270_TOGGLE_ID toggle_id, G_GNUC_UNUSED gboolean toggle_state, G_GNUC_UNUSED const gchar *toggle_name)
 {
 }
 

@@ -70,7 +70,7 @@ static void set_timer(H3270 *session, unsigned char on)
 
 }
 
-static void update_toggle(H3270 *session, LIB3270_TOGGLE ix, unsigned char value, G_GNUC_UNUSED LIB3270_TOGGLE_TYPE reason, const char *name)
+static void update_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, unsigned char value, G_GNUC_UNUSED LIB3270_TOGGLE_TYPE reason, const char *name)
 {
 	GtkWidget	* widget = GTK_WIDGET(lib3270_get_user_data(session));
  	v3270Class	* klass = GTK_V3270_GET_CLASS(widget);

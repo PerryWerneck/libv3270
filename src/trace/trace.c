@@ -327,7 +327,7 @@
 	{
  		size_t ix;
 
-		static const LIB3270_TOGGLE toggles[] = {
+		static const LIB3270_TOGGLE_ID toggles[] = {
 				LIB3270_TOGGLE_DS_TRACE,
 				LIB3270_TOGGLE_NETWORK_TRACE,
 				LIB3270_TOGGLE_EVENT_TRACE,
