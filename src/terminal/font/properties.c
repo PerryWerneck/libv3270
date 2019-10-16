@@ -66,11 +66,13 @@ LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 		g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_UPDATE_CONFIG], 0, "font-family", name);
 		g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.font_family);
 
-		v3270_reconfigure(terminal);
-		gtk_widget_queue_draw(widget);
+		if(gtk_widget_get_realized(widget) && gtk_widget_get_has_window(widget))
+		{
+			v3270_reconfigure(terminal);
+			gtk_widget_queue_draw(widget);
+		}
 
 	}
-
 
 }
 

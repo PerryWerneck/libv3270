@@ -428,27 +428,6 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 
     cairo_destroy(cr);
 
-	/*
-	v3270 * terminal = GTK_V3270(widget);
-	cairo_t * cr;
-
-
-
-	// Create new terminal image
-	if(terminal->surface)
-		cairo_surface_destroy(terminal->surface);
-
-	terminal->surface = (cairo_surface_t *) gdk_window_create_similar_surface(gtk_widget_get_window(widget),CAIRO_CONTENT_COLOR,width,height);
-
-	// Update the created image
-	cr = cairo_create(terminal->surface);
-	v3270_compute_font_size(terminal, cr, width, height);
-	v3270_update_font_metrics(terminal, width, height);
-
-	v3270_redraw(terminal, cr, width, height);
-
-    cairo_destroy(cr);
-    */
 }
 
 void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor)
