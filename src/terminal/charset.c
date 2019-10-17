@@ -27,15 +27,19 @@
  *
  */
 
+ #include <config.h>
+
+ #ifdef _WIN32
+	#include <winsock2.h>
+	#include <windows.h>
+	#include <lmcons.h>
+ #endif // _WIN32
+
  #include <terminal.h>
  #include <v3270.h>
  #include <lib3270/charset.h>
  #include <lib3270/log.h>
  #include <v3270/dialogs.h>
-
-#ifdef _WIN32
-	#include <lmcons.h>
-#endif // _WIN32
 
  #define ERROR_DOMAIN g_quark_from_static_string(PACKAGE_NAME)
 
