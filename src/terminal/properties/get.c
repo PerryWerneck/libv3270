@@ -141,6 +141,19 @@ LIB3270_EXPORT const gchar * v3270_get_session_name(GtkWidget *widget)
 
 }
 
+LIB3270_EXPORT gchar * v3270_get_session_title(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+
+	const char * url = lib3270_get_url(GTK_V3270(widget)->host);
+
+	if(!url)
+		url = _( "No host defined" );
+
+	return g_strconcat(v3270_get_session_name(widget)," - ",url,NULL);
+
+}
+
 LIB3270_EXPORT H3270 * v3270_get_session(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
