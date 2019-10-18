@@ -125,7 +125,6 @@ make %{?_smp_mflags}
 %doc AUTHORS README.md LICENSE
 %endif
 
-%{_libdir}/%{name}.so.%{MAJOR_VERSION}
 %{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
 %{_datadir}/%{_product}/colors.conf
