@@ -130,12 +130,12 @@ LIB3270_EXPORT const gchar * v3270_get_session_name(GtkWidget *widget)
 
 	v3270 * terminal = GTK_V3270(widget);
 
-	if(terminal->session_name)
-		return terminal->session_name;
+	if(terminal->session.name)
+		return terminal->session.name;
 
 	char id[] = { lib3270_get_session_id(terminal->host), 0 };
 	if(id[0])
-		return (terminal->session_name = g_strconcat(G_STRINGIFY(PRODUCT_NAME),":",id,NULL));
+		return (terminal->session.name = g_strconcat(G_STRINGIFY(PRODUCT_NAME),":",id,NULL));
 
 	return G_STRINGIFY(PRODUCT_NAME);
 
@@ -145,12 +145,17 @@ LIB3270_EXPORT gchar * v3270_get_session_title(GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
-	const char * url = lib3270_get_url(GTK_V3270(widget)->host);
+	v3270 * terminal = GTK_V3270(widget);
 
-	if(!url)
-		url = _( "No host defined" );
+	const gchar * title = terminal->session.title;
 
-	return g_strconcat(v3270_get_session_name(widget)," - ",url,NULL);
+	if(!title)
+		title = lib3270_get_url(GTK_V3270(widget)->host);
+
+	if(!title)
+		title = _( "No host defined" );
+
+	return g_strconcat(v3270_get_session_name(widget)," - ",title,NULL);
 
 }
 

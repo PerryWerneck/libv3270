@@ -590,10 +590,16 @@ static void v3270_destroy(GtkWidget *widget)
 
     v3270_clear_selection(terminal);
 
-	if(terminal->session_name)
+	if(terminal->session.name)
 	{
-		g_free(terminal->session_name);
-		terminal->session_name = NULL;
+		g_free(terminal->session.name);
+		terminal->session.name = NULL;
+	}
+
+	if(terminal->session.title)
+	{
+		g_free(terminal->session.title);
+		terminal->session.title = NULL;
 	}
 
 	GTK_WIDGET_CLASS(v3270_parent_class)->destroy(widget);
