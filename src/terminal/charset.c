@@ -302,11 +302,9 @@
 
 	if(text && !error)
 	{
-
 		GMarkupParseContext	* context = g_markup_parse_context_new(&parser,G_MARKUP_TREAT_CDATA_AS_TEXT|G_MARKUP_PREFIX_ERROR_POSITION,&cfg,NULL);
 		g_markup_parse_context_parse(context,text,strlen(text),&error);
 		g_markup_parse_context_free(context);
-
 	}
 
 	debug("error=%p",error);
@@ -337,6 +335,8 @@
 
 	g_free(cfg.host);
 	g_free(cfg.display);
+
+	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.remap_file);
 
  }
 

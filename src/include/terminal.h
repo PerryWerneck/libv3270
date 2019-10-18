@@ -50,6 +50,9 @@ G_BEGIN_DECLS
 		GParamSpec * luname;
 		GParamSpec * model;
 		GParamSpec * selection;
+		GParamSpec * session_name;
+		GParamSpec * auto_disconnect;
+		GParamSpec * remap_file;
 
 		struct
 		{

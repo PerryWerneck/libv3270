@@ -171,6 +171,7 @@ LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 	debug("New session name is \"%s\"",GTK_V3270(widget)->session_name);
 
 	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_SESSION_CHANGED], 0);
+	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.session_name);
 
 }
 
@@ -203,6 +204,14 @@ void v3270_set_cursor(GtkWidget *widget, LIB3270_POINTER id)
 LIB3270_EXPORT void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
- 	GTK_V3270(widget)->activity.disconnect = minutes;
+
+	v3270 * terminal = GTK_V3270(widget);
+
+	if(terminal->activity.disconnect != minutes)
+	{
+		terminal->activity.disconnect = minutes;
+ 		g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.auto_disconnect);
+	}
+
 }
 

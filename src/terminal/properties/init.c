@@ -93,7 +93,7 @@
 	);
 
 	// Session name.
-	spec = g_param_spec_string(
+	klass->properties.session_name = g_param_spec_string(
 							"session_name",
 							"session_name",
 							_("TN3270 Session name"),
@@ -104,11 +104,11 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_SESSION_NAME,
-		spec
+		klass->properties.session_name
 	);
 
 	// Auto disconnect
-	spec = g_param_spec_string(
+	klass->properties.auto_disconnect = g_param_spec_string(
 							"auto_disconnect",
 							"auto_disconnect",
 							_("IDLE minutes for automatic disconnection"),
@@ -119,7 +119,7 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_AUTO_DISCONNECT,
-		spec
+		klass->properties.auto_disconnect
 	);
 
 	// Clipboard
@@ -138,7 +138,7 @@
 	);
 
 	// Remap file
-	spec = g_param_spec_string(
+	klass->properties.remap_file = g_param_spec_string(
 							"remap",
 							"remap",
 							_("XML file with remap table"),
@@ -149,7 +149,7 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_REMAP_FILE,
-		spec
+		klass->properties.remap_file
 	);
 
 	//
