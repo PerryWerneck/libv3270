@@ -42,6 +42,7 @@
  	} properties[] = {
  		{ "connected",		&klass->properties.online		},
  		{ "luname",			&klass->properties.luname		},
+ 		{ "url",			&klass->properties.url			},
  		{ "model",			&klass->properties.model		},
  		{ "has-selection",	&klass->properties.selection	},
  	};

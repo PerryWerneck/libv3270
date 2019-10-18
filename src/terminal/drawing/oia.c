@@ -694,24 +694,18 @@ cairo_t * v3270_oia_set_update_region(v3270 * terminal, GdkRectangle **r, V3270_
 	return cr;
 }
 
-void v3270_update_luname(GtkWidget *widget,const gchar *name)
+gboolean v3270_update_luname(v3270 *terminal)
 {
-	cairo_t 		* cr;
-	GdkRectangle	* rect;
-	v3270			* terminal = GTK_V3270(widget);
-
 	if(terminal->surface)
 	{
-		cr = v3270_oia_set_update_region(terminal,&rect,V3270_OIA_LUNAME);
+		GdkRectangle * rect;
+		cairo_t * cr = v3270_oia_set_update_region(terminal,&rect,V3270_OIA_LUNAME);
 
+		const char * name = lib3270_get_luname(terminal->host);
 		if(name)
 		{
-//			cairo_move_to(cr,rect->x,rect->y+terminal->font.height);
-//			cairo_show_text(cr,name);
-//			cairo_stroke(cr);
 			gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_LUNAME);
 			v3270_draw_text_at(cr, rect->x, rect->y, &terminal->font, name);
-
 		}
 
 		cairo_destroy(cr);
@@ -719,8 +713,9 @@ void v3270_update_luname(GtkWidget *widget,const gchar *name)
 		v3270_queue_draw_area(GTK_WIDGET(terminal),rect->x,rect->y,rect->width,rect->height);
 	}
 
-	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.luname);
+	g_object_notify_by_pspec(G_OBJECT(terminal), GTK_V3270_GET_CLASS(terminal)->properties.luname);
 
+ 	return FALSE;
 }
 
 void v3270_update_message(v3270 *widget, LIB3270_MESSAGE id)

@@ -227,7 +227,7 @@ G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned
 
  G_GNUC_INTERNAL void		  v3270_clear_selection(v3270 *terminal);
 
- G_GNUC_INTERNAL void		  v3270_update_cursor_surface(v3270 *widget,unsigned char chr,unsigned short attr);
+ G_GNUC_INTERNAL void		  v3270_update_cursor_surface(v3270 *widget, unsigned char chr, unsigned short attr);
 
  G_GNUC_INTERNAL void		  v3270_register_io_handlers(v3270Class *cls);
 
@@ -257,7 +257,6 @@ G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned
 
  G_GNUC_INTERNAL void		  v3270_blink_ssl(v3270 *terminal);
 
- G_GNUC_INTERNAL void		  v3270_update_luname(GtkWidget *widget,const gchar *name);
  G_GNUC_INTERNAL void		  v3270_init_properties(GObjectClass * gobject_class);
  G_GNUC_INTERNAL void		  v3270_queue_draw_area(GtkWidget *widget, gint x, gint y, gint width, gint height);
 
@@ -287,6 +286,10 @@ G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned
  // Tools
  G_GNUC_INTERNAL void 		  v3270_translate_text_to_rgba(const gchar *colors, GdkRGBA *clr);
  G_GNUC_INTERNAL gchar		* v3270_translate_rgba_to_text(GdkRGBA *clr);
+
+ // Properties
+ G_GNUC_INTERNAL gboolean	  v3270_update_luname(v3270 *terminal);
+ G_GNUC_INTERNAL void		  v3270_update_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID id, unsigned char value, const char *name);
 
 G_END_DECLS
 

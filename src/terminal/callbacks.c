@@ -70,74 +70,9 @@ static void set_timer(H3270 *session, unsigned char on)
 
 }
 
-static void update_toggle(H3270 *session, LIB3270_TOGGLE_ID ix, unsigned char value, G_GNUC_UNUSED LIB3270_TOGGLE_TYPE reason, const char *name)
+static void update_toggle(H3270 *session, LIB3270_TOGGLE_ID id, unsigned char value, G_GNUC_UNUSED LIB3270_TOGGLE_TYPE reason, const char *name)
 {
-	GtkWidget	* widget = GTK_WIDGET(lib3270_get_user_data(session));
- 	v3270Class	* klass = GTK_V3270_GET_CLASS(widget);
-
- 	trace("%s(%s,%d)",__FUNCTION__,name,(int) value);
-
-	switch(ix)
-	{
-	case LIB3270_TOGGLE_CURSOR_POS:
-	case LIB3270_TOGGLE_MONOCASE:
-	case LIB3270_TOGGLE_LINE_WRAP:
-	case LIB3270_TOGGLE_CROSSHAIR:
-	case LIB3270_TOGGLE_BLANK_FILL:
-	case LIB3270_TOGGLE_MARGINED_PASTE:
-	case LIB3270_TOGGLE_SHOW_TIMING:
-	case LIB3270_TOGGLE_RECTANGLE_SELECT:
-	case LIB3270_TOGGLE_UNDERLINE:
-	case LIB3270_TOGGLE_VIEW_FIELD:
-	case LIB3270_TOGGLE_ALTSCREEN:
-		v3270_reload(widget);
-		gtk_widget_queue_draw(widget);
-		break;
-
-	case LIB3270_TOGGLE_CURSOR_BLINK:
-		GTK_V3270(widget)->cursor.show |= 1;
-		break;
-
-	case LIB3270_TOGGLE_INSERT:
-		v3270_draw_ins_status(GTK_V3270(widget));
-		v3270_cursor_draw(GTK_V3270(widget));
-		break;
-
-	case LIB3270_TOGGLE_BOLD:
-		v3270_reconfigure(GTK_V3270(widget));
-		gtk_widget_queue_draw(widget);
-		break;
-
-	case LIB3270_TOGGLE_FULL_SCREEN:
-		if(value)
-			gtk_window_fullscreen(GTK_WINDOW(gtk_widget_get_toplevel(widget)));
-		else
-			gtk_window_unfullscreen(GTK_WINDOW(gtk_widget_get_toplevel(widget)));
-
-		break;
-
-	case LIB3270_TOGGLE_DS_TRACE:
-	case LIB3270_TOGGLE_SSL_TRACE:
-	case LIB3270_TOGGLE_SCREEN_TRACE:
-	case LIB3270_TOGGLE_EVENT_TRACE:
-	case LIB3270_TOGGLE_RECONNECT:
-	case LIB3270_TOGGLE_SMART_PASTE:
-	case LIB3270_TOGGLE_KEEP_SELECTED:
-	case LIB3270_TOGGLE_CONNECT_ON_STARTUP:
-	case LIB3270_TOGGLE_KP_ALTERNATIVE:
-	case LIB3270_TOGGLE_NETWORK_TRACE:
-	case LIB3270_TOGGLE_BEEP:
-	case LIB3270_TOGGLE_KEEP_ALIVE:
-		break;
-
-	case LIB3270_TOGGLE_COUNT:
-		break;
-
-	}
-
-	g_object_notify_by_pspec(G_OBJECT(widget), klass->properties.toggle[ix]);
-	g_signal_emit(widget, v3270_widget_signal[V3270_SIGNAL_TOGGLE_CHANGED], 0, (guint) ix, (gboolean) (value != 0), (gchar *) name);
-
+	v3270_update_toggle((GtkWidget *) lib3270_get_user_data(session), id, value, name);
 }
 
 static gboolean bg_update_message(H3270 *session)
@@ -162,9 +97,21 @@ static void update_message(H3270 *session, G_GNUC_UNUSED LIB3270_MESSAGE id)
 	g_idle_add((GSourceFunc) bg_update_message, session);
 }
 
-static void update_luname(H3270 *session, const char *name)
+static void update_luname(H3270 *session, const char G_GNUC_UNUSED(*name))
 {
-	v3270_update_luname(GTK_WIDGET(lib3270_get_user_data(session)),name);
+	g_idle_add((GSourceFunc) v3270_update_luname, lib3270_get_user_data(session));
+}
+
+static gboolean	v3270_update_url(v3270 *terminal)
+{
+	debug("url=%s",v3270_get_url(GTK_WIDGET(terminal)));
+	g_object_notify_by_pspec(G_OBJECT(terminal), GTK_V3270_GET_CLASS(terminal)->properties.url);
+	return FALSE;
+}
+
+static void update_url(H3270 *session, const char G_GNUC_UNUSED(*name))
+{
+	g_idle_add((GSourceFunc) v3270_update_url, lib3270_get_user_data(session));
 }
 
 struct select_cursor_data
@@ -202,11 +149,7 @@ static void ctlr_done(H3270 *session)
 {
 	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
 
-#if GTK_CHECK_VERSION(2,20,0)
 	if(gtk_widget_get_realized(widget) && gtk_widget_get_has_window(widget))
-#else
-	if(GTK_WIDGET_REALIZED(widget) && widget->window)
-#endif // GTK(2,20)
 	{
 		v3270_update_mouse_pointer(widget);
 	}
@@ -220,7 +163,7 @@ static void update_connect(H3270 *session, unsigned char connected)
 	if(connected)
 	{
 		widget->cursor.show |= 2;
-		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_CONNECTED], 0, lib3270_get_host(session));
+		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_CONNECTED], 0, lib3270_get_url(session));
 	}
 	else
 	{
@@ -495,6 +438,8 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->update_selection	= update_selection;
 
 	cbk->update_luname		= update_luname;
+	cbk->update_url			= update_url;
+
 	cbk->configure			= update_screen_size;
 	cbk->update_status 		= update_message;
 	cbk->update_cursor 		= v3270_update_cursor;

@@ -37,6 +37,8 @@
  #include <lib3270/log.h>
  #include <stdlib.h>
 
+ #pragma GCC diagnostic ignored "-Wunused-parameter"
+
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  static void print_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)

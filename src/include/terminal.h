@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 
 		// Signal related properties
 		GParamSpec * online;
+		GParamSpec * url;
 		GParamSpec * luname;
 		GParamSpec * model;
 		GParamSpec * selection;

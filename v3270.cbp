@@ -265,14 +265,14 @@
 		<Unit filename="src/terminal/properties/init.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/terminal/properties/methods.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/terminal/properties/private.h" />
 		<Unit filename="src/terminal/properties/set.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/security.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/toggles.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/widget.c">

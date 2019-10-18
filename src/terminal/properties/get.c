@@ -150,3 +150,11 @@ LIB3270_EXPORT gboolean v3270_is_connected(GtkWidget *widget)
 	return lib3270_is_connected(GTK_V3270(widget)->host) ? TRUE : FALSE;
 }
 
+LIB3270_EXPORT guint v3270_get_auto_disconnect(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),0);
+ 	return GTK_V3270(widget)->activity.disconnect;
+}
+
+
+

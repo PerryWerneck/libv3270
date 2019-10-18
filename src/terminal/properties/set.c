@@ -200,3 +200,9 @@ void v3270_set_cursor(GtkWidget *widget, LIB3270_POINTER id)
 	);
 }
 
+LIB3270_EXPORT void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)
+{
+	g_return_if_fail(GTK_IS_V3270(widget));
+ 	GTK_V3270(widget)->activity.disconnect = minutes;
+}
+
