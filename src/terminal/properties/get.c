@@ -124,17 +124,21 @@ LIB3270_EXPORT const gchar * v3270_get_luname(GtkWidget *widget)
 	return lib3270_get_luname(GTK_V3270(widget)->host);
 }
 
-LIB3270_EXPORT const gchar	* v3270_get_session_name(GtkWidget *widget)
+LIB3270_EXPORT const gchar * v3270_get_session_name(GtkWidget *widget)
 {
-#ifdef DEBUG
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+
 	v3270 * terminal = GTK_V3270(widget);
-	debug("Session name: [%s] Application name: [%s]",terminal->session_name, g_get_application_name());
-#endif // DEBUG
 
-	if(!(GTK_IS_V3270(widget) && GTK_V3270(widget)->session_name))
-		return g_get_application_name();
+	if(terminal->session_name)
+		return terminal->session_name;
 
-	return GTK_V3270(widget)->session_name;
+	char id[] = { lib3270_get_session_id(terminal->host), 0 };
+	if(id[0])
+		return (terminal->session_name = g_strconcat(G_STRINGIFY(PRODUCT_NAME),":",id,NULL));
+
+	return G_STRINGIFY(PRODUCT_NAME);
+
 }
 
 LIB3270_EXPORT H3270 * v3270_get_session(GtkWidget *widget)

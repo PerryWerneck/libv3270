@@ -43,6 +43,10 @@
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
+ static void session_changed(GtkWidget *terminal, GtkWidget *window) {
+	gtk_window_set_title(GTK_WINDOW(window),v3270_get_session_name(terminal));
+ }
+
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
@@ -76,10 +80,13 @@
 	// v3270_trace_window_new(terminal,NULL);
 
 	// Setup and show main window
+	gtk_window_set_title(GTK_WINDOW(window),v3270_get_session_name(terminal));
 	gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
 	gtk_container_add(GTK_CONTAINER(window),vBox);
 	gtk_widget_show_all(window);
+
+	g_signal_connect(G_OBJECT(terminal),"session_changed",G_CALLBACK(session_changed),window);
 
 	gtk_widget_grab_focus(terminal);
 
