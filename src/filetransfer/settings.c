@@ -117,7 +117,7 @@ static void V3270FTSettings_has_activity(GtkWidget G_GNUC_UNUSED(*widget), gbool
 	klass->signal.has_activity = V3270FTSettings_has_activity;
 
 	v3270_ft_settings_signals[V3270_FT_SETTINGS_VALIDITY_SIGNAL] =
-		g_signal_new(	"validity",
+		g_signal_new(	I_("validity"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (V3270FTSettingsClass, signal.validity),
@@ -127,7 +127,7 @@ static void V3270FTSettings_has_activity(GtkWidget G_GNUC_UNUSED(*widget), gbool
 
 
 	v3270_ft_settings_signals[V3270_FT_SETTINGS_HAS_ACTIVITY_SIGNAL] =
-		g_signal_new(	"has-activity",
+		g_signal_new(	I_("has-activity"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (V3270FTSettingsClass, signal.has_activity),

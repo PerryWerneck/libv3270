@@ -37,6 +37,7 @@
 
  #include "private.h"
  #include "marshal.h"
+ #include <internals.h>
  #include <lib3270/filetransfer.h>
 
 /*--[ GTK Requires ]---------------------------------------------------------------------------------*/
@@ -316,7 +317,7 @@ static void v3270ftprogress_class_init(v3270ftprogressClass *klass) {
 	dialog_class->close		= dialog_close;
 
 	v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_SUCCESS] =
-		g_signal_new(	"success",
+		g_signal_new(	I_("success"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 						0,
@@ -325,7 +326,7 @@ static void v3270ftprogress_class_init(v3270ftprogressClass *klass) {
 						G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER);
 
 	v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED] =
-		g_signal_new(	"failed",
+		g_signal_new(	I_("failed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 						0,

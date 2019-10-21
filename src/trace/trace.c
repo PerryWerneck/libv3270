@@ -113,7 +113,7 @@
 	gobject_class->finalize = finalize;
 
 	v3270_trace_signal[V3270_TRACE_SIGNAL_COMMAND] =
-		g_signal_new(	"command",
+		g_signal_new(	I_("command"),
 						G_OBJECT_CLASS_TYPE(klass),
 						G_SIGNAL_RUN_LAST,
 						0,

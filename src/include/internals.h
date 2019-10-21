@@ -44,7 +44,10 @@
  #include <v3270.h>
  #include <v3270/toggle.h>
 
-  G_BEGIN_DECLS
+ G_BEGIN_DECLS
+
+ /* not really I18N-related, but also a string marker macro */
+ #define I_(string) g_intern_static_string (string)
 
 /*--[ Structures ]-----------------------------------------------------------------------------------*/
 

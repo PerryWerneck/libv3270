@@ -139,7 +139,7 @@
 	klass->signal.has_file = V3270FTActivityList_has_file;
 
 	v3270_activity_list_signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL] =
-		g_signal_new(	"has-file",
+		g_signal_new(	I_("has-file"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (V3270FTActivityListClass, signal.has_file),
@@ -148,7 +148,7 @@
 						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
 	v3270_activity_list_signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL] =
-		g_signal_new(	"changed",
+		g_signal_new(	I_("changed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,

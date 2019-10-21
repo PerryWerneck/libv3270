@@ -145,7 +145,7 @@
 
 	v3270_worker_signals[V3270_WORKER_ACTIVITY_SIGNAL] =
 		g_signal_new(
-			"activity",
+			I_("activity"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
 			G_SIGNAL_RUN_FIRST,
 			0,
@@ -156,7 +156,7 @@
 
  	v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL] =
 		g_signal_new(
-			"failed",
+			I_("failed"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
 			G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 			0,
@@ -167,7 +167,7 @@
 
  	v3270_worker_signals[V3270_WORKER_TRANSFER_SUCCESS_SIGNAL] =
 		g_signal_new(
-			"success",
+			I_("success"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
 			G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 			0,
@@ -178,7 +178,7 @@
 
  	v3270_worker_signals[V3270_WORKER_TRANSFER_STATE_SIGNAL] =
 		g_signal_new(
-			"ft-state-changed",
+			I_("ft-state-changed"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
 			G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 			0,

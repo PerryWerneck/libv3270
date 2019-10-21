@@ -100,7 +100,7 @@
 
 	color_signal[CHANGED] =
 		g_signal_new(
-			"update-colors",
+			I_("update-colors"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
 			G_SIGNAL_RUN_FIRST,
 			0,

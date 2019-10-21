@@ -285,7 +285,7 @@ static void v3270_class_init(v3270Class *klass)
 
 	// Signals
 	widget_class->activate_signal =
-		g_signal_new(	"activate",
+		g_signal_new(	I_("activate"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 						G_STRUCT_OFFSET (v3270Class, activate),
@@ -294,7 +294,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 0);
 
 	v3270_widget_signal[V3270_SIGNAL_TOGGLE_CHANGED] =
-		g_signal_new(	"toggle_changed",
+		g_signal_new(	I_("toggle_changed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (v3270Class, toggle_changed),
@@ -303,7 +303,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 3, G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_MESSAGE_CHANGED] =
-		g_signal_new(	"message_changed",
+		g_signal_new(	I_("message_changed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (v3270Class, message_changed),
@@ -312,7 +312,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 1, G_TYPE_UINT);
 
 	v3270_widget_signal[V3270_SIGNAL_KEYPRESS] =
-		g_signal_new(	"keypress",
+		g_signal_new(	I_("keypress"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_LAST,
 						0,
@@ -321,7 +321,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_BOOLEAN, 2, G_TYPE_UINT, G_TYPE_UINT);
 
 	v3270_widget_signal[V3270_SIGNAL_CONNECTED] =
-		g_signal_new(	"connected",
+		g_signal_new(	I_("connected"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -330,7 +330,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_DISCONNECTED] =
-		g_signal_new(	"disconnected",
+		g_signal_new(	I_("disconnected"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -339,7 +339,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 0);
 
 	v3270_widget_signal[V3270_SIGNAL_SESSION_CHANGED] =
-		g_signal_new(	"session_changed",
+		g_signal_new(	I_("session_changed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -348,7 +348,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 0);
 
 	v3270_widget_signal[V3270_SIGNAL_UPDATE_CONFIG] =
-		g_signal_new(	"update_config",
+		g_signal_new(	I_("update_config"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -357,7 +357,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_MODEL_CHANGED] =
-		g_signal_new(	"model_changed",
+		g_signal_new(	I_("model_changed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -366,7 +366,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_SELECTING] =
-		g_signal_new(	"selecting",
+		g_signal_new(	I_("selecting"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -375,7 +375,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
 	v3270_widget_signal[V3270_SIGNAL_POPUP] =
-		g_signal_new(	"popup",
+		g_signal_new(	I_("popup"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_LAST,
 						0,
@@ -384,7 +384,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_BOOLEAN, 3, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_POINTER);
 
 	v3270_widget_signal[V3270_SIGNAL_PASTENEXT] =
-		g_signal_new(	"pastenext",
+		g_signal_new(	I_("pastenext"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -393,7 +393,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
 	v3270_widget_signal[V3270_SIGNAL_CLIPBOARD] =
-		g_signal_new(	"has_text",
+		g_signal_new(	I_("has_text"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -402,7 +402,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
 	v3270_widget_signal[V3270_SIGNAL_CHANGED] =
-		g_signal_new(	"changed",
+		g_signal_new(	I_("changed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -411,7 +411,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_UINT);
 
 	v3270_widget_signal[V3270_SIGNAL_MESSAGE] =
-		g_signal_new(	"popup_message",
+		g_signal_new(	I_("popup_message"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (v3270Class, popup_message),
@@ -420,7 +420,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 4, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_FIELD] =
-		g_signal_new(	"field_clicked",
+		g_signal_new(	I_("field_clicked"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_LAST,
 						0,
@@ -430,7 +430,7 @@ static void v3270_class_init(v3270Class *klass)
 
 
 	v3270_widget_signal[V3270_SIGNAL_PRINT_SETUP] =
-		g_signal_new(	"print-begin",
+		g_signal_new(	I_("print-begin"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -439,7 +439,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 1, G_TYPE_POINTER, 0);
 
 	v3270_widget_signal[V3270_SIGNAL_PRINT_APPLY] =
-		g_signal_new(	"print-apply",
+		g_signal_new(	I_("print-apply"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
@@ -448,7 +448,7 @@ static void v3270_class_init(v3270Class *klass)
 						G_TYPE_NONE, 1, G_TYPE_POINTER, 0);
 
 	v3270_widget_signal[V3270_SIGNAL_PRINT_DONE] =
-		g_signal_new(	"print-done",
+		g_signal_new(	I_("print-done"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
 						0,
