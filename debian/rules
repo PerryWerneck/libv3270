@@ -55,17 +55,16 @@ install: build
 	# Build package
 	make all
 
-	# Install libv3270
-	make DESTDIR=$(PWD)/debian/libv3270 install-linux-lib
-	find $(PWD)/debian/libv3270 -type f | sed -e "s@^$(PWD)/debian/libv3270/@/@g" > $(PWD)/debian/libv3270.install
-
-	# Install glade
-	make DESTDIR=$(PWD)/debian/libv3270-glade install-glade
-	find $(PWD)/debian/libv3270-glade -type f | sed -e "s@^$(PWD)/debian/libv3270-glade/@/@g" > $(PWD)/debian/libv3270-glade.install
+	# Install library
+	make DESTDIR=$(PWD)/debian/$(PACKAGE_NAME) install-linux-lib
 
 	# Install dev
-	make DESTDIR=$(PWD)/debian/libv3270-dev install-dev
-	find $(PWD)/debian/libv3270-dev -type f | sed -e "s@^$(PWD)/debian/libv3270-dev/@/@g" > $(PWD)/debian/libv3270-dev.install
+	make DESTDIR=$(PWD)/debian/$(PACKAGE_NAME)-dev install-dev
+	mkdir -p $(PWD)/debian/$(PACKAGE_NAME)-dev/usr/lib
+	mv $(PWD)/debian/$(PACKAGE_NAME)/usr/lib/*.so $(PWD)/debian/$(PACKAGE_NAME)-dev/usr/lib
+  
+	# Install glade
+	make DESTDIR=$(PWD)/debian/libv3270-glade install-glade
 
 	# --- end custom part for installing
 
@@ -92,7 +91,7 @@ binary-arch: build install
 #	dh_undocumented
 	dh_installchangelogs
 	dh_link
-	dh_strip --dbg-package=libv3270-dbg
+	dh_strip --dbg-package=$(PACKAGE_NAME)-dbg
 	dh_compress
 	dh_fixperms
 	dh_makeshlibs
