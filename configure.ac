@@ -56,11 +56,6 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_SED
 AC_PROG_LN_S
-AC_PATH_TOOL([AR], [ar], [ar])
-AC_PATH_TOOL([CONVERT], [convert], [no])
-AC_PATH_TOOL([OPTIPNG],[optipng],[no])
-AC_PATH_TOOL([ZIP],[zip],[no])
-AC_PATH_TOOL([DLLTOOL],[dlltool],[no])
 
 AC_LANG([C])
 
@@ -130,6 +125,10 @@ dnl Check for other programs
 dnl ---------------------------------------------------------------------------
 
 AC_PATH_TOOL([AR], [ar], [ar])
+AC_PATH_TOOL([CONVERT], [convert], [no])
+AC_PATH_TOOL([OPTIPNG],[optipng],[no])
+AC_PATH_TOOL([ZIP],[zip],[no])
+AC_PATH_TOOL([DLLTOOL],[dlltool],[no])
 AC_PATH_TOOL([WINDRES], [windres], [no])
 
 PKG_CHECK_EXISTS
