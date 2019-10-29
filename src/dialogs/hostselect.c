@@ -235,11 +235,19 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 
 }
 
+static void update_message(GtkWidget *widget, GtkWidget *terminal)
+{
+	gtk_widget_set_sensitive(widget, lib3270_is_disconnected(v3270_get_session(terminal)));
+}
 
 static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidgetClass *klass)
 {
-	GTK_V3270_SETTINGS_CLASS(klass)->apply = apply;
-	GTK_V3270_SETTINGS_CLASS(klass)->load = load;
+	V3270SettingsClass * widget = GTK_V3270_SETTINGS_CLASS(klass);
+
+	widget->apply = apply;
+	widget->load = load;
+	widget->update_message = update_message;
+
 }
 
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
@@ -348,11 +356,13 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
+	/*
 	if(v3270_is_connected(widget))
 	{
 		gtk_widget_error_bell(widget);
 		return;
 	}
+	*/
 
 	debug("V3270HostSelectWidget::%s",__FUNCTION__);
 

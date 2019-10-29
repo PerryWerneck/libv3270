@@ -50,11 +50,25 @@ static void load(GtkWidget G_GNUC_UNUSED(*widget), GtkWidget G_GNUC_UNUSED(*term
 	debug("V3270Settings::%s",__FUNCTION__);
 }
 
+static void update_message(GtkWidget G_GNUC_UNUSED(*widget), GtkWidget G_GNUC_UNUSED(*terminal))
+{
+	debug("V3270Settings::%s",__FUNCTION__);
+}
+
+static void finalize(GObject *object)
+{
+	v3270_settings_set_terminal_widget(GTK_WIDGET(object),NULL);
+	G_OBJECT_CLASS(V3270Settings_parent_class)->finalize(object);
+}
+
 static void V3270Settings_class_init(V3270SettingsClass *klass)
 {
     klass->apply = apply;
     klass->cancel = cancel;
     klass->load = load;
+    klass->update_message = update_message;
+
+    G_OBJECT_CLASS(klass)->finalize = finalize;
 }
 
 static void V3270Settings_init(V3270Settings *widget)
@@ -67,13 +81,56 @@ static void V3270Settings_init(V3270Settings *widget)
 
 }
 
- LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal)
- {
-	g_return_if_fail(GTK_IS_V3270(terminal));
+static void signal_update_message(GtkWidget *terminal, LIB3270_MESSAGE G_GNUC_UNUSED(id), GtkWidget *settings)
+{
+	GTK_V3270_SETTINGS_GET_CLASS(settings)->update_message(settings,terminal);
+}
+
+LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal)
+{
 	g_return_if_fail(GTK_IS_V3270_SETTINGS(widget));
 
-    GTK_V3270_SETTINGS(widget)->terminal = terminal;
-    GTK_V3270_SETTINGS_GET_CLASS(widget)->load(widget,terminal);
+	V3270Settings * settings = GTK_V3270_SETTINGS(widget);
+
+	// Return if there's nothing to do.
+	if(settings->terminal == terminal)
+		return;
+
+	if(settings->terminal)
+	{
+		// Disconnect old terminal widget
+		gulong handler = g_signal_handler_find(
+								settings->terminal,
+								G_SIGNAL_MATCH_FUNC|G_SIGNAL_MATCH_DATA,
+								0,
+								0,
+								NULL,
+								G_CALLBACK(signal_update_message),
+								widget
+							);
+
+		debug("handler=%u",(unsigned long) handler);
+
+		if(handler)
+			g_signal_handler_disconnect(settings->terminal, handler);
+
+	}
+
+	// Update terminal
+	settings->terminal = terminal;
+
+	if(settings->terminal)
+	{
+		// Connect the new widget.
+		g_signal_connect(G_OBJECT(terminal),I_("message_changed"), G_CALLBACK(signal_update_message), widget);
+
+		// Update dialog state.
+		GTK_V3270_SETTINGS_GET_CLASS(widget)->update_message(widget,terminal);
+
+		// Load the dialog contents.
+		GTK_V3270_SETTINGS_GET_CLASS(widget)->load(widget,terminal);
+	}
+
  }
 
  LIB3270_EXPORT GtkWidget * v3270_settings_get_terminal_widget(GtkWidget *widget)

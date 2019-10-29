@@ -52,9 +52,10 @@
  typedef struct _V3270SettingsClass	{
  	GtkGridClass parent_class;
 
- 	void (*load)(GtkWidget *widget, GtkWidget *terminal);	///< @brief Method to load the properties from terminal widget
- 	void (*apply)(GtkWidget *widget, GtkWidget *terminal);	///< @brief Method for GTK_RESPONSE_APPLY
- 	void (*cancel)(GtkWidget *widget, GtkWidget *terminal);	///< @brief Method for GTK_RESPONSE_CANCEL
+ 	void (*load)(GtkWidget *widget, GtkWidget *terminal);			///< @brief Method to load the properties from terminal widget
+ 	void (*apply)(GtkWidget *widget, GtkWidget *terminal);			///< @brief Method for GTK_RESPONSE_APPLY
+ 	void (*cancel)(GtkWidget *widget, GtkWidget *terminal);			///< @brief Method for GTK_RESPONSE_CANCEL
+ 	void (*update_message)(GtkWidget *widget, GtkWidget *terminal);	///< @brief Lib3270 message has changed.
 
  } V3270SettingsClass;
 
