@@ -67,14 +67,20 @@ static void V3270Settings_init(V3270Settings *widget)
 
 }
 
-LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal)
-{
+ LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal)
+ {
 	g_return_if_fail(GTK_IS_V3270(terminal));
 	g_return_if_fail(GTK_IS_V3270_SETTINGS(widget));
 
     GTK_V3270_SETTINGS(widget)->terminal = terminal;
     GTK_V3270_SETTINGS_GET_CLASS(widget)->load(widget,terminal);
-}
+ }
+
+ LIB3270_EXPORT GtkWidget * v3270_settings_get_terminal_widget(GtkWidget *widget)
+ {
+	g_return_val_if_fail(GTK_IS_V3270_SETTINGS(widget),NULL);
+    return GTK_V3270_SETTINGS(widget)->terminal;
+ }
 
  LIB3270_EXPORT void v3270_settings_apply(GtkWidget *widget)
  {

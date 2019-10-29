@@ -61,6 +61,8 @@
 /*--[ Prototypes ]-----------------------------------------------------------------------------------*/
 
  LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal);
+ LIB3270_EXPORT GtkWidget * v3270_settings_get_terminal_widget(GtkWidget *widget);
+
  LIB3270_EXPORT GType V3270Settings_get_type(void);
  LIB3270_EXPORT void v3270_settings_apply(GtkWidget *widget);
  LIB3270_EXPORT void v3270_settings_cancel(GtkWidget *widget);
