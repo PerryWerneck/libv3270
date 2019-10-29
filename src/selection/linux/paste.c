@@ -152,8 +152,8 @@ static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_ato
 {
 
 	// If smart paste is enabled try to get formatted clipboard.
-	debug("%s: Smart paste is %s", __FUNCTION__, (lib3270_toggle(GTK_V3270(widget)->host,LIB3270_TOGGLE_SMART_PASTE) ? "enabled" : "disabled"));
-	if(lib3270_toggle(GTK_V3270(widget)->host,LIB3270_TOGGLE_SMART_PASTE) && has_target(GTK_V3270_GET_CLASS(widget)->clipboard_formatted,atoms,n_atoms))
+	debug("%s: Smart paste is %s", __FUNCTION__, (lib3270_get_toggle(GTK_V3270(widget)->host,LIB3270_TOGGLE_SMART_PASTE) ? "enabled" : "disabled"));
+	if(lib3270_get_toggle(GTK_V3270(widget)->host,LIB3270_TOGGLE_SMART_PASTE) && has_target(GTK_V3270_GET_CLASS(widget)->clipboard_formatted,atoms,n_atoms))
 	{
 		debug("Clipboard as TN3270 \"%s\" data",gdk_atom_name(GTK_V3270_GET_CLASS(widget)->clipboard_formatted));
 
@@ -181,7 +181,6 @@ LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 	g_return_if_fail(GTK_IS_V3270(widget));
 
 	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GTK_V3270(widget)->selection.target);
-
 	gtk_clipboard_request_targets(clipboard, (GtkClipboardTargetsReceivedFunc) targets_received, (gpointer) widget);
 
 }
