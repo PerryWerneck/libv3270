@@ -149,7 +149,7 @@ static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *select
 
 static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, GtkWidget *widget)
 {
-	if(lib3270_toggle(GTK_V3270(widget)->host,LIB3270_TOGGLE_SMART_PASTE) && has_target(GTK_V3270_GET_CLASS(widget)->clipboard_formatted,atoms,n_atoms))
+	if(lib3270_get_toggle(GTK_V3270(widget)->host,LIB3270_TOGGLE_SMART_PASTE) && has_target(GTK_V3270_GET_CLASS(widget)->clipboard_formatted,atoms,n_atoms))
 	{
 		debug("Clipboard as TN3270 \"%s\" data",gdk_atom_name(GTK_V3270_GET_CLASS(widget)->clipboard_formatted));
 
