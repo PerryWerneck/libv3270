@@ -23,6 +23,7 @@ Name:			libv3270
 Version:		5.2
 Release:		0
 License:        LGPL-3.0
+
 Source:			libv3270-%{version}.tar.xz
 
 URL:			https://github.com/PerryWerneck/libv3270
@@ -38,12 +39,12 @@ BuildRequires:	m4
 
 %if 0%{?fedora} ||  0%{?suse_version} > 1200
 
-BuildRequires:	pkgconfig(lib3270)
+BuildRequires:	pkgconfig(lib3270) >= 5.2
 BuildRequires:	pkgconfig(gtk+-3.0)
 
 %else
 
-BuildRequires:	lib3270-devel
+BuildRequires:	lib3270-devel >= 5.2
 BuildRequires:	gtk3-devel
 
 %endif
@@ -83,7 +84,14 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 Summary:	Header files for the 3270 Virtual Terminal library
 Group:		Development/Libraries/C and C++
-Requires:	%{name}-%{_libvrs} = %{version}
+
+%if 0%{?fedora} ||  0%{?suse_version} > 1200
+Requires:	pkgconfig(lib3270) >= 5.2
+Requires:	pkgconfig(gtk+-3.0)
+%else
+Requires:	lib3270-devel >= 5.2
+Requires:	gtk3-devel
+%endif
 
 %description devel
 GTK development files for the 3270 Virtual Terminal.
