@@ -431,9 +431,13 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	}
 
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wcast-function-type"
+
 	if(dynamic)
 		g_list_free_full(dynamic,(GDestroyNotify) lib3270_free);
 
+	#pragma GCC diagnostic pop
  }
 
  void v3270_save_dialog_run(GtkWidget *widget)

@@ -80,8 +80,13 @@
 
 	if(operation->contents.dynamic)
 	{
+		#pragma GCC diagnostic push
+		#pragma GCC diagnostic ignored "-Wcast-function-type"
+
 		g_list_free_full(operation->contents.dynamic,(GDestroyNotify) lib3270_free);
 		operation->contents.dynamic = NULL;
+
+		#pragma GCC diagnostic pop
 	}
 	operation->contents.selection = NULL;
 

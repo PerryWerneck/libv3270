@@ -42,7 +42,13 @@ void v3270_clear_selection(v3270 *terminal)
 {
 	if(terminal->selection.blocks)
 	{
+		#pragma GCC diagnostic push
+		#pragma GCC diagnostic ignored "-Wcast-function-type"
+
 		g_list_free_full(terminal->selection.blocks,(GDestroyNotify) lib3270_free);
+
+		#pragma GCC diagnostic pop
+
 		terminal->selection.blocks = NULL;
 	}
 }
