@@ -68,7 +68,7 @@
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),terminal,gtk_label_new("Terminal"));
 
 #ifdef _WIN32
-		v3270_set_font_family(terminal,"Droid Sans Mono");
+		v3270_set_font_family(terminal,"Lucida Console");
 #endif // _WIN32
 
 	}

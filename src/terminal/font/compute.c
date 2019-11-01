@@ -66,6 +66,38 @@
 	terminal->font.face = cairo_toy_font_face_create(terminal->font.family, CAIRO_FONT_SLANT_NORMAL, terminal->font.weight);
 	cairo_set_font_face(cr,terminal->font.face);
 
+#ifdef _WIN32
+	{
+		static const int font_size[] = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 32, 36, 40, 48, 56, 64, 72 };
+		size_t ix = 0;
+
+		terminal->font.size = font_size[0];
+
+		// debug("Window: width=%d height=%d",width,height);
+
+		for(ix = 0; ix < G_N_ELEMENTS(font_size); ix++)
+		{
+			cairo_set_font_size(cr,font_size[ix]);
+			cairo_font_extents(cr,&extents);
+
+			/*
+			debug("size=%d width=%d height=%d",
+						font_size[ix],
+						VIEW_WIDTH_FROM_FONT(extents.max_x_advance),
+						VIEW_HEIGTH_FROM_FONT( (extents.height+extents.descent) )
+					);
+			*/
+
+			if( (VIEW_WIDTH_FROM_FONT(extents.max_x_advance)) > width || VIEW_HEIGTH_FROM_FONT((extents.height+extents.descent))  > height) {
+				break;
+			}
+
+			terminal->font.size	= font_size[ix];
+		}
+
+		debug("Selected size=%lf",terminal->font.size);
+	}
+#else
 	{
 		double s = 0.1;
 
@@ -82,6 +114,7 @@
 		debug("Selected size=%lf",terminal->font.size);
 
 	}
+#endif // _WIN32	
 
 	// Save scaled font for use on next drawings
 	cairo_set_font_size(cr,terminal->font.size);
