@@ -166,7 +166,10 @@
 	guint					  ascent;
 	guint					  descent;
 
-	guint					  spacing;
+	struct {
+		gboolean			  dynamic;
+		guint				  value;
+	} spacing;
 
 	struct
 	{

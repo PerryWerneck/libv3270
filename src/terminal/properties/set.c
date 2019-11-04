@@ -122,6 +122,10 @@
 			v3270_set_remap_filename(GTK_WIDGET(object), g_value_get_string(value));
 			break;
 
+		case V3270_PROPERTY_DYNAMIC_SPACING:
+			v3270_set_dynamic_font_spacing(GTK_WIDGET(object), g_value_get_boolean(value));
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 
@@ -210,4 +214,20 @@ LIB3270_EXPORT void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)
 	}
 
 }
+
+LIB3270_EXPORT void	v3270_set_dynamic_font_spacing(GtkWidget *widget, gboolean state) {
+
+	g_return_if_fail(GTK_IS_V3270(widget));
+
+	v3270 * terminal = GTK_V3270(widget);
+
+	if(terminal->font.spacing.dynamic != state)
+	{
+		terminal->font.spacing.dynamic = state;
+		v3270_reconfigure(terminal);
+ 		g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.dynamic_spacing);
+	}
+
+}
+
 

@@ -53,9 +53,10 @@
 	V3270_PROPERTY_SESSION_NAME		= 4,	///< @brief Widget's session name.
 	V3270_PROPERTY_AUTO_DISCONNECT	= 5,	///< @brief Auto disconnect.
 	V3270_PROPERTY_REMAP_FILE		= 6,	///< @brief Path of the remap file.
+	V3270_PROPERTY_DYNAMIC_SPACING	= 7,	///< @brief Toggle dynamic font spacing.
 
 
-	V3270_PROPERTY_DYNAMIC			= 7		///< @brief Id of the first LIB3270 internal property.
+	V3270_PROPERTY_DYNAMIC			= 8		///< @brief Id of the first LIB3270 internal property.
  };
 
  G_GNUC_INTERNAL void v3270_get_property(GObject *object,guint prop_id, GValue *value, GParamSpec *pspec);

@@ -52,17 +52,29 @@ void v3270_update_font_metrics(v3270 *terminal, unsigned int width, unsigned int
 
 	// Update margins.
 
-	terminal->font.width    = (int) extents.max_x_advance;
-	terminal->font.height   = (int) extents.height;
-	terminal->font.ascent   = (int) extents.ascent;
-	terminal->font.descent  = (int) extents.descent;
-	terminal->font.spacing	= terminal->font.height + terminal->font.descent;
+	terminal->font.width    		= (int) extents.max_x_advance;
+	terminal->font.height   		= (int) extents.height;
+	terminal->font.ascent   		= (int) extents.ascent;
+	terminal->font.descent  		= (int) extents.descent;
+	terminal->font.spacing.value	= terminal->font.height + terminal->font.descent;
+
+	if(terminal->font.spacing.dynamic)
+	{
+		// Compatibility adjustments for line spacing.
+
+		// Some users complained about the new fixed line spacing; for them
+		// the old style is bettter!
+
+		guint spacing = height / (rows+2);
+		if(spacing > terminal->font.spacing.value)
+			terminal->font.spacing.value = spacing;
+	}
 
 	// Create new cursor surface
 	if(terminal->cursor.surface)
 		cairo_surface_destroy(terminal->cursor.surface);
 
-	terminal->cursor.surface = gdk_window_create_similar_surface(gtk_widget_get_window(GTK_WIDGET(terminal)),CAIRO_CONTENT_COLOR,terminal->font.width,terminal->font.spacing);
+	terminal->cursor.surface = gdk_window_create_similar_surface(gtk_widget_get_window(GTK_WIDGET(terminal)),CAIRO_CONTENT_COLOR,terminal->font.width,terminal->font.spacing.value);
 
 	// Center image
 
@@ -71,7 +83,7 @@ void v3270_update_font_metrics(v3270 *terminal, unsigned int width, unsigned int
 
 	debug("%d",(width - size));
 
-	size = VIEW_HEIGTH_FROM_FONT(terminal->font.spacing);
+	size = VIEW_HEIGTH_FROM_FONT(terminal->font.spacing.value);
 	terminal->font.margin.top = (height/2) - (size/2);
 
 	debug("%d",(height - size));

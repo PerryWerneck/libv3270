@@ -152,6 +152,21 @@
 		klass->properties.remap_file
 	);
 
+	// Dynamic font spacing
+	klass->properties.dynamic_spacing = g_param_spec_boolean(
+				"dynamic_font_spacing",
+				"dynamic_font_spacing",
+				_( "State of the dynamic font spacing" ),
+				FALSE,
+				G_PARAM_READABLE|G_PARAM_WRITABLE);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_DYNAMIC_SPACING,
+		klass->properties.dynamic_spacing
+	);
+
+
 	//
 	// Create dynamic properties
 	klass->properties.count = V3270_PROPERTY_DYNAMIC;

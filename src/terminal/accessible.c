@@ -326,9 +326,9 @@ static void v3270_accessible_get_character_extents(	AtkText      *text,
 
 	// Get screen position
 	*x     	+= widget->font.margin.left + ((offset%cols) * widget->font.width);
-	*y      += widget->font.margin.top  + ((offset/cols) * widget->font.spacing);
+	*y      += widget->font.margin.top  + ((offset/cols) * widget->font.spacing.value);
 	*width	 = widget->font.width;
-	*height	 = widget->font.spacing;
+	*height	 = widget->font.spacing.value;
 
 	if(coords == ATK_XY_WINDOW)
 	{

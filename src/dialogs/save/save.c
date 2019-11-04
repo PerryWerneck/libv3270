@@ -432,7 +432,9 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	}
 
 	#pragma GCC diagnostic push
+#ifdef _WIN32
 	#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif // _WIN32
 
 	if(dynamic)
 		g_list_free_full(dynamic,(GDestroyNotify) lib3270_free);

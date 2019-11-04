@@ -189,6 +189,9 @@
  LIB3270_EXPORT void			  v3270_set_auto_disconnect(GtkWidget *widget, guint minutes);
  LIB3270_EXPORT guint			  v3270_get_auto_disconnect(GtkWidget *widget);
 
+ LIB3270_EXPORT void			  v3270_set_dynamic_font_spacing(GtkWidget *widget, gboolean state);
+ LIB3270_EXPORT gboolean		  v3270_get_dynamic_font_spacing(GtkWidget *widget);
+
  // Clipboard
  typedef enum _v3270_select_format
  {

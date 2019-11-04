@@ -79,3 +79,9 @@ gchar * v3270_get_region(GtkWidget *widget, gint start_pos, gint end_pos, gboole
 
 	return utftext;
 }
+
+gboolean v3270_get_dynamic_font_spacing(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
+	return GTK_V3270(widget)->font.spacing.dynamic;
+}

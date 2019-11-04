@@ -591,7 +591,7 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 	row += 2;
 
 	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_BACKGROUND);
-	cairo_rectangle(cr, terminal->font.margin.left, row, cols*terminal->font.width, terminal->font.spacing);
+	cairo_rectangle(cr, terminal->font.margin.left, row, cols*terminal->font.width, terminal->font.spacing.value);
 	cairo_fill(cr);
 
 	for(f=0;f< (int) G_N_ELEMENTS(right);f++)
@@ -602,7 +602,7 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 		r->x = rCol;
 		r->y = row;
 		r->width  = terminal->font.width;
-		r->height = terminal->font.spacing;
+		r->height = terminal->font.spacing.value;
 		gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_FOREGROUND);
 		right[f].draw(r,&terminal->font,cr,terminal->host,cols,terminal->color);
 		rCol = r->x - (terminal->font.width/3);
@@ -613,7 +613,7 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 	draw_centered_char(cr,&terminal->font,lCol,row,'4');
 
 	cairo_stroke(cr);
-	cairo_rectangle(cr, lCol, row, terminal->font.width+2, terminal->font.spacing);
+	cairo_rectangle(cr, lCol, row, terminal->font.width+2, terminal->font.spacing.value);
 	cairo_stroke(cr);
 
 	lCol += (terminal->font.width+5);
@@ -622,7 +622,7 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 	terminal->oia.rect[V3270_OIA_UNDERA].x = lCol;
 	terminal->oia.rect[V3270_OIA_UNDERA].y = row;
 	terminal->oia.rect[V3270_OIA_UNDERA].width  = terminal->font.width+3;
-	terminal->oia.rect[V3270_OIA_UNDERA].height = terminal->font.spacing;
+	terminal->oia.rect[V3270_OIA_UNDERA].height = terminal->font.spacing.value;
 	draw_undera(cr,terminal->host,&terminal->font,terminal->color,terminal->oia.rect+V3270_OIA_UNDERA);
 
 	lCol += (3 + terminal->oia.rect[V3270_OIA_UNDERA].width);
@@ -631,7 +631,7 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 	terminal->oia.rect[V3270_OIA_CONNECTION].x = lCol;
 	terminal->oia.rect[V3270_OIA_CONNECTION].y = row;
 	terminal->oia.rect[V3270_OIA_CONNECTION].width  = terminal->font.width+3;
-	terminal->oia.rect[V3270_OIA_CONNECTION].height = terminal->font.spacing;
+	terminal->oia.rect[V3270_OIA_CONNECTION].height = terminal->font.spacing.value;
 	v3270_draw_connection(cr,terminal->host,&terminal->font,terminal->color,terminal->oia.rect+V3270_OIA_CONNECTION);
 
 	lCol += (4 + terminal->oia.rect[V3270_OIA_CONNECTION].width);
@@ -644,7 +644,7 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 		r->x = lCol;
 		r->y = row;
 		r->width  = rCol - lCol;
-		r->height = terminal->font.spacing;
+		r->height = terminal->font.spacing.value;
 		draw_status_message(cr,lib3270_get_program_message(terminal->host),&terminal->font,terminal->color,r);
 	}
 
@@ -765,7 +765,7 @@ void v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col,
 	saved = terminal->cursor.rect;
 
 	terminal->cursor.rect.x          = terminal->font.margin.left + (col * terminal->cursor.rect.width);
-	terminal->cursor.rect.y          = terminal->font.margin.top  + (row * terminal->font.spacing);
+	terminal->cursor.rect.y          = terminal->font.margin.top  + (row * terminal->font.spacing.value);
 	terminal->cursor.rect.width      = terminal->font.width;
 	terminal->cursor.rect.height     = terminal->font.height+terminal->font.descent;
 	terminal->cursor.show |= 1;

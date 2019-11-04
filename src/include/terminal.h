@@ -53,6 +53,7 @@ G_BEGIN_DECLS
 		GParamSpec * session_name;
 		GParamSpec * auto_disconnect;
 		GParamSpec * remap_file;
+		GParamSpec * dynamic_spacing;
 
 		struct
 		{

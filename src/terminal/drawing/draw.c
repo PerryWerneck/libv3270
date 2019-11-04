@@ -377,7 +377,7 @@ void v3270_redraw(v3270 *terminal, cairo_t * cr, gint width, gint height)
 	memset(&rect,0,sizeof(rect));
 	rect.y		= terminal->font.margin.top;
 	rect.width	= terminal->font.width;
-	rect.height	= terminal->font.spacing;
+	rect.height	= terminal->font.spacing.value;
 	addr 		= 0;
 	cursor		= lib3270_get_cursor_address(terminal->host);
 
@@ -404,7 +404,7 @@ void v3270_redraw(v3270 *terminal, cairo_t * cr, gint width, gint height)
 			rect.x += rect.width;
 		}
 
-		rect.y += terminal->font.spacing;
+		rect.y += terminal->font.spacing.value;
 
 	}
 
@@ -455,9 +455,9 @@ void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned sho
 
 	memset(&rect,0,sizeof(rect));
 	rect.x          = terminal->font.margin.left + ((addr % cols) * terminal->font.width);
-	rect.y          = terminal->font.margin.top  + ((addr / cols) * terminal->font.spacing);
+	rect.y          = terminal->font.margin.top  + ((addr / cols) * terminal->font.spacing.value);
 	rect.width      = terminal->font.width;
-	rect.height     = terminal->font.spacing;
+	rect.height     = terminal->font.spacing.value;
 
 	cr = cairo_create(terminal->surface);
 	cairo_set_scaled_font(cr,terminal->font.scaled);
