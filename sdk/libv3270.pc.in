@@ -9,7 +9,7 @@ version_minor=@PACKAGE_MINOR_VERSION@
 Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
-Requires: lib3270
+Requires: lib3270 gtk+-3.0
 Libs: -lv3270
 Libs.private: @LIBS@ @GTK_LIBS@ @GLIB_LIBS@ @LIBICONV@ @INTL_LIBS@ @LIB3270_LIBS@
 Cflags:
