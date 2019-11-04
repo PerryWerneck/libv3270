@@ -225,6 +225,7 @@ LIB3270_EXPORT void	v3270_set_dynamic_font_spacing(GtkWidget *widget, gboolean s
 	{
 		terminal->font.spacing.dynamic = state;
 		v3270_reconfigure(terminal);
+		gtk_widget_queue_draw(widget);
  		g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.dynamic_spacing);
 	}
 
