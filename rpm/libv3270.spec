@@ -93,6 +93,8 @@ Requires:	lib3270-devel >= 5.2
 Requires:	gtk3-devel
 %endif
 
+Requires:	%{name}-%{_libvrs} = %{version}
+
 %description devel
 GTK development files for the 3270 Virtual Terminal.
 
