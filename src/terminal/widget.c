@@ -475,7 +475,7 @@ static void release_activity_timer(v3270 *widget)
 static void v3270_init(v3270 *widget)
 {
 
-	widget->host = lib3270_session_new("");
+	widget->host = lib3270_session_new(NULL);
 	lib3270_set_user_data(widget->host,widget);
 
 	// Install callbacks
@@ -627,7 +627,6 @@ static void release_cursor_timer(v3270 *widget)
 
 static void v3270_realize(GtkWidget	* widget)
 {
-#if GTK_CHECK_VERSION(2,18,0)
 	if(!gtk_widget_get_has_window(widget))
 	{
 		GTK_WIDGET_CLASS(v3270_parent_class)->realize(widget);
@@ -661,49 +660,6 @@ static void v3270_realize(GtkWidget	* widget)
 		gtk_im_context_set_client_window(GTK_V3270(widget)->input_method,window);
 
 	}
-#else
-	{
-		if(GTK_WIDGET_NO_WINDOW (widget))
-		{
-			GTK_WIDGET_CLASS(v3270_parent_class)->realize (widget);
-		}
-		else
-		{
-			GdkWindowAttr attributes;
-			gint attributes_mask;
-
-			GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-
-			memset(&attributes,0,sizeof(attributes));
-
-			attributes.window_type = GDK_WINDOW_CHILD;
-			attributes.x = widget->allocation.x;
-			attributes.y = widget->allocation.y;
-			attributes.width = widget->allocation.width;
-			attributes.height = widget->allocation.height;
-			attributes.wclass = GDK_INPUT_OUTPUT;
-			attributes.visual = gtk_widget_get_visual (widget);
-			attributes.colormap = gtk_widget_get_colormap (widget);
-			attributes.event_mask = gtk_widget_get_events (widget) | GDK_EXPOSURE_MASK;
-
-			attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-
-			widget->window = gdk_window_new (gtk_widget_get_parent_window (widget),&attributes, attributes_mask);
-			gdk_window_set_user_data(widget->window, widget);
-
-			widget->style = gtk_style_attach (widget->style, widget->window);
-			gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
-		}
-
-		gtk_im_context_set_client_window(GTK_V3270(widget)->input_method,widget->window);
-	}
-
-#endif // GTK(2,18,0)
-
-#if !GTK_CHECK_VERSION(3,0,0)
-	widget->style = gtk_style_attach (widget->style, widget->window);
-	gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
-#endif // !GTK3
 
 	v3270_reconfigure(GTK_V3270(widget));
 

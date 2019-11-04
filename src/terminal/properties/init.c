@@ -231,9 +231,9 @@
 			uint_props[ix].name,
 			uint_props[ix].name,
 			uint_props[ix].description,
-			0,			// Minimo
-			UINT_MAX,	// Máximo
-			0,			// Default
+			uint_props[ix].min,																	// Minimo
+			(uint_props[ix].max ? uint_props[ix].max : UINT_MAX),								// Máximo
+			(uint_props[ix].default_value ? uint_props[ix].default_value : uint_props[ix].min),	// Default
 			(uint_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 		);
 

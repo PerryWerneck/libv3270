@@ -32,30 +32,6 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-/*
-static void update_font_size(v3270 * terminal, cairo_t *cr, gint width, gint height, int step)
-{
-
-
-	cairo_set_font_face(cr,terminal->font.face);
-
-	cairo_set_font_size(cr,terminal->font.size);
-
-	v3270_update_font_metrics(terminal, width, height);
-
-	if(terminal->font.scaled)
-		cairo_scaled_font_destroy(terminal->font.scaled);
-
-	terminal->font.scaled = cairo_get_scaled_font(cr);
-	cairo_scaled_font_reference(terminal->font.scaled);
-
-	v3270_redraw(terminal, cr, width, height);
-
-	gtk_widget_queue_draw(GTK_WIDGET(terminal));
-
-}
-*/
-
 void v3270_zoom_best(GtkWidget *widget)
 {
 	debug("%s",__FUNCTION__);

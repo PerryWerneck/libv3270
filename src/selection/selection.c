@@ -43,7 +43,9 @@ void v3270_clear_selection(v3270 *terminal)
 	if(terminal->selection.blocks)
 	{
 		#pragma GCC diagnostic push
+#ifdef _WIN32
 		#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif // _WIN32
 
 		g_list_free_full(terminal->selection.blocks,(GDestroyNotify) lib3270_free);
 
