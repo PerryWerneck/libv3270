@@ -51,7 +51,13 @@
 		<Unit filename="src/dialogs/commondialog.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/dialogs/fontselect.c">
+		<Unit filename="src/dialogs/font/chooser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dialogs/font/model.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dialogs/font/select.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/hostselect.c">

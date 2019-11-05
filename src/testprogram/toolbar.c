@@ -33,6 +33,7 @@
  #include <v3270/ftprogress.h>
  #include <v3270/colorscheme.h>
  #include <v3270/dialogs.h>
+ #include <v3270/settings.h>
  #include <v3270/trace.h>
  #include <lib3270/log.h>
  #include <stdlib.h>
@@ -49,6 +50,18 @@
  static void host_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
 	v3270_select_host(terminal);
+ }
+
+ static void font_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ {
+	GtkWidget * dialog = v3270_settings_dialog_new(terminal, v3270_font_chooser_widget_new());
+
+	v3270_dialog_setup(dialog,_("Font setup"),_("_Save"));
+
+	gtk_widget_show_all(dialog);
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+
  }
 
  static void connect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
@@ -205,20 +218,22 @@
 		GCallback	  callback;
 		const gchar * tooltip;
 	} buttons[] = {
-		{ "gtk-connect",			G_CALLBACK(connect_clicked),		"Connect to host"  				},
-		{ "gtk-disconnect",			G_CALLBACK(disconnect_clicked),		"Disconnect from host"  		},
-		{ "gtk-select-color",		G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
-		{ "network-server",			G_CALLBACK(host_clicked),			"Configure host"				},
-		{ "gtk-print",				G_CALLBACK(print_clicked),			"Print screen contents"			},
-		{ "gtk-harddisk",			G_CALLBACK(ft_clicked),				"Open file transfer dialog"		},
-		{ "gtk-copy",				G_CALLBACK(copy_clicked),			"Copy data"						},
-		{ "gtk-paste",				G_CALLBACK(paste_clicked),			"Paste data"					},
-		{ "document-save",			G_CALLBACK(save_all_clicked),		"Save screen"					},
-		{ "document-open",			G_CALLBACK(load_clicked),			"Paste file"					},
+		{ "gtk-connect",				G_CALLBACK(connect_clicked),		"Connect to host"  				},
+		{ "gtk-disconnect",				G_CALLBACK(disconnect_clicked),		"Disconnect from host"  		},
+		{ "gtk-select-color",			G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
+		{ "network-server",				G_CALLBACK(host_clicked),			"Configure host"				},
+		{ "gtk-print",					G_CALLBACK(print_clicked),			"Print screen contents"			},
+		{ "gtk-harddisk",				G_CALLBACK(ft_clicked),				"Open file transfer dialog"		},
+		{ "gtk-copy",					G_CALLBACK(copy_clicked),			"Copy data"						},
+		{ "gtk-paste",					G_CALLBACK(paste_clicked),			"Paste data"					},
+		{ "document-save",				G_CALLBACK(save_all_clicked),		"Save screen"					},
+		{ "document-open",				G_CALLBACK(load_clicked),			"Paste file"					},
 
-		{ "zoom-in",				G_CALLBACK(zoom_in_clicked),		"Zoom in"						},
-		{ "zoom-out",				G_CALLBACK(zoom_out_clicked),		"Zoom out"						},
-		{ "zoom-fit-best",			G_CALLBACK(zoom_best_clicked),		"Zoom best"						},
+		{ "preferences-desktop-font",	G_CALLBACK(font_clicked),			"Select font"					},
+
+		{ "zoom-in",					G_CALLBACK(zoom_in_clicked),		"Zoom in"						},
+		{ "zoom-out",					G_CALLBACK(zoom_out_clicked),		"Zoom out"						},
+		{ "zoom-fit-best",				G_CALLBACK(zoom_best_clicked),		"Zoom best"						},
 	};
 
 	GtkWidget * toolbar = gtk_toolbar_new();

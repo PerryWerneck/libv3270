@@ -37,6 +37,7 @@
  #include <v3270/filetransfer.h>
  #include <v3270/ftprogress.h>
  #include <v3270/colorscheme.h>
+ #include <v3270/settings.h>
  #include <v3270/trace.h>
  #include <lib3270/log.h>
  #include <stdlib.h>

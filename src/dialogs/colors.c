@@ -284,7 +284,6 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
 	g_value_unset(&value);
  }
 
-
  static void V3270ColorSelection_init(V3270ColorSelection *widget)
  {
 	{

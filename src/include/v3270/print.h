@@ -74,8 +74,6 @@
  LIB3270_EXPORT void				  v3270_print_operation_set_color_scheme(GtkPrintOperation *operation, const gchar *colors);
  LIB3270_EXPORT gchar 				* v3270_print_operation_get_color_scheme(GtkPrintOperation *operation);
 
- LIB3270_EXPORT GtkTreeModel		* v3270_font_family_model_new(GtkWidget *widget, const gchar *selected, GtkTreeIter * active);
-
  LIB3270_EXPORT GtkWidget			* v3270_font_selection_new(const gchar *fontname);
  LIB3270_EXPORT gboolean			  v3270_font_selection_set_family(GtkWidget *widget, const gchar *fontname);
  LIB3270_EXPORT gchar		 		* v3270_font_selection_get_family(GtkWidget *widget);

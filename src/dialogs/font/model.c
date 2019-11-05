@@ -27,30 +27,42 @@
  *
  */
 
-#ifndef V3270_DIALOGS_H_INCLUDED
+ #include <string.h>
+ #include <v3270.h>
+ #include <lib3270/log.h>
 
- #define V3270_DIALOGS_H_INCLUDED 1
+/*--[ Widget definition ]----------------------------------------------------------------------------*/
 
- #include <gtk/gtk.h>
+ LIB3270_EXPORT GtkTreeModel * v3270_font_family_model_new(GtkWidget *widget, const gchar *selected, GtkTreeIter * active)
+ {
+	GtkTreeModel * model = (GtkTreeModel *) gtk_list_store_new(1,G_TYPE_STRING);
 
- G_BEGIN_DECLS
+	gint n_families, i;
+	PangoFontFamily **families;
+	pango_context_list_families(gtk_widget_get_pango_context(widget),&families, &n_families);
 
- LIB3270_EXPORT GtkWidget		* v3270_host_select_new();
- LIB3270_EXPORT GtkWidget		* v3270_dialog_new(GtkWidget *widget, const gchar *title, const gchar *apply);
- LIB3270_EXPORT void			  v3270_error_popup(GtkWidget *widget, const gchar *title, const gchar *summary, const gchar *body);
- LIB3270_EXPORT void			  v3270_dialog_setup(GtkWidget *dialog, const gchar *title, const gchar *apply);
+	if(!(selected && *selected))
+		selected = v3270_get_default_font_name();
 
- LIB3270_EXPORT GtkWidget		* v3270_save_dialog_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, const gchar *filename);
- LIB3270_EXPORT void			  v3270_save_dialog_run(GtkWidget *widget);
+	memset(active,0,sizeof(GtkTreeIter));
 
- LIB3270_EXPORT GtkWidget		* v3270_load_dialog_new(GtkWidget *widget, const gchar *filename);
- LIB3270_EXPORT void			  v3270_load_dialog_run(GtkWidget *widget);
+	for(i=0; i < n_families; i++)
+	{
+		if(!pango_font_family_is_monospace(families[i]))
+			continue;
 
- LIB3270_EXPORT void			  v3270_popup_gerror(GtkWidget *widget, GError *error, const gchar *title, const gchar *fmt, ...) G_GNUC_PRINTF(4,5);
+		const gchar *name = pango_font_family_get_name (families[i]);
+		GtkTreeIter iter;
 
- LIB3270_EXPORT GtkTreeModel	* v3270_font_family_model_new(GtkWidget *widget, const gchar *selected, GtkTreeIter * active);
+		gtk_list_store_append((GtkListStore *) model,&iter);
+		gtk_list_store_set((GtkListStore *) model, &iter,0, name, -1);
 
+		if(!g_ascii_strcasecmp(name,selected))
+			*active = iter;
 
- G_END_DECLS
+	}
 
-#endif // V3270_DIALOGS_H_INCLUDED
+	g_free(families);
+
+	return model;
+ }
