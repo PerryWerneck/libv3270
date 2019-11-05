@@ -38,6 +38,7 @@
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
  #include <lib3270/log.h>
+ #include <terminal.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
@@ -54,6 +55,10 @@
 
  	GtkWidget		* font_list;
  	GtkWidget		* preview;
+
+ 	struct {
+		cairo_font_face_t * face;
+ 	} font;
 
  } V3270FontChooserWidget;
 
@@ -97,9 +102,23 @@ static void load(GtkWidget *widget, GtkWidget *terminal)
 
 }
 
+static void dispose(GObject *object)
+{
+	V3270FontChooserWidget * widget = GTK_V3270_FONT_CHOOSER(object);
+
+	if(widget->font.face) {
+		cairo_font_face_destroy(widget->font.face);
+		widget->font.face = NULL;
+	}
+
+	G_OBJECT_CLASS(V3270FontChooserWidget_parent_class)->dispose(object);
+}
+
 static void V3270FontChooserWidget_class_init(V3270FontChooserWidgetClass *klass)
 {
 	V3270SettingsClass * widget = GTK_V3270_SETTINGS_CLASS(klass);
+
+	G_OBJECT_CLASS(klass)->dispose = dispose;
 
 	widget->apply = apply;
 	widget->load = load;
@@ -122,10 +141,70 @@ static void V3270FontChooserWidget_class_init(V3270FontChooserWidgetClass *klass
 	// Update terminal widget
 	GtkWidget * terminal = v3270_settings_get_terminal_widget(GTK_WIDGET(widget));
 	if(terminal)
+	{
 		v3270_set_font_family(terminal,g_value_get_string(&value));
+		gtk_widget_queue_draw(widget->preview);
+	}
+
+	// Update font
+
+	widget->font.face = cairo_toy_font_face_create(g_value_get_string(&value), CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 
 	g_value_unset(&value);
  }
+
+ static gboolean draw_preview(GtkWidget *widget, cairo_t *cr, V3270FontChooserWidget *chooser) {
+
+	GtkWidget * t = v3270_settings_get_terminal_widget(GTK_WIDGET(chooser));
+
+	if(!t)
+		return TRUE;
+
+	v3270 * terminal = GTK_V3270(t);
+	guint width = gtk_widget_get_allocated_width (widget);
+	guint height = gtk_widget_get_allocated_height (widget);
+
+	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_BACKGROUND);
+	cairo_rectangle(cr, 0, 0, width, height);
+	cairo_fill(cr);
+	cairo_stroke(cr);
+
+	if(chooser->font.face) {
+
+		debug("%s",__FUNCTION__);
+
+		cairo_set_font_face(cr,chooser->font.face);
+		cairo_set_font_size(cr,15);
+
+		cairo_font_extents_t extents;
+		cairo_font_extents(cr,&extents);
+
+		double spacing = extents.height + extents.descent;
+		double row = spacing;
+
+		static const enum V3270_COLOR colors[] = {
+			V3270_COLOR_FIELD,
+			V3270_COLOR_FIELD_INTENSIFIED,
+			V3270_COLOR_FIELD_PROTECTED_INTENSIFIED
+		};
+
+		size_t ix;
+
+		for(ix = 0; ix < G_N_ELEMENTS(colors); ix++) {
+
+			cairo_move_to(cr,0,row);
+			gdk_cairo_set_source_rgba(cr,terminal->color+colors[ix]);
+			cairo_show_text(cr,pango_language_get_sample_string(NULL));
+
+			row += spacing;
+		}
+
+	}
+
+	cairo_stroke(cr);
+
+	return FALSE;
+}
 
 static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 {
@@ -161,19 +240,24 @@ static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 		gtk_grid_attach(GTK_GRID(widget),box,0,0,1,5);
 	}
 
-	// Add preview widgets
+	// Add preview widget
 	{
-		widget->preview = gtk_entry_new();
-		gtk_entry_set_text(GTK_ENTRY(widget->preview),pango_language_get_sample_string(NULL));
+		GtkWidget * frame = gtk_frame_new (NULL);
+		gtk_frame_set_shadow_type(GTK_FRAME (frame), GTK_SHADOW_IN);
+		gtk_widget_set_vexpand(frame,TRUE);
+		gtk_widget_set_hexpand(frame,TRUE);
 
-		gtk_widget_set_can_default(widget->preview,FALSE);
-		gtk_widget_set_can_focus(widget->preview,FALSE);
-		gtk_editable_set_editable(GTK_EDITABLE(widget->preview),FALSE);
-
-		gtk_widget_set_vexpand(widget->preview,FALSE);
+		widget->preview = gtk_drawing_area_new();
+		gtk_widget_set_vexpand(widget->preview,TRUE);
 		gtk_widget_set_hexpand(widget->preview,TRUE);
 
-		gtk_grid_attach(GTK_GRID(widget),widget->preview,1,0,5,1);
+		gtk_widget_set_size_request(widget->preview,400,-1);
+
+		g_signal_connect(widget->preview, "draw", G_CALLBACK(draw_preview), widget);
+
+		gtk_container_add(GTK_CONTAINER (frame), widget->preview);
+
+		gtk_grid_attach(GTK_GRID(widget),frame,1,0,5,3);
 	}
 
 }
