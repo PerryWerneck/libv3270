@@ -37,6 +37,7 @@
  #include "../private.h"
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
+ #include <v3270/toggle.h>
  #include <lib3270/log.h>
  #include <terminal.h>
 
@@ -55,10 +56,17 @@
 
  	GtkWidget		* font_list;
  	GtkWidget		* preview;
+ 	GtkToggleButton	* bold;
 
  	struct {
-		cairo_font_face_t * face;
+		cairo_font_face_t	* face;
+		cairo_font_weight_t	  weight;
  	} font;
+
+ 	struct {
+ 		gchar		* family;
+ 		gboolean	  bold;
+ 	} saved;
 
  } V3270FontChooserWidget;
 
@@ -72,25 +80,37 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void apply(GtkWidget *widget, GtkWidget *terminal)
-{
-
+ static void cancel(GtkWidget *widget, GtkWidget *terminal)
+ {
 	debug("V3270FontChooserWidget::%s",__FUNCTION__);
 
-}
+	V3270FontChooserWidget *chooser = GTK_V3270_FONT_CHOOSER(widget);
 
-static void load(GtkWidget *widget, GtkWidget *terminal)
-{
+	if(chooser->saved.family)
+		v3270_set_font_family(terminal,chooser->saved.family);
+
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_BOLD,chooser->saved.bold);
+ }
+
+ static void load(GtkWidget *widget, GtkWidget *terminal)
+ {
 	V3270FontChooserWidget *chooser = GTK_V3270_FONT_CHOOSER(widget);
 
 	debug("V3270FontChooserWidget::%s",__FUNCTION__);
+
+	if(chooser->saved.family) {
+		g_free(chooser->saved.family);
+	}
+
+	chooser->saved.family	= g_strdup(v3270_get_font_family(terminal));
+	chooser->saved.bold		= v3270_get_toggle(terminal,LIB3270_TOGGLE_BOLD);
 
 	GtkTreeIter active;
 	gtk_tree_view_set_model(
 			GTK_TREE_VIEW(chooser->font_list),
 			v3270_font_family_model_new(
 						chooser->font_list,
-						v3270_get_font_family(terminal),
+						chooser->saved.family,
 						&active
 				)
 	);
@@ -100,10 +120,13 @@ static void load(GtkWidget *widget, GtkWidget *terminal)
 		&active
 	);
 
-}
+	gtk_toggle_button_set_active(chooser->bold,chooser->saved.bold);
 
-static void dispose(GObject *object)
-{
+	gtk_widget_queue_draw(chooser->preview);
+ }
+
+ static void dispose(GObject *object)
+ {
 	V3270FontChooserWidget * widget = GTK_V3270_FONT_CHOOSER(object);
 
 	if(widget->font.face) {
@@ -111,19 +134,38 @@ static void dispose(GObject *object)
 		widget->font.face = NULL;
 	}
 
-	G_OBJECT_CLASS(V3270FontChooserWidget_parent_class)->dispose(object);
-}
+	if(widget->saved.family) {
+		g_free(widget->saved.family);
+		widget->saved.family = NULL;
+	}
 
-static void V3270FontChooserWidget_class_init(V3270FontChooserWidgetClass *klass)
-{
+	G_OBJECT_CLASS(V3270FontChooserWidget_parent_class)->dispose(object);
+ }
+
+ static void V3270FontChooserWidget_class_init(V3270FontChooserWidgetClass *klass)
+ {
 	V3270SettingsClass * widget = GTK_V3270_SETTINGS_CLASS(klass);
 
 	G_OBJECT_CLASS(klass)->dispose = dispose;
 
-	widget->apply = apply;
+	widget->cancel = cancel;
 	widget->load = load;
 
-}
+ }
+
+ static void set_font_family(V3270FontChooserWidget *widget, const gchar * font_family)
+ {
+
+	// Update font
+	if(widget->font.face) {
+		cairo_font_face_destroy(widget->font.face);
+		widget->font.face = NULL;
+	}
+
+	widget->font.face = cairo_toy_font_face_create(font_family, CAIRO_FONT_SLANT_NORMAL, widget->font.weight);
+	gtk_widget_queue_draw(widget->preview);
+
+ }
 
  static void font_selected(GtkTreeSelection *selection, V3270FontChooserWidget *widget)
  {
@@ -139,16 +181,10 @@ static void V3270FontChooserWidget_class_init(V3270FontChooserWidgetClass *klass
 	debug("Font-family: %s",g_value_get_string(&value));
 
 	// Update terminal widget
-	GtkWidget * terminal = v3270_settings_get_terminal_widget(GTK_WIDGET(widget));
-	if(terminal)
-	{
-		v3270_set_font_family(terminal,g_value_get_string(&value));
-		gtk_widget_queue_draw(widget->preview);
-	}
+	if(widget->parent.terminal)
+		v3270_set_font_family(widget->parent.terminal,g_value_get_string(&value));
 
-	// Update font
-
-	widget->font.face = cairo_toy_font_face_create(g_value_get_string(&value), CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+	set_font_family(widget,g_value_get_string(&value));
 
 	g_value_unset(&value);
  }
@@ -206,8 +242,21 @@ static void V3270FontChooserWidget_class_init(V3270FontChooserWidgetClass *klass
 	return FALSE;
 }
 
+static void bold_toggled(GtkToggleButton *togglebutton, V3270FontChooserWidget *widget)
+{
+	gboolean active = gtk_toggle_button_get_active(togglebutton);
+
+	widget->font.weight = (active ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL);
+
+    v3270_set_toggle(widget->parent.terminal,LIB3270_TOGGLE_BOLD,active);
+    set_font_family(widget,v3270_get_font_family(widget->parent.terminal));
+
+}
+
 static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 {
+	widget->font.weight = CAIRO_FONT_WEIGHT_NORMAL;
+
 	gtk_widget_set_size_request(GTK_WIDGET(widget),-1,136);
 	gtk_grid_set_row_homogeneous(GTK_GRID(widget),FALSE);
 
@@ -258,6 +307,13 @@ static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 		gtk_container_add(GTK_CONTAINER (frame), widget->preview);
 
 		gtk_grid_attach(GTK_GRID(widget),frame,1,0,5,3);
+	}
+
+	// Add font-weight button
+	{
+		widget->bold = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(_("Bold")));
+		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->bold),1,3,1,1);
+		g_signal_connect(G_OBJECT(widget->bold),"toggled",G_CALLBACK(bold_toggled),widget);
 	}
 
 }
