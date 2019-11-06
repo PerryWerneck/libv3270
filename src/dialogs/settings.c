@@ -194,7 +194,7 @@ LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWid
 		18
 	);
 
-	gtk_box_pack_start(GTK_BOX(content_area),settings,FALSE,FALSE,2);
+	gtk_box_pack_start(GTK_BOX(content_area),settings,TRUE,TRUE,2);
     v3270_settings_set_terminal_widget(settings,terminal);
 
     g_signal_connect(G_OBJECT(dialog),"response",G_CALLBACK(v3270_settings_on_dialog_response),settings);

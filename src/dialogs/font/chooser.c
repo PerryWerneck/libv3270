@@ -228,7 +228,7 @@
 
 		for(ix = 0; ix < G_N_ELEMENTS(colors); ix++) {
 
-			cairo_move_to(cr,0,row);
+			cairo_move_to(cr,6,row);
 			gdk_cairo_set_source_rgba(cr,terminal->color+colors[ix]);
 			cairo_show_text(cr,pango_language_get_sample_string(NULL));
 
@@ -258,7 +258,6 @@ static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 	widget->font.weight = CAIRO_FONT_WEIGHT_NORMAL;
 
 	gtk_widget_set_size_request(GTK_WIDGET(widget),-1,136);
-	gtk_grid_set_row_homogeneous(GTK_GRID(widget),FALSE);
 
 	// Create font list view
 	{
@@ -297,6 +296,8 @@ static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 		gtk_widget_set_hexpand(frame,TRUE);
 
 		widget->preview = gtk_drawing_area_new();
+
+		gtk_widget_set_margin_start(widget->preview,8);
 		gtk_widget_set_vexpand(widget->preview,TRUE);
 		gtk_widget_set_hexpand(widget->preview,TRUE);
 
@@ -312,9 +313,11 @@ static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 	// Add font-weight button
 	{
 		widget->bold = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(_("Bold")));
-		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->bold),1,3,1,1);
+		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->bold),1,3,5,1);
 		g_signal_connect(G_OBJECT(widget->bold),"toggled",G_CALLBACK(bold_toggled),widget);
 	}
+
+	gtk_widget_show_all(GTK_WIDGET(widget));
 
 }
 
