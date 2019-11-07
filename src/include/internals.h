@@ -65,21 +65,38 @@
  	V3270_SIGNAL_TOGGLE_CHANGED,
  	V3270_SIGNAL_MESSAGE_CHANGED,
  	V3270_SIGNAL_KEYPRESS,
- 	V3270_SIGNAL_CONNECTED,
- 	V3270_SIGNAL_DISCONNECTED,
- 	V3270_SIGNAL_UPDATE_CONFIG,
  	V3270_SIGNAL_MODEL_CHANGED,
- 	V3270_SIGNAL_SELECTING,
  	V3270_SIGNAL_POPUP,
- 	V3270_SIGNAL_PASTENEXT,
- 	V3270_SIGNAL_CLIPBOARD,
  	V3270_SIGNAL_CHANGED,
  	V3270_SIGNAL_MESSAGE,
  	V3270_SIGNAL_FIELD,
+ 	V3270_SIGNAL_SESSION_CHANGED,
+
+ 	//
+ 	// Clipboard signals.
+ 	//
+ 	V3270_SIGNAL_SELECTING,
+ 	V3270_SIGNAL_CLIPBOARD,
+ 	V3270_SIGNAL_PASTENEXT,
+
+ 	//
+ 	// Network signals.
+ 	//
+ 	V3270_SIGNAL_CONNECTED,
+ 	V3270_SIGNAL_DISCONNECTED,
+
+ 	//
+ 	// Print session signals.
+ 	//
  	V3270_SIGNAL_PRINT_SETUP,
  	V3270_SIGNAL_PRINT_APPLY,
  	V3270_SIGNAL_PRINT_DONE,
- 	V3270_SIGNAL_SESSION_CHANGED,
+
+ 	//
+ 	// Settings signals (Mostly fired by V3270Settings dialogs).
+ 	//
+ 	V3270_SIGNAL_SAVE_SETTINGS,		///< @brief Notify main application to save all widget settings.
+ 	V3270_SIGNAL_UPDATE_CONFIG,		///< @brief Update config signal (deprecated!)
 
  	V3270_SIGNAL_LAST
  };
@@ -101,6 +118,9 @@
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
 
  G_GNUC_INTERNAL void			  v3270_dialog_close(GtkDialog *dialog, gpointer user_data);
+
+ /// @brief Emit the "save-settings" signal.
+ G_GNUC_INTERNAL void			  v3270_emit_save_settings(GtkWidget *widget);
 
  G_GNUC_INTERNAL gchar 			* v3270_convert_to_3270_charset(GtkWidget *widget, const gchar *text, const gchar *encoding, GError **error);
 

@@ -27,7 +27,8 @@
  *
  */
 
- #include "private.h"
+ #include "../private.h"
+ #include <internals.h>
  #include <v3270/settings.h>
  #include <lib3270/log.h>
 
@@ -64,7 +65,7 @@ static void finalize(GObject *object)
 static void V3270Settings_class_init(V3270SettingsClass *klass)
 {
     klass->apply = apply;
-    klass->cancel = cancel;
+    klass->revert = cancel;
     klass->load = load;
     klass->update_message = update_message;
 
@@ -143,70 +144,20 @@ LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWid
  {
     g_return_if_fail(GTK_IS_V3270_SETTINGS(widget));
     GTK_V3270_SETTINGS_GET_CLASS(widget)->apply(widget,GTK_V3270_SETTINGS(widget)->terminal);
+
+    /*
+
+    BUG: The signal should be sent by the dialog!
+
+    V3270Settings * settings = GTK_V3270_SETTINGS(widget);
+    if(settings && settings->terminal)
+		v3270_emit_save_settings(settings->terminal);
+	*/
  }
 
- LIB3270_EXPORT void v3270_settings_cancel(GtkWidget *widget)
+ LIB3270_EXPORT void v3270_settings_revert(GtkWidget *widget)
  {
     g_return_if_fail(GTK_IS_V3270_SETTINGS(widget));
-    GTK_V3270_SETTINGS_GET_CLASS(widget)->cancel(widget,GTK_V3270_SETTINGS(widget)->terminal);
+    GTK_V3270_SETTINGS_GET_CLASS(widget)->revert(widget,GTK_V3270_SETTINGS(widget)->terminal);
  }
 
- LIB3270_EXPORT void v3270_settings_on_dialog_response(GtkDialog G_GNUC_UNUSED(*dialog), gint response_id, GtkWidget *settings)
- {
-    switch(response_id)
-    {
-    case GTK_RESPONSE_APPLY:
-        v3270_settings_apply(settings);
-        break;
-
-    case GTK_RESPONSE_CANCEL:
-        v3270_settings_cancel(settings);
-        break;
-
-    }
- }
-
- LIB3270_EXPORT GtkWidget * v3270_settings_dialog_new(GtkWidget *terminal, GtkWidget *settings)
- {
-#if GTK_CHECK_VERSION(3,12,0)
-
-	gboolean use_header;
-	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
-
-	GtkWidget * dialog =
-		GTK_WIDGET(g_object_new(
-			GTK_TYPE_DIALOG,
-			"use-header-bar", (use_header ? 1 : 0),
-			NULL
-		));
-
-#else
-
-	GtkWidget * dialog = gtk_dialog_new();
-
-#endif	// GTK 3.12
-
-	GtkWidget * content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-
-	// https://developer.gnome.org/hig/stable/visual-layout.html.en
-	gtk_box_set_spacing(
-		GTK_BOX(content_area),
-		18
-	);
-
-	gtk_box_pack_start(GTK_BOX(content_area),settings,TRUE,TRUE,2);
-    v3270_settings_set_terminal_widget(settings,terminal);
-
-    g_signal_connect(G_OBJECT(dialog),"response",G_CALLBACK(v3270_settings_on_dialog_response),settings);
-
-	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
-
-	// https://developer.gnome.org/hig/stable/visual-layout.html.en
-	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),18);
-
-    gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
-    //gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-    gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
-
-    return dialog;
- }

@@ -54,13 +54,21 @@
 
  static void font_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
+	v3270_settings_popup_dialog(
+		v3270_font_chooser_widget_new(),
+		terminal,
+		FALSE
+	);
+
+ 	/*
 	GtkWidget * dialog = v3270_settings_dialog_new(terminal, v3270_font_chooser_widget_new());
 
-	v3270_dialog_setup(dialog,_("Font setup"),_("_Save"));
+//	v3270_dialog_setup(dialog,_("Font setup"),_("_Save"));
 
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
+	*/
 
  }
 

@@ -148,7 +148,7 @@
 
 	G_OBJECT_CLASS(klass)->dispose = dispose;
 
-	widget->cancel = cancel;
+	widget->revert = cancel;
 	widget->load = load;
 
  }
@@ -323,9 +323,11 @@ static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 
 GtkWidget * v3270_font_chooser_widget_new()
 {
-	V3270FontChooserWidget * font_chooser = (V3270FontChooserWidget *) g_object_new(GTK_TYPE_V3270_FONT_CHOOSER, NULL);
+ 	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(GTK_TYPE_V3270_FONT_CHOOSER, NULL));
 
+ 	settings->title = _("Terminal font");
+ 	settings->label = _("Font");
 
-	return GTK_WIDGET(font_chooser);
+	return GTK_WIDGET(settings);
 }
 

@@ -98,6 +98,7 @@ LIB3270_EXPORT GtkWidget * v3270_dialog_new(GtkWidget *widget, const gchar *titl
 LIB3270_EXPORT void v3270_dialog_setup(GtkWidget *dialog, const gchar *title, const gchar *apply)
 {
 
+/*
 #if GTK_CHECK_VERSION(3,12,0)
 
 	GtkWidget * header = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
@@ -137,6 +138,7 @@ LIB3270_EXPORT void v3270_dialog_setup(GtkWidget *dialog, const gchar *title, co
 	);
 
 #endif // GTK 3.12
+*/
 
 }
 

@@ -349,26 +349,28 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 LIB3270_EXPORT GtkWidget * v3270_host_select_new()
 {
-	return GTK_WIDGET(g_object_new(GTK_TYPE_V3270HostSelectWidget, NULL));
+ 	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(GTK_TYPE_V3270HostSelectWidget, NULL));
+
+ 	settings->title = _("Host definition");
+ 	settings->label = _("Host");
+
+ 	return GTK_WIDGET(settings);
 }
 
 LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
-	/*
-	if(v3270_is_connected(widget))
-	{
-		gtk_widget_error_bell(widget);
-		return;
-	}
-	*/
+	GtkWidget * dialog = v3270_settings_dialog_new();
 
-	debug("V3270HostSelectWidget::%s",__FUNCTION__);
+	gtk_window_set_title(GTK_WINDOW(dialog), _("Host definition"));
 
-	GtkWidget * dialog = v3270_settings_dialog_new(widget, v3270_host_select_new());
+	gtk_container_add(GTK_CONTAINER(dialog), v3270_host_select_new());
 
-	v3270_dialog_setup(dialog,_("Setup host"),_("C_onnect"));
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
+
+	v3270_settings_dialog_set_terminal_widget(dialog, widget);
 
 	gtk_window_set_default_size(GTK_WINDOW(dialog), 700, 150);
 	gtk_widget_show_all(dialog);
@@ -383,17 +385,18 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
  		{
 		case GTK_RESPONSE_APPLY:
 			debug("V3270HostSelectWidget::%s=%s",__FUNCTION__,"GTK_RESPONSE_APPLY");
+			v3270_settings_dialog_apply(dialog);
 			again = lib3270_reconnect(v3270_get_session(widget),0);
 			break;
 
 		case GTK_RESPONSE_CANCEL:
 			again = FALSE;
 			debug("V3270HostSelectWidget::%s=%s",__FUNCTION__,"GTK_RESPONSE_CANCEL");
+			v3270_settings_dialog_revert(dialog);
 			break;
  		}
  	}
 
- 	debug("%s end",__FUNCTION__);
 	gtk_widget_destroy(dialog);
 
 }

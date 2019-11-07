@@ -456,6 +456,15 @@ static void v3270_class_init(v3270Class *klass)
 						v3270_VOID__VOID_POINTER_UINT,
 						G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_UINT, 0);
 
+	v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS] =
+		g_signal_new(	I_("save-settings"),
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_FIRST,
+						0,
+						NULL, NULL,
+						v3270_VOID__VOID,
+						G_TYPE_NONE, 0);
+
 	v3270_init_properties(gobject_class);
 
 }
@@ -748,5 +757,17 @@ const GtkWidgetClass * v3270_get_parent_class(void)
 LIB3270_EXPORT GtkIMContext * v3270_get_im_context(GtkWidget *widget)
 {
 	return GTK_V3270(widget)->input_method;
+}
+
+static gboolean bg_emit_save_settings(GObject *widget)
+{
+	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
+ 	return FALSE;
+}
+
+void v3270_emit_save_settings(GtkWidget *widget)
+{
+	if(widget)
+		g_idle_add((GSourceFunc) bg_emit_save_settings, G_OBJECT(widget));
 }
 

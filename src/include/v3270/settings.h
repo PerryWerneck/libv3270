@@ -35,7 +35,7 @@
 
  G_BEGIN_DECLS
 
-/*--[ Progress widget ]------------------------------------------------------------------------------*/
+/*--[ V3270 Settings Widget ]------------------------------------------------------------------------*/
 
  #define GTK_TYPE_V3270_SETTINGS     				(V3270Settings_get_type())
  #define GTK_V3270_SETTINGS(obj)	    			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_SETTINGS, V3270Settings))
@@ -47,6 +47,9 @@
  typedef struct _V3270Settings {
   	GtkGrid       parent;
     GtkWidget   * terminal;
+    const gchar	* label;		///< @brief Label for settings dialog.
+    const gchar * title;		///< @brief Title for settings dialog.
+    const gchar * tooltip;		///< @brief Tooltip for settings dialog.
  } V3270Settings;
 
  typedef struct _V3270SettingsClass	{
@@ -54,25 +57,52 @@
 
  	void (*load)(GtkWidget *widget, GtkWidget *terminal);			///< @brief Method to load the properties from terminal widget
  	void (*apply)(GtkWidget *widget, GtkWidget *terminal);			///< @brief Method for GTK_RESPONSE_APPLY
- 	void (*cancel)(GtkWidget *widget, GtkWidget *terminal);			///< @brief Method for GTK_RESPONSE_CANCEL
+ 	void (*revert)(GtkWidget *widget, GtkWidget *terminal);			///< @brief Method for GTK_RESPONSE_CANCEL
  	void (*update_message)(GtkWidget *widget, GtkWidget *terminal);	///< @brief Lib3270 message has changed.
 
  } V3270SettingsClass;
 
-/*--[ Prototypes ]-----------------------------------------------------------------------------------*/
+ LIB3270_EXPORT GType V3270Settings_get_type(void);
 
  LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal);
  LIB3270_EXPORT GtkWidget * v3270_settings_get_terminal_widget(GtkWidget *widget);
 
- LIB3270_EXPORT GType V3270Settings_get_type(void);
  LIB3270_EXPORT void v3270_settings_apply(GtkWidget *widget);
- LIB3270_EXPORT void v3270_settings_cancel(GtkWidget *widget);
+ LIB3270_EXPORT void v3270_settings_revert(GtkWidget *widget);
 
- /// @brief Callback for GtkDialog's "response" signal.
- LIB3270_EXPORT void v3270_settings_on_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget *settings);
+ /// @brief Popup a settings dialog for the terminal.
+ LIB3270_EXPORT void v3270_settings_popup_dialog(GtkWidget *settings, GtkWidget *terminal, gboolean modal);
 
- LIB3270_EXPORT GtkWidget * v3270_settings_dialog_new(GtkWidget *terminal, GtkWidget *settings);
- // LIB3270_EXPORT gint v3270_settings_dialog_run(GtkWidget *widget, GtkWidget *terminal);
+/*--[ V3270 Settings Dialog ]------------------------------------------------------------------------*/
+
+ #define GTK_TYPE_V3270_SETTINGS_DIALOG				(V3270SettingsDialog_get_type())
+ #define GTK_V3270_SETTINGS_DIALOG(obj)	   			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_SETTINGS_DIALOG, V3270SettingsDialog))
+ #define GTK_V3270_SETTINGS_DIALOG_CLASS(klass)	    (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_SETTINGS_DIALOG, V3270SettingsDialogClass))
+ #define GTK_IS_V3270_SETTINGS_DIALOG(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_SETTINGS_DIALOG))
+ #define GTK_IS_V3270_SETTINGS_DIALOG_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_SETTINGS_DIALOG))
+ #define GTK_V3270_SETTINGS_DIALOG_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_SETTINGS_DIALOG, V3270SettingsDialogClass))
+
+ typedef struct _V3270SettingsDialog {
+  	GtkDialog		  parent;
+  	GtkNotebook		* tabs;
+  	GtkWidget		* terminal;
+ } V3270SettingsDialog;
+
+ typedef struct _V3270SettingsDialogClass	{
+ 	GtkDialogClass parent_class;
+
+ } V3270SettingsDialogClass;
+
+ LIB3270_EXPORT GType V3270SettingsDialog_get_type(void);
+
+ LIB3270_EXPORT GtkWidget * v3270_settings_dialog_new();
+ LIB3270_EXPORT void v3270_settings_dialog_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal);
+
+ /// @brief Process GtkDialog's "response" signal.
+ LIB3270_EXPORT void v3270_settting_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget *terminal);
+
+ LIB3270_EXPORT void v3270_settings_dialog_apply(GtkWidget *widget);
+ LIB3270_EXPORT void v3270_settings_dialog_revert(GtkWidget *widget);
 
  G_END_DECLS
 

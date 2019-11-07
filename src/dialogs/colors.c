@@ -215,7 +215,7 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
  static void V3270ColorSelection_class_init(G_GNUC_UNUSED V3270ColorSelectionClass *klass)
  {
 	GTK_V3270_SETTINGS_CLASS(klass)->load = load;
-	GTK_V3270_SETTINGS_CLASS(klass)->cancel = cancel;
+	GTK_V3270_SETTINGS_CLASS(klass)->revert = cancel;
  }
 
  static void color_scheme_changed(GtkWidget G_GNUC_UNUSED(*dunno), const GdkRGBA *colors, V3270ColorSelection *widget) {
@@ -354,19 +354,20 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
 
  LIB3270_EXPORT GtkWidget * v3270_color_selection_new()
  {
- 	return GTK_WIDGET(g_object_new(GTK_TYPE_V3270_COLOR_SELECTION, NULL));
+ 	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(GTK_TYPE_V3270_COLOR_SELECTION, NULL));
+
+ 	settings->title = _("Terminal colors");
+ 	settings->label = _("Colors");
+
+ 	return GTK_WIDGET(settings);
  }
 
  LIB3270_EXPORT void v3270_edit_color_table(GtkWidget *terminal)
  {
-	g_return_if_fail(GTK_IS_V3270(terminal));
-
-	GtkWidget * dialog = v3270_settings_dialog_new(terminal, v3270_color_selection_new());
-
-	v3270_dialog_setup(dialog,_("Color setup"),_("_Save"));
-
-	gtk_widget_show_all(dialog);
-	gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
+ 	v3270_settings_popup_dialog(
+		v3270_color_selection_new(),
+		terminal,
+		FALSE
+	);
 
  }
