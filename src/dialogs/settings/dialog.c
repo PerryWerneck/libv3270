@@ -267,7 +267,7 @@ void v3270_settings_popup_dialog(GtkWidget *widget, GtkWidget *terminal, gboolea
 	v3270_settings_dialog_set_terminal_widget(dialog, terminal);
 
 	g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
-	g_signal_connect(dialog,"response",G_CALLBACK(v3270_settting_dialog_response),NULL);
+	g_signal_connect(dialog,"response",G_CALLBACK(v3270_setttings_dialog_response),NULL);
 
 	gtk_widget_show_all(dialog);
 
