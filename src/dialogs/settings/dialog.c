@@ -53,6 +53,9 @@ static void add(GtkContainer *container, GtkWidget *widget)
 
 	debug("Added settings dialog %p",widget);
 
+	// https://developer.gnome.org/hig/stable/visual-layout.html.en
+	gtk_container_set_border_width(GTK_CONTAINER(widget),18);
+
 	GtkWidget * label = NULL;
 	if(GTK_V3270_SETTINGS(widget)->label)
 	{
@@ -158,8 +161,8 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 	GtkWidget * content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
-	gtk_box_set_spacing(GTK_BOX(content_area),18);
-	gtk_container_set_border_width(GTK_CONTAINER(content_area),18);
+	//gtk_box_set_spacing(GTK_BOX(content_area),18);
+	//gtk_container_set_border_width(GTK_CONTAINER(content_area),18);
 
 	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
     gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
@@ -245,7 +248,7 @@ void v3270_setttings_dialog_response(GtkDialog *dialog, gint response_id, GtkWid
 		g_warning("Unexpected settings dialog response \"%d\"",response_id);
     }
 
-    gtk_widget_destroy(dialog);
+    gtk_widget_destroy(GTK_WIDGET(dialog));
 
 }
 

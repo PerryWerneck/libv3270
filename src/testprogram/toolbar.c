@@ -72,6 +72,26 @@
 
  }
 
+ static void preferences_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ {
+ 	GtkWidget * dialog = v3270_settings_dialog_new();
+
+ 	gtk_window_set_title(GTK_WINDOW(dialog),"Session properties");
+	gtk_container_add(GTK_CONTAINER(dialog), v3270_host_select_new());
+	gtk_container_add(GTK_CONTAINER(dialog), v3270_color_selection_new());
+	gtk_container_add(GTK_CONTAINER(dialog), v3270_font_chooser_widget_new());
+
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
+
+	v3270_settings_dialog_set_terminal_widget(dialog, terminal);
+
+	g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
+	g_signal_connect(dialog,"response",G_CALLBACK(v3270_setttings_dialog_response),NULL);
+
+	gtk_widget_show_all(dialog);
+
+ }
+
  static void connect_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
 	lib3270_reconnect(v3270_get_session(terminal),0);
@@ -228,8 +248,6 @@
 	} buttons[] = {
 		{ "gtk-connect",				G_CALLBACK(connect_clicked),		"Connect to host"  				},
 		{ "gtk-disconnect",				G_CALLBACK(disconnect_clicked),		"Disconnect from host"  		},
-		{ "gtk-select-color",			G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
-		{ "network-server",				G_CALLBACK(host_clicked),			"Configure host"				},
 		{ "gtk-print",					G_CALLBACK(print_clicked),			"Print screen contents"			},
 		{ "gtk-harddisk",				G_CALLBACK(ft_clicked),				"Open file transfer dialog"		},
 		{ "gtk-copy",					G_CALLBACK(copy_clicked),			"Copy data"						},
@@ -237,7 +255,12 @@
 		{ "document-save",				G_CALLBACK(save_all_clicked),		"Save screen"					},
 		{ "document-open",				G_CALLBACK(load_clicked),			"Paste file"					},
 
-		{ "preferences-desktop-font",	G_CALLBACK(font_clicked),			"Select font"					},
+		{ "applications-system",		G_CALLBACK(preferences_clicked),	"Session properties"			},
+
+//		{ "network-server",				G_CALLBACK(host_clicked),			"Configure host"				},
+//		{ "preferences-desktop-font",	G_CALLBACK(font_clicked),			"Select font"					},
+//		{ "gtk-select-color",			G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
+
 
 		{ "zoom-in",					G_CALLBACK(zoom_in_clicked),		"Zoom in"						},
 		{ "zoom-out",					G_CALLBACK(zoom_out_clicked),		"Zoom out"						},
