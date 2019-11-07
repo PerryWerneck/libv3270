@@ -73,6 +73,9 @@
  /// @brief Popup a settings dialog for the terminal.
  LIB3270_EXPORT void v3270_settings_popup_dialog(GtkWidget *settings, GtkWidget *terminal, gboolean modal);
 
+ /// @brief Get an edit dialog for the settings widget.
+ LIB3270_EXPORT GtkWidget * v3270_settings_get_edit_dialog(GtkWidget *settings, GtkWidget *terminal, gboolean modal);
+
 /*--[ V3270 Settings Dialog ]------------------------------------------------------------------------*/
 
  #define GTK_TYPE_V3270_SETTINGS_DIALOG				(V3270SettingsDialog_get_type())

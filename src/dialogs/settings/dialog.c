@@ -276,4 +276,26 @@ void v3270_settings_popup_dialog(GtkWidget *widget, GtkWidget *terminal, gboolea
 
 }
 
+GtkWidget * v3270_settings_get_edit_dialog(GtkWidget *settings, GtkWidget *terminal, gboolean modal) {
+
+ 	const gchar * title = GTK_V3270_SETTINGS(settings)->title;
+
+ 	GtkWidget * dialog = v3270_settings_dialog_new();
+
+ 	if(title)
+		gtk_window_set_title(GTK_WINDOW(dialog), title);
+
+	gtk_container_add(GTK_CONTAINER(dialog), settings);
+
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
+	gtk_window_set_modal(GTK_WINDOW(dialog),modal);
+
+	v3270_settings_dialog_set_terminal_widget(dialog, terminal);
+
+	g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
+	g_signal_connect(dialog,"response",G_CALLBACK(v3270_setttings_dialog_response),settings);
+
+	return dialog;
+
+ }
 
