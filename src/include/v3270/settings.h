@@ -99,7 +99,7 @@
  LIB3270_EXPORT void v3270_settings_dialog_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal);
 
  /// @brief Process GtkDialog's "response" signal.
- LIB3270_EXPORT void v3270_settting_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget *terminal);
+ LIB3270_EXPORT void v3270_setttings_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget *terminal);
 
  LIB3270_EXPORT void v3270_settings_dialog_apply(GtkWidget *widget);
  LIB3270_EXPORT void v3270_settings_dialog_revert(GtkWidget *widget);

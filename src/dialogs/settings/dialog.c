@@ -226,7 +226,7 @@ void v3270_settings_dialog_set_terminal_widget(GtkWidget *widget, GtkWidget *ter
 	);
 }
 
-void v3270_settting_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget *terminal)
+void v3270_setttings_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget *terminal)
 {
     switch(response_id)
     {

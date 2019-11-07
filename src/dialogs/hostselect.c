@@ -364,7 +364,6 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 	GtkWidget * dialog = v3270_settings_dialog_new();
 
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Host definition"));
-
 	gtk_container_add(GTK_CONTAINER(dialog), v3270_host_select_new());
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
