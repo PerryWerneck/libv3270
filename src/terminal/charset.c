@@ -277,7 +277,8 @@
 
 	if(!(path && *path))
 	{
-		lib3270_reset_charset(terminal->host,NULL,NULL,LIB3270_DEFAULT_CGEN | LIB3270_DEFAULT_CSET);
+		debug("%s: No remap file, resetting charset",__FUNCTION__);
+		lib3270_set_host_charset(terminal->host,NULL);
 		return;
 	}
 
