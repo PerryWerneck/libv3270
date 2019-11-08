@@ -27,6 +27,11 @@
  *
  */
 
+ /**
+  * @brief Implements the host properties widget.
+  *
+  */
+
  #include "private.h"
  #include <hostselect.h>
  #include <v3270/dialogs.h>
@@ -34,19 +39,6 @@
  #include <lib3270/log.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
-
-/*
- static const struct _colortable
- {
-	unsigned short 	  colors;
-	const gchar		* description;
- } colortable[] =
- {
-	{ 16,	N_( "16 colors"  )	},
-	{ 8,	N_( "8 colors"	 )	},
-	{ 2,	N_( "Monochrome" )	},
- };
- */
 
  enum _entry
  {
@@ -56,12 +48,11 @@
  	ENTRY_COUNT
  };
 
+ /// @brief Combo box descriptors.
  static const struct Combos
  {
-    gint top;
- 	gint left;
- 	const gchar * label;
- 	const gchar * tooltip;
+ 	ENTRY_FIELD_HEAD
+
 	const unsigned int * values;
  	const gchar **labels;
 
@@ -71,8 +62,10 @@
  } combos[] =
  {
  	{
- 		.top = 2,
+ 		.top = 0,
 		.left = 0,
+		.width = 2,
+		.height = 1,
 
 		.label = N_("System _type"),
 		.get = (unsigned int (*)(const H3270 *)) lib3270_get_host_type,
@@ -97,8 +90,10 @@
 
  	},
  	{
- 		.top = 2,
+ 		.top = 0,
 		.left = 3,
+		.width = 2,
+		.height = 1,
 
 		.label = N_("_Color table"),
 		.get = lib3270_get_color_type,
@@ -123,8 +118,10 @@
 
  	},
  	{
- 		.top = 3,
-		.left = 0,
+ 		.top = 0,
+		.left = 6,
+		.width = 2,
+		.height = 1,
 
 		.label = N_("_Model"),
 		.tooltip = N_("The model of 3270 display to be emulated"),
@@ -142,13 +139,46 @@
 
 		.labels = (const gchar *[])
 		{
-			N_( "Model 2 - 80x24"		),
-			N_( "Model 3 - 80x32"		),
-			N_( "Model 4 - 80x43"		),
+			N_( "Model 2 - 80x24"	),
+			N_( "Model 3 - 80x32"	),
+			N_( "Model 4 - 80x43"	),
 			N_( "Model 5 - 132x27"	),
 			NULL
 		}
 
+ 	}
+ };
+
+ static const struct Entry
+ {
+ 	ENTRY_FIELD_HEAD
+
+ 	gint max_length;
+ 	gint width_chars;
+
+ } entryfields[] = {
+ 	{
+ 		.left = 0,
+ 		.top = 0,
+ 		.width = 5,
+ 		.height = 1,
+
+		.label = N_( "_Host" ),
+		.tooltip = N_("Address or name of the host to connect."),
+		.max_length = 0xFF,
+		.width_chars = 50,
+
+ 	},
+ 	{
+ 		.left = 0,
+ 		.top = 1,
+ 		.width = 1,
+ 		.height = 1,
+
+ 		.label = N_( "_Service" ),
+		.tooltip = N_("Port or service name (empty for \"telnet\")."),
+		.max_length = 6,
+		.width_chars = 7,
  	}
  };
 
@@ -158,9 +188,9 @@
 
 	struct
 	{
-		GtkEntry			* entry[ENTRY_COUNT];				/**< @brief Entry fields for host & service name */
-		GtkToggleButton		* ssl;								/**< @brief SSL Connection? */
-		GtkComboBox			* combos[G_N_ELEMENTS(combos)];		/**< @brief Combo-boxes */
+		GtkEntry			* entry[G_N_ELEMENTS(entryfields)];	///< @brief Entry fields for host & service name
+		GtkToggleButton		* ssl;								///< @brief SSL Connection?
+		GtkComboBox			* combos[G_N_ELEMENTS(combos)];		///< @brief Combo-boxes
 
 	} input;
 
@@ -273,13 +303,14 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 
 		if(gtk_tree_model_get_iter_first(model,&iter))
 		{
-			GValue gVal = { 0, };
-
 			do
 			{
+				GValue gVal = { 0, };
 				gtk_tree_model_get_value(model,&iter,1,&gVal);
+				guint iVal = g_value_get_uint(&gVal);
+				g_value_unset(&gVal);
 
-				if(g_value_get_uint(&gVal) == value)
+				if(iVal == value)
 				{
 					gtk_combo_box_set_active_iter(widget->input.combos[combo],&iter);
 					break;
@@ -287,7 +318,6 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 
 			} while(gtk_tree_model_iter_next(model,&iter));
 
-			g_value_unset(&gVal);
 
 		}
 
@@ -312,47 +342,58 @@ static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidget
 
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
-	int f;
+	// Connection properties
+	GtkWidget * connection = gtk_grid_new();
+ 	gtk_grid_set_row_spacing(GTK_GRID(connection),6);
+ 	gtk_grid_set_column_spacing(GTK_GRID(connection),12);
 
- 	// Entry fields
-	GtkWidget * label[ENTRY_COUNT] =
-	{
-		gtk_label_new_with_mnemonic( _( "_Host" ) ),
-		gtk_label_new_with_mnemonic( _( "_Service" ) )
-	};
+	gtk_grid_attach(
+			GTK_GRID(widget),
+			v3270_dialog_create_frame(connection,_("Connection")),
+			0,0,10,5
+	);
 
- 	for(f=0;f<ENTRY_COUNT;f++)
+	// Emulation properties
+	GtkWidget * emulation = gtk_grid_new();
+ 	gtk_grid_set_row_spacing(GTK_GRID(emulation),6);
+ 	gtk_grid_set_column_spacing(GTK_GRID(emulation),12);
+
+	gtk_grid_attach(
+			GTK_GRID(widget),
+			v3270_dialog_create_frame(emulation,_("Emulation")),
+			0,6,10,5
+	);
+
+	// Entry fields
 	{
-		widget->input.entry[f] = GTK_ENTRY(gtk_entry_new());
-		gtk_widget_set_halign(label[f],GTK_ALIGN_END);
-		gtk_label_set_mnemonic_widget(GTK_LABEL(label[f]),GTK_WIDGET(widget->input.entry[f]));
+		size_t entry;
+
+		for(entry = 0; entry < G_N_ELEMENTS(entryfields); entry++)
+		{
+			widget->input.entry[entry] = GTK_ENTRY(gtk_entry_new());
+
+			gtk_entry_set_max_length(widget->input.entry[entry],entryfields[entry].max_length);
+			gtk_entry_set_width_chars(widget->input.entry[entry],entryfields[entry].width_chars);
+
+			v3270_grid_attach(
+				GTK_GRID(connection),
+				(struct v3270_entry_field *) & entryfields[entry],
+				GTK_WIDGET(widget->input.entry[entry])
+			);
+
+		}
+
+		gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
+		gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
+
 	}
-
-	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),_("Address or name of the host to connect.") );
-	gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.entry[ENTRY_SRVCNAME]),_("Port or service name (empty for \"telnet\").") );
-
-	gtk_entry_set_max_length(widget->input.entry[ENTRY_HOSTNAME],0xFF);
-	gtk_entry_set_width_chars(widget->input.entry[ENTRY_HOSTNAME],50);
-
-	gtk_entry_set_max_length(widget->input.entry[ENTRY_SRVCNAME],6);
-	gtk_entry_set_width_chars(widget->input.entry[ENTRY_SRVCNAME],7);
-
-	gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
-
-	gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
-
-	gtk_grid_attach(GTK_GRID(widget),label[0],0,0,1,1);
-	gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),1,0,5,1);
-
-	gtk_grid_attach(GTK_GRID(widget),label[1],0,1,1,1);
-	gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.entry[ENTRY_SRVCNAME]),1,1,1,1);
 
 	// SSL checkbox
 	{
 		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
 		gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
 		gtk_widget_set_halign(GTK_WIDGET(widget->input.ssl),GTK_ALIGN_START);
-		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.ssl),3,1,1,1);
+		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.ssl),3,1,1,1);
 	}
 
 	// Create combo boxes
@@ -380,10 +421,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 				gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(combos[combo].labels[item]), 1, combos[combo].values[item], -1);
 			}
 
-			GtkWidget *label = gtk_label_new_with_mnemonic(gettext(combos[combo].label));
-			gtk_widget_set_halign(label,GTK_ALIGN_END);
-			gtk_grid_attach(GTK_GRID(widget),label,combos[combo].left,combos[combo].top,1,1);
-			gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.combos[combo]),combos[combo].left+1,combos[combo].top,2,1);
+			v3270_grid_attach(GTK_GRID(emulation), (struct v3270_entry_field *) & combos[combo], GTK_WIDGET(widget->input.combos[combo]));
 
 		}
 
@@ -397,7 +435,7 @@ LIB3270_EXPORT GtkWidget * v3270_host_select_new()
 {
  	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(GTK_TYPE_V3270HostSelectWidget, NULL));
 
- 	settings->title = _("Host definition");
+ 	settings->title = _("Host properties");
  	settings->label = _("Host");
 
  	return GTK_WIDGET(settings);

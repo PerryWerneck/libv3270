@@ -57,6 +57,21 @@
 	unsigned short	  attr;		///< @brief Character attribute.
  };
 
+
+/// @brief Head for settings widgets.
+#define ENTRY_FIELD_HEAD   \
+	gint left; \
+	gint top; \
+	gint width; \
+	gint height; \
+ 	const gchar * label; \
+ 	const gchar * tooltip;
+
+ struct v3270_entry_field
+ {
+ 	ENTRY_FIELD_HEAD
+ };
+
 /*--[ Signals ]--------------------------------------------------------------------------------------*/
 
  /// @brief V3270 Signal list
@@ -133,6 +148,9 @@
  G_GNUC_INTERNAL void			  v3270_dialog_apply(GtkButton G_GNUC_UNUSED(*button), GtkWidget *dialog);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_button_new(GtkWidget *dialog, const gchar *mnemonic, GCallback callback);
 #endif // ! GTK 3.12
+
+ G_GNUC_INTERNAL void			  v3270_grid_attach(GtkGrid *grid, const struct v3270_entry_field * description, GtkWidget *widget);
+
 
  // Toggle button widget
  #define GTK_TYPE_V3270_TOGGLE_BUTTON				(V3270ToggleButton_get_type ())

@@ -172,4 +172,18 @@
 
  }
 
+ void v3270_grid_attach(GtkGrid *grid, const struct v3270_entry_field * description, GtkWidget *widget)
+ {
+	GtkWidget *label = gtk_label_new_with_mnemonic(gettext(description->label));
+	gtk_label_set_mnemonic_widget(GTK_LABEL(label),widget);
+
+	gtk_widget_set_halign(label,GTK_ALIGN_END);
+	gtk_grid_attach(grid,label,description->left,description->top,1,1);
+	gtk_grid_attach(grid,widget,description->left+1,description->top,description->width,description->height);
+
+	if(description->tooltip)
+		gtk_widget_set_tooltip_markup(widget,gettext(description->tooltip));
+
+ }
+
 
