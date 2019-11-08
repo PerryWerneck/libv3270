@@ -35,6 +35,7 @@
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
+/*
  static const struct _colortable
  {
 	unsigned short 	  colors;
@@ -45,6 +46,7 @@
 	{ 8,	N_( "8 colors"	 )	},
 	{ 2,	N_( "Monochrome" )	},
  };
+ */
 
  enum _entry
  {
@@ -54,7 +56,101 @@
  	ENTRY_COUNT
  };
 
- static const gchar *comboLabel[] = { N_("System _type"), N_("_Color table")  };
+ static const struct Combos
+ {
+    gint top;
+ 	gint left;
+ 	const gchar * label;
+ 	const gchar * tooltip;
+	const unsigned int * values;
+ 	const gchar **labels;
+
+ 	unsigned int (*get)(const H3270 *);
+ 	int (*set)(H3270 *, unsigned int);
+
+ } combos[] =
+ {
+ 	{
+ 		.top = 2,
+		.left = 0,
+
+		.label = N_("System _type"),
+		.get = (unsigned int (*)(const H3270 *)) lib3270_get_host_type,
+		.set = (int (*)(H3270 *, unsigned int)) lib3270_set_host_type,
+
+		.values = (const unsigned int [])
+		{
+			LIB3270_HOST_S390,
+			LIB3270_HOST_AS400,
+			LIB3270_HOST_TSO,
+			0,
+		},
+
+		.labels = (const gchar *[])
+		{
+			N_( "IBM S/390"			),
+			N_( "IBM AS/400"		),
+			N_( "Other (TSO)" 		),
+			N_( "Other (VM/CMS)"    ),
+			NULL
+		}
+
+ 	},
+ 	{
+ 		.top = 2,
+		.left = 3,
+
+		.label = N_("_Color table"),
+		.get = lib3270_get_color_type,
+		.set = lib3270_set_color_type,
+
+		.values = (const unsigned int [])
+		{
+			0,
+			2,
+			8,
+			16,
+		},
+
+		.labels = (const gchar *[])
+		{
+			N_( "System default"),
+			N_( "Monochrome" ),
+			N_( "8 colors"	 ),
+			N_( "16 colors"  ),
+			NULL
+		}
+
+ 	},
+ 	{
+ 		.top = 3,
+		.left = 0,
+
+		.label = N_("_Model"),
+		.tooltip = N_("The model of 3270 display to be emulated"),
+
+		.get = lib3270_get_model_number,
+		.set = lib3270_set_model_number,
+
+		.values = (const unsigned int [])
+		{
+			2,
+			3,
+			4,
+			5
+		},
+
+		.labels = (const gchar *[])
+		{
+			N_( "Model 2 - 80x24"		),
+			N_( "Model 3 - 80x32"		),
+			N_( "Model 4 - 80x43"		),
+			N_( "Model 5 - 132x27"	),
+			NULL
+		}
+
+ 	}
+ };
 
  struct _V3270HostSelectWidget
  {
@@ -64,7 +160,7 @@
 	{
 		GtkEntry			* entry[ENTRY_COUNT];				/**< @brief Entry fields for host & service name */
 		GtkToggleButton		* ssl;								/**< @brief SSL Connection? */
-		GtkComboBox			* combo[G_N_ELEMENTS(comboLabel)];	/**< @brief Model & Color combobox */
+		GtkComboBox			* combos[G_N_ELEMENTS(combos)];		/**< @brief Combo-boxes */
 
 	} input;
 
@@ -103,39 +199,22 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 
 	}
 
-	// Apply Host type
+	// Apply combos.
+	size_t combo;
+	for(combo = 0; combo < G_N_ELEMENTS(combos); combo++)
 	{
 		GtkTreeIter	iter;
 
-		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget->input.combo[0]), &iter))
+		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget->input.combos[combo]), &iter))
 		{
 			GValue value = { 0, };
-			gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget->input.combo[0])),&iter,1,&value);
+			gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget->input.combos[combo])),&iter,1,&value);
 
-			lib3270_set_host_type(hSession,g_value_get_int(&value));
-
-			g_value_unset(&value);
-
-		}
-
-	}
-
-	// Apply color type
-	{
-		GtkTreeIter	iter;
-
-		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget->input.combo[1]), &iter))
-		{
-			GValue value   = { 0, };
-
-			gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget->input.combo[1])),&iter,1,&value);
-
-			lib3270_set_color_type(hSession,g_value_get_int(&value));
+			combos[combo].set(hSession,g_value_get_uint(&value));
 
 			g_value_unset(&value);
 
 		}
-
 	}
 
 }
@@ -184,53 +263,34 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 
     }
 
-	LIB3270_HOST_TYPE type = lib3270_get_host_type(hSession);
-
-	// Set host type
+	size_t combo;
+	for(combo = 0; combo < G_N_ELEMENTS(combos); combo++)
 	{
-		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combo[0]);
+
+		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combos[combo]);
 		GtkTreeIter		  iter;
+		unsigned int	  value = combos[combo].get(hSession);
 
 		if(gtk_tree_model_get_iter_first(model,&iter))
 		{
+			GValue gVal = { 0, };
+
 			do
 			{
-				GValue		value   = { 0, };
+				gtk_tree_model_get_value(model,&iter,1,&gVal);
 
-				gtk_tree_model_get_value(model,&iter,1,&value);
-
-				if(g_value_get_int(&value) == (int) type)
+				if(g_value_get_uint(&gVal) == value)
 				{
-					gtk_combo_box_set_active_iter(widget->input.combo[0],&iter);
+					gtk_combo_box_set_active_iter(widget->input.combos[combo],&iter);
 					break;
 				}
 
 			} while(gtk_tree_model_iter_next(model,&iter));
+
+			g_value_unset(&gVal);
+
 		}
-	}
 
-	// Set color type
-	{
-		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combo[1]);
-		GtkTreeIter		  iter;
-		int				  colors = (int) lib3270_get_color_type(hSession);
-
-		if(gtk_tree_model_get_iter_first(model,&iter))
-		{
-			do
-			{
-				GValue		value   = { 0, };
-
-				gtk_tree_model_get_value(model,&iter,1,&value);
-
-				if(g_value_get_int(&value) == colors)
-				{
-					gtk_combo_box_set_active_iter(widget->input.combo[1],&iter);
-					break;
-				}
-
-			} while(gtk_tree_model_iter_next(model,&iter));
-		}
 	}
 
 }
@@ -291,56 +351,42 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	{
 		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
 		gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
-
+		gtk_widget_set_halign(GTK_WIDGET(widget->input.ssl),GTK_ALIGN_START);
 		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.ssl),3,1,1,1);
 	}
 
-	// Host type
+	// Create combo boxes
 	{
-		GtkTreeModel    * model		= (GtkTreeModel *) gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_INT);
 		GtkCellRenderer * renderer	= gtk_cell_renderer_text_new();
 
-		widget->input.combo[0] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
+		size_t combo, item;
 
-		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.combo[0]), renderer, TRUE);
-		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combo[0]), renderer, "text", 0, NULL);
+		for(combo = 0; combo < G_N_ELEMENTS(combos); combo++) {
 
-		const LIB3270_HOST_TYPE_ENTRY *entry = lib3270_get_option_list();
-		for(f=0;entry[f].name != NULL;f++)
-		{
-			GtkTreeIter iter;
-			gtk_list_store_append((GtkListStore *) model,&iter);
-			gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(entry[f].description), 1, entry[f].type, -1);
+			GtkTreeModel * model = (GtkTreeModel *) gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_UINT);
+
+			widget->input.combos[combo] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
+
+			if(combos[combo].tooltip)
+				gtk_widget_set_tooltip_markup(GTK_WIDGET(widget->input.combos[combo]),combos[combo].tooltip);
+
+			gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.combos[combo]), renderer, TRUE);
+			gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combos[combo]), renderer, "text", 0, NULL);
+
+			for(item = 0; combos[combo].labels[item]; item++)
+			{
+				GtkTreeIter iter;
+				gtk_list_store_append((GtkListStore *) model, &iter);
+				gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(combos[combo].labels[item]), 1, combos[combo].values[item], -1);
+			}
+
+			GtkWidget *label = gtk_label_new_with_mnemonic(gettext(combos[combo].label));
+			gtk_widget_set_halign(label,GTK_ALIGN_END);
+			gtk_grid_attach(GTK_GRID(widget),label,combos[combo].left,combos[combo].top,1,1);
+			gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.combos[combo]),combos[combo].left+1,combos[combo].top,2,1);
+
 		}
 
-	}
-
-	// Color table
-	{
-		GtkTreeModel    * model		= (GtkTreeModel *) gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_INT);
-		GtkCellRenderer * renderer	= gtk_cell_renderer_text_new();
-
-		widget->input.combo[1] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
-
-		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.combo[1]), renderer, TRUE);
-		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combo[1]), renderer, "text", 0, NULL);
-
-		for(f=0;f< (int) G_N_ELEMENTS(colortable);f++)
-		{
-			GtkTreeIter iter;
-			gtk_list_store_append((GtkListStore *) model,&iter);
-			gtk_list_store_set((GtkListStore *) model, &iter, 0, gettext(colortable[f].description), 1, colortable[f].colors, -1);
-		}
-
-	}
-
-	// Host options
-	for(f=0;f< (int) G_N_ELEMENTS(comboLabel);f++)
-	{
-		GtkWidget *label = gtk_label_new_with_mnemonic(gettext(comboLabel[f]));
-		gtk_widget_set_halign(label,GTK_ALIGN_END);
-		gtk_grid_attach(GTK_GRID(widget),label,0,f+2,1,1);
-		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->input.combo[f]),1,f+2,2,1);
 	}
 
 	gtk_widget_show_all(GTK_WIDGET(widget));

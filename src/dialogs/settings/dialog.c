@@ -137,7 +137,7 @@ static void dispose(GObject *object)
 {
 	debug("%s",__FUNCTION__);
 
-	V3270SettingsDialog * widget = GTK_V3270_SETTINGS_DIALOG(object);
+//	V3270SettingsDialog * widget = GTK_V3270_SETTINGS_DIALOG(object);
 
 
 	G_OBJECT_CLASS(V3270SettingsDialog_parent_class)->dispose(object);
@@ -229,19 +229,19 @@ void v3270_settings_dialog_set_terminal_widget(GtkWidget *widget, GtkWidget *ter
 	);
 }
 
-void v3270_setttings_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget *terminal)
+void v3270_setttings_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget G_GNUC_UNUSED(*terminal))
 {
     switch(response_id)
     {
     case GTK_RESPONSE_APPLY:
     	debug("%s:apply",__FUNCTION__);
-		v3270_settings_dialog_apply(dialog);
+		v3270_settings_dialog_apply(GTK_WIDGET(dialog));
         break;
 
     case GTK_RESPONSE_CANCEL:
 	case GTK_RESPONSE_DELETE_EVENT:
     	debug("%s:cancel",__FUNCTION__);
-		v3270_settings_dialog_revert(dialog);
+		v3270_settings_dialog_revert(GTK_WIDGET(dialog));
         break;
 
 	default:
