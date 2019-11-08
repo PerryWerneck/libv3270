@@ -161,3 +161,20 @@ LIB3270_EXPORT void v3270_settings_set_terminal_widget(GtkWidget *widget, GtkWid
     GTK_V3270_SETTINGS_GET_CLASS(widget)->revert(widget,GTK_V3270_SETTINGS(widget)->terminal);
  }
 
+ LIB3270_EXPORT const gchar * v3270_settings_get_title(GtkWidget *widget)
+ {
+ 	g_return_val_if_fail(GTK_IS_V3270_SETTINGS(widget),NULL);
+ 	return GTK_V3270_SETTINGS(widget)->title;
+ }
+
+ LIB3270_EXPORT const gchar * v3270_settings_get_label(GtkWidget *widget)
+ {
+ 	g_return_val_if_fail(GTK_IS_V3270_SETTINGS(widget),NULL);
+ 	return GTK_V3270_SETTINGS(widget)->label;
+ }
+
+ LIB3270_EXPORT const gchar * v3270_settings_get_tooltip(GtkWidget *widget)
+ {
+ 	g_return_val_if_fail(GTK_IS_V3270_SETTINGS(widget),NULL);
+ 	return GTK_V3270_SETTINGS(widget)->tooltip;
+ }

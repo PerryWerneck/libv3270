@@ -60,16 +60,6 @@
 		FALSE
 	);
 
- 	/*
-	GtkWidget * dialog = v3270_settings_dialog_new(terminal, v3270_font_chooser_widget_new());
-
-//	v3270_dialog_setup(dialog,_("Font setup"),_("_Save"));
-
-	gtk_widget_show_all(dialog);
-	gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
-	*/
-
  }
 
  static void preferences_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
@@ -117,13 +107,6 @@
  	v3270_error_popup(terminal,"title","summary","body");
 
 	/*
-	GtkWidget * dialog	= v3270_dialog_new(terminal, _("test"), _("test"));
-	GtkWidget * trace = v3270_trace_new(terminal);
-	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),trace,TRUE,TRUE,2);
-	*/
-
-
-	/*
 	//
 	// Test transfer dialog.
 	//
@@ -165,18 +148,6 @@
 	*/
 
 	/*
-	//
-	// Test worker widget
-	//
-	GtkWidget * dialog	= v3270_dialog_new(terminal, _("test"), _("test"));
-	GtkWidget * worker = v3270_ft_worker_new();
-	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),worker,TRUE,TRUE,2);
-	v3270_ft_worker_set_session(worker,v3270_get_session(terminal));
-	v3270_ft_worker_set_activity(worker,activity);
-	v3270_ft_worker_start(worker);
-	*/
-
-	/*
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
@@ -197,28 +168,6 @@
  static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
 	v3270_edit_color_table(terminal);
-
- 	/*
-	GtkWidget * dialog	= v3270_dialog_new(terminal, _("Color setup"), _("_Save"));
-	GtkWidget * colors = v3270_color_selection_new(terminal);
-
-	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),colors,TRUE,TRUE,2);
-
-	gtk_widget_show_all(dialog);
-
-	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
-	{
-		g_message("Accepted");
-	}
-	else
-	{
-		g_message("Cancel");
-		v3270_color_selection_reset(colors);
-	}
-
-	gtk_widget_destroy(dialog);
-	*/
-
  }
 
  static void zoom_in_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
