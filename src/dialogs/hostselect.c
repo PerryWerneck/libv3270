@@ -191,6 +191,7 @@
 		GtkEntry			* entry[G_N_ELEMENTS(entryfields)];	///< @brief Entry fields for host & service name
 		GtkToggleButton		* ssl;								///< @brief SSL Connection?
 		GtkComboBox			* combos[G_N_ELEMENTS(combos)];		///< @brief Combo-boxes
+		GtkComboBox			* charset;							///< @brief Charset combo box
 
 	} input;
 
@@ -201,129 +202,12 @@
 	V3270SettingsClass parent_class;
  };
 
+ static void load(GtkWidget *w, GtkWidget *terminal);
+ static void apply(GtkWidget *w, GtkWidget *terminal);
 
  G_DEFINE_TYPE(V3270HostSelectWidget, V3270HostSelectWidget, GTK_TYPE_V3270_SETTINGS);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
-
-static void apply(GtkWidget *w, GtkWidget *terminal)
-{
-	debug("V3270HostSelectWidget::%s",__FUNCTION__);
-
-	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
-	H3270 *hSession = v3270_get_session(terminal);
-
-	// Apply URL
-	{
-		g_autofree gchar * url =
-			g_strconcat(
-							(gtk_toggle_button_get_active(widget->input.ssl) ? "tn3270s://" : "tn3270://"),
-							gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]),
-							":",
-							gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]),
-							NULL
-						);
-
-		debug("URL=[%s]",url);
-		lib3270_set_url(hSession,url);
-
-	}
-
-	// Apply combos.
-	size_t combo;
-	for(combo = 0; combo < G_N_ELEMENTS(combos); combo++)
-	{
-		GtkTreeIter	iter;
-
-		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget->input.combos[combo]), &iter))
-		{
-			GValue value = { 0, };
-			gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget->input.combos[combo])),&iter,1,&value);
-
-			combos[combo].set(hSession,g_value_get_uint(&value));
-
-			g_value_unset(&value);
-
-		}
-	}
-
-}
-
-static void load(GtkWidget *w, GtkWidget *terminal)
-{
-	debug("V3270HostSelectWidget::%s",__FUNCTION__);
-
-	H3270 *hSession = v3270_get_session(terminal);
-	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
-
-	const gchar * u = lib3270_get_url(hSession);
-
-	if(u)
-    {
-
-        g_autofree gchar * url = g_strdup(u);
-        debug("URL=[%s]",url);
-
-		gtk_toggle_button_set_active(widget->input.ssl,g_str_has_prefix(u,"tn3270s"));
-
-        gchar *hostname = strstr(url,"://");
-        if(!hostname)
-        {
-            g_message("Invalid URL: \"%s\" (no scheme)",url);
-        }
-        else
-        {
-            hostname += 3;
-
-            gchar *srvcname = strchr(hostname,':');
-
-            if(srvcname)
-            {
-                *(srvcname++) = 0;
-            }
-            else
-            {
-                srvcname = "telnet";
-            }
-
-            gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],hostname);
-            gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],srvcname);
-
-        }
-
-    }
-
-	size_t combo;
-	for(combo = 0; combo < G_N_ELEMENTS(combos); combo++)
-	{
-
-		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combos[combo]);
-		GtkTreeIter		  iter;
-		unsigned int	  value = combos[combo].get(hSession);
-
-		if(gtk_tree_model_get_iter_first(model,&iter))
-		{
-			do
-			{
-				GValue gVal = { 0, };
-				gtk_tree_model_get_value(model,&iter,1,&gVal);
-				guint iVal = g_value_get_uint(&gVal);
-				g_value_unset(&gVal);
-
-				if(iVal == value)
-				{
-					gtk_combo_box_set_active_iter(widget->input.combos[combo],&iter);
-					break;
-				}
-
-			} while(gtk_tree_model_iter_next(model,&iter));
-
-
-		}
-
-	}
-
-}
 
 static void update_message(GtkWidget *widget, GtkWidget *terminal)
 {
@@ -342,6 +226,9 @@ static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidget
 
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
+	// Cell renderer
+	GtkCellRenderer * text_renderer	= gtk_cell_renderer_text_new();
+
 	// Connection properties
 	GtkWidget * connection = gtk_grid_new();
  	gtk_grid_set_row_spacing(GTK_GRID(connection),6);
@@ -398,8 +285,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	// Create combo boxes
 	{
-		GtkCellRenderer * renderer	= gtk_cell_renderer_text_new();
-
 		size_t combo, item;
 
 		for(combo = 0; combo < G_N_ELEMENTS(combos); combo++) {
@@ -411,8 +296,8 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			if(combos[combo].tooltip)
 				gtk_widget_set_tooltip_markup(GTK_WIDGET(widget->input.combos[combo]),combos[combo].tooltip);
 
-			gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.combos[combo]), renderer, TRUE);
-			gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combos[combo]), renderer, "text", 0, NULL);
+			gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.combos[combo]), text_renderer, TRUE);
+			gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combos[combo]), text_renderer, "text", 0, NULL);
 
 			for(item = 0; combos[combo].labels[item]; item++)
 			{
@@ -424,6 +309,46 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			v3270_grid_attach(GTK_GRID(emulation), (struct v3270_entry_field *) & combos[combo], GTK_WIDGET(widget->input.combos[combo]));
 
 		}
+
+	}
+
+	// Create Charset Combo
+	{
+		GtkTreeModel * model = (GtkTreeModel *) gtk_list_store_new(1,G_TYPE_STRING);
+
+		widget->input.charset = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
+
+		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.charset), text_renderer, TRUE);
+		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.charset), text_renderer, "text", 0, NULL);
+
+		static const gchar * charsets[] =
+		{
+			"us",
+			"bracket",
+			"cp500"
+		};
+
+		size_t charset;
+		for(charset = 0; charset < G_N_ELEMENTS(charsets); charset++)
+		{
+			GtkTreeIter iter;
+			gtk_list_store_append((GtkListStore *) model, &iter);
+			gtk_list_store_set((GtkListStore *) model, &iter, 0, charsets[charset], -1);
+		};
+
+		static const struct v3270_entry_field descriptor =
+		{
+			.top = 1,
+			.left = 0,
+			.width = 2,
+			.height = 1,
+
+			.label = N_("_Charset"),
+			.tooltip = N_("The EBCDIC host character set. "),
+
+		};
+
+		v3270_grid_attach(GTK_GRID(emulation), &descriptor, GTK_WIDGET(widget->input.charset));
 
 	}
 
@@ -446,9 +371,10 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 	g_return_if_fail(GTK_IS_V3270(widget));
 
 	GtkWidget * dialog = v3270_settings_dialog_new();
+	GtkWidget * settings = v3270_host_select_new();
 
-	gtk_window_set_title(GTK_WINDOW(dialog), _("Host definition"));
-	gtk_container_add(GTK_CONTAINER(dialog), v3270_host_select_new());
+	gtk_window_set_title(GTK_WINDOW(dialog), v3270_settings_get_title(settings));
+	gtk_container_add(GTK_CONTAINER(dialog), settings);
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
 	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
@@ -483,3 +409,173 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 	gtk_widget_destroy(dialog);
 
 }
+
+static void apply(GtkWidget *w, GtkWidget *terminal)
+{
+	debug("V3270HostSelectWidget::%s",__FUNCTION__);
+
+	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
+	H3270 *hSession = v3270_get_session(terminal);
+
+	// Apply URL
+	{
+		g_autofree gchar * url =
+			g_strconcat(
+							(gtk_toggle_button_get_active(widget->input.ssl) ? "tn3270s://" : "tn3270://"),
+							gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]),
+							":",
+							gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]),
+							NULL
+						);
+
+		debug("URL=[%s]",url);
+		lib3270_set_url(hSession,url);
+
+	}
+
+	// Apply combos.
+	size_t combo;
+	for(combo = 0; combo < G_N_ELEMENTS(combos); combo++)
+	{
+		GtkTreeIter	iter;
+
+		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget->input.combos[combo]), &iter))
+		{
+			GValue value = { 0, };
+			gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget->input.combos[combo])),&iter,1,&value);
+
+			combos[combo].set(hSession,g_value_get_uint(&value));
+
+			g_value_unset(&value);
+
+		}
+	}
+
+	// Apply charset
+	{
+		GtkTreeIter	iter;
+
+		if(gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget->input.charset), &iter))
+		{
+			GValue value = { 0, };
+			gtk_tree_model_get_value(gtk_combo_box_get_model(GTK_COMBO_BOX(widget->input.charset)),&iter,0,&value);
+
+			lib3270_set_host_charset(hSession,g_value_get_string(&value));
+
+			g_value_unset(&value);
+
+		}
+	}
+
+}
+
+static void load(GtkWidget *w, GtkWidget *terminal)
+{
+	debug("V3270HostSelectWidget::%s",__FUNCTION__);
+
+	H3270 *hSession = v3270_get_session(terminal);
+	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
+
+	const gchar * u = lib3270_get_url(hSession);
+
+	if(u)
+    {
+
+        g_autofree gchar * url = g_strdup(u);
+        debug("URL=[%s]",url);
+
+		gtk_toggle_button_set_active(widget->input.ssl,g_str_has_prefix(u,"tn3270s"));
+
+        gchar *hostname = strstr(url,"://");
+        if(!hostname)
+        {
+            g_message("Invalid URL: \"%s\" (no scheme)",url);
+        }
+        else
+        {
+            hostname += 3;
+
+            gchar *srvcname = strchr(hostname,':');
+
+            if(srvcname)
+            {
+                *(srvcname++) = 0;
+            }
+            else
+            {
+                srvcname = "telnet";
+            }
+
+            gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],hostname);
+            gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],srvcname);
+
+        }
+
+    }
+
+    // Load unsigned int combos
+	size_t combo;
+	for(combo = 0; combo < G_N_ELEMENTS(combos); combo++)
+	{
+
+		GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.combos[combo]);
+		GtkTreeIter		  iter;
+		unsigned int	  value = combos[combo].get(hSession);
+
+		if(gtk_tree_model_get_iter_first(model,&iter))
+		{
+			do
+			{
+				GValue gVal = { 0, };
+				gtk_tree_model_get_value(model,&iter,1,&gVal);
+				guint iVal = g_value_get_uint(&gVal);
+				g_value_unset(&gVal);
+
+				if(iVal == value)
+				{
+					gtk_combo_box_set_active_iter(widget->input.combos[combo],&iter);
+					break;
+				}
+
+			} while(gtk_tree_model_iter_next(model,&iter));
+
+
+		}
+
+	}
+
+	// Load charset
+	{
+		const char * charset = lib3270_get_host_charset(hSession);
+
+		if(charset)
+		{
+			GtkTreeModel	* model = gtk_combo_box_get_model(widget->input.charset);
+			GtkTreeIter		  iter;
+
+			if(gtk_tree_model_get_iter_first(model,&iter))
+			{
+				do
+				{
+					GValue gVal = { 0, };
+					gtk_tree_model_get_value(model,&iter,0,&gVal);
+
+					if(!g_ascii_strcasecmp(charset,g_value_get_string(&gVal)))
+					{
+						gtk_combo_box_set_active_iter(widget->input.charset,&iter);
+						g_value_unset(&gVal);
+						break;
+					}
+
+					g_value_unset(&gVal);
+
+				} while(gtk_tree_model_iter_next(model,&iter));
+
+			}
+
+		}
+
+	}
+
+}
+
