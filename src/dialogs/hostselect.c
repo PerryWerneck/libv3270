@@ -44,6 +44,8 @@
  {
  	ENTRY_HOSTNAME,
  	ENTRY_SRVCNAME,
+ 	ENTRY_OVERSIZE,
+ 	ENTRY_REMAP_FILE,
 
  	ENTRY_COUNT
  };
@@ -191,7 +193,20 @@
 		.tooltip = N_("Makes the screen larger than the default for the chosen model number."),
 		.max_length = 7,
 		.width_chars = 8,
+ 	},
+
+ 	{
+		.top = 2,
+		.left = 0,
+ 		.width = 8,
+ 		.height = 1,
+
+ 		.label = N_( "Custom Remap" ),
+		.tooltip = N_("Path to XML file with custom charset mapping."),
+		.max_length = 0xFF,
+		.width_chars = 50,
  	}
+
  };
 
  struct _V3270HostSelectWidget
@@ -260,6 +275,56 @@ static void oversize_changed(GtkEditable *editable, GtkWidget *settings)
 	v3270_settings_set_valid(settings,valid);
 }
 
+static void remap_file_changed(GtkEditable *editable, GtkWidget *settings)
+{
+	const gchar * filename = gtk_editable_get_chars(editable,0,-1);
+
+	debug("%s(%s)",__FUNCTION__,filename);
+	if(*filename)
+		v3270_settings_set_valid(settings,g_file_test(filename,G_FILE_TEST_IS_REGULAR));
+	else
+		v3270_settings_set_valid(settings,TRUE);
+
+}
+
+static void select_remap_file(GtkEditable *editable, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, G_GNUC_UNUSED GtkWidget *settings)
+{
+	GtkWidget * dialog =
+		gtk_file_chooser_dialog_new(
+				_( "Select custom charset mapping"),
+				GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(editable))),
+				GTK_FILE_CHOOSER_ACTION_OPEN,
+				_("Cancel"),	GTK_RESPONSE_CANCEL,
+				_("Select"),	GTK_RESPONSE_ACCEPT,
+				NULL );
+
+
+	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
+	g_signal_connect(G_OBJECT(dialog),"close",G_CALLBACK(v3270_dialog_close),NULL);
+
+	// Get current file name.
+	const gchar * filename = gtk_editable_get_chars(editable,0,-1);
+
+	if(filename && *filename)
+	{
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog),filename);
+	}
+	else
+	{
+		lib3270_autoptr(char) folder = lib3270_build_data_filename("remap",NULL);
+
+		if(folder && *folder)
+			gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), folder);
+
+	}
+
+	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+		gtk_entry_set_text(GTK_ENTRY(editable),gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
+
+	gtk_widget_destroy(dialog);
+
+}
+
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
 	// Cell renderer
@@ -300,7 +365,18 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 		// Custom settings
 		gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
+
 		gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
+		gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_REMAP_FILE]),TRUE);
+
+		gtk_entry_set_icon_from_icon_name(widget->input.entry[ENTRY_REMAP_FILE],GTK_ENTRY_ICON_SECONDARY,"document-open");
+		gtk_entry_set_icon_activatable(widget->input.entry[ENTRY_REMAP_FILE],GTK_ENTRY_ICON_SECONDARY,TRUE);
+		gtk_entry_set_icon_tooltip_text(widget->input.entry[ENTRY_REMAP_FILE],GTK_ENTRY_ICON_SECONDARY,_("Select charset remap file"));
+
+		g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_REMAP_FILE]),"icon-press",G_CALLBACK(select_remap_file),widget);
+		g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_REMAP_FILE]),"changed",G_CALLBACK(remap_file_changed),widget);
+
+		g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_OVERSIZE]),"changed",G_CALLBACK(oversize_changed),widget);
 
 		// Add to containers
 		v3270_grid_attach(
@@ -321,7 +397,12 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			GTK_WIDGET(widget->input.entry[2])
 		);
 
-		g_signal_connect(G_OBJECT(widget->input.entry[2]),"changed",G_CALLBACK(oversize_changed),widget);
+		v3270_grid_attach(
+			GTK_GRID(emulation),
+			(struct v3270_entry_field *) & entryfields[3],
+			GTK_WIDGET(widget->input.entry[3])
+		);
+
 
 	}
 
