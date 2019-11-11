@@ -118,8 +118,8 @@
 
  	},
  	{
- 		.top = 0,
-		.left = 6,
+		.top = 1,
+		.left = 0,
 		.width = 2,
 		.height = 1,
 
@@ -179,6 +179,18 @@
 		.tooltip = N_("Port or service name (empty for \"telnet\")."),
 		.max_length = 6,
 		.width_chars = 7,
+ 	},
+
+ 	{
+		.top = 1,
+		.left = 3,
+		.width = 2,
+		.height = 1,
+
+ 		.label = N_( "Oversize" ),
+		.tooltip = N_("Makes the screen larger than the default for the chosen model number."),
+		.max_length = 7,
+		.width_chars = 8,
  	}
  };
 
@@ -224,6 +236,30 @@ static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidget
 
 }
 
+static void oversize_changed(GtkEditable *editable, GtkWidget *settings)
+{
+	const gchar * chars = gtk_editable_get_chars(editable,0,-1);
+	gboolean	  valid = TRUE;
+	char		  junk;
+	unsigned int ovc = 0, ovr = 0;
+
+	if(*chars)
+	{
+		if(sscanf(chars, "%ux%u%c", &ovc, &ovr, &junk) != 2)
+		{
+			valid = FALSE;
+			debug("Can't parse \"%s\"",chars);
+		}
+		else if( (ovc * ovr) > 0x4000)
+		{
+			valid = FALSE;
+			debug("Invalid values on \"%s\"",chars);
+		}
+	}
+
+	v3270_settings_set_valid(settings,valid);
+}
+
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
 	// Cell renderer
@@ -258,20 +294,34 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		for(entry = 0; entry < G_N_ELEMENTS(entryfields); entry++)
 		{
 			widget->input.entry[entry] = GTK_ENTRY(gtk_entry_new());
-
 			gtk_entry_set_max_length(widget->input.entry[entry],entryfields[entry].max_length);
 			gtk_entry_set_width_chars(widget->input.entry[entry],entryfields[entry].width_chars);
-
-			v3270_grid_attach(
-				GTK_GRID(connection),
-				(struct v3270_entry_field *) & entryfields[entry],
-				GTK_WIDGET(widget->input.entry[entry])
-			);
-
 		}
 
+		// Custom settings
 		gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
 		gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
+
+		// Add to containers
+		v3270_grid_attach(
+			GTK_GRID(connection),
+			(struct v3270_entry_field *) & entryfields[0],
+			GTK_WIDGET(widget->input.entry[0])
+		);
+
+		v3270_grid_attach(
+			GTK_GRID(connection),
+			(struct v3270_entry_field *) & entryfields[1],
+			GTK_WIDGET(widget->input.entry[1])
+		);
+
+		v3270_grid_attach(
+			GTK_GRID(emulation),
+			(struct v3270_entry_field *) & entryfields[2],
+			GTK_WIDGET(widget->input.entry[2])
+		);
+
+		g_signal_connect(G_OBJECT(widget->input.entry[2]),"changed",G_CALLBACK(oversize_changed),widget);
 
 	}
 
@@ -338,8 +388,8 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 		static const struct v3270_entry_field descriptor =
 		{
-			.top = 1,
-			.left = 0,
+			.top = 0,
+			.left = 6,
 			.width = 2,
 			.height = 1,
 

@@ -50,6 +50,7 @@
     const gchar	* label;		///< @brief Label for settings dialog.
     const gchar * title;		///< @brief Title for settings dialog.
     const gchar * tooltip;		///< @brief Tooltip for settings dialog.
+  	gboolean	  valid;		///< @brief True if the settings can be applyed.
  } V3270Settings;
 
  typedef struct _V3270SettingsClass	{
@@ -59,7 +60,7 @@
  	void (*apply)(GtkWidget *widget, GtkWidget *terminal);			///< @brief Method for GTK_RESPONSE_APPLY
  	void (*revert)(GtkWidget *widget, GtkWidget *terminal);			///< @brief Method for GTK_RESPONSE_CANCEL
  	void (*update_message)(GtkWidget *widget, GtkWidget *terminal);	///< @brief Lib3270 message has changed.
-
+	void (*validity)(GtkWidget *, gboolean);
  } V3270SettingsClass;
 
  LIB3270_EXPORT GType V3270Settings_get_type(void);
@@ -69,6 +70,9 @@
 
  LIB3270_EXPORT void v3270_settings_apply(GtkWidget *widget);
  LIB3270_EXPORT void v3270_settings_revert(GtkWidget *widget);
+
+ LIB3270_EXPORT void v3270_settings_set_valid(GtkWidget *widget, gboolean is_valid);
+ LIB3270_EXPORT gboolean v3270_settings_get_valid(GtkWidget *widget);
 
  LIB3270_EXPORT const gchar * v3270_settings_get_title(GtkWidget *widget);
  LIB3270_EXPORT const gchar * v3270_settings_get_label(GtkWidget *widget);
@@ -97,7 +101,6 @@
 
  typedef struct _V3270SettingsDialogClass	{
  	GtkDialogClass parent_class;
-
  } V3270SettingsDialogClass;
 
  LIB3270_EXPORT GType V3270SettingsDialog_get_type(void);

@@ -47,6 +47,39 @@ static gboolean on_tab_focus(V3270Settings *settings, GdkEvent G_GNUC_UNUSED(*ev
  	return FALSE;
 }
 
+static void check_valid(GtkWidget *widget, gboolean *valid)
+{
+	if(*valid && GTK_IS_V3270_SETTINGS(widget))
+	{
+		if(!v3270_settings_get_valid(widget))
+			*valid = FALSE;
+	}
+
+}
+
+static void on_validity(V3270Settings G_GNUC_UNUSED(*settings), gboolean valid, V3270SettingsDialog * dialog)
+{
+	if(valid)
+	{
+		// Check validity of all childs.
+		gtk_container_foreach(
+			GTK_CONTAINER(dialog->tabs),
+			(GtkCallback) check_valid,
+			&valid
+		);
+
+	}
+
+	debug("The current state is %s",valid ? "valid" : "invalid");
+
+	GtkWidget * button = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog), GTK_RESPONSE_APPLY);
+
+	if(button)
+		gtk_widget_set_sensitive(button,valid);
+
+
+}
+
 static void add(GtkContainer *container, GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270_SETTINGS(widget));
@@ -73,6 +106,7 @@ static void add(GtkContainer *container, GtkWidget *widget)
 	);
 
 	g_signal_connect(G_OBJECT(widget), "focus-in-event", G_CALLBACK(on_tab_focus), container);
+	g_signal_connect(G_OBJECT(widget), "validity", G_CALLBACK(on_validity), container);
 
 
 }
@@ -123,33 +157,9 @@ void v3270_settings_dialog_revert(GtkWidget *dialog)
 
 }
 
-/*
-static void response(GtkDialog *dialog, gint response_id)
-{
-	if(!terminal)
-		return;
-
-
-}
-*/
-
-static void dispose(GObject *object)
-{
-	debug("%s",__FUNCTION__);
-
-//	V3270SettingsDialog * widget = GTK_V3270_SETTINGS_DIALOG(object);
-
-
-	G_OBJECT_CLASS(V3270SettingsDialog_parent_class)->dispose(object);
-}
-
 static void V3270SettingsDialog_class_init(V3270SettingsDialogClass *klass)
 {
 	GTK_CONTAINER_CLASS(klass)->add = add;
-
-	// Object class
-	G_OBJECT_CLASS(klass)->dispose = dispose;
-
 }
 
 static void on_page_changed(GtkNotebook *notebook, GtkWidget G_GNUC_UNUSED(*child), guint G_GNUC_UNUSED(page_num), V3270SettingsDialog G_GNUC_UNUSED(*dialog)) {
@@ -219,6 +229,8 @@ static void set_terminal_widget(GtkWidget *settings, GtkWidget *terminal)
 void v3270_settings_dialog_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal)
 {
 	g_return_if_fail(GTK_IS_V3270_SETTINGS_DIALOG(widget));
+
+	debug("%s(%p,%p)",__FUNCTION__,widget,terminal);
 
 	GTK_V3270_SETTINGS_DIALOG(widget)->terminal = terminal;
 
