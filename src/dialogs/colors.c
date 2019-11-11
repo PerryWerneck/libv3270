@@ -27,6 +27,11 @@
  *
  */
 
+ /**
+  * @brief Implements the V3270 Color selection widget.
+  *
+  */
+
  #include "private.h"
  #include <v3270/colorscheme.h>
  #include <v3270/settings.h>
@@ -312,7 +317,7 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
 		gtk_widget_set_vexpand(box,TRUE);
 		gtk_widget_set_hexpand(box,TRUE);
 
-		gtk_grid_attach(GTK_GRID(widget),box,0,0,1,5);
+		gtk_grid_attach(GTK_GRID(widget),box,0,0,3,5);
 
 	}
 
@@ -324,7 +329,7 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
 		gtk_widget_set_sensitive(widget->colors.chooser,0);
 		g_signal_connect(G_OBJECT(widget->colors.chooser),"color-activated",G_CALLBACK(color_activated),widget);
 
-		gtk_grid_attach(GTK_GRID(widget),widget->colors.chooser,1,0,5,5);
+		gtk_grid_attach(GTK_GRID(widget),widget->colors.chooser,3,0,5,5);
 	}
 #else
 	{
@@ -335,16 +340,25 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
 		gtk_widget_set_sensitive(widget->colors.editor,0);
 		g_signal_connect(G_OBJECT(widget->colors.editor),"color-changed",G_CALLBACK(color_changed),widget);
 
-		gtk_grid_attach(GTK_GRID(widget),widget->colors.editor,1,0,5,5);
+		gtk_grid_attach(GTK_GRID(widget),widget->colors.editor,3,0,5,5);
 	}
 #endif // USE_GTK_COLOR_CHOOSER
 
 	{
 		// Create scheme selector
-		widget->colors.scheme = v3270_color_scheme_new();
-		gtk_widget_set_tooltip_markup(widget->colors.scheme,_("Predefined color schemes"));
-		gtk_grid_attach(GTK_GRID(widget),widget->colors.scheme,0,6,6,1);
+		GtkWidget * label = gtk_label_new_with_mnemonic(_("Color _theme"));
+		gtk_widget_set_halign(label,GTK_ALIGN_END);
 
+		widget->colors.scheme = v3270_color_scheme_new();
+		gtk_widget_set_tooltip_markup(widget->colors.scheme,_("Predefined color theme"));
+
+		gtk_label_set_mnemonic_widget(GTK_LABEL(label),widget->colors.scheme);
+
+		gtk_widget_set_margin_top(label,6);
+		gtk_widget_set_margin_top(widget->colors.scheme,6);
+
+		gtk_grid_attach(GTK_GRID(widget),label,0,6,1,1);
+		gtk_grid_attach(GTK_GRID(widget),widget->colors.scheme,1,6,8,1);
 		g_signal_connect(G_OBJECT(widget->colors.scheme),"update-colors",G_CALLBACK(color_scheme_changed),widget);
 
 	}

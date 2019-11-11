@@ -275,15 +275,21 @@ static void oversize_changed(GtkEditable *editable, GtkWidget *settings)
 	v3270_settings_set_valid(settings,valid);
 }
 
-static void remap_file_changed(GtkEditable *editable, GtkWidget *settings)
+static void remap_file_changed(GtkEditable *editable, V3270HostSelectWidget *settings)
 {
 	const gchar * filename = gtk_editable_get_chars(editable,0,-1);
 
 	debug("%s(%s)",__FUNCTION__,filename);
 	if(*filename)
-		v3270_settings_set_valid(settings,g_file_test(filename,G_FILE_TEST_IS_REGULAR));
+	{
+		v3270_settings_set_valid(GTK_WIDGET(settings),g_file_test(filename,G_FILE_TEST_IS_REGULAR));
+		gtk_widget_set_sensitive(GTK_WIDGET(settings->input.charset),FALSE);
+	}
 	else
-		v3270_settings_set_valid(settings,TRUE);
+	{
+		v3270_settings_set_valid(GTK_WIDGET(settings),TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(settings->input.charset),TRUE);
+	}
 
 }
 
@@ -301,6 +307,12 @@ static void select_remap_file(GtkEditable *editable, G_GNUC_UNUSED GtkEntryIconP
 
 	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
 	g_signal_connect(G_OBJECT(dialog),"close",G_CALLBACK(v3270_dialog_close),NULL);
+
+	// Setup file filter
+	GtkFileFilter * filter = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter,_("TN3270 Custom charset"));
+	gtk_file_filter_add_pattern(filter,"*.xml");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog),filter);
 
 	// Get current file name.
 	const gchar * filename = gtk_editable_get_chars(editable,0,-1);
@@ -596,6 +608,9 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 			g_value_unset(&value);
 
 		}
+
+		v3270_set_remap_filename(terminal, gtk_entry_get_text(widget->input.entry[ENTRY_REMAP_FILE]));
+
 	}
 
 }
@@ -705,6 +720,10 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 			}
 
 		}
+
+		const gchar * remap_file = v3270_get_remap_filename(terminal);
+		gtk_entry_set_text(widget->input.entry[ENTRY_REMAP_FILE],remap_file ? remap_file : "");
+
 
 	}
 
