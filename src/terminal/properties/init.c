@@ -139,8 +139,8 @@
 
 	// Remap file
 	klass->properties.remap_file = g_param_spec_string(
-							"remap",
-							"remap",
+							"remap_file",
+							"remap_file",
 							_("XML file with remap table"),
 							FALSE,
 							G_PARAM_READABLE|G_PARAM_WRITABLE
