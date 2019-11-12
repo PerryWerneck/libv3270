@@ -37,8 +37,31 @@
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
  #include <lib3270/log.h>
+ #include <lib3270/toggle.h>
 
-/*--[ Widget definition ]----------------------------------------------------------------------------*/
+/*--[ Globals ]--------------------------------------------------------------------------------------*/
+
+ static const struct ToggleList
+ {
+	gint left;
+	gint top;
+
+	LIB3270_TOGGLE_ID	id;
+ }
+ toggleList[] =
+ {
+ 	{
+ 		.left = 3,
+ 		.top = 1,
+ 		.id = LIB3270_TOGGLE_CONNECT_ON_STARTUP,
+ 	},
+ 	{
+ 		.left = 4,
+ 		.top = 1,
+		.id = LIB3270_TOGGLE_RECONNECT,
+ 	}
+
+ };
 
  enum _entry
  {
@@ -162,7 +185,7 @@
  	{
  		.left = 0,
  		.top = 0,
- 		.width = 5,
+ 		.width = 4,
  		.height = 1,
 
 		.label = N_( "_Host" ),
@@ -215,10 +238,11 @@
 
 	struct
 	{
-		GtkEntry			* entry[G_N_ELEMENTS(entryfields)];	///< @brief Entry fields for host & service name
-		GtkToggleButton		* ssl;								///< @brief SSL Connection?
-		GtkComboBox			* combos[G_N_ELEMENTS(combos)];		///< @brief Combo-boxes
-		GtkComboBox			* charset;							///< @brief Charset combo box
+		GtkEntry			* entry[G_N_ELEMENTS(entryfields)];		///< @brief Entry fields for host & service name.
+		GtkToggleButton		* ssl;									///< @brief SSL Connection?
+		GtkComboBox			* combos[G_N_ELEMENTS(combos)];			///< @brief Combo-boxes.
+		GtkComboBox			* charset;								///< @brief Charset combo box.
+		GtkToggleButton		* toggles[G_N_ELEMENTS(toggleList)];	///< @brief Toggle checks.
 
 	} input;
 
@@ -423,7 +447,31 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
 		gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
 		gtk_widget_set_halign(GTK_WIDGET(widget->input.ssl),GTK_ALIGN_START);
-		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.ssl),3,1,1,1);
+		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.ssl),2,1,1,1);
+	}
+
+	// Toggle checkboxes
+	{
+		size_t toggle;
+
+		for(toggle = 0; toggle < G_N_ELEMENTS(toggleList); toggle++)
+		{
+			const LIB3270_TOGGLE * descriptor = lib3270_toggle_get_from_id(toggleList[toggle].id);
+
+			if(descriptor)
+			{
+				widget->input.toggles[toggle] = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(gettext(descriptor->label)));
+
+				if(descriptor->summary)
+					gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.toggles[toggle]),gettext(descriptor->summary));
+
+				gtk_widget_set_halign(GTK_WIDGET(widget->input.toggles[toggle]),GTK_ALIGN_START);
+				gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.toggles[toggle]),toggleList[toggle].left,toggleList[toggle].top,1,1);
+
+			}
+
+		}
+
 	}
 
 	// Create combo boxes
@@ -613,6 +661,15 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 
 	}
 
+	// Apply toggles
+	size_t toggle;
+
+	for(toggle = 0; toggle < G_N_ELEMENTS(toggleList); toggle++)
+	{
+		if(widget->input.toggles[toggle])
+			v3270_set_toggle(terminal, toggleList[toggle].id, gtk_toggle_button_get_active(widget->input.toggles[toggle]));
+	}
+
 }
 
 static void load(GtkWidget *w, GtkWidget *terminal)
@@ -717,6 +774,7 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 
 				} while(gtk_tree_model_iter_next(model,&iter));
 
+
 			}
 
 		}
@@ -725,6 +783,15 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 		gtk_entry_set_text(widget->input.entry[ENTRY_REMAP_FILE],remap_file ? remap_file : "");
 
 
+	}
+
+	// Load toggles
+	size_t toggle;
+
+	for(toggle = 0; toggle < G_N_ELEMENTS(toggleList); toggle++)
+	{
+		if(widget->input.toggles[toggle])
+			gtk_toggle_button_set_active(widget->input.toggles[toggle],v3270_get_toggle(terminal,toggleList[toggle].id));
 	}
 
 }
