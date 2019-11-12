@@ -40,16 +40,16 @@
  		const char	*name;
  		GParamSpec	**prop;
  	} properties[] = {
- 		{ "connected",		&klass->properties.online		},
- 		{ "luname",			&klass->properties.luname		},
- 		{ "url",			&klass->properties.url			},
- 		{ "model",			&klass->properties.model		},
- 		{ "has-selection",	&klass->properties.selection	},
+ 		{ "connected",			&klass->properties.online			},
+ 		{ "associated_lu",		&klass->properties.associated_lu	},
+ 		{ "url",				&klass->properties.url				},
+ 		{ "model",				&klass->properties.model			},
+ 		{ "has_selection",		&klass->properties.selection		},
  	};
 
  	size_t ix;
 
-// 	debug("Property %s=%u",g_param_spec_get_name(pspec),(unsigned int) property_id);
+ 	debug("Property %s=%u",g_param_spec_get_name(pspec),(unsigned int) property_id);
 	g_object_class_install_property(oclass, property_id, pspec);
 
 	for(ix = 0; ix < G_N_ELEMENTS(properties); ix++)
@@ -164,6 +164,21 @@
 		gobject_class,
 		V3270_PROPERTY_DYNAMIC_SPACING,
 		klass->properties.dynamic_spacing
+	);
+
+	// Lu names
+	klass->properties.lu_names = g_param_spec_string(
+							"lu_names",
+							"lu_names",
+							_("Comma separated list of LU names"),
+							FALSE,
+							G_PARAM_READABLE|G_PARAM_WRITABLE
+						);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_LU_NAMES,
+		klass->properties.lu_names
 	);
 
 

@@ -108,6 +108,10 @@
 			g_value_set_boolean(value,v3270_get_dynamic_font_spacing(GTK_WIDGET(object)));
 			break;
 
+		case V3270_PROPERTY_LU_NAMES:
+			g_value_take_string(value,v3270_get_lunames(GTK_WIDGET(object)));
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 
@@ -182,5 +186,15 @@ LIB3270_EXPORT guint v3270_get_auto_disconnect(GtkWidget *widget)
  	return GTK_V3270(widget)->activity.disconnect;
 }
 
+LIB3270_EXPORT gchar * v3270_get_lunames(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
+	const char ** lunames = lib3270_get_lunames(GTK_V3270(widget)->host);
+
+	if(!lunames)
+		return NULL;
+
+	return g_strjoinv(",",(gchar **) lunames);
+}
 

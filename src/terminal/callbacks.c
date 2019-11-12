@@ -99,7 +99,7 @@ static void update_message(H3270 *session, G_GNUC_UNUSED LIB3270_MESSAGE id)
 
 static void update_luname(H3270 *session, const char G_GNUC_UNUSED(*name))
 {
-	g_idle_add((GSourceFunc) v3270_update_luname, lib3270_get_user_data(session));
+	g_idle_add((GSourceFunc) v3270_update_associated_lu, lib3270_get_user_data(session));
 }
 
 static gboolean	v3270_update_url(v3270 *terminal)
@@ -171,6 +171,7 @@ static void update_connect(H3270 *session, unsigned char connected)
 		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_DISCONNECTED], 0);
 	}
 
+	debug("%s(%p)",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.online);
 	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.online);
 
 	widget->activity.timestamp = time(0);
@@ -191,7 +192,10 @@ static void update_screen_size(H3270 *session, G_GNUC_UNUSED unsigned short rows
 static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNUSED int rows, G_GNUC_UNUSED int cols)
 {
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
+
+	debug("%s(%p)",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.model);
 	g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), GTK_V3270_GET_CLASS(widget)->properties.model);
+
 	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
 }
 
@@ -246,7 +250,9 @@ static void set_selection(H3270 *session, unsigned char status)
 {
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
 
+	debug("%s(%p)",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.selection);
 	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.selection);
+
 	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_SELECTING], 0, status ? TRUE : FALSE);
 
 }

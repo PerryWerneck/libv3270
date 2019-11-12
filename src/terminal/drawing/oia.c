@@ -694,7 +694,7 @@ cairo_t * v3270_oia_set_update_region(v3270 * terminal, GdkRectangle **r, V3270_
 	return cr;
 }
 
-gboolean v3270_update_luname(v3270 *terminal)
+gboolean v3270_update_associated_lu(v3270 *terminal)
 {
 	if(terminal->surface)
 	{
@@ -713,7 +713,8 @@ gboolean v3270_update_luname(v3270 *terminal)
 		v3270_queue_draw_area(GTK_WIDGET(terminal),rect->x,rect->y,rect->width,rect->height);
 	}
 
-	g_object_notify_by_pspec(G_OBJECT(terminal), GTK_V3270_GET_CLASS(terminal)->properties.luname);
+	debug("%s(%p)",__FUNCTION__,GTK_V3270_GET_CLASS(terminal)->properties.associated_lu);
+	g_object_notify_by_pspec(G_OBJECT(terminal), GTK_V3270_GET_CLASS(terminal)->properties.associated_lu);
 
  	return FALSE;
 }

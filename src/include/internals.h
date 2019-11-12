@@ -329,7 +329,7 @@ G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned
  G_GNUC_INTERNAL gchar		* v3270_translate_rgba_to_text(GdkRGBA *clr);
 
  // Properties
- G_GNUC_INTERNAL gboolean	  v3270_update_luname(v3270 *terminal);
+ G_GNUC_INTERNAL gboolean	  v3270_update_associated_lu(v3270 *terminal);
  G_GNUC_INTERNAL void		  v3270_update_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID id, unsigned char value, const char *name);
 
 G_END_DECLS

@@ -126,6 +126,10 @@
 			v3270_set_dynamic_font_spacing(GTK_WIDGET(object), g_value_get_boolean(value));
 			break;
 
+		case V3270_PROPERTY_LU_NAMES:
+			v3270_set_lunames(GTK_WIDGET(object),g_value_get_string(value));
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 
@@ -215,7 +219,8 @@ LIB3270_EXPORT void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)
 
 }
 
-LIB3270_EXPORT void	v3270_set_dynamic_font_spacing(GtkWidget *widget, gboolean state) {
+LIB3270_EXPORT void	v3270_set_dynamic_font_spacing(GtkWidget *widget, gboolean state)
+{
 
 	g_return_if_fail(GTK_IS_V3270(widget));
 
@@ -231,4 +236,10 @@ LIB3270_EXPORT void	v3270_set_dynamic_font_spacing(GtkWidget *widget, gboolean s
 
 }
 
+LIB3270_EXPORT void v3270_set_lunames(GtkWidget *widget, const gchar *lunames)
+{
+	g_return_if_fail(GTK_IS_V3270(widget));
+	lib3270_set_lunames(GTK_V3270(widget)->host,(lunames && *lunames ? lunames : NULL));
+	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.lu_names);
+}
 

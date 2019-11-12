@@ -69,6 +69,7 @@
  	ENTRY_SRVCNAME,
  	ENTRY_OVERSIZE,
  	ENTRY_REMAP_FILE,
+ 	ENTRY_LU_NAMES,
 
  	ENTRY_COUNT
  };
@@ -228,7 +229,20 @@
 		.tooltip = N_("Path to XML file with custom charset mapping."),
 		.max_length = 0xFF,
 		.width_chars = 50,
- 	}
+ 	},
+
+ 	{
+ 		.left = 0,
+ 		.top = 2,
+ 		.width = 4,
+ 		.height = 1,
+
+ 		.label = N_( "L_U Names" ),
+		.tooltip = N_("Comma separated list of LU names."),
+		.max_length = 0xFF,
+		.width_chars = 50,
+ 	},
+
 
  };
 
@@ -439,6 +453,11 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			GTK_WIDGET(widget->input.entry[3])
 		);
 
+		v3270_grid_attach(
+			GTK_GRID(connection),
+			(struct v3270_entry_field *) & entryfields[4],
+			GTK_WIDGET(widget->input.entry[4])
+		);
 
 	}
 
@@ -626,6 +645,9 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 
 	}
 
+	// Apply LU names
+	v3270_set_lunames(terminal,gtk_entry_get_text(widget->input.entry[ENTRY_LU_NAMES]));
+
 	// Apply combos.
 	size_t combo;
 	for(combo = 0; combo < G_N_ELEMENTS(combos); combo++)
@@ -717,6 +739,10 @@ static void load(GtkWidget *w, GtkWidget *terminal)
         }
 
     }
+
+    // Load LU names
+    g_autofree gchar * lunames = v3270_get_lunames(terminal);
+    gtk_entry_set_text(widget->input.entry[ENTRY_LU_NAMES],lunames ? lunames : "");
 
     // Load unsigned int combos
 	size_t combo;

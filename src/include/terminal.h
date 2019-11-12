@@ -47,13 +47,14 @@ G_BEGIN_DECLS
 		// Signal related properties
 		GParamSpec * online;
 		GParamSpec * url;
-		GParamSpec * luname;
+		GParamSpec * associated_lu;
 		GParamSpec * model;
 		GParamSpec * selection;
 		GParamSpec * session_name;
 		GParamSpec * auto_disconnect;
 		GParamSpec * remap_file;
 		GParamSpec * dynamic_spacing;
+		GParamSpec * lu_names;
 
 		struct
 		{
