@@ -122,10 +122,10 @@ LIB3270_EXPORT const gchar * v3270_get_url(GtkWidget *widget)
 	return lib3270_get_url(GTK_V3270(widget)->host);
 }
 
-LIB3270_EXPORT const gchar * v3270_get_luname(GtkWidget *widget)
+LIB3270_EXPORT const gchar * v3270_get_associated_luname(const GtkWidget *widget)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),"");
-	return lib3270_get_luname(GTK_V3270(widget)->host);
+	return lib3270_get_associated_luname(GTK_V3270(widget)->host);
 }
 
 LIB3270_EXPORT const gchar * v3270_get_session_name(GtkWidget *widget)

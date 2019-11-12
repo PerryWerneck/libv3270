@@ -259,7 +259,7 @@
  LIB3270_EXPORT void			  v3270_set_url(GtkWidget *widget, const gchar *uri);
  LIB3270_EXPORT const gchar		* v3270_get_url(GtkWidget *widget);
 
- LIB3270_EXPORT const char		* v3270_get_luname(GtkWidget *widget);
+ LIB3270_EXPORT const char		* v3270_get_associated_luname(const GtkWidget *widget);
 
  LIB3270_EXPORT void			  v3270_set_session_host_type(GtkWidget *widget, LIB3270_HOST_TYPE);
 

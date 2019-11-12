@@ -176,7 +176,7 @@ static void setup_spinner_position(GdkRectangle *rect, G_GNUC_UNUSED v3270FontIn
 
 static void setup_luname_position(GdkRectangle *rect, v3270FontInfo *font, cairo_t *cr, H3270 *host, G_GNUC_UNUSED int cols, GdkRGBA *color)
 {
-	const char *luname = lib3270_get_luname(host);
+	const char *luname = lib3270_get_associated_luname(host);
 
 	rect->width *= 16;
 	rect->x -= rect->width;
@@ -701,7 +701,7 @@ gboolean v3270_update_luname(v3270 *terminal)
 		GdkRectangle * rect;
 		cairo_t * cr = v3270_oia_set_update_region(terminal,&rect,V3270_OIA_LUNAME);
 
-		const char * name = lib3270_get_luname(terminal->host);
+		const char * name = lib3270_get_associated_luname(terminal->host);
 		if(name)
 		{
 			gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_LUNAME);
