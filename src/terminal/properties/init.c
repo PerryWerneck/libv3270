@@ -43,7 +43,7 @@
  		{ "connected",			&klass->properties.online			},
  		{ "associated_lu",		&klass->properties.associated_lu	},
  		{ "url",				&klass->properties.url				},
- 		{ "model",				&klass->properties.model			},
+ 		{ "model_number",		&klass->properties.model			},
  		{ "has_selection",		&klass->properties.selection		},
  	};
 
