@@ -288,18 +288,18 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	if(*error)
 		return;
 
-	gboolean next = lib3270_paste_text(
+	int remains = lib3270_paste_text(
 						v3270_get_session(dialog->terminal),
 						(unsigned char *) converted
 					) ? TRUE : FALSE;
 
-	debug("next=%s",next ? "YES" : "NO");
+	debug("next=%s",remains > 0 ? "YES" : "NO");
 
 	g_signal_emit(
 		dialog->terminal,
 		v3270_widget_signal[V3270_SIGNAL_PASTENEXT],
 		0,
-		next
+		remains > 0
 	);
 
  }

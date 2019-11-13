@@ -66,6 +66,9 @@
 		<Unit filename="src/dialogs/linux/select.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/load.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/popups.c">
 			<Option compilerVar="CC" />
 		</Unit>
