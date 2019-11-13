@@ -227,9 +227,12 @@
  LIB3270_EXPORT void			  v3270_copy_selection(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut);
  LIB3270_EXPORT void			  v3270_append_selection(GtkWidget *widget, gboolean cut);
 
- LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget);
- LIB3270_EXPORT void 			  v3270_paste_text(GtkWidget *widget);
- LIB3270_EXPORT void			  v3270_paste_from_file(GtkWidget *widget);
+ LIB3270_EXPORT void			  v3270_paste_from_url(GtkWidget *widget, const gchar *url);
+
+ LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget) G_GNUC_DEPRECATED;
+ LIB3270_EXPORT void 			  v3270_paste_text(GtkWidget *widget) G_GNUC_DEPRECATED;
+ LIB3270_EXPORT void			  v3270_paste_from_file(GtkWidget *widget) G_GNUC_DEPRECATED;
+
  LIB3270_EXPORT void 			  v3270_input_text(GtkWidget *widget, const gchar *text, const gchar *encoding);
 
  // Colors

@@ -245,7 +245,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Paste from file"));
 
-	if(filename)
+	if(filename && *filename)
 		gtk_entry_set_text(GTK_ENTRY(dialog->filename),filename);
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(widget)));

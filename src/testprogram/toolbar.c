@@ -157,7 +157,7 @@
 
  static void paste_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
-	v3270_paste(terminal);
+	v3270_paste_from_url(terminal,NULL);
  }
 
  static void copy_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)

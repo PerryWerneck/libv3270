@@ -237,18 +237,7 @@
 		gchar * arg = cmdline+5;
 		g_strstrip(arg);
 
-		if(!*arg)
-		{
-			v3270_paste(trace->terminal);
-		}
-		else if(!g_ascii_strcasecmp(arg,"text"))
-		{
-			v3270_paste_text(trace->terminal);
-		}
-		else
-		{
-			return errno = EINVAL;
-		}
+		v3270_paste_from_url(trace->terminal,arg);
 
 		return 0;
 	}
