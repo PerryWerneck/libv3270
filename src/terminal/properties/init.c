@@ -41,22 +41,20 @@
  		GParamSpec	**prop;
  	} properties[] = {
  		{ "connected",			&klass->properties.online			},
- 		{ "associated_lu",		&klass->properties.associated_lu	},
+ 		{ "associated-lu",		&klass->properties.associated_lu	},
  		{ "url",				&klass->properties.url				},
- 		{ "model_number",		&klass->properties.model			},
- 		{ "has_selection",		&klass->properties.selection		},
+ 		{ "model-number",		&klass->properties.model			},
+ 		{ "has-selection",		&klass->properties.selection		},
  	};
 
  	size_t ix;
 
- 	debug("Property %s=%u",g_param_spec_get_name(pspec),(unsigned int) property_id);
 	g_object_class_install_property(oclass, property_id, pspec);
 
 	for(ix = 0; ix < G_N_ELEMENTS(properties); ix++)
 	{
 		if(!g_ascii_strcasecmp(properties[ix].name,g_param_spec_get_name(pspec)))
 		{
-//			debug("Property \"%s\" is special",g_param_spec_get_name(pspec));
 			*properties[ix].prop = pspec;
 			break;
 		}

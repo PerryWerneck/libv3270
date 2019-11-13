@@ -713,7 +713,6 @@ gboolean v3270_update_associated_lu(v3270 *terminal)
 		v3270_queue_draw_area(GTK_WIDGET(terminal),rect->x,rect->y,rect->width,rect->height);
 	}
 
-	debug("%s(%p)",__FUNCTION__,GTK_V3270_GET_CLASS(terminal)->properties.associated_lu);
 	g_object_notify_by_pspec(G_OBJECT(terminal), GTK_V3270_GET_CLASS(terminal)->properties.associated_lu);
 
  	return FALSE;
