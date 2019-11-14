@@ -53,6 +53,10 @@
 		v3270_clear_selection(terminal);
 
 		// ... and set the new mode.
+		if(mode == V3270_COPY_DEFAULT) {
+			mode = (lib3270_get_toggle(v3270_get_session(widget),LIB3270_TOGGLE_SMART_PASTE) ? V3270_COPY_FORMATTED : V3270_COPY_TEXT);
+		}
+
 		terminal->selection.format = mode;
 
 	}

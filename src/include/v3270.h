@@ -199,6 +199,8 @@
  // Clipboard
  typedef enum _v3270_copy_mode
  {
+
+ 	V3270_COPY_DEFAULT,			///< @brief Detect format based on lib3270's smart past toggle.
  	V3270_COPY_FORMATTED,		///< @brief Copy formatted data; keep attributes.
 	V3270_COPY_TEXT,			///< @brief Single text format, ignore attributes.
 	V3270_COPY_TABLE,			///< @brief Copy as table.

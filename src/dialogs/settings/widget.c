@@ -97,7 +97,7 @@ static void finalize(GObject *object)
 	G_OBJECT_CLASS(V3270Settings_parent_class)->finalize(object);
 }
 
-static void validity(GtkWidget *widget, gboolean state)
+static void validity(GtkWidget G_GNUC_UNUSED(*widget), gboolean G_GNUC_UNUSED(state))
 {
 
 }
