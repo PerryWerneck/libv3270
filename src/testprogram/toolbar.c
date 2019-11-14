@@ -157,12 +157,12 @@
 
  static void paste_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
-	v3270_paste_from_url(terminal,NULL);
+	v3270_clipboard_get_from_url(terminal,NULL);
  }
 
  static void copy_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
-	v3270_copy_selection(terminal,V3270_SELECT_TEXT,FALSE);
+	v3270_copy_selection(terminal,V3270_COPY_TEXT,FALSE);
  }
 
  static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)

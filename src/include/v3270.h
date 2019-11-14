@@ -197,41 +197,40 @@
  LIB3270_EXPORT gchar 			* v3270_get_lunames(GtkWidget *widget);
 
  // Clipboard
- typedef enum _v3270_select_format
+  typedef enum _v3270_copy_mode
  {
- 	V3270_SELECT_NONE,			///< @brief No selected format, use default.
-	V3270_SELECT_TEXT,			///< @brief Single text format, don't process.
-	V3270_SELECT_TABLE,			///< @brief Parse contents as table (only for text formats).
+ 	V3270_COPY_FORMATTED,		///< @brief Copy formatted data; keep attributes.
+	V3270_COPY_TEXT,			///< @brief Single text format, ignore attributes.
+	V3270_COPY_TABLE,			///< @brief Copy as table.
 
-	V3270_SELECT_MAX
- } V3270_SELECT_FORMAT;
+ } V3270_COPY_MODE;
+
+ LIB3270_EXPORT void			  v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut);
+ LIB3270_EXPORT void			  v3270_clipboard_append(GtkWidget *widget, gboolean cut);
+
+ LIB3270_EXPORT void			  v3270_clipboard_get_from_url(GtkWidget *widget, const gchar *url);
+
+ LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget) G_GNUC_DEPRECATED;
+ LIB3270_EXPORT void 			  v3270_paste_text(GtkWidget *widget) G_GNUC_DEPRECATED;
+ LIB3270_EXPORT void			  v3270_paste_from_file(GtkWidget *widget) G_GNUC_DEPRECATED;
+ LIB3270_EXPORT void			  v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut) G_GNUC_DEPRECATED;
+ LIB3270_EXPORT void			  v3270_append_selection(GtkWidget *widget, gboolean cut) G_GNUC_DEPRECATED;
+
+
+ // Selections
 
  LIB3270_EXPORT gchar			* v3270_get_selected(GtkWidget *widget, gboolean cut);
  LIB3270_EXPORT gchar			* v3270_get_copy(GtkWidget *widget);
-// LIB3270_EXPORT void              v3270_set_copy(GtkWidget *widget, const gchar *text);
 
  LIB3270_EXPORT gchar			* v3270_get_text(GtkWidget *widget,int offset, int len);
  LIB3270_EXPORT gchar			* v3270_get_region(GtkWidget *widget, gint start_pos, gint end_pos, gboolean all);
 
  LIB3270_EXPORT void			  v3270_set_string(GtkWidget *widget, const gchar *str);
- LIB3270_EXPORT void			  v3270_tab(GtkWidget *widget);
- LIB3270_EXPORT void			  v3270_backtab(GtkWidget *widget);
 
- // Selections
  LIB3270_EXPORT gboolean		  v3270_get_selection_bounds(GtkWidget *widget, gint *start, gint *end);
  LIB3270_EXPORT void			  v3270_unselect(GtkWidget *widget);
  LIB3270_EXPORT void 			  v3270_select_all(GtkWidget *widget);
  LIB3270_EXPORT void	  		  v3270_select_region(GtkWidget *widget, gint start, gint end);
-
- LIB3270_EXPORT void			  v3270_copy(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut);
- LIB3270_EXPORT void			  v3270_copy_selection(GtkWidget *widget, V3270_SELECT_FORMAT mode, gboolean cut);
- LIB3270_EXPORT void			  v3270_append_selection(GtkWidget *widget, gboolean cut);
-
- LIB3270_EXPORT void			  v3270_paste_from_url(GtkWidget *widget, const gchar *url);
-
- LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget) G_GNUC_DEPRECATED;
- LIB3270_EXPORT void 			  v3270_paste_text(GtkWidget *widget) G_GNUC_DEPRECATED;
- LIB3270_EXPORT void			  v3270_paste_from_file(GtkWidget *widget) G_GNUC_DEPRECATED;
 
  LIB3270_EXPORT void 			  v3270_input_text(GtkWidget *widget, const gchar *text, const gchar *encoding);
 
@@ -273,8 +272,10 @@
  LIB3270_EXPORT	void			  v3270_set_remap_filename(GtkWidget *widget, const gchar *path);
  LIB3270_EXPORT const gchar		* v3270_get_remap_filename(GtkWidget *widget);
 
- // Keyboard & Mouse special actions
+ // Actions
  LIB3270_EXPORT void			  v3270_set_scroll_action(GtkWidget *widget, GdkScrollDirection direction, GtkAction *action);
+ LIB3270_EXPORT void			  v3270_tab(GtkWidget *widget);
+ LIB3270_EXPORT void			  v3270_backtab(GtkWidget *widget);
 
  // SSL & Security
  LIB3270_EXPORT const gchar		* v3270_get_ssl_state_icon_name(GtkWidget *widget);

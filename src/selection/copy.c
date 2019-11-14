@@ -41,7 +41,7 @@
 
  }
 
- LIB3270_EXPORT void v3270_copy_selection(GtkWidget *widget, V3270_SELECT_FORMAT format, gboolean cut)
+ LIB3270_EXPORT void v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut)
  {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
@@ -50,14 +50,13 @@
 	// Have data? Clear it?
 	v3270_clear_selection(terminal);
 
-	terminal->selection.format = format;
+	terminal->selection.format = mode;
 	do_copy(terminal,cut);
 
 	v3270_update_system_clipboard(widget);
-
  }
 
- LIB3270_EXPORT void v3270_append_selection(GtkWidget *widget, gboolean cut)
+ LIB3270_EXPORT void v3270_clipboard_append(GtkWidget *widget, gboolean cut)
  {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
@@ -66,6 +65,16 @@
 	do_copy(terminal,cut);
 
 	v3270_update_system_clipboard(widget);
+ }
 
+
+ LIB3270_EXPORT void v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE format, gboolean cut)
+ {
+	v3270_clipboard_set(widget,format,cut);
+ }
+
+ LIB3270_EXPORT void v3270_append_selection(GtkWidget *widget, gboolean cut)
+ {
+	v3270_clipboard_append(widget,cut);
  }
 

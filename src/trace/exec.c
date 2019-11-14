@@ -184,15 +184,15 @@
 		if(!(*arg && g_ascii_strcasecmp(arg,"text")))
 		{
 			// No argument or "text" copy text.
-			v3270_copy_selection(trace->terminal, V3270_SELECT_TEXT, FALSE);
+			v3270_clipboard_set(trace->terminal, V3270_COPY_TEXT, FALSE);
 		}
 		else if(!g_ascii_strcasecmp(arg,"table"))
 		{
-			v3270_copy_selection(trace->terminal, V3270_SELECT_TABLE, FALSE);
+			v3270_clipboard_set(trace->terminal, V3270_COPY_TABLE, FALSE);
 		}
 		else if(!g_ascii_strcasecmp(arg,"append"))
 		{
-			v3270_append_selection(trace->terminal,FALSE);
+			v3270_clipboard_append(trace->terminal,FALSE);
 		}
 		else
 		{
@@ -237,7 +237,7 @@
 		gchar * arg = cmdline+5;
 		g_strstrip(arg);
 
-		v3270_paste_from_url(trace->terminal,arg);
+		v3270_clipboard_get_from_url(trace->terminal,arg);
 
 		return 0;
 	}

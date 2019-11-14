@@ -146,7 +146,6 @@ static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *select
 
 	}
 
-
 }
 
 static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, GtkWidget *widget)
@@ -177,13 +176,13 @@ static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_ato
 
 }
 
-LIB3270_EXPORT void v3270_paste_from_url(GtkWidget *widget, const gchar *url)
+LIB3270_EXPORT void v3270_clipboard_get_from_url(GtkWidget *widget, const gchar *url)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
 	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GTK_V3270(widget)->selection.target);
 
-	if(!url || g_str_has_prefix(url,"clipboard://"))
+	if(!url || !*url || g_str_has_prefix(url,"clipboard://") || g_str_has_prefix(url,"tn3270://"))
 	{
 		gtk_clipboard_request_targets(
 			clipboard,
@@ -213,11 +212,11 @@ LIB3270_EXPORT void v3270_paste_from_url(GtkWidget *widget, const gchar *url)
 
 LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 {
-	v3270_paste_from_url(widget,NULL);
+	v3270_clipboard_get_from_url(widget,NULL);
 }
 
 LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget)
 {
-	v3270_paste_from_url(widget,"text://");
+	v3270_clipboard_get_from_url(widget,"text://");
 }
 

@@ -131,7 +131,7 @@ G_BEGIN_DECLS
 
 		int 				  baddr;		///< @brief Selection address.
 		GdkAtom				  target;		///< @brief A GdkAtom which identifies the clipboard to use. GDK_SELECTION_CLIPBOARD gives the default clipboard.
-		V3270_SELECT_FORMAT	  format;		///< @brief Copy format.
+		V3270_COPY_MODE		  format;		///< @brief Copy mode.
 		GList				* blocks;		///< @brief Selection blocks.
 
 	} selection;

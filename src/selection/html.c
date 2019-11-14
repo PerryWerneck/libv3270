@@ -229,7 +229,7 @@ gchar * v3270_get_selection_as_html_table(v3270 * terminal, const GList *selecti
 gchar * v3270_get_copy_as_html(v3270 * terminal, const gchar *encoding)
 {
 
-	if(terminal->selection.format == V3270_SELECT_TABLE)
+	if(terminal->selection.format == V3270_COPY_TABLE)
 		return v3270_get_selection_as_html_table(terminal, terminal->selection.blocks, encoding, FALSE);
 
 	return v3270_get_selection_as_html_div(terminal, terminal->selection.blocks, encoding, FALSE);

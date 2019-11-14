@@ -67,7 +67,7 @@ gchar * v3270_get_selection_as_text(v3270 * terminal, const GList *selection, co
 
 gchar * v3270_get_copy_as_text(v3270 * terminal, const gchar *encoding)
 {
-	if(terminal->selection.format == V3270_SELECT_TABLE)
+	if(terminal->selection.format == V3270_COPY_TABLE)
 		return v3270_get_copy_as_table(terminal,"\t",encoding);
 	return v3270_get_selection_as_text(terminal, terminal->selection.blocks, encoding, FALSE);
 }
