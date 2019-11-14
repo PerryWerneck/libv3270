@@ -153,6 +153,12 @@
 	if(trace->terminal && GTK_V3270(trace->terminal)->trace == GTK_WIDGET(object))
 	{
 		debug("V3270Trace::%s - Removing trace widget association",__FUNCTION__);
+
+		g_object_notify_by_pspec(
+			G_OBJECT(trace->terminal),
+			GTK_V3270_GET_CLASS(trace->terminal)->properties.trace
+		);
+
 		GTK_V3270(trace->terminal)->trace = NULL;
 	}
 
@@ -406,6 +412,12 @@
 		g_object_ref_sink(G_OBJECT(terminal));
 		set_session(widget, v3270_get_session(widget->terminal));
 		GTK_V3270(terminal)->trace = GTK_WIDGET(widget);
+
+		g_object_notify_by_pspec(
+			G_OBJECT(terminal),
+			GTK_V3270_GET_CLASS(terminal)->properties.trace
+		);
+
 	}
 
 	return GTK_WIDGET(widget);
