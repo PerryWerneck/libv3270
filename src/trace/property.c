@@ -75,6 +75,10 @@
 
  }
 
+ static void on_close_tab(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal) {
+ 	v3270_set_trace(terminal,FALSE);
+ }
+
  static gboolean bg_append_trace(GtkWidget *terminal)
  {
 	if(GTK_V3270(terminal)->trace)
@@ -86,13 +90,27 @@
 	if(GTK_IS_NOTEBOOK(parent))
 	{
 		debug("%s: Parent window %s",__FUNCTION__,"is a notebook");
-		GtkWidget * trace = v3270_trace_new(terminal);
+
+		GtkWidget * trace	= v3270_trace_new(terminal);
+		GtkWidget * label	= gtk_label_new(_("Trace"));
+		GtkWidget * tab		= gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
+		GtkWidget * button	= gtk_button_new_from_icon_name("window-close-symbolic",GTK_ICON_SIZE_MENU);
+
+		gtk_button_set_relief(GTK_BUTTON(button),GTK_RELIEF_NONE);
+		gtk_widget_set_halign(button,GTK_ALIGN_END);
+
+		gtk_box_pack_start(GTK_BOX(tab),label,FALSE,FALSE,0);
+		gtk_box_pack_end(GTK_BOX(tab),button,FALSE,FALSE,0);
+
+		g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(on_close_tab), terminal);
+
 		gtk_widget_show_all(trace);
+		gtk_widget_show_all(tab);
 
 		gtk_notebook_insert_page(
 			GTK_NOTEBOOK(parent),
 			trace,
-			gtk_label_new(_("Trace")),
+			tab,
 			gtk_notebook_page_num(GTK_NOTEBOOK(parent),terminal)+1
 		);
 

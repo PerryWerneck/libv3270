@@ -157,6 +157,11 @@
 	}
 
 	if(trace->hSession) {
+
+		size_t ix;
+		for(ix=0;ix < G_N_ELEMENTS(toggles); ix++)
+			lib3270_set_toggle(trace->hSession, toggles[ix],0);
+
 		lib3270_set_trace_handler(trace->hSession,trace->trace.handler,trace->trace.userdata);
 		trace->hSession = NULL;
 	}
