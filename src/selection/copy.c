@@ -47,26 +47,20 @@
 
 	v3270 * terminal = GTK_V3270(widget);
 
-	// Have data? Clear it?
-	v3270_clear_selection(terminal);
+	if(mode != V3270_COPY_APPEND) {
 
-	terminal->selection.format = mode;
-	do_copy(terminal,cut);
+		// It's not append, clear current contents ...
+		v3270_clear_selection(terminal);
 
-	v3270_update_system_clipboard(widget);
- }
+		// ... and set the new mode.
+		terminal->selection.format = mode;
 
- LIB3270_EXPORT void v3270_clipboard_append(GtkWidget *widget, gboolean cut)
- {
-	g_return_if_fail(GTK_IS_V3270(widget));
-
-	v3270 * terminal = GTK_V3270(widget);
+	}
 
 	do_copy(terminal,cut);
 
 	v3270_update_system_clipboard(widget);
  }
-
 
  LIB3270_EXPORT void v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE format, gboolean cut)
  {
@@ -75,6 +69,6 @@
 
  LIB3270_EXPORT void v3270_append_selection(GtkWidget *widget, gboolean cut)
  {
-	v3270_clipboard_append(widget,cut);
+	v3270_clipboard_set(widget,V3270_COPY_APPEND,cut);
  }
 

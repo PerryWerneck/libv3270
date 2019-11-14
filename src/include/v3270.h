@@ -197,17 +197,16 @@
  LIB3270_EXPORT gchar 			* v3270_get_lunames(GtkWidget *widget);
 
  // Clipboard
-  typedef enum _v3270_copy_mode
+ typedef enum _v3270_copy_mode
  {
  	V3270_COPY_FORMATTED,		///< @brief Copy formatted data; keep attributes.
 	V3270_COPY_TEXT,			///< @brief Single text format, ignore attributes.
 	V3270_COPY_TABLE,			///< @brief Copy as table.
+	V3270_COPY_APPEND			///< @brief Append to current contents keeping the stored format.
 
  } V3270_COPY_MODE;
 
  LIB3270_EXPORT void			  v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut);
- LIB3270_EXPORT void			  v3270_clipboard_append(GtkWidget *widget, gboolean cut);
-
  LIB3270_EXPORT void			  v3270_clipboard_get_from_url(GtkWidget *widget, const gchar *url);
 
  LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget) G_GNUC_DEPRECATED;

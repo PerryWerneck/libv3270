@@ -192,7 +192,7 @@
 		}
 		else if(!g_ascii_strcasecmp(arg,"append"))
 		{
-			v3270_clipboard_append(trace->terminal,FALSE);
+			v3270_clipboard_set(trace->terminal, V3270_COPY_APPEND, FALSE);
 		}
 		else
 		{
