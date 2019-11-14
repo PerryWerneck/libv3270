@@ -130,6 +130,10 @@
 			v3270_set_lunames(GTK_WIDGET(object),g_value_get_string(value));
 			break;
 
+		case V3270_PROPERTY_TRACE:
+			v3270_set_trace(GTK_WIDGET(object), g_value_get_boolean(value));
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 

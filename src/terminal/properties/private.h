@@ -55,9 +55,10 @@
 	V3270_PROPERTY_REMAP_FILE		= 6,	///< @brief Path of the remap file.
 	V3270_PROPERTY_DYNAMIC_SPACING	= 7,	///< @brief Toggle dynamic font spacing.
 	V3270_PROPERTY_LU_NAMES			= 8,	///< @brief The LU names list.
+	V3270_PROPERTY_TRACE			= 9,	///< @brief Is the trace widget active?
 
 
-	V3270_PROPERTY_DYNAMIC			= 9		///< @brief Id of the first LIB3270 internal property.
+	V3270_PROPERTY_DYNAMIC			= 10	///< @brief Id of the first LIB3270 internal property.
  };
 
  G_GNUC_INTERNAL void v3270_get_property(GObject *object,guint prop_id, GValue *value, GParamSpec *pspec);

@@ -179,6 +179,19 @@
 		klass->properties.lu_names
 	);
 
+	// Trace
+	klass->properties.trace = g_param_spec_boolean(
+				"trace",
+				"trace",
+				_( "Trace window" ),
+				FALSE,
+				G_PARAM_READABLE|G_PARAM_WRITABLE);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_TRACE,
+		klass->properties.trace
+	);
 
 	//
 	// Create dynamic properties

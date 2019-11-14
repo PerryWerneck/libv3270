@@ -490,12 +490,4 @@
  	return GTK_V3270_TRACE(widget)->scroll;
  }
 
- gboolean v3270_get_trace(GtkWidget *terminal)
- {
-	return GTK_V3270(terminal)->trace != NULL;
- }
 
- void v3270_set_trace(GtkWidget *terminal, gboolean trace)
- {
-
- }

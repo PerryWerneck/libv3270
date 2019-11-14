@@ -55,6 +55,7 @@ G_BEGIN_DECLS
 		GParamSpec * remap_file;
 		GParamSpec * dynamic_spacing;
 		GParamSpec * lu_names;
+		GParamSpec * trace;
 
 		struct
 		{
