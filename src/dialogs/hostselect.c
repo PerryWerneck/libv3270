@@ -51,14 +51,19 @@
  toggleList[] =
  {
  	{
- 		.left = 3,
- 		.top = 1,
+ 		.left = 2,
+ 		.top = 2,
  		.id = LIB3270_TOGGLE_CONNECT_ON_STARTUP,
  	},
  	{
- 		.left = 4,
- 		.top = 1,
+ 		.left = 3,
+ 		.top = 2,
 		.id = LIB3270_TOGGLE_RECONNECT,
+ 	},
+ 	{
+ 		.left = 4,
+ 		.top = 2,
+		.id = LIB3270_TOGGLE_KEEP_ALIVE,
  	}
 
  };
@@ -232,9 +237,9 @@
  	},
 
  	{
- 		.left = 0,
- 		.top = 2,
- 		.width = 4,
+ 		.left = 2,
+ 		.top = 1,
+ 		.width = 2,
  		.height = 1,
 
  		.label = N_( "L_U Names" ),
@@ -466,7 +471,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
 		gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
 		gtk_widget_set_halign(GTK_WIDGET(widget->input.ssl),GTK_ALIGN_START);
-		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.ssl),2,1,1,1);
+		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.ssl),1,2,1,1);
 	}
 
 	// Toggle checkboxes
