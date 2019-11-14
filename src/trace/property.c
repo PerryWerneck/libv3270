@@ -114,6 +114,24 @@
 			gtk_notebook_page_num(GTK_NOTEBOOK(parent),terminal)+1
 		);
 
+		gtk_notebook_set_tab_detachable(
+			GTK_NOTEBOOK(parent),
+			trace,
+			gtk_notebook_get_tab_detachable(
+				GTK_NOTEBOOK(parent),
+				terminal
+			)
+		);
+
+		gtk_notebook_set_tab_reorderable(
+			GTK_NOTEBOOK(parent),
+			trace,
+			gtk_notebook_get_tab_reorderable(
+				GTK_NOTEBOOK(parent),
+				terminal
+			)
+		);
+
 	}
 	else
 	{
