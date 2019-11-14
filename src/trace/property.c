@@ -65,48 +65,62 @@
 			gtk_notebook_page_num(GTK_NOTEBOOK(parent),terminal->trace)
 		);
 	}
-	else if(GTK_IS_WINDOW(parent))
+	else
 	{
-		debug("%s: Parent window %s",__FUNCTION__,"is a window");
-		gtk_widget_destroy(parent);
+		debug("%s: Parent window %s",__FUNCTION__,"is not a notebook");
+//		gtk_widget_destroy(terminal->trace);
 	}
-	else if(GTK_IS_CONTAINER(parent))
+
+	return FALSE;
+
+ }
+
+ static gboolean bg_append_trace(GtkWidget *terminal)
+ {
+	if(GTK_V3270(terminal)->trace)
+		return FALSE;
+
+	// Destroy trace window.
+	GtkWidget * parent	= gtk_widget_get_parent(terminal);
+
+	if(GTK_IS_NOTEBOOK(parent))
 	{
-		debug("%s: Parent window %s",__FUNCTION__,"is a container");
-		gtk_container_remove(GTK_CONTAINER(parent),terminal->trace);
+		debug("%s: Parent window %s",__FUNCTION__,"is a notebook");
+		GtkWidget * trace = v3270_trace_new(terminal);
+		gtk_widget_show_all(trace);
+
+		gtk_notebook_insert_page(
+			GTK_NOTEBOOK(parent),
+			trace,
+			gtk_label_new(_("Trace")),
+			gtk_notebook_page_num(GTK_NOTEBOOK(parent),terminal)+1
+		);
 
 	}
 	else
 	{
-		g_warning("Can't remove trace window from parent widget");
+		debug("%s: Parent window %s",__FUNCTION__,"is not a notebook, creating trace window");
+		gtk_widget_show_all(v3270_trace_window_new(terminal,NULL));
+
 	}
 
-
 	return FALSE;
+
  }
 
  void v3270_set_trace(GtkWidget *widget, gboolean trace)
  {
  	g_return_if_fail(GTK_IS_V3270(widget));
 
- 	v3270 * terminal = GTK_V3270(widget);
-
  	if(trace)
 	{
 		debug("%s: trace is %s",__FUNCTION__,"ON");
-
-		if(terminal->trace)
-			return;
-
-		// Create trace window
-
+		g_idle_add((GSourceFunc) bg_append_trace, GTK_V3270(widget));
 	}
 	else
 	{
 		debug("%s: trace is %s",__FUNCTION__,"OFF");
 		g_idle_add((GSourceFunc) bg_remove_trace, GTK_V3270(widget));
-
 	}
-
 
  }
