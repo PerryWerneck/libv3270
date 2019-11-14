@@ -65,6 +65,8 @@
 		widget->hListener = NULL;
 	}
 
+	widget->hSession = NULL;
+
 	G_OBJECT_CLASS(V3270ToggleButton_parent_class)->dispose(object);
 
  }
@@ -104,22 +106,57 @@
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),(state == 0 ? FALSE : TRUE));
  }
 
- GtkWidget * v3270_toggle_button_new(GtkWidget *terminal, LIB3270_TOGGLE_ID toggle)
+ GtkWidget * v3270_toggle_button_new(LIB3270_TOGGLE_ID id)
  {
- 	g_return_val_if_fail(GTK_IS_V3270(terminal),NULL);
+	const LIB3270_TOGGLE * toggle = lib3270_toggle_get_from_id(id);
+
+	if(!toggle)
+		return NULL;
 
 	V3270ToggleButton * widget = GTK_V3270_TOGGLE_BUTTON(g_object_new(GTK_TYPE_V3270_TOGGLE_BUTTON, NULL));
 
- 	widget->hSession = v3270_get_session(terminal);
-	widget->id = toggle;
+	widget->id = id;
 
-	widget->hListener = lib3270_register_toggle_listener(widget->hSession, widget->id,toggle_listener,widget);
+	gtk_widget_set_name(GTK_WIDGET(widget),toggle->name);
+	gtk_button_set_label(GTK_BUTTON(widget),gettext(toggle->label));
 
-	gtk_widget_set_name(GTK_WIDGET(widget),lib3270_get_toggle_name(toggle));
-	gtk_button_set_label(GTK_BUTTON(widget),gettext(lib3270_get_toggle_label(toggle)));
-	gtk_widget_set_tooltip_text(GTK_WIDGET(widget),gettext(lib3270_get_toggle_description(toggle)));
+	if(toggle->description)
+		gtk_widget_set_tooltip_text(GTK_WIDGET(widget),gettext(toggle->description));
+	else if(toggle->summary)
+		gtk_widget_set_tooltip_text(GTK_WIDGET(widget),gettext(toggle->summary));
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget),lib3270_get_toggle(widget->hSession, widget->id));
+	gtk_widget_set_sensitive(GTK_WIDGET(widget),FALSE);
 
  	return GTK_WIDGET(widget);
+ }
+
+ G_GNUC_INTERNAL void v3270_toggle_button_set_session(GtkWidget *button, H3270 *hSession)
+ {
+	V3270ToggleButton * toggle = GTK_V3270_TOGGLE_BUTTON(button);
+
+	if(toggle->hSession == hSession)
+		return;
+
+	// Disconnect from current session
+	if(toggle->hListener)
+	{
+		lib3270_unregister_toggle_listener(toggle->hSession,toggle->id,toggle->hListener);
+		toggle->hListener = NULL;
+	}
+
+	// Replace session.
+	toggle->hSession = hSession;
+
+	// Connect to new session.
+	if(toggle->hSession)
+	{
+		toggle->hListener = lib3270_register_toggle_listener(toggle->hSession, toggle->id,toggle_listener,toggle);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle),lib3270_get_toggle(toggle->hSession, toggle->id));
+		gtk_widget_set_sensitive(GTK_WIDGET(toggle),TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle),FALSE);
+		gtk_widget_set_sensitive(GTK_WIDGET(toggle),FALSE);
+	}
  }

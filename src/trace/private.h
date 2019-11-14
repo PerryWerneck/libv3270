@@ -56,40 +56,15 @@
 
 	G_GNUC_INTERNAL guint v3270_trace_signal[V3270_TRACE_SIGNAL_LAST];
 
+	G_GNUC_INTERNAL H3270				* v3270_trace_get_session(GtkWidget *widget);
+	G_GNUC_INTERNAL GtkWidget			* v3270_trace_get_terminal(GtkWidget *widget);
+	G_GNUC_INTERNAL GtkTextBuffer		* v3270_trace_get_text_buffer(GtkWidget *widget);
+	G_GNUC_INTERNAL GtkScrolledWindow	* v3270_trace_get_scrolled_window(GtkWidget *widget);
+
 	G_BEGIN_DECLS
 
-	struct _V3270TraceClass
-	{
-		GtkBoxClass parent_class;
 
-	};
-
-	struct _V3270Trace
-	{
-
-		GtkBox				  parent;
-		H3270				* hSession;		///< @brief TN3270 Session.
-		GtkWidget			* terminal;		///< @brief V3270 Widget.
-		GtkScrolledWindow	* scroll;
-
-		GtkTextView			* view;			///< @brief Text view;
-		GtkTextBuffer		* text;			///< @brief Trace window contents.
-		GtkEntry			* entry;		///< @brief Command line entry.
-		GtkWidget 			* buttons;		///< @brief Button bar.
-
-		gchar 				* filename;		///< @brief Selected file name.
-
-		guint 				  log_handler;	///< @brief GTK Log Handler.
-
-		/// @brief lib3270's saved trace handler.
-		struct {
-				void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
-				void *userdata;
-		} trace;
-
-	};
-
-	 G_END_DECLS
+	G_END_DECLS
 
 
 

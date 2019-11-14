@@ -114,15 +114,6 @@ G_BEGIN_DECLS
 	int scaled_fonts	: 1;	/**< Use scaled fonts */
 	int drawing			: 1;	/**< Draw widget? */
 
-	/*
-#if GTK_CHECK_VERSION(3,0,0)
-
-#else
-    gint width;
-    gint height;
-#endif // GTK_CHECK_VERSION(3,0,0)
-	*/
-
 	GSource					* timer;
 	GtkIMContext			* input_method;
 	unsigned short			  keyflags;
@@ -186,14 +177,16 @@ G_BEGIN_DECLS
 		GSource					* timer;					/**< Auto disconnect timer */
 	} activity;
 
-	char					  script;						/**< @brief Script ID */
+	char					  script;						///< @brief Script ID.
 
 	// Blink
 	struct
 	{
-		int					  show : 1;						/**< @brief Show element? */
-		GSource				* timer;						/**< @brief Timer source. */
+		int					  show : 1;						///< @brief Show element?
+		GSource				* timer;						///< @brief Timer source.
 	} blink;
+
+	GtkWidget * trace;										///< @brief Trace window handle.
 
  };
 

@@ -149,8 +149,8 @@
 
  	g_return_val_if_fail(GTK_IS_V3270_TRACE(t),EINVAL);
 
- 	V3270Trace			* trace		= GTK_V3270_TRACE(t);
- 	H3270 				* hSession	= v3270_get_session(trace->terminal);
+ 	GtkWidget			* terminal	= v3270_trace_get_terminal(t);
+ 	H3270 				* hSession	= v3270_trace_get_session(t);
 	g_autofree gchar	* cmdline	= g_strdup(text);
 
  	g_strstrip(cmdline);
@@ -159,13 +159,13 @@
 
  	if(g_str_has_prefix(cmdline,"reload"))
 	{
-		v3270_reload(trace->terminal);
+		v3270_reload(terminal);
 		return 0;
 	}
 
  	if(g_str_has_prefix(cmdline,"reconfigure"))
 	{
-		v3270_reconfigure(GTK_V3270(trace->terminal));
+		v3270_reconfigure(GTK_V3270(terminal));
 		return 0;
 	}
 
@@ -184,15 +184,15 @@
 		if(!(*arg && g_ascii_strcasecmp(arg,"text")))
 		{
 			// No argument or "text" copy text.
-			v3270_clipboard_set(trace->terminal, V3270_COPY_TEXT, FALSE);
+			v3270_clipboard_set(terminal, V3270_COPY_TEXT, FALSE);
 		}
 		else if(!g_ascii_strcasecmp(arg,"table"))
 		{
-			v3270_clipboard_set(trace->terminal, V3270_COPY_TABLE, FALSE);
+			v3270_clipboard_set(terminal, V3270_COPY_TABLE, FALSE);
 		}
 		else if(!g_ascii_strcasecmp(arg,"append"))
 		{
-			v3270_clipboard_set(trace->terminal, V3270_COPY_APPEND, FALSE);
+			v3270_clipboard_set(terminal, V3270_COPY_APPEND, FALSE);
 		}
 		else
 		{
@@ -212,15 +212,15 @@
 		if(!(*arg && g_ascii_strcasecmp(arg,"all")))
 		{
 			// No argument or "text" copy text.
-			v3270_print_all(trace->terminal,NULL);
+			v3270_print_all(terminal,NULL);
 		}
 		else if(!g_ascii_strcasecmp(arg,"selected"))
 		{
-			v3270_print_selected(trace->terminal,NULL);
+			v3270_print_selected(terminal,NULL);
 		}
 		else if(!g_ascii_strcasecmp(arg,"copy"))
 		{
-			v3270_print_copy(trace->terminal,NULL);
+			v3270_print_copy(terminal,NULL);
 		}
 		else
 		{
@@ -237,7 +237,7 @@
 		gchar * arg = cmdline+5;
 		g_strstrip(arg);
 
-		v3270_clipboard_get_from_url(trace->terminal,arg);
+		v3270_clipboard_get_from_url(terminal,arg);
 
 		return 0;
 	}
@@ -247,7 +247,7 @@
 		gchar * str = strchr(cmdline,'?');
 		*str = 0;
 		g_strstrip(cmdline);
-		return get_property(trace->terminal,cmdline);
+		return get_property(terminal,cmdline);
 	}
 
 	if(strchr(cmdline,'='))
@@ -256,14 +256,14 @@
 		*(value++) = 0;
 		g_strstrip(cmdline);
 		g_strstrip(value);
-		return set_property(trace->terminal,cmdline,value);
+		return set_property(terminal,cmdline,value);
 	}
 
  	if(g_str_has_prefix(cmdline,"remap"))
 	{
 		gchar *txtptr = cmdline+5;
 		g_strstrip(txtptr);
-		v3270_set_remap_filename(trace->terminal,txtptr);
+		v3270_set_remap_filename(terminal,txtptr);
 		return 0;
 	}
 
@@ -272,7 +272,7 @@
 		gchar *txtptr = cmdline+3;
 		const gchar * name = get_word(&txtptr);
 		g_strstrip(txtptr);
-		return set_property(trace->terminal,name,(*txtptr ? txtptr : "1"));
+		return set_property(terminal,name,(*txtptr ? txtptr : "1"));
 	}
 
  	if(g_str_has_prefix(cmdline,"get"))
@@ -280,7 +280,7 @@
 		gchar *txtptr = cmdline+3;
 		const gchar * name = get_word(&txtptr);
 		g_strstrip(txtptr);
-		return get_property(trace->terminal,name);
+		return get_property(terminal,name);
 	}
 
  	if(g_str_has_prefix(cmdline,"reset"))
@@ -288,14 +288,14 @@
 		gchar *txtptr = cmdline+3;
 		const gchar * name = get_word(&txtptr);
 		g_strstrip(txtptr);
-		return set_property(trace->terminal,name,(*txtptr ? txtptr : "0"));
+		return set_property(terminal,name,(*txtptr ? txtptr : "0"));
 	}
 
 	gchar * sep = strchr(cmdline,'=');
 	if(sep)
 	{
 		*(sep++) = 0;
-		return set_property(trace->terminal,g_strstrip(cmdline),g_strstrip(sep));
+		return set_property(terminal,g_strstrip(cmdline),g_strstrip(sep));
 	}
 	else
 	{
@@ -316,7 +316,7 @@
 	if(*args)
 		*(args++) = 0;
 
-	g_signal_emit(GTK_WIDGET(trace), v3270_trace_signal[V3270_TRACE_SIGNAL_COMMAND], 0, cmdline, args, &handled);
+	g_signal_emit(GTK_WIDGET(t), v3270_trace_signal[V3270_TRACE_SIGNAL_COMMAND], 0, cmdline, args, &handled);
 
 	if(handled)
 		return 0;

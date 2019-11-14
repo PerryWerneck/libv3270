@@ -38,13 +38,58 @@
 
  #include "private.h"
 
+ #include <terminal.h>
  #include <lib3270/toggle.h>
  #include <lib3270/properties.h>
  #include <internals.h>
  #include <v3270/dialogs.h>
  #include "marshal.h"
 
-/*--[ Widget definition ]----------------------------------------------------------------------------*/
+/*--[ Globals ]--------------------------------------------------------------------------------------*/
+
+ static const LIB3270_TOGGLE_ID toggles[] = {
+	LIB3270_TOGGLE_DS_TRACE,
+	LIB3270_TOGGLE_NETWORK_TRACE,
+	LIB3270_TOGGLE_EVENT_TRACE,
+	LIB3270_TOGGLE_SSL_TRACE,
+	LIB3270_TOGGLE_SCREEN_TRACE
+ };
+
+ struct _V3270TraceClass
+ {
+	GtkBoxClass parent_class;
+
+ };
+
+ struct _V3270Trace
+ {
+
+	GtkBox				  parent;
+	H3270				* hSession;		///< @brief TN3270 Session.
+	GtkWidget			* terminal;		///< @brief V3270 Widget.
+	GtkScrolledWindow	* scroll;
+
+	GtkTextView			* view;			///< @brief Text view;
+	GtkTextBuffer		* text;			///< @brief Trace window contents.
+	GtkEntry			* entry;		///< @brief Command line entry.
+
+	struct
+	{
+		GtkWidget 		* box;			///< @brief Button box.
+		GtkWidget		* widgets[G_N_ELEMENTS(toggles)];
+	} buttons;
+
+	gchar 				* filename;		///< @brief Selected file name.
+
+	guint 				  log_handler;	///< @brief GTK Log Handler.
+
+	/// @brief lib3270's saved trace handler.
+	struct {
+			void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
+			void *userdata;
+	} trace;
+
+ };
 
  guint v3270_trace_signal[V3270_TRACE_SIGNAL_LAST]	= { 0 };
 
@@ -80,6 +125,11 @@
 		lib3270_set_trace_handler(hSession,trace_handler,(void *) widget);
 	}
 
+	// v3270_toggle_button_set_session
+	size_t ix;
+	for(ix = 0; ix < G_N_ELEMENTS(toggles); ix++)
+		v3270_toggle_button_set_session(widget->buttons.widgets[ix],hSession);
+
  }
 
  static void finalize(GObject *object)
@@ -100,7 +150,17 @@
 		trace->log_handler = 0;
 	}
 
-	set_session(trace,NULL);
+	if(trace->terminal && GTK_V3270(trace->terminal)->trace == GTK_WIDGET(object))
+	{
+		debug("V3270Trace::%s - Removing trace widget association",__FUNCTION__);
+		GTK_V3270(trace->terminal)->trace = NULL;
+	}
+
+	if(trace->hSession) {
+		lib3270_set_trace_handler(trace->hSession,trace->trace.handler,trace->trace.userdata);
+		trace->hSession = NULL;
+	}
+
 	g_clear_object(&trace->terminal);
 
 	G_OBJECT_CLASS(V3270Trace_parent_class)->finalize(object);
@@ -224,17 +284,16 @@
  	gtk_orientable_set_orientation(GTK_ORIENTABLE(widget),GTK_ORIENTATION_VERTICAL);
 
  	// Create toolbar
+ 	GtkWidget *buttons = widget->buttons.box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
  	{
- 		widget->buttons =  gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-
 		// https://developer.gnome.org/hig/stable/visual-layout.html.en
-		gtk_container_set_border_width(GTK_CONTAINER(widget->buttons), 12);
-		gtk_box_set_spacing(GTK_BOX(widget->buttons),12);
+		gtk_container_set_border_width(GTK_CONTAINER(buttons), 12);
+		gtk_box_set_spacing(GTK_BOX(buttons),12);
 
-		gtk_button_box_set_layout(GTK_BUTTON_BOX(widget->buttons), GTK_BUTTONBOX_START);
+		gtk_button_box_set_layout(GTK_BUTTON_BOX(buttons), GTK_BUTTONBOX_START);
 
-		gtk_widget_set_valign(widget->buttons,GTK_ALIGN_START);
-		gtk_box_pack_start(GTK_BOX(widget),widget->buttons,FALSE,FALSE,0);
+		gtk_widget_set_valign(buttons,GTK_ALIGN_START);
+		gtk_box_pack_start(GTK_BOX(widget),buttons,FALSE,FALSE,0);
 
  	}
 
@@ -282,6 +341,26 @@
 
 	}
 
+	// Create toggle buttons
+	{
+ 		size_t ix;
+
+		for(ix = 0; ix < G_N_ELEMENTS(toggles); ix++)
+		{
+			GtkWidget * item = widget->buttons.widgets[ix] = v3270_toggle_button_new(toggles[ix]);
+
+			gtk_widget_set_can_focus(item,FALSE);
+			gtk_widget_set_can_default(item,FALSE);
+
+#if GTK_CHECK_VERSION(3,20,0)
+			gtk_widget_set_focus_on_click(item,FALSE);
+#endif // GTK 3,20,0
+
+			gtk_box_pack_start(GTK_BOX(buttons),item,FALSE,FALSE,0);
+
+		}
+	}
+
 	// Grab GTK messages.
 	widget->log_handler = g_log_set_handler(NULL,G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,(GLogFunc) log_handler, widget);
 
@@ -292,7 +371,7 @@
  {
 	g_return_val_if_fail(GTK_IS_V3270_TRACE(widget),NULL);
 
-	return GTK_V3270_TRACE(widget)->buttons;
+	return GTK_V3270_TRACE(widget)->buttons.box;
 
  }
 
@@ -307,7 +386,7 @@
 	gtk_widget_set_focus_on_click(button,FALSE);
 #endif // GTK 3,20,0
 
-	gtk_box_pack_start(GTK_BOX(GTK_V3270_TRACE(widget)->buttons),button,FALSE,FALSE,0);
+	gtk_box_pack_start(GTK_BOX(GTK_V3270_TRACE(widget)->buttons.box),button,FALSE,FALSE,0);
 
  }
 
@@ -321,99 +400,10 @@
 		widget->terminal = terminal;
 		g_object_ref_sink(G_OBJECT(terminal));
 		set_session(widget, v3270_get_session(widget->terminal));
+		GTK_V3270(terminal)->trace = GTK_WIDGET(widget);
 	}
-
-	// Create toggle buttons
-	{
- 		size_t ix;
-
-		static const LIB3270_TOGGLE_ID toggles[] = {
-				LIB3270_TOGGLE_DS_TRACE,
-				LIB3270_TOGGLE_NETWORK_TRACE,
-				LIB3270_TOGGLE_EVENT_TRACE,
-				LIB3270_TOGGLE_SSL_TRACE,
-				LIB3270_TOGGLE_SCREEN_TRACE
-		};
-
-		for(ix = 0; ix < G_N_ELEMENTS(toggles); ix++)
-		{
-			GtkWidget * item = v3270_toggle_button_new(widget->terminal,toggles[ix]);
-
-			gtk_widget_set_can_focus(item,FALSE);
-			gtk_widget_set_can_default(item,FALSE);
-
-#if GTK_CHECK_VERSION(3,20,0)
-			gtk_widget_set_focus_on_click(item,FALSE);
-#endif // GTK 3,20,0
-
-			gtk_box_pack_start(GTK_BOX(widget->buttons),item,FALSE,FALSE,0);
-
-		}
-	}
-
 
 	return GTK_WIDGET(widget);
- }
-
- struct _append_text
- {
- 	V3270Trace *widget;
- 	gchar text[1];
- };
-
- static gboolean bg_append_text(struct _append_text *cfg)
- {
- 	if(!GTK_IS_TEXT_BUFFER(cfg->widget->text))
-		return FALSE;
-
-	GtkTextIter	itr;
-	gtk_text_buffer_get_end_iter(cfg->widget->text,&itr);
-
-	if(g_utf8_validate(cfg->text,strlen(cfg->text),NULL))
-	{
-		gtk_text_buffer_insert(cfg->widget->text,&itr,cfg->text,strlen(cfg->text));
-	}
-	else
-	{
-		gtk_text_buffer_insert(cfg->widget->text,&itr,"** Invalid UTF8 String **",-1);
-	}
-
-	// gtk_text_buffer_get_end_iter(cfg->widget->text,&itr);
-	// gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(cfg->widget->view), &itr, 0.0, FALSE, 0.0, 0.0);
-
-	GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(cfg->widget->scroll);
-	gtk_adjustment_set_value(vadj,gtk_adjustment_get_upper(vadj));
-	gtk_scrolled_window_set_vadjustment(cfg->widget->scroll, vadj);
-
-	return FALSE;
-
- }
-
- LIB3270_EXPORT void v3270_trace_append_text(GtkWidget *widget, const gchar *text)
- {
- 	g_return_if_fail(GTK_IS_V3270_TRACE(widget));
-
-	// Enqueue update.
- 	struct _append_text * cfg = g_malloc0(sizeof(struct _append_text)+strlen(text)+1);
- 	cfg->widget = GTK_V3270_TRACE(widget);
- 	strcpy(cfg->text,text);
-
-	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_append_text, cfg, g_free);
-
- }
-
- LIB3270_EXPORT void v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args)
- {
- 	g_autofree gchar * text = g_strdup_vprintf(fmt,args);
- 	v3270_trace_append_text(widget,text);
- }
-
- LIB3270_EXPORT void v3270_trace_printf(GtkWidget *widget, const char *fmt, ... )
- {
-	va_list arg_ptr;
-	va_start(arg_ptr, fmt);
-	v3270_trace_vprintf(widget,fmt,arg_ptr);
-	va_end(arg_ptr);
  }
 
  const gchar * v3270_trace_get_filename(GtkWidget *widget)
@@ -477,5 +467,35 @@
 		trace->filename = filename;
 		v3270_trace_save(widget);
 	}
+
+ }
+
+ H3270 * v3270_trace_get_session(GtkWidget *widget)
+ {
+ 	return GTK_V3270_TRACE(widget)->hSession;
+ }
+
+ GtkWidget * v3270_trace_get_terminal(GtkWidget *widget)
+ {
+ 	return GTK_V3270_TRACE(widget)->terminal;
+ }
+
+ GtkTextBuffer * v3270_trace_get_text_buffer(GtkWidget *widget)
+ {
+ 	return GTK_V3270_TRACE(widget)->text;
+ }
+
+ GtkScrolledWindow * v3270_trace_get_scrolled_window(GtkWidget *widget)
+ {
+ 	return GTK_V3270_TRACE(widget)->scroll;
+ }
+
+ gboolean v3270_get_trace(GtkWidget *terminal)
+ {
+	return GTK_V3270(terminal)->trace != NULL;
+ }
+
+ void v3270_set_trace(GtkWidget *terminal, gboolean trace)
+ {
 
  }

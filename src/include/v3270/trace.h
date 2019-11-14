@@ -49,6 +49,9 @@
 
  LIB3270_EXPORT GType				  V3270Trace_get_type(void);
 
+ LIB3270_EXPORT gboolean			  v3270_get_trace(GtkWidget *terminal);
+ LIB3270_EXPORT void				  v3270_set_trace(GtkWidget *terminal, gboolean trace);
+
  LIB3270_EXPORT	GtkWidget			* v3270_trace_new(GtkWidget *terminal);
  LIB3270_EXPORT void				  v3270_trace_append_text(GtkWidget *widget, const gchar *text);
  LIB3270_EXPORT void				  v3270_trace_vprintf(GtkWidget *widget, const char *fmt, va_list args);
