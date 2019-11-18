@@ -53,7 +53,6 @@ gchar * v3270_get_selection_as_text(v3270 * terminal, const GList *selection, co
 				src++;
 
 			}
-			g_string_append_c(string,'\n');
 		}
 
 		selection = g_list_next(selection);
