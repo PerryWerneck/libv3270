@@ -69,27 +69,27 @@
 		{
 		case GTK_PRINT_OPERATION_RESULT_ERROR:
 			debug("%s: Error on print operation",__FUNCTION__);
-			lib3270_trace_event(operation->widget->host,_("Error on print operation"));
+			lib3270_trace_event(operation->widget->host,"%s\n",_("Error on print operation"));
 			break;
 
 		case GTK_PRINT_OPERATION_RESULT_APPLY:
 			debug("%s: The print settings should be stored.",__FUNCTION__);
-			lib3270_trace_event(operation->widget->host,_("The print settings should be stored."));
+			lib3270_trace_event(operation->widget->host,"%s\n",_("The print settings should be stored."));
 			break;
 
 		case GTK_PRINT_OPERATION_RESULT_CANCEL:
 			debug("%s: The print operation has been canceled, the print settings should not be stored.", __FUNCTION__);
-			lib3270_trace_event(operation->widget->host,_("The print operation has been canceled, the print settings should not be stored."));
+			lib3270_trace_event(operation->widget->host,"%s\n",_("The print operation has been canceled, the print settings should not be stored."));
 			break;
 
 		case GTK_PRINT_OPERATION_RESULT_IN_PROGRESS:
 			debug("%s: The print operation is running",__FUNCTION__);
-			lib3270_trace_event(operation->widget->host,_("The print operation is running"));
+			lib3270_trace_event(operation->widget->host,"%s\n",_("The print operation is running"));
 			break;
 
 		default:
 			debug("Unexpected status %d in print operation",(int) result);
-			lib3270_trace_event(operation->widget->host,_("Unexpected status %d in print operation"),(int) result);
+			lib3270_trace_event(operation->widget->host,"%s\n",_("Unexpected status %d in print operation"),(int) result);
 
 		}
 
@@ -100,32 +100,22 @@
 
  static void dispose(GObject *object)
  {
-
-	debug("%s(%p)",__FUNCTION__,object);
-	g_message("%s(%p)",__FUNCTION__,object);
-
 	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(object);
 
 	operation->contents.selection = NULL;
 
-	debug("%s.operation->font.info.scaled=%p",__FUNCTION__,operation->font.info.scaled);
-	g_message("%s.operation->font.info.scaled=%p",__FUNCTION__,operation->font.info.scaled);
 	if(operation->font.info.scaled)
 	{
 		cairo_scaled_font_destroy(operation->font.info.scaled);
 		operation->font.info.scaled = NULL;
 	}
 
-	debug("%s.operation->font.name=%p",__FUNCTION__,operation->font.name);
-	g_message("%s.operation->font.name=%p",__FUNCTION__,operation->font.name);
 	if(operation->font.name)
 	{
 		g_free(operation->font.name);
 		operation->font.name = NULL;
 	}
 
-	debug("%s.operation->contents.dynamic=%p",__FUNCTION__,operation->font.name);
-	g_message("%s.operation->contents.dynamic=%p",__FUNCTION__,operation->font.name);
 	if(operation->contents.dynamic)
 	{
 		#pragma GCC diagnostic push
@@ -140,13 +130,7 @@
 		#pragma GCC diagnostic pop
 	}
 
-	debug("%s: Calling parent dispose",__FUNCTION__);
-
-	g_message("%s: Calling parent dispose",__FUNCTION__);
 	G_OBJECT_CLASS(V3270PrintOperation_parent_class)->dispose(object);
-	debug("%s: Dispose is complete",__FUNCTION__);
-	g_message("%s: Dispose is complete",__FUNCTION__);
-
 
  }
 

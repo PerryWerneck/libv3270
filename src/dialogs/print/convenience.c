@@ -44,19 +44,17 @@
  	if(!(widget && GTK_IS_V3270(widget)))
 		return errno = EINVAL;
 
-	lib3270_trace_event(v3270_get_session(widget),"print action activated (type=%d)",(int) mode);
+	lib3270_trace_event(v3270_get_session(widget),"print action activated (type=%d)\n",(int) mode);
 
 	if(!v3270_is_connected(widget))
 		return errno = ENOTCONN;
 
 	// Print operation.
-	debug("************** %s",__FUNCTION__);
 	GtkPrintOperation * operation = v3270_print_operation_new(widget, mode);
 	if(!operation)
 		return errno = EPERM;
 
 	gtk_print_operation_set_show_progress(operation,TRUE);
-
 	gtk_print_operation_set_allow_async(operation,TRUE);
 
 	GtkPrintOperationResult result = GTK_PRINT_OPERATION_RESULT_ERROR;
@@ -105,25 +103,25 @@
 	{
 	case GTK_PRINT_OPERATION_RESULT_ERROR:
 		debug("%s: Error on print operation",__FUNCTION__);
-		lib3270_trace_event(v3270_get_session(widget),_("Error on print operation"));
+		lib3270_trace_event(v3270_get_session(widget),"%s\n",_("Error on print operation"));
 		rc = -1;
 		break;
 
 	case GTK_PRINT_OPERATION_RESULT_APPLY:
 		debug("%s: The print settings should be stored.",__FUNCTION__);
-		lib3270_trace_event(v3270_get_session(widget),_("The print settings should be stored."));
+		lib3270_trace_event(v3270_get_session(widget),"%s\n",_("The print settings should be stored."));
 		rc = 0;
 		break;
 
 	case GTK_PRINT_OPERATION_RESULT_CANCEL:
 		debug("%s: The print operation has been canceled, the print settings should not be stored.", __FUNCTION__);
-		lib3270_trace_event(v3270_get_session(widget),_("The print operation has been canceled, the print settings should not be stored."));
+		lib3270_trace_event(v3270_get_session(widget),"%s\n",_("The print operation has been canceled, the print settings should not be stored."));
 		rc = 0;
 		break;
 
 	case GTK_PRINT_OPERATION_RESULT_IN_PROGRESS:
 		debug("%s: The print operation is running",__FUNCTION__);
-		lib3270_trace_event(v3270_get_session(widget),_("The print operation is running"));
+		lib3270_trace_event(v3270_get_session(widget),"%s\n",_("The print operation is running"));
 		rc = 0;
 		break;
 
