@@ -50,7 +50,12 @@
 	GtkPrintOperation * operation = v3270_print_operation_new(widget, mode);
 
 	gtk_print_operation_set_show_progress(operation,TRUE);
+
+#ifdef DEBUG
+	gtk_print_operation_set_allow_async(operation,TRUE);
+#else
 	gtk_print_operation_set_allow_async(operation,FALSE);
+#endif // DEBUG
 
 	GtkPrintOperationResult result = GTK_PRINT_OPERATION_RESULT_ERROR;
 
