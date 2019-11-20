@@ -42,7 +42,7 @@
  {
  	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(prt);
 
-	debug("%s",__FUNCTION__);
+	debug("%s rc=%u",__FUNCTION__,(unsigned int) result);
 
 	if(result == GTK_PRINT_OPERATION_RESULT_ERROR)
 	{
@@ -62,7 +62,10 @@
 	}
 
 	if(operation->widget)
+	{
+		debug("%s: Emiting signal PRINT_DONE",__FUNCTION__);
 		g_signal_emit(GTK_WIDGET(operation->widget), v3270_widget_signal[V3270_SIGNAL_PRINT_DONE], 0, prt, (guint) result);
+	}
 
  }
 
@@ -77,12 +80,18 @@
 	debug("%s.operation->font.info.scaled=%p",__FUNCTION__,operation->font.info.scaled);
 	g_message("%s.operation->font.info.scaled=%p",__FUNCTION__,operation->font.info.scaled);
 	if(operation->font.info.scaled)
+	{
 		cairo_scaled_font_destroy(operation->font.info.scaled);
+		operation->font.info.scaled = NULL;
+	}
 
 	debug("%s.operation->font.name=%p",__FUNCTION__,operation->font.name);
 	g_message("%s.operation->font.name=%p",__FUNCTION__,operation->font.name);
 	if(operation->font.name)
+	{
 		g_free(operation->font.name);
+		operation->font.name = NULL;
+	}
 
 	debug("%s.operation->contents.dynamic=%p",__FUNCTION__,operation->font.name);
 	g_message("%s.operation->contents.dynamic=%p",__FUNCTION__,operation->font.name);
@@ -230,11 +239,20 @@ GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
+	H3270 *hSession = v3270_get_session(widget);
+
+	if(!lib3270_is_connected(hSession))
+	{
+		errno = ENOTCONN;
+		g_warning("Can't print from offline session");
+		return NULL;
+	}
+
 	V3270PrintOperation	* operation	= GTK_V3270_PRINT_OPERATION(g_object_new(GTK_TYPE_V3270_PRINT_OPERATION, NULL));
 
 	operation->mode			= mode;
 	operation->widget		= GTK_V3270(widget);
-	operation->session		= v3270_get_session(widget);
+	operation->session		= hSession;
 
 	v3270_set_mono_color_table(operation->settings.colors,"#000000","#FFFFFF");
 

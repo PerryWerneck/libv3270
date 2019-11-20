@@ -40,14 +40,17 @@
  	int rc;
 
  	if(!(widget && GTK_IS_V3270(widget)))
-	{
 		return errno = EINVAL;
-	}
 
 	lib3270_trace_event(v3270_get_session(widget),"print action activated (type=%d)",(int) mode);
 
+	if(!v3270_is_connected(widget))
+		return errno = ENOTCONN;
+
 	// Print operation.
 	GtkPrintOperation * operation = v3270_print_operation_new(widget, mode);
+	if(!operation)
+		return errno = EPERM;
 
 	gtk_print_operation_set_show_progress(operation,TRUE);
 
