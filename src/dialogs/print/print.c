@@ -68,16 +68,24 @@
 
  static void dispose(GObject *object)
  {
-	debug("%s",__FUNCTION__);
+
+	debug("%s(%p)",__FUNCTION__,object);
+	g_message("%s(%p)",__FUNCTION__,object);
 
 	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(object);
 
+	debug("%s.operation->font.info.scaled=%p",__FUNCTION__,operation->font.info.scaled);
+	g_message("%s.operation->font.info.scaled=%p",__FUNCTION__,operation->font.info.scaled);
 	if(operation->font.info.scaled)
 		cairo_scaled_font_destroy(operation->font.info.scaled);
 
+	debug("%s.operation->font.name=%p",__FUNCTION__,operation->font.name);
+	g_message("%s.operation->font.name=%p",__FUNCTION__,operation->font.name);
 	if(operation->font.name)
 		g_free(operation->font.name);
 
+	debug("%s.operation->contents.dynamic=%p",__FUNCTION__,operation->font.name);
+	g_message("%s.operation->contents.dynamic=%p",__FUNCTION__,operation->font.name);
 	if(operation->contents.dynamic)
 	{
 		#pragma GCC diagnostic push
@@ -85,14 +93,18 @@
 		#pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif // _WIN32
 
-		g_list_free_full(operation->contents.dynamic,(GDestroyNotify) lib3270_free);
+		g_list_free_full(operation->contents.dynamic,g_free);
 		operation->contents.dynamic = NULL;
 
 		#pragma GCC diagnostic pop
 	}
 	operation->contents.selection = NULL;
 
+	debug("%s: Calling parent dispose",__FUNCTION__);
+	g_message("%s: Calling parent dispose",__FUNCTION__);
 	G_OBJECT_CLASS(V3270PrintOperation_parent_class)->dispose(object);
+	debug("%s: Dispose is complete",__FUNCTION__);
+	g_message("%s: Dispose is complete",__FUNCTION__);
 
 
  }
@@ -181,7 +193,40 @@
 	return GTK_WIDGET(GTK_V3270_PRINT_OPERATION(operation)->widget);
  }
 
-GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
+
+static GList * get_selection(H3270 *hSession, int all)
+{
+	lib3270_selection * selection = lib3270_get_selection(hSession,0,all);
+
+	if(selection)
+	{
+		GList * rc = g_new0(GList,1);
+
+		size_t sz = sizeof(lib3270_selection) + (sizeof(lib3270_selection_element) * ((selection->bounds.width * selection->bounds.height)+1));
+
+		debug(
+			"width=%u height=%u length=%u (sz=%u, szHeader=%u, szElement=%u)",
+				selection->bounds.width,
+				selection->bounds.height,
+				(selection->bounds.width * selection->bounds.height),
+				sz,
+				sizeof(lib3270_selection),
+				sizeof(lib3270_selection_element)
+		);
+
+		rc->data = g_malloc0(sz);
+		memcpy(rc->data,selection,sz);
+
+		lib3270_free(selection);
+
+		return rc;
+	}
+
+	g_warning("Error getting selection");
+	return NULL;
+}
+
+GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
 {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
@@ -198,8 +243,7 @@ GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 	{
 	case LIB3270_CONTENT_ALL:
 		debug("%s","LIB3270_CONTENT_ALL");
-		operation->contents.dynamic = g_new0(GList,1);
-		operation->contents.dynamic->data = (gpointer) lib3270_get_selection(operation->session,0,1);
+		operation->contents.dynamic = get_selection(operation->session,1);
 		operation->contents.selection = operation->contents.dynamic;
 		break;
 
@@ -210,8 +254,7 @@ GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 
 	case LIB3270_CONTENT_SELECTED:
 		debug("%s","LIB3270_CONTENT_SELECTED");
-		operation->contents.dynamic = g_new0(GList,1);
-		operation->contents.dynamic->data = (gpointer) lib3270_get_selection(operation->session,0,0);
+		operation->contents.dynamic = get_selection(operation->session,0);
 		operation->contents.selection = operation->contents.dynamic;
 		break;
 	}

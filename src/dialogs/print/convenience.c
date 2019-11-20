@@ -50,15 +50,19 @@
 	GtkPrintOperation * operation = v3270_print_operation_new(widget, mode);
 
 	gtk_print_operation_set_show_progress(operation,TRUE);
+	gtk_print_operation_set_allow_async(operation,FALSE);
+
+	GtkPrintOperationResult result = GTK_PRINT_OPERATION_RESULT_ERROR;
 
 	if(error)
 	{
-		gtk_print_operation_run(
+		result =
+			gtk_print_operation_run(
 				operation,
 				GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
 				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
 				error
-		);
+			);
 
 		rc = (*error == NULL ? 0 : -1);
 
@@ -67,12 +71,13 @@
 	{
 		GError *err = NULL;
 
-		gtk_print_operation_run(
+		result =
+			gtk_print_operation_run(
 				operation,
 				GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
 				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
 				&err
-		);
+			);
 
 		if(err)
 		{
@@ -89,7 +94,36 @@
 		}
 	}
 
+	switch(result)
+	{
+	case GTK_PRINT_OPERATION_RESULT_ERROR:
+		g_message("Error on print operation");
+		rc = -1;
+		break;
+
+	case GTK_PRINT_OPERATION_RESULT_APPLY:
+		g_message("The print settings should be stored.");
+		rc = 0;
+		break;
+
+	case GTK_PRINT_OPERATION_RESULT_CANCEL:
+		g_message("The print operation has been canceled, the print settings should not be stored.");
+		rc = 0;
+		break;
+
+	case GTK_PRINT_OPERATION_RESULT_IN_PROGRESS:
+		g_message("The print operation is running");
+		rc = 0;
+		break;
+
+	default:
+		g_message("Unexpected status %d in print operation",(int) result);
+
+	}
+
+	debug("%s(%p)",__FUNCTION__,operation);
 	g_object_unref(operation);
+	debug("%s(%p)",__FUNCTION__,operation);
 
 	return rc;
 
