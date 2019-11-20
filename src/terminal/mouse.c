@@ -194,15 +194,31 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 		if(GTK_V3270(widget)->oia.selected != V3270_OIA_FIELD_INVALID && GTK_V3270(widget)->oia.selected == get_field_from_event(GTK_V3270(widget),event))
 		{
 			gboolean handled = FALSE;
+			gboolean connected = lib3270_is_connected(GTK_V3270(widget)->host) ? TRUE : FALSE;
+			V3270_OIA_FIELD field = GTK_V3270(widget)->oia.selected;
 
 			g_signal_emit(widget,	v3270_widget_signal[V3270_SIGNAL_FIELD], 0,
-									lib3270_is_connected(GTK_V3270(widget)->host) ? TRUE : FALSE,
-									GTK_V3270(widget)->oia.selected,
+									connected,
+									field,
 									event,
 									&handled);
 
-			if(!handled)
-				gdk_display_beep(gdk_display_get_default());
+			debug("Field click was %s", handled ? "Handled" : "Not handled");
+
+			if(!handled) {
+
+				// The signal was not handled, take default action.
+				if(connected && field == V3270_OIA_SSL) {
+
+					// Show the default ssl status dialog.
+					debug("%s: Showing the default SSL status dialog",__FUNCTION__);
+					v3270_popup_security_dialog(widget);
+
+				} else {
+					gdk_display_beep(gdk_display_get_default());
+				}
+
+			}
 
 		}
 

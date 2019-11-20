@@ -48,6 +48,23 @@
 	gtk_window_set_title(GTK_WINDOW(window),v3270_get_session_title(terminal));
  }
 
+ /*
+ static gboolean field_clicked(GtkWidget *widget, gboolean connected, V3270_OIA_FIELD field, GdkEventButton *event, GtkWidget *window) {
+	debug("%s: %s field=%d event=%p window=%p",__FUNCTION__,connected ? "Connected" : "Disconnected", field, event, window);
+
+	if(!connected)
+		return FALSE;
+
+	if(field == V3270_OIA_SSL) {
+		// v3270_popup_security_dialog(widget);
+		debug("%s: Show SSL connection info dialog",__FUNCTION__);
+		return TRUE;
+	}
+
+	return FALSE;
+ }
+ */
+
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
@@ -92,6 +109,7 @@
 	gtk_widget_show_all(window);
 
 	g_signal_connect(G_OBJECT(terminal),"session_changed",G_CALLBACK(session_changed),window);
+	// g_signal_connect(G_OBJECT(terminal),"field_clicked",G_CALLBACK(field_clicked),window);
 
 	gtk_widget_grab_focus(terminal);
 
