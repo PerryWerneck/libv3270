@@ -63,7 +63,36 @@
 
 	if(operation->widget)
 	{
-		debug("%s: Emiting signal PRINT_DONE",__FUNCTION__);
+		debug("%s: Emiting signal PRINT_DONE with result code %d",__FUNCTION__,result);
+
+		switch(result)
+		{
+		case GTK_PRINT_OPERATION_RESULT_ERROR:
+			debug("%s: Error on print operation",__FUNCTION__);
+			lib3270_trace_event(operation->widget->host,_("Error on print operation"));
+			break;
+
+		case GTK_PRINT_OPERATION_RESULT_APPLY:
+			debug("%s: The print settings should be stored.",__FUNCTION__);
+			lib3270_trace_event(operation->widget->host,_("The print settings should be stored."));
+			break;
+
+		case GTK_PRINT_OPERATION_RESULT_CANCEL:
+			debug("%s: The print operation has been canceled, the print settings should not be stored.", __FUNCTION__);
+			lib3270_trace_event(operation->widget->host,_("The print operation has been canceled, the print settings should not be stored."));
+			break;
+
+		case GTK_PRINT_OPERATION_RESULT_IN_PROGRESS:
+			debug("%s: The print operation is running",__FUNCTION__);
+			lib3270_trace_event(operation->widget->host,_("The print operation is running"));
+			break;
+
+		default:
+			debug("Unexpected status %d in print operation",(int) result);
+			lib3270_trace_event(operation->widget->host,_("Unexpected status %d in print operation"),(int) result);
+
+		}
+
 		g_signal_emit(GTK_WIDGET(operation->widget), v3270_widget_signal[V3270_SIGNAL_PRINT_DONE], 0, prt, (guint) result);
 	}
 
@@ -76,6 +105,8 @@
 	g_message("%s(%p)",__FUNCTION__,object);
 
 	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(object);
+
+	operation->contents.selection = NULL;
 
 	debug("%s.operation->font.info.scaled=%p",__FUNCTION__,operation->font.info.scaled);
 	g_message("%s.operation->font.info.scaled=%p",__FUNCTION__,operation->font.info.scaled);
@@ -103,13 +134,14 @@
 #endif // _WIN32
 
 		g_list_free_full(operation->contents.dynamic,g_free);
+
 		operation->contents.dynamic = NULL;
 
 		#pragma GCC diagnostic pop
 	}
-	operation->contents.selection = NULL;
 
 	debug("%s: Calling parent dispose",__FUNCTION__);
+
 	g_message("%s: Calling parent dispose",__FUNCTION__);
 	G_OBJECT_CLASS(V3270PrintOperation_parent_class)->dispose(object);
 	debug("%s: Dispose is complete",__FUNCTION__);
@@ -203,14 +235,12 @@
  }
 
 
-static GList * get_selection(H3270 *hSession, int all)
+static GList * get_selection(GList *list, H3270 *hSession, int all)
 {
 	lib3270_selection * selection = lib3270_get_selection(hSession,0,all);
 
 	if(selection)
 	{
-		GList * rc = g_new0(GList,1);
-
 		size_t sz = sizeof(lib3270_selection) + (sizeof(lib3270_selection_element) * ((selection->bounds.width * selection->bounds.height)+1));
 
 		debug(
@@ -223,12 +253,12 @@ static GList * get_selection(H3270 *hSession, int all)
 				sizeof(lib3270_selection_element)
 		);
 
-		rc->data = g_malloc0(sz);
-		memcpy(rc->data,selection,sz);
+		gpointer data = g_malloc0(sz);
+		memcpy(data,selection,sz);
 
 		lib3270_free(selection);
 
-		return rc;
+		return g_list_append(list,data);
 	}
 
 	g_warning("Error getting selection");
@@ -261,7 +291,7 @@ GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 	{
 	case LIB3270_CONTENT_ALL:
 		debug("%s","LIB3270_CONTENT_ALL");
-		operation->contents.dynamic = get_selection(operation->session,1);
+		operation->contents.dynamic = get_selection(operation->contents.dynamic, operation->session,1);
 		operation->contents.selection = operation->contents.dynamic;
 		break;
 
@@ -272,7 +302,7 @@ GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 
 	case LIB3270_CONTENT_SELECTED:
 		debug("%s","LIB3270_CONTENT_SELECTED");
-		operation->contents.dynamic = get_selection(operation->session,0);
+		operation->contents.dynamic = get_selection(operation->contents.dynamic, operation->session,0);
 		operation->contents.selection = operation->contents.dynamic;
 		break;
 	}

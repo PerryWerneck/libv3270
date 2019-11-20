@@ -32,6 +32,8 @@
  #include <v3270/dialogs.h>
  #include <terminal.h>
  #include <lib3270/selection.h>
+ #include <lib3270/log.h>
+ #include <lib3270/trace.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -48,17 +50,14 @@
 		return errno = ENOTCONN;
 
 	// Print operation.
+	debug("************** %s",__FUNCTION__);
 	GtkPrintOperation * operation = v3270_print_operation_new(widget, mode);
 	if(!operation)
 		return errno = EPERM;
 
 	gtk_print_operation_set_show_progress(operation,TRUE);
 
-#ifdef DEBUG
 	gtk_print_operation_set_allow_async(operation,TRUE);
-#else
-	gtk_print_operation_set_allow_async(operation,FALSE);
-#endif // DEBUG
 
 	GtkPrintOperationResult result = GTK_PRINT_OPERATION_RESULT_ERROR;
 
@@ -105,22 +104,26 @@
 	switch(result)
 	{
 	case GTK_PRINT_OPERATION_RESULT_ERROR:
-		g_message("Error on print operation");
+		debug("%s: Error on print operation",__FUNCTION__);
+		lib3270_trace_event(v3270_get_session(widget),_("Error on print operation"));
 		rc = -1;
 		break;
 
 	case GTK_PRINT_OPERATION_RESULT_APPLY:
-		g_message("The print settings should be stored.");
+		debug("%s: The print settings should be stored.",__FUNCTION__);
+		lib3270_trace_event(v3270_get_session(widget),_("The print settings should be stored."));
 		rc = 0;
 		break;
 
 	case GTK_PRINT_OPERATION_RESULT_CANCEL:
-		g_message("The print operation has been canceled, the print settings should not be stored.");
+		debug("%s: The print operation has been canceled, the print settings should not be stored.", __FUNCTION__);
+		lib3270_trace_event(v3270_get_session(widget),_("The print operation has been canceled, the print settings should not be stored."));
 		rc = 0;
 		break;
 
 	case GTK_PRINT_OPERATION_RESULT_IN_PROGRESS:
-		g_message("The print operation is running");
+		debug("%s: The print operation is running",__FUNCTION__);
+		lib3270_trace_event(v3270_get_session(widget),_("The print operation is running"));
 		rc = 0;
 		break;
 
