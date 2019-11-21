@@ -53,12 +53,20 @@ gchar * v3270_get_selection_as_text(v3270 * terminal, const GList *selection, co
 				src++;
 
 			}
+			g_string_append_c(string,'\n');
 		}
 
 		selection = g_list_next(selection);
 	}
 
 	g_autofree char * text = g_string_free(string,FALSE);
+
+	// Remove ending CR.
+	{
+		size_t length = strlen(text);
+		if(length > 1 && text[length-1] == '\n') // The '\n' isn't really necessary but...
+			text[length-1] = 0;
+	}
 
 	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 
@@ -137,31 +145,6 @@ gchar * v3270_convert_to_3270_charset(GtkWidget *widget, const gchar *text, cons
 			return converted;
 
 	}
-
-	/*
-	// Still failing, convert line by line
-	{
-		size_t f;
-		gchar **ln = g_strsplit(text,"\n",-1);
-
-		for(f=0;ln[f];f++)
-		{
-			GError	*error	= NULL;
-			gchar	*str	= g_convert(ln[f], -1, charset, encoding, NULL, NULL, error);
-
-			if(!str)
-			{
-				g_strfreev(ln);
-				return NULL;
-			}
-
-			g_free(str);
-
-		}
-		g_strfreev(ln);
-
-	}
-	*/
 
 	// Can't convert, use fallbacks
 	return g_convert_with_fallback(
