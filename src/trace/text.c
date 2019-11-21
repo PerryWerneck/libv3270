@@ -71,7 +71,7 @@
 
 	// Enqueue update.
  	struct _append_text * cfg = g_malloc0(sizeof(struct _append_text)+strlen(text)+1);
- 	cfg->widget = GTK_V3270_TRACE(widget);
+ 	cfg->widget = widget;
  	strcpy(cfg->text,text);
 
 	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_append_text, cfg, g_free);
