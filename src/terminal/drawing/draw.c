@@ -205,6 +205,78 @@ void v3270_draw_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo *font,
 	v3270_draw_text_at(cr,rect->x,rect->y,font,str);
 }
 
+static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, GdkRectangle *rect)
+{
+	static const struct CharList
+	{
+		unsigned char chr;
+		const gchar * utf;
+	} charlist[] =
+	{
+		{ 0x8c, "≤" }, // CG 0xf7, less or equal "≤"
+		{ 0xae, "≥" }, // CG 0xd9, greater or equal "≥"
+		{ 0xbe, "≠" }, // CG 0x3e, not equal "≠"
+		{ 0xad, "[" }, // "["
+		{ 0xbd, "]" }, // "]"
+	};
+
+	size_t ix;
+
+	if(chr >= 0xf0 && chr <= 0xf9)
+	{
+		char str[] = { '0' + (chr-0xF0), 0 };
+
+		cairo_status_t		 		  status;
+		cairo_glyph_t				* glyphs			= NULL;
+		int							  num_glyphs		= 0;
+		cairo_text_cluster_t		* clusters			= NULL;
+		int							  num_clusters		= 0;
+		cairo_text_cluster_flags_t	  cluster_flags;
+		cairo_scaled_font_t			* scaled_font		= cairo_get_scaled_font(cr);
+		cairo_font_extents_t		  extents;
+
+		cairo_save(cr);
+
+		cairo_set_font_face(cr,font->face);
+		cairo_set_font_size(cr,font->size/1.3);
+		cairo_font_extents(cr,&extents);
+
+		status = cairo_scaled_font_text_to_glyphs(
+						scaled_font,
+						(double) rect->x, (double) (rect->y+extents.height),
+						str, 1,
+						&glyphs, &num_glyphs,
+						&clusters, &num_clusters, &cluster_flags );
+
+		if (status == CAIRO_STATUS_SUCCESS) {
+			cairo_show_text_glyphs(cr,str,1,glyphs, num_glyphs,clusters, num_clusters, cluster_flags);
+		}
+
+		if(glyphs)
+			cairo_glyph_free(glyphs);
+
+		if(clusters)
+			cairo_text_cluster_free(clusters);
+
+		cairo_restore(cr);
+
+		return TRUE;
+	}
+
+	for(ix = 0; ix < G_N_ELEMENTS(charlist); ix++)
+	{
+		if(chr == charlist[ix].chr)
+		{
+			v3270_draw_text(cr,rect,font,charlist[ix].utf);
+			return TRUE;
+		}
+	}
+
+	debug("%s: Unknown char 0x%02x",__FUNCTION__,(int) chr);
+
+	return FALSE;
+}
+
 void v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *font, GdkRectangle *rect, GdkRGBA *fg, GdkRGBA *bg)
 {
 	// Clear element area
@@ -234,6 +306,7 @@ void v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 
 	}
 	else if(attr & LIB3270_ATTR_CG)
 	{
+
 		switch(chr)
 		{
 		case 0xd3: // CG 0xab, plus
@@ -305,28 +378,11 @@ void v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 
 			cairo_rel_line_to(cr,rect->width,0);
 			break;
 
-		case 0x8c: // CG 0xf7, less or equal "≤"
-			v3270_draw_text(cr,rect,font,"≤");
-			break;
-
-		case 0xae: // CG 0xd9, greater or equal "≥"
-			v3270_draw_text(cr,rect,font,"≥");
-			break;
-
-		case 0xbe: // CG 0x3e, not equal "≠"
-			v3270_draw_text(cr,rect,font,"≠");
-			break;
-
-		case 0xad: // "["
-			v3270_draw_text(cr,rect,font,"[");
-			break;
-
-		case 0xbd: // "]"
-			v3270_draw_text(cr,rect,font,"]");
-			break;
-
 		default:
-			cairo_rectangle(cr, rect->x+1, rect->y+1, rect->width-2, rect->height-2);
+
+			if(!draw_cg(cr, chr, font, rect))
+				cairo_rectangle(cr, rect->x+1, rect->y+1, rect->width-2, rect->height-2);
+
 		}
 	}
 	else if(chr)
