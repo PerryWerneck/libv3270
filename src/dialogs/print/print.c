@@ -218,7 +218,7 @@
 	return GTK_WIDGET(GTK_V3270_PRINT_OPERATION(operation)->widget);
  }
 
-
+/*
 static GList * get_selection(GList *list, H3270 *hSession, int all)
 {
 	lib3270_selection * selection = lib3270_get_selection(hSession,0,all);
@@ -248,6 +248,7 @@ static GList * get_selection(GList *list, H3270 *hSession, int all)
 	g_warning("Error getting selection");
 	return NULL;
 }
+*/
 
 GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
 {
@@ -275,7 +276,7 @@ GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 	{
 	case LIB3270_CONTENT_ALL:
 		debug("%s","LIB3270_CONTENT_ALL");
-		operation->contents.dynamic = get_selection(operation->contents.dynamic, operation->session,1);
+		operation->contents.dynamic = g_list_append_lib3270_selection(operation->contents.dynamic, operation->session,TRUE);
 		operation->contents.selection = operation->contents.dynamic;
 		break;
 
@@ -286,7 +287,7 @@ GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 
 	case LIB3270_CONTENT_SELECTED:
 		debug("%s","LIB3270_CONTENT_SELECTED");
-		operation->contents.dynamic = get_selection(operation->contents.dynamic, operation->session,0);
+		operation->contents.dynamic = g_list_append_lib3270_selection(operation->contents.dynamic, operation->session,FALSE);
 		operation->contents.selection = operation->contents.dynamic;
 		break;
 	}
