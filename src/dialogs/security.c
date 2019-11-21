@@ -196,6 +196,7 @@
 
  LIB3270_EXPORT	void v3270_popup_security_dialog(GtkWidget *widget)
  {
+ 	/*
  	GtkWidget * dialog = gtk_dialog_new_with_buttons(
 								_("About security"),
 								GTK_WINDOW(gtk_widget_get_toplevel(widget)),
@@ -203,14 +204,44 @@
 								_( "_Close" ), GTK_RESPONSE_ACCEPT,
 								NULL
 						);
+	*/
 
+	gboolean use_header = FALSE;
+
+#if GTK_CHECK_VERSION(3,12,0)
+
+	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
+
+	GtkWidget * dialog =
+		GTK_WIDGET(g_object_new(
+			GTK_TYPE_DIALOG,
+			"use-header-bar", (use_header ? 1 : 0),
+			NULL
+		));
+
+#else
+
+	GtkWidget * dialog = GTK_WIDGET(g_object_new(GTK_TYPE_DIALOG, NULL));
+
+#endif	// GTK 3.12
+
+	if(!use_header) {
+		gtk_dialog_add_buttons(
+			GTK_DIALOG(dialog),
+			_("_Close"), GTK_RESPONSE_CANCEL,
+			NULL
+		);
+	}
+
+	gtk_window_set_title(GTK_WINDOW(dialog),_("About security"));
 	gtk_window_set_default_size(GTK_WINDOW(dialog), 800, 500);
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
 
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),v3270_security_dialog_new(widget),TRUE,TRUE,2);
 	gtk_widget_show_all(dialog);
 
-	gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(GTK_WIDGET(dialog));
-
+	g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
+	g_signal_connect(dialog,"response",G_CALLBACK(gtk_widget_destroy),NULL);
 
  }
