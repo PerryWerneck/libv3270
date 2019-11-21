@@ -205,32 +205,15 @@ void v3270_draw_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo *font,
 	v3270_draw_text_at(cr,rect->x,rect->y,font,str);
 }
 
-static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, GdkRectangle *rect)
+static void draw_small_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo *font, const char *str, int mode)
 {
-	static const struct CharList
-	{
-		unsigned char chr;
-		const gchar * utf;
-	} charlist[] =
-	{
-		{ 0x8c, "≤" }, // CG 0xf7, less or equal "≤"
-		{ 0xae, "≥" }, // CG 0xd9, greater or equal "≥"
-		{ 0xbe, "≠" }, // CG 0x3e, not equal "≠"
-		{ 0xad, "[" }, // "["
-		{ 0xbd, "]" }, // "]"
-	};
-
-	size_t ix;
-
-	if(chr >= 0xf0 && chr <= 0xf9)
-	{
-		char str[] = { '0' + (chr-0xF0), 0 };
-
 		cairo_status_t		 		  status;
 		cairo_glyph_t				* glyphs			= NULL;
 		int							  num_glyphs		= 0;
 		cairo_text_cluster_t		* clusters			= NULL;
 		int							  num_clusters		= 0;
+		double						  y					= (double) rect->y;
+
 		cairo_text_cluster_flags_t	  cluster_flags;
 		cairo_scaled_font_t			* scaled_font		= cairo_get_scaled_font(cr);
 		cairo_font_extents_t		  extents;
@@ -238,12 +221,21 @@ static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, Gdk
 		cairo_save(cr);
 
 		cairo_set_font_face(cr,font->face);
-		cairo_set_font_size(cr,font->size/1.3);
+		cairo_set_font_size(cr,font->size/ 1.6);
 		cairo_font_extents(cr,&extents);
+
+		if(mode == 0)
+		{
+            y += ((double) extents.height);
+		}
+		else
+		{
+			y += font->height;
+		}
 
 		status = cairo_scaled_font_text_to_glyphs(
 						scaled_font,
-						(double) rect->x, (double) (rect->y+extents.height),
+						(double) rect->x, y,
 						str, 1,
 						&glyphs, &num_glyphs,
 						&clusters, &num_clusters, &cluster_flags );
@@ -260,6 +252,38 @@ static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, Gdk
 
 		cairo_restore(cr);
 
+}
+
+static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, GdkRectangle *rect)
+{
+	static const struct CharList
+	{
+		unsigned char chr;
+		const gchar * utf;
+	} charlist[] =
+	{
+		{ 0x8c, "≤" }, // CG 0xf7, less or equal "≤"
+		{ 0xae, "≥" }, // CG 0xd9, greater or equal "≥"
+		{ 0xbe, "≠" }, // CG 0x3e, not equal "≠"
+		{ 0xad, "[" }, // "["
+		{ 0xbd, "]" }, // "]"
+		{ 0xb8, "÷"	}, // Division Sign ÷
+
+	};
+
+	size_t ix;
+
+	if(chr >= 0xf0 && chr <= 0xf9)
+	{
+		char str[] = { '0' + (chr-0xF0), 0 };
+		draw_small_text(cr, rect, font, str, 0);
+		return TRUE;
+	}
+
+	if(chr >= 0xe1 && chr <= 0xe3)
+	{
+		char str[] = { '1' + (chr-0xe1), 0 };
+		draw_small_text(cr, rect, font, str, 1);
 		return TRUE;
 	}
 
