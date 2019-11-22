@@ -36,8 +36,6 @@ G_BEGIN_DECLS
  {
 	GtkWidgetClass parent_class;
 
-	// Dialog boxes.
-
     // Internal properties.
     struct {
 
@@ -66,12 +64,13 @@ G_BEGIN_DECLS
 			guint integer;
 			guint uint;
 			guint str;
+			guint responses;
 		} type;
 
     } properties;
 
     // Predefined responses.
-   	GParamSpec *responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
+   	GParamSpec * responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
 
     // Cursors
 	GdkCursor * cursors[LIB3270_POINTER_COUNT];

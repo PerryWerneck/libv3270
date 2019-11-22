@@ -206,6 +206,13 @@
 			GTK_V3270(widget)->responses[id] = response;
 			g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->responses[id]);
 			v3270_emit_save_settings(widget);
+
+			debug(
+				"Property %s is now %d",
+					g_param_spec_get_name(GTK_V3270_GET_CLASS(widget)->responses[id]),
+					GTK_V3270(widget)->responses[id]
+			);
+
 		}
 
 		gtk_widget_destroy(dialog);

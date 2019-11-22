@@ -65,6 +65,16 @@
  }
  */
 
+ static void save_settings(GtkWidget *terminal, GtkWidget *window)
+ {
+ 	debug("%s: Saving settings for windows %p",__FUNCTION__,window);
+
+	GKeyFile * key_file = g_key_file_new();
+	v3270_to_key_file(terminal,key_file,"terminal");
+	g_key_file_save_to_file(key_file,"terminal.conf",NULL);
+	g_key_file_free(key_file);
+ }
+
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
@@ -109,6 +119,7 @@
 	gtk_widget_show_all(window);
 
 	g_signal_connect(G_OBJECT(terminal),"session_changed",G_CALLBACK(session_changed),window);
+	g_signal_connect(G_OBJECT(terminal),"save-settings",G_CALLBACK(save_settings),window);
 	// g_signal_connect(G_OBJECT(terminal),"field_clicked",G_CALLBACK(field_clicked),window);
 
 	gtk_widget_grab_focus(terminal);

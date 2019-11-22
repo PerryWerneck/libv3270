@@ -54,3 +54,5 @@ glade/v3270.xml
 ValgrindOut.xml
 *.crl
 *.patch
+*.sh
+*.conf

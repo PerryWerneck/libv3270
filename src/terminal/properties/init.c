@@ -28,6 +28,7 @@
  */
 
  #include "private.h"
+ #include <lib3270/toggle.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -80,7 +81,7 @@
 							"font_family",
 							"font_family",
 							_("Font family for terminal contents"),
-							FALSE,
+							v3270_get_default_font_name(),
 							G_PARAM_READABLE|G_PARAM_WRITABLE
 						);
 
@@ -106,11 +107,13 @@
 	);
 
 	// Auto disconnect
-	klass->properties.auto_disconnect = g_param_spec_string(
+	klass->properties.auto_disconnect = g_param_spec_uint(
 							"auto_disconnect",
 							"auto_disconnect",
 							_("IDLE minutes for automatic disconnection"),
-							FALSE,
+							0,
+							G_MAXUINT,
+							0,
 							G_PARAM_READABLE|G_PARAM_WRITABLE
 						);
 
@@ -200,61 +203,36 @@
 	klass->properties.count = V3270_PROPERTY_DYNAMIC;
 
 	//
-	// Create action properties.
-	//
-	static const struct
-	{
-		const gchar *name;			///< @brief canonical name of the property specified.
-		const gchar *nick;			///< @brief nick name for the property specified.
-		const gchar *blurb;			///< @brief description of the property specified.
-	} actions[G_N_ELEMENTS(klass->responses)] =
-	{
-		{
-			.name = "paste_fails",
-			.nick = "paste_fails",
-			.blurb = "The action when formatted paste fails"
-		}
-
-	};
-
-	for(ix = 0; ix < G_N_ELEMENTS(klass->responses); ix++)
-	{
-		if(actions[ix].name)
-		{
-			klass->responses[ix] =
-				g_param_spec_enum(
-					actions[ix].name,
-					actions[ix].nick,
-					actions[ix].blurb,
-					GTK_TYPE_RESPONSE_TYPE,
-					GTK_RESPONSE_NONE,
-					(G_PARAM_READABLE|G_PARAM_WRITABLE)
-				);
-
-			v3270_install_property(gobject_class, klass->properties.count++, klass->responses[ix]);
-		}
-
-	}
-
-	//
 	// Extract properties from LIB3270 control tables
 	//
 	// Extract toggle class.
 	klass->properties.type.toggle = klass->properties.count;
-	for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)
+
 	{
-//		debug("Property %u=%s (Toggle)",(unsigned int) klass->properties.type.toggle + ix, lib3270_get_toggle_name(ix));
+		const LIB3270_TOGGLE * toggles = lib3270_get_toggles();
 
-		klass->properties.toggle[ix] =
-				g_param_spec_boolean(
-					lib3270_get_toggle_name(ix),
-					lib3270_get_toggle_name(ix),
-					lib3270_get_toggle_description(ix),
-					FALSE,
-					G_PARAM_WRITABLE|G_PARAM_READABLE
-		);
+		for(ix = 0; ix < LIB3270_TOGGLE_COUNT; ix++)
+		{
+			if(!toggles[ix].name)
+			{
+				g_warning("Unexpected toggle id: %u", (unsigned int) ix);
+				break;
+			}
 
-		v3270_install_property(gobject_class, klass->properties.count++, klass->properties.toggle[ix]);
+	//		debug("Property %u=%s (Toggle)",(unsigned int) klass->properties.type.toggle + ix, lib3270_get_toggle_name(ix));
+
+			klass->properties.toggle[ix] =
+					g_param_spec_boolean(
+						toggles[ix].name,
+						toggles[ix].name,
+						toggles[ix].description,
+						(toggles[ix].def == 0 ? FALSE : TRUE),
+						G_PARAM_WRITABLE|G_PARAM_READABLE
+			);
+
+			v3270_install_property(gobject_class, klass->properties.count++, klass->properties.toggle[ix]);
+
+		}
 
 	}
 
@@ -341,6 +319,48 @@
 		v3270_install_property(gobject_class, klass->properties.count++, spec);
 
 	}
+
+	//
+	// Create action properties.
+	//
+	klass->properties.type.responses = klass->properties.count;
+
+	static const struct
+	{
+		const gchar *name;			///< @brief canonical name of the property specified.
+		const gchar *nick;			///< @brief nick name for the property specified.
+		const gchar *blurb;			///< @brief description of the property specified.
+	} actions[G_N_ELEMENTS(klass->responses)] =
+	{
+		{
+			.name = "paste_fails",
+			.nick = "paste_fails",
+			.blurb = "The action when formatted paste fails"
+		}
+
+	};
+
+	for(ix = 0; ix < G_N_ELEMENTS(klass->responses); ix++)
+	{
+		if(actions[ix].name)
+		{
+			// Should be int to make it easier to GKeyFile methods.
+			klass->responses[ix] =
+				g_param_spec_int(
+					actions[ix].name,
+					actions[ix].nick,
+					actions[ix].blurb,
+					INT_MIN,
+					INT_MAX,
+					(int) GTK_RESPONSE_NONE,
+					(G_PARAM_READABLE|G_PARAM_WRITABLE)
+				);
+
+			v3270_install_property(gobject_class, klass->properties.count++, klass->responses[ix]);
+		}
+
+	}
+
 
  }
 

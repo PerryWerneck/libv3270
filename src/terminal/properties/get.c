@@ -39,7 +39,11 @@
 
  	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
 
- 	if(prop_id >= klass->properties.type.str)
+ 	if(prop_id >= klass->properties.type.responses)
+	{
+		g_value_set_int(value,(int) window->responses[prop_id - klass->properties.type.responses]);
+	}
+ 	else if(prop_id >= klass->properties.type.str)
 	{
 		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - klass->properties.type.str));
 		debug("%s.%s.%s",__FUNCTION__,"string",prop->name);
@@ -77,7 +81,7 @@
 	}
  	else if(prop_id >= klass->properties.type.toggle)
 	{
-		debug("%s.%s.%s",__FUNCTION__,"toggle",lib3270_get_toggle_name(prop_id - klass->properties.type.toggle));
+//		debug("%s.%s.%s",__FUNCTION__,"toggle",lib3270_get_toggle_name(prop_id - klass->properties.type.toggle));
 		g_value_set_boolean(value,lib3270_get_toggle(window->host,prop_id - klass->properties.type.toggle) ? TRUE : FALSE );
 
 	}

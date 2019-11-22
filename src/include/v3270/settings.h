@@ -35,6 +35,14 @@
 
  G_BEGIN_DECLS
 
+/*--[ Tools ]----------------------------------------------------------------------------------------*/
+
+ /// @brief Reads the terminal settings from the group group_name in key_file.
+ LIB3270_EXPORT gboolean v3270_load_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name, GError **error);
+
+ /// @brief This function adds the terminal settings from widget to key_file.
+ LIB3270_EXPORT void v3270_to_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name);
+
 /*--[ V3270 Settings Widget ]------------------------------------------------------------------------*/
 
  #define GTK_TYPE_V3270_SETTINGS     				(V3270Settings_get_type())

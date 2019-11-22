@@ -267,6 +267,9 @@
 		<Unit filename="src/terminal/keyboard.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/keyfile.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/linux/iosource.c">
 			<Option compilerVar="CC" />
 		</Unit>
