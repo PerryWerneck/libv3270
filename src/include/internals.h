@@ -139,6 +139,8 @@
 
  G_GNUC_INTERNAL gchar 			* v3270_convert_to_3270_charset(GtkWidget *widget, const gchar *text, const gchar *encoding, GError **error);
 
+ /// @brief Add current lib3270 selection to a list
+ G_GNUC_INTERNAL GList			* g_list_append_lib3270_selection(GList *list, H3270 *hSession, gboolean all);
 
 /*--[ Internal Widgets & Tools ]---------------------------------------------------------------------*/
 

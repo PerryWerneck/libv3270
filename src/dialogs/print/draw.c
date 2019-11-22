@@ -114,7 +114,7 @@
 		size_t col;
 		rect.x = operation->font.info.margin.left;
 
-		debug("Drawing: %u row=%u selection=%p pos=%u", (unsigned int) drawing, row, selection, (unsigned int) pos);
+//		debug("Drawing: %u row=%u selection=%p pos=%u", (unsigned int) drawing, row, selection, (unsigned int) pos);
 
 		for(col = 0; col < selection->bounds.width;col++)
 		{

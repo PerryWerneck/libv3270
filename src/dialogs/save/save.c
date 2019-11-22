@@ -346,9 +346,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	{
 	case LIB3270_CONTENT_ALL:
 		debug("%s","LIB3270_CONTENT_ALL");
-		dynamic = g_new0(GList,1);
-		dynamic->data = (gpointer) lib3270_get_selection(v3270_get_session(dialog->terminal),0,1);
-		selection = dynamic;
+		selection = dynamic = g_list_append_lib3270_selection(dynamic, v3270_get_session(dialog->terminal),TRUE);
 		break;
 
 	case LIB3270_CONTENT_COPY:
@@ -358,9 +356,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	case LIB3270_CONTENT_SELECTED:
 		debug("%s","LIB3270_CONTENT_SELECTED");
-		dynamic = g_new0(GList,1);
-		dynamic->data = (gpointer) lib3270_get_selection(v3270_get_session(dialog->terminal),0,0);
-		selection = dynamic;
+		selection = dynamic = g_list_append_lib3270_selection(dynamic, v3270_get_session(dialog->terminal),FALSE);
 		break;
 
 	default:

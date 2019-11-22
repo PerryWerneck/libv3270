@@ -188,6 +188,9 @@
 		<Unit filename="src/selection/datablock.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/selection/get.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/selection/html.c">
 			<Option compilerVar="CC" />
 		</Unit>

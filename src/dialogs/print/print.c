@@ -42,7 +42,7 @@
  {
  	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(prt);
 
-	debug("%s",__FUNCTION__);
+	debug("%s rc=%u",__FUNCTION__,(unsigned int) result);
 
 	if(result == GTK_PRINT_OPERATION_RESULT_ERROR)
 	{
@@ -62,21 +62,65 @@
 	}
 
 	if(operation->widget)
+	{
+		debug("%s: Emiting signal PRINT_DONE with result code %d",__FUNCTION__,result);
+
+		switch(result)
+		{
+		case GTK_PRINT_OPERATION_RESULT_ERROR:
+			debug("%s: Error on print operation",__FUNCTION__);
+			lib3270_trace_event(operation->widget->host,"%s\n",_("Error on print operation"));
+			break;
+
+		case GTK_PRINT_OPERATION_RESULT_APPLY:
+			debug("%s: The print settings should be stored.",__FUNCTION__);
+			lib3270_trace_event(operation->widget->host,"%s\n",_("The print settings should be stored."));
+			break;
+
+		case GTK_PRINT_OPERATION_RESULT_CANCEL:
+			debug("%s: The print operation has been canceled, the print settings should not be stored.", __FUNCTION__);
+			lib3270_trace_event(operation->widget->host,"%s\n",_("The print operation has been canceled, the print settings should not be stored."));
+			break;
+
+		case GTK_PRINT_OPERATION_RESULT_IN_PROGRESS:
+			debug("%s: The print operation is running",__FUNCTION__);
+			lib3270_trace_event(operation->widget->host,"%s\n",_("The print operation is running"));
+			break;
+
+		default:
+			debug("Unexpected status %d in print operation",(int) result);
+			lib3270_trace_event(operation->widget->host,_("Unexpected status %d in print operation"),(int) result);
+
+		}
+
 		g_signal_emit(GTK_WIDGET(operation->widget), v3270_widget_signal[V3270_SIGNAL_PRINT_DONE], 0, prt, (guint) result);
+	}
 
  }
 
  static void dispose(GObject *object)
  {
-	debug("%s",__FUNCTION__);
-
 	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(object);
 
+	if(operation->widget)
+	{
+		g_object_unref(G_OBJECT(operation->widget));
+		operation->widget = NULL;
+	}
+
+	operation->contents.selection = NULL;
+
 	if(operation->font.info.scaled)
+	{
 		cairo_scaled_font_destroy(operation->font.info.scaled);
+		operation->font.info.scaled = NULL;
+	}
 
 	if(operation->font.name)
+	{
 		g_free(operation->font.name);
+		operation->font.name = NULL;
+	}
 
 	if(operation->contents.dynamic)
 	{
@@ -85,15 +129,14 @@
 		#pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif // _WIN32
 
-		g_list_free_full(operation->contents.dynamic,(GDestroyNotify) lib3270_free);
+		g_list_free_full(operation->contents.dynamic,g_free);
+
 		operation->contents.dynamic = NULL;
 
 		#pragma GCC diagnostic pop
 	}
-	operation->contents.selection = NULL;
 
 	G_OBJECT_CLASS(V3270PrintOperation_parent_class)->dispose(object);
-
 
  }
 
@@ -181,16 +224,48 @@
 	return GTK_WIDGET(GTK_V3270_PRINT_OPERATION(operation)->widget);
  }
 
-GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
-{
+ void v3270_print_operation_set_terminal(GtkPrintOperation * operation, GtkWidget *widget)
+ {
+ 	g_return_if_fail(GTK_IS_V3270_PRINT_OPERATION(operation) && GTK_IS_V3270(widget));
+
+ 	V3270PrintOperation	* opr = GTK_V3270_PRINT_OPERATION(operation);
+
+ 	if(opr->widget)
+	{
+		g_object_unref(G_OBJECT(opr->widget));
+		opr->widget		= NULL;
+		opr->session	= NULL;
+	}
+
+	if(widget && GTK_IS_V3270(widget))
+	{
+		opr->widget		= GTK_V3270(widget);
+		opr->session	= v3270_get_session(widget);
+		g_object_ref(G_OBJECT(opr->widget));
+	}
+
+ }
+
+ GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
+ {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+
+	H3270 *hSession = v3270_get_session(widget);
+
+	if(!lib3270_is_connected(hSession))
+	{
+		errno = ENOTCONN;
+		g_warning("Can't print from offline session");
+		return NULL;
+	}
 
 	V3270PrintOperation	* operation	= GTK_V3270_PRINT_OPERATION(g_object_new(GTK_TYPE_V3270_PRINT_OPERATION, NULL));
 
 	operation->mode			= mode;
-	operation->widget		= GTK_V3270(widget);
-	operation->session		= v3270_get_session(widget);
+	operation->widget		= NULL;
+	operation->session		= NULL;
 
+	v3270_print_operation_set_terminal(GTK_PRINT_OPERATION(operation),GTK_WIDGET(widget));
 	v3270_set_mono_color_table(operation->settings.colors,"#000000","#FFFFFF");
 
 	// Get contents.
@@ -198,8 +273,7 @@ GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 	{
 	case LIB3270_CONTENT_ALL:
 		debug("%s","LIB3270_CONTENT_ALL");
-		operation->contents.dynamic = g_new0(GList,1);
-		operation->contents.dynamic->data = (gpointer) lib3270_get_selection(operation->session,0,1);
+		operation->contents.dynamic = g_list_append_lib3270_selection(operation->contents.dynamic, operation->session,TRUE);
 		operation->contents.selection = operation->contents.dynamic;
 		break;
 
@@ -210,8 +284,7 @@ GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 
 	case LIB3270_CONTENT_SELECTED:
 		debug("%s","LIB3270_CONTENT_SELECTED");
-		operation->contents.dynamic = g_new0(GList,1);
-		operation->contents.dynamic->data = (gpointer) lib3270_get_selection(operation->session,0,0);
+		operation->contents.dynamic = g_list_append_lib3270_selection(operation->contents.dynamic, operation->session,FALSE);
 		operation->contents.selection = operation->contents.dynamic;
 		break;
 	}
@@ -232,7 +305,7 @@ GtkPrintOperation	* v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 	}
 
 	return GTK_PRINT_OPERATION(operation);
-}
+ }
 
 gboolean v3270_print_operation_set_font_family(GtkPrintOperation *operation, const gchar *fontname)
 {

@@ -32,47 +32,67 @@
  #include <v3270/dialogs.h>
  #include <terminal.h>
  #include <lib3270/selection.h>
+ #include <lib3270/log.h>
+ #include <lib3270/trace.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  int v3270_print_dialog(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, GError **error)
  {
- 	int rc;
+ 	int rc = 0;
 
  	if(!(widget && GTK_IS_V3270(widget)))
-	{
 		return errno = EINVAL;
-	}
 
-	lib3270_trace_event(v3270_get_session(widget),"print action activated (type=%d)",(int) mode);
+	lib3270_trace_event(v3270_get_session(widget),"print action activated (type=%d)\n",(int) mode);
+
+	if(!v3270_is_connected(widget))
+		return errno = ENOTCONN;
 
 	// Print operation.
 	GtkPrintOperation * operation = v3270_print_operation_new(widget, mode);
+	if(!operation)
+		return errno = EPERM;
 
 	gtk_print_operation_set_show_progress(operation,TRUE);
+	gtk_print_operation_set_allow_async(operation,TRUE);
+
+	GtkPrintOperationResult result = GTK_PRINT_OPERATION_RESULT_ERROR;
 
 	if(error)
 	{
-		gtk_print_operation_run(
+		result =
+			gtk_print_operation_run(
 				operation,
 				GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
 				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
 				error
-		);
+			);
 
-		rc = (*error == NULL ? 0 : -1);
+		if(*error)
+		{
+			rc = (*error)->code ? (*error)->code : -1;
+			g_warning("Print operation has failed with errror\"%s\" (rc=%d)",(*error)->message,rc);
+
+		}
+		else
+		{
+			rc = 0;
+		}
+
 
 	}
 	else
 	{
 		GError *err = NULL;
 
-		gtk_print_operation_run(
+		result =
+			gtk_print_operation_run(
 				operation,
 				GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
 				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
 				&err
-		);
+			);
 
 		if(err)
 		{
@@ -89,7 +109,36 @@
 		}
 	}
 
+	switch(result)
+	{
+	case GTK_PRINT_OPERATION_RESULT_ERROR:
+		debug("%s: Error on print operation\n",__FUNCTION__);
+		g_warning("Error on print operation");
+		if(!rc)
+			rc = -1;
+		break;
+
+	case GTK_PRINT_OPERATION_RESULT_APPLY:
+		debug("%s: The print settings should be stored.",__FUNCTION__);
+		rc = 0;
+		break;
+
+	case GTK_PRINT_OPERATION_RESULT_CANCEL:
+		debug("%s: The print operation has been canceled, the print settings should not be stored.", __FUNCTION__);
+		break;
+
+	case GTK_PRINT_OPERATION_RESULT_IN_PROGRESS:
+		debug("%s: The print operation is running",__FUNCTION__);
+		break;
+
+	default:
+		g_warning("Unexpected status %d in print operation",(int) result);
+
+	}
+
+	debug("%s(%p)",__FUNCTION__,operation);
 	g_object_unref(operation);
+	debug("%s(%p)",__FUNCTION__,operation);
 
 	return rc;
 
