@@ -29,6 +29,7 @@
 
  #include <config.h>
  #include "private.h"
+ #include <gdk/gdk.h>
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
@@ -44,6 +45,33 @@ const gchar * v3270_get_default_font_name()
 #endif // _WIN32
 }
 
+static guint validate_font_family(const gchar *family_name)
+{
+	int rc = 2;
+
+	gint n_families, i;
+	PangoFontFamily **families;
+
+	PangoContext * context = gdk_pango_context_get_for_screen(gdk_screen_get_default());
+
+	pango_context_list_families(context,&families, &n_families);
+
+	for(i=0; i < n_families; i++)
+	{
+		if(!g_ascii_strcasecmp(pango_font_family_get_name(families[i]),family_name))
+		{
+			rc = pango_font_family_is_monospace(families[i]) ? 0 : 1;
+			break;
+		}
+
+
+	}
+	g_object_unref(G_OBJECT(context));
+	g_free(families);
+
+	return rc;
+}
+
 LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 {
 	v3270 * terminal;
@@ -57,6 +85,22 @@ LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 
 	if(g_ascii_strcasecmp(terminal->font.family,name))
 	{
+
+		switch(validate_font_family(name))
+		{
+		case 0:
+			g_message("Change font to \"%s\"", name);
+			break;
+
+		case 1:
+			g_warning("Font \"%s\" is not monospace", name);
+			break;
+
+		default:
+			g_warning("Invalid or unexpected font family name: \"%s\"", name);
+
+		}
+
 		// Font has changed, update it
 		g_free(terminal->font.family);
 
