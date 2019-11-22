@@ -35,7 +35,7 @@
 
  GList * g_list_append_lib3270_selection(GList *list, H3270 *hSession, gboolean all)
  {
-	lib3270_selection * selection = lib3270_get_selection(hSession,0,all);
+	lib3270_selection * selection = lib3270_selection_new(hSession,0,all);
 
 	if(selection)
 	{
