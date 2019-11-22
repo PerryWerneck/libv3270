@@ -36,6 +36,8 @@ G_BEGIN_DECLS
  {
 	GtkWidgetClass parent_class;
 
+	// Dialog boxes.
+
     // Internal properties.
     struct {
 
@@ -67,6 +69,9 @@ G_BEGIN_DECLS
 		} type;
 
     } properties;
+
+    // Predefined responses.
+   	GParamSpec *responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
 
     // Cursors
 	GdkCursor * cursors[LIB3270_POINTER_COUNT];
@@ -114,6 +119,9 @@ G_BEGIN_DECLS
 	int resizing		: 1;	/**< Resizing selected region */
 	int scaled_fonts	: 1;	/**< Use scaled fonts */
 	int drawing			: 1;	/**< Draw widget? */
+
+    /// @brief Action properties.
+   	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
 
 	GSource					* timer;
 	GtkIMContext			* input_method;

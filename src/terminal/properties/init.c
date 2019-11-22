@@ -193,9 +193,48 @@
 		klass->properties.trace
 	);
 
+
 	//
 	// Create dynamic properties
+	//
 	klass->properties.count = V3270_PROPERTY_DYNAMIC;
+
+	//
+	// Create action properties.
+	//
+	static const struct
+	{
+		const gchar *name;			///< @brief canonical name of the property specified.
+		const gchar *nick;			///< @brief nick name for the property specified.
+		const gchar *blurb;			///< @brief description of the property specified.
+	} actions[G_N_ELEMENTS(klass->responses)] =
+	{
+		{
+			.name = "paste_fails",
+			.nick = "paste_fails",
+			.blurb = "The action when formatted paste fails"
+		}
+
+	};
+
+	for(ix = 0; ix < G_N_ELEMENTS(klass->responses); ix++)
+	{
+		if(actions[ix].name)
+		{
+			klass->responses[ix] =
+				g_param_spec_enum(
+					actions[ix].name,
+					actions[ix].nick,
+					actions[ix].blurb,
+					GTK_TYPE_RESPONSE_TYPE,
+					GTK_RESPONSE_NONE,
+					(G_PARAM_READABLE|G_PARAM_WRITABLE)
+				);
+
+			v3270_install_property(gobject_class, klass->properties.count++, klass->responses[ix]);
+		}
+
+	}
 
 	//
 	// Extract properties from LIB3270 control tables
