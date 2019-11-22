@@ -33,6 +33,13 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
+static const gchar * invalid_font_messages[] = {
+
+	N_( "Font \"%s\" is valid" ),
+	N_( "Font \"%s\" is not monospace" ),
+	N_( "Can't find a valid font with the name \"%s\"")
+
+};
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -45,7 +52,7 @@ const gchar * v3270_get_default_font_name()
 #endif // _WIN32
 }
 
-static guint validate_font_family(const gchar *family_name)
+static guint check_font_family(const gchar *family_name)
 {
 	int rc = 2;
 
@@ -64,10 +71,15 @@ static guint validate_font_family(const gchar *family_name)
 			break;
 		}
 
-
 	}
+
 	g_object_unref(G_OBJECT(context));
 	g_free(families);
+
+	if(rc)
+		g_warning(invalid_font_messages[rc],family_name);
+	else
+		g_message(invalid_font_messages[rc],family_name);
 
 	return rc;
 }
@@ -85,21 +97,7 @@ LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 
 	if(g_ascii_strcasecmp(terminal->font.family,name))
 	{
-
-		switch(validate_font_family(name))
-		{
-		case 0:
-			g_message("Change font to \"%s\"", name);
-			break;
-
-		case 1:
-			g_warning("Font \"%s\" is not monospace", name);
-			break;
-
-		default:
-			g_warning("Invalid or unexpected font family name: \"%s\"", name);
-
-		}
+		check_font_family(name);
 
 		// Font has changed, update it
 		g_free(terminal->font.family);
