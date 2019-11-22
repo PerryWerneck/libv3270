@@ -156,6 +156,12 @@
 		// Set check button
 		GtkWidget * dont_ask = gtk_check_button_new_with_label(_("Don't ask again"));
 
+		gtk_widget_set_can_focus(dont_ask,FALSE);
+		gtk_widget_set_can_default(dont_ask,FALSE);
+#if GTK_CHECK_VERSION(3,20,0)
+		gtk_widget_set_focus_on_click(dont_ask,FALSE);
+#endif // GTK 3,20,0
+
 		gtk_widget_set_valign(dont_ask, GTK_ALIGN_BASELINE);
 		gtk_widget_set_halign(dont_ask, GTK_ALIGN_START);
 
