@@ -89,7 +89,7 @@
 
 		default:
 			debug("Unexpected status %d in print operation",(int) result);
-			lib3270_trace_event(operation->widget->host,"%s\n",_("Unexpected status %d in print operation"),(int) result);
+			lib3270_trace_event(operation->widget->host,_("Unexpected status %d in print operation"),(int) result);
 
 		}
 
@@ -101,6 +101,12 @@
  static void dispose(GObject *object)
  {
 	V3270PrintOperation * operation = GTK_V3270_PRINT_OPERATION(object);
+
+	if(operation->widget)
+	{
+		g_object_unref(G_OBJECT(operation->widget));
+		operation->widget = NULL;
+	}
 
 	operation->contents.selection = NULL;
 
@@ -218,40 +224,30 @@
 	return GTK_WIDGET(GTK_V3270_PRINT_OPERATION(operation)->widget);
  }
 
-/*
-static GList * get_selection(GList *list, H3270 *hSession, int all)
-{
-	lib3270_selection * selection = lib3270_get_selection(hSession,0,all);
+ void v3270_print_operation_set_terminal(GtkPrintOperation * operation, GtkWidget *widget)
+ {
+ 	g_return_if_fail(GTK_IS_V3270_PRINT_OPERATION(operation) && GTK_IS_V3270(widget));
 
-	if(selection)
+ 	V3270PrintOperation	* opr = GTK_V3270_PRINT_OPERATION(operation);
+
+ 	if(opr->widget)
 	{
-		size_t sz = sizeof(lib3270_selection) + (sizeof(lib3270_selection_element) * ((selection->bounds.width * selection->bounds.height)+1));
-
-		debug(
-			"width=%u height=%u length=%u (sz=%u, szHeader=%u, szElement=%u)",
-				selection->bounds.width,
-				selection->bounds.height,
-				(selection->bounds.width * selection->bounds.height),
-				sz,
-				sizeof(lib3270_selection),
-				sizeof(lib3270_selection_element)
-		);
-
-		gpointer data = g_malloc0(sz);
-		memcpy(data,selection,sz);
-
-		lib3270_free(selection);
-
-		return g_list_append(list,data);
+		g_object_unref(G_OBJECT(opr->widget));
+		opr->widget		= NULL;
+		opr->session	= NULL;
 	}
 
-	g_warning("Error getting selection");
-	return NULL;
-}
-*/
+	if(widget && GTK_IS_V3270(widget))
+	{
+		opr->widget		= GTK_V3270(widget);
+		opr->session	= v3270_get_session(widget);
+		g_object_ref(G_OBJECT(opr->widget));
+	}
 
-GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
-{
+ }
+
+ GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
+ {
 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
 	H3270 *hSession = v3270_get_session(widget);
@@ -266,9 +262,10 @@ GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 	V3270PrintOperation	* operation	= GTK_V3270_PRINT_OPERATION(g_object_new(GTK_TYPE_V3270_PRINT_OPERATION, NULL));
 
 	operation->mode			= mode;
-	operation->widget		= GTK_V3270(widget);
-	operation->session		= hSession;
+	operation->widget		= NULL;
+	operation->session		= NULL;
 
+	v3270_print_operation_set_terminal(GTK_PRINT_OPERATION(operation),GTK_WIDGET(widget));
 	v3270_set_mono_color_table(operation->settings.colors,"#000000","#FFFFFF");
 
 	// Get contents.
@@ -308,7 +305,7 @@ GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT
 	}
 
 	return GTK_PRINT_OPERATION(operation);
-}
+ }
 
 gboolean v3270_print_operation_set_font_family(GtkPrintOperation *operation, const gchar *fontname)
 {

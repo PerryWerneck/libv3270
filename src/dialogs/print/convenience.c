@@ -39,7 +39,7 @@
 
  int v3270_print_dialog(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, GError **error)
  {
- 	int rc;
+ 	int rc = 0;
 
  	if(!(widget && GTK_IS_V3270(widget)))
 		return errno = EINVAL;
@@ -69,7 +69,17 @@
 				error
 			);
 
-		rc = (*error == NULL ? 0 : -1);
+		if(*error)
+		{
+			rc = (*error)->code ? (*error)->code : -1;
+			g_warning("Print operation has failed with errror\"%s\" (rc=%d)",(*error)->message,rc);
+
+		}
+		else
+		{
+			rc = 0;
+		}
+
 
 	}
 	else
@@ -102,31 +112,27 @@
 	switch(result)
 	{
 	case GTK_PRINT_OPERATION_RESULT_ERROR:
-		debug("%s: Error on print operation",__FUNCTION__);
-		lib3270_trace_event(v3270_get_session(widget),"%s\n",_("Error on print operation"));
-		rc = -1;
+		debug("%s: Error on print operation\n",__FUNCTION__);
+		g_warning("Error on print operation");
+		if(!rc)
+			rc = -1;
 		break;
 
 	case GTK_PRINT_OPERATION_RESULT_APPLY:
 		debug("%s: The print settings should be stored.",__FUNCTION__);
-		lib3270_trace_event(v3270_get_session(widget),"%s\n",_("The print settings should be stored."));
 		rc = 0;
 		break;
 
 	case GTK_PRINT_OPERATION_RESULT_CANCEL:
 		debug("%s: The print operation has been canceled, the print settings should not be stored.", __FUNCTION__);
-		lib3270_trace_event(v3270_get_session(widget),"%s\n",_("The print operation has been canceled, the print settings should not be stored."));
-		rc = 0;
 		break;
 
 	case GTK_PRINT_OPERATION_RESULT_IN_PROGRESS:
 		debug("%s: The print operation is running",__FUNCTION__);
-		lib3270_trace_event(v3270_get_session(widget),"%s\n",_("The print operation is running"));
-		rc = 0;
 		break;
 
 	default:
-		g_message("Unexpected status %d in print operation",(int) result);
+		g_warning("Unexpected status %d in print operation",(int) result);
 
 	}
 
