@@ -38,14 +38,14 @@
 /*--[ Tools ]----------------------------------------------------------------------------------------*/
 
  /// @brief Reads the terminal settings from the group group_name in key_file.
- LIB3270_EXPORT gboolean v3270_load_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name, GError **error);
+ LIB3270_EXPORT gboolean v3270_load_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name);
 
  /// @brief This function adds the terminal settings from widget to key_file.
  LIB3270_EXPORT void v3270_to_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name);
 
 #ifdef _WIN32
 
- LIB3270_EXPORT gboolean v3270_load_registry(GtkWidget *widget, HKEY *key, const gchar *group_name, GError **error);
+ LIB3270_EXPORT gboolean v3270_load_registry(GtkWidget *widget, HKEY *key, const gchar *group_name);
 
  LIB3270_EXPORT void v3270_to_registry(GtkWidget *widget, HKEY *key, const gchar *group_name);
 

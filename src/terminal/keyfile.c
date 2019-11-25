@@ -51,7 +51,9 @@
 		{
 			const gchar * current = g_value_get_string(&value);
 
-			if(current && G_PARAM_SPEC_STRING(pspec)->default_value && strcmp(current,G_PARAM_SPEC_STRING(pspec)->default_value))
+			debug("%s=%s (default: %s)",name,current,G_PARAM_SPEC_STRING(pspec)->default_value);
+
+			if(current && strcmp(current,G_PARAM_SPEC_STRING(pspec)->default_value ? G_PARAM_SPEC_STRING(pspec)->default_value : ""))
 			{
 				g_key_file_set_string(
 					key_file,
@@ -156,6 +158,53 @@
 
 	g_value_unset(&value);
 
+ }
+
+ static void load_by_pspec(GtkWidget *widget, GParamSpec *pspec, GKeyFile *key_file, const gchar *group_name)
+ {
+ 	const gchar * name = g_param_spec_get_name(pspec);
+ 	GError		* error = NULL;
+
+	if(!g_key_file_has_key(key_file,group_name,name,&error))
+	{
+		if(error)
+		{
+			g_message("%s::%s: %s",group_name,name,error->message);
+			g_error_free(error);
+		}
+		return;
+	}
+
+	GValue value = G_VALUE_INIT;
+	g_value_init(&value, pspec->value_type);
+
+	switch(pspec->value_type)
+	{
+	case G_TYPE_STRING:
+		g_value_set_string(&value, g_key_file_get_string(key_file,group_name,name,NULL));
+		break;
+
+	case G_TYPE_BOOLEAN:
+		g_value_set_boolean(&value, g_key_file_get_boolean(key_file,group_name,name,NULL));
+		break;
+
+	case G_TYPE_INT:
+		g_value_set_int(&value, g_key_file_get_integer(key_file,group_name,name,NULL));
+		break;
+
+	case G_TYPE_UINT:
+		g_value_set_uint(&value, (guint) g_key_file_get_integer(key_file,group_name,name,NULL));
+		break;
+
+	default:
+		lib3270_write_trace(v3270_get_session(widget),"%s has an unexpected value type\n",name);
+		g_value_unset(&value);
+		return;
+
+	}
+
+	g_object_set_property(G_OBJECT(widget),name,&value);
+	g_value_unset(&value);
 
  }
 
@@ -203,10 +252,33 @@
  }
 
  /// @brief This function adds the terminal settings from widget to key_file.
- LIB3270_EXPORT gboolean v3270_load_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name, GError **error)
+ LIB3270_EXPORT gboolean v3270_load_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name)
  {
 	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
 
+	size_t		  ix;
 
-	return FALSE;
+	v3270 		* terminal	= GTK_V3270(widget);
+	v3270Class	* klass		= GTK_V3270_GET_CLASS(widget);
+
+	g_object_freeze_notify(G_OBJECT(widget));
+
+	// Load Toggles
+	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
+		load_by_pspec(widget,klass->properties.toggle[ix],key_file,group_name);
+
+	// Load V3270 Responses
+	for(ix = 0; ix < G_N_ELEMENTS(terminal->responses); ix++)
+		load_by_pspec(widget,klass->responses[ix],key_file,group_name);
+
+	// Load V3270 properties
+	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
+		load_by_pspec(widget,klass->properties.settings[ix],key_file,group_name);
+
+	// Load V3270 colors
+	v3270_set_colors(widget,g_key_file_get_string(key_file,group_name,"colors",NULL));
+
+	g_object_thaw_notify(G_OBJECT(widget));
+
+	return TRUE;
  }

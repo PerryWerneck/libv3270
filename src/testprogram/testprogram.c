@@ -65,14 +65,22 @@
  }
  */
 
+ static GKeyFile * get_key_file()
+ {
+	GKeyFile * key_file = g_key_file_new();
+	g_key_file_load_from_file(key_file,"terminal.conf",G_KEY_FILE_KEEP_COMMENTS,NULL);
+	return key_file;
+ }
+
  static void save_settings(GtkWidget *terminal, GtkWidget *window)
  {
  	debug("%s: Saving settings for windows %p",__FUNCTION__,window);
 
-	GKeyFile * key_file = g_key_file_new();
+ 	GKeyFile * key_file = get_key_file();
 	v3270_to_key_file(terminal,key_file,"terminal");
 	g_key_file_save_to_file(key_file,"terminal.conf",NULL);
 	g_key_file_free(key_file);
+
  }
 
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
@@ -98,6 +106,12 @@
 #ifdef _WIN32
 		v3270_set_font_family(terminal,"Lucida Console");
 #endif // _WIN32
+
+		// Load settings before connecting the signals.
+		debug("%s: Loading settings...",__FUNCTION__);
+		GKeyFile * key_file = get_key_file();
+		v3270_load_key_file(terminal,key_file,"terminal");
+		g_key_file_free(key_file);
 
 	}
 
