@@ -41,11 +41,15 @@
  		const char	*name;
  		GParamSpec	**prop;
  	} properties[] = {
- 		{ "connected",			&klass->properties.online								},
- 		{ "associated-lu",		&klass->properties.associated_lu						},
- 		{ "url",				&klass->properties.settings[V3270_SETTING_URL]			},
- 		{ "model-number",		&klass->properties.settings[V3270_SETTING_MODEL_NUMBER]	},
- 		{ "has-selection",		&klass->properties.selection							},
+ 		{ "connected",			&klass->properties.online									},
+ 		{ "associated-lu",		&klass->properties.associated_lu							},
+ 		{ "url",				&klass->properties.settings[V3270_SETTING_URL]				},
+ 		{ "model-number",		&klass->properties.settings[V3270_SETTING_MODEL_NUMBER]		},
+ 		{ "has-selection",		&klass->properties.selection								},
+ 		{ "oversize",			&klass->properties.settings[V3270_SETTING_OVERSIZE]			},
+ 		{ "host-charset",		&klass->properties.settings[V3270_SETTING_HOST_CHARSET]		},
+ 		{ "unlock-delay",		&klass->properties.settings[V3270_SETTING_UNLOCK_DELAY]		},
+
  	};
 
  	size_t ix;

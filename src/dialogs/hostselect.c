@@ -38,6 +38,7 @@
  #include <v3270/settings.h>
  #include <lib3270/log.h>
  #include <lib3270/toggle.h>
+ #include <lib3270/properties.h>
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
@@ -699,6 +700,9 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 			v3270_set_toggle(terminal, toggleList[toggle].id, gtk_toggle_button_get_active(widget->input.toggles[toggle]));
 	}
 
+	// Apply oversize
+	lib3270_set_oversize(hSession,gtk_entry_get_text(widget->input.entry[ENTRY_OVERSIZE]));
+
 }
 
 static void load(GtkWidget *w, GtkWidget *terminal)
@@ -826,6 +830,10 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 		if(widget->input.toggles[toggle])
 			gtk_toggle_button_set_active(widget->input.toggles[toggle],v3270_get_toggle(terminal,toggleList[toggle].id));
 	}
+
+	// Load oversize
+	const char * oversize = lib3270_get_oversize(hSession);
+	gtk_entry_set_text(widget->input.entry[ENTRY_OVERSIZE],oversize ? oversize : "");
 
 }
 
