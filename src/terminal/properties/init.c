@@ -49,7 +49,8 @@
  		{ "oversize",			&klass->properties.settings[V3270_SETTING_OVERSIZE]			},
  		{ "host-charset",		&klass->properties.settings[V3270_SETTING_HOST_CHARSET]		},
  		{ "unlock-delay",		&klass->properties.settings[V3270_SETTING_UNLOCK_DELAY]		},
-
+ 		{ "color-type",			&klass->properties.settings[V3270_SETTING_COLOR_TYPE]		},
+ 		{ "host-type",			&klass->properties.settings[V3270_SETTING_HOST_TYPE]		},
  	};
 
  	size_t ix;
