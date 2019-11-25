@@ -142,7 +142,16 @@
 
 		// Load settings before connecting the signals.
 #ifdef _WIN32
+		{
+ 			HKEY hKey = 0;
 
+			if(!get_registry(&hKey,KEY_SET_VALUE))
+			{
+				v3270_load_registry(terminal,hKey,"terminal");
+				RegCloseKey(hKey);
+			}
+
+		}
 #else
 		debug("%s: Loading settings...",__FUNCTION__);
 		GKeyFile * key_file = get_key_file();
