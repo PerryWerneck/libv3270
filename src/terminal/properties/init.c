@@ -322,7 +322,7 @@
 					str_props[ix].name,
 					str_props[ix].name,
 					str_props[ix].description,
-					FALSE,
+					str_props[ix].default_value,
 					(str_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 		);
 
