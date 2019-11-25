@@ -61,7 +61,7 @@
 	V3270_PROPERTY_DYNAMIC			= 10	///< @brief Id of the first LIB3270 internal property.
  };
 
- G_GNUC_INTERNAL void v3270_get_property(GObject *object,guint prop_id, GValue *value, GParamSpec *pspec);
+ G_GNUC_INTERNAL void v3270_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
  G_GNUC_INTERNAL void v3270_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
 
 

@@ -41,11 +41,11 @@
  		const char	*name;
  		GParamSpec	**prop;
  	} properties[] = {
- 		{ "connected",			&klass->properties.online			},
- 		{ "associated-lu",		&klass->properties.associated_lu	},
- 		{ "url",				&klass->properties.url				},
- 		{ "model-number",		&klass->properties.model			},
- 		{ "has-selection",		&klass->properties.selection		},
+ 		{ "connected",			&klass->properties.online								},
+ 		{ "associated-lu",		&klass->properties.associated_lu						},
+ 		{ "url",				&klass->properties.settings[V3270_SETTING_URL]			},
+ 		{ "model-number",		&klass->properties.settings[V3270_SETTING_MODEL_NUMBER]	},
+ 		{ "has-selection",		&klass->properties.selection							},
  	};
 
  	size_t ix;
@@ -77,18 +77,19 @@
 	// Setup internal properties.
 
 	// Font family
-	klass->properties.font_family = g_param_spec_string(
-							"font_family",
-							"font_family",
-							_("Font family for terminal contents"),
-							v3270_get_default_font_name(),
-							G_PARAM_READABLE|G_PARAM_WRITABLE
-						);
+	klass->properties.settings[V3270_SETTING_FONT_FAMILY] =
+		g_param_spec_string(
+			"font_family",
+			"font_family",
+			_("Font family for terminal contents"),
+			v3270_get_default_font_name(),
+			G_PARAM_READABLE|G_PARAM_WRITABLE
+		);
 
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_FONT_FAMILY,
-		klass->properties.font_family
+		klass->properties.settings[V3270_SETTING_FONT_FAMILY]
 	);
 
 	// Session name.
@@ -107,20 +108,21 @@
 	);
 
 	// Auto disconnect
-	klass->properties.auto_disconnect = g_param_spec_uint(
-							"auto_disconnect",
-							"auto_disconnect",
-							_("IDLE minutes for automatic disconnection"),
-							0,
-							G_MAXUINT,
-							0,
-							G_PARAM_READABLE|G_PARAM_WRITABLE
-						);
+	klass->properties.settings[V3270_SETTING_AUTO_DISCONNECT] =
+		g_param_spec_uint(
+			"auto_disconnect",
+			"auto_disconnect",
+			_("IDLE minutes for automatic disconnection"),
+			0,
+			G_MAXUINT,
+			0,
+			G_PARAM_READABLE|G_PARAM_WRITABLE
+		);
 
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_AUTO_DISCONNECT,
-		klass->properties.auto_disconnect
+		klass->properties.settings[V3270_SETTING_AUTO_DISCONNECT]
 	);
 
 	// Clipboard
@@ -139,47 +141,51 @@
 	);
 
 	// Remap file
-	klass->properties.remap_file = g_param_spec_string(
-							"remap_file",
-							"remap_file",
-							_("XML file with remap table"),
-							FALSE,
-							G_PARAM_READABLE|G_PARAM_WRITABLE
-						);
+	klass->properties.settings[V3270_SETTING_REMAP_FILE] =
+		g_param_spec_string(
+			"remap_file",
+			"remap_file",
+			_("XML file with remap table"),
+			FALSE,
+			G_PARAM_READABLE|G_PARAM_WRITABLE
+		);
 
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_REMAP_FILE,
-		klass->properties.remap_file
+		klass->properties.settings[V3270_SETTING_REMAP_FILE]
 	);
 
 	// Dynamic font spacing
-	klass->properties.dynamic_spacing = g_param_spec_boolean(
-				"dynamic_font_spacing",
-				"dynamic_font_spacing",
-				_( "State of the dynamic font spacing" ),
-				FALSE,
-				G_PARAM_READABLE|G_PARAM_WRITABLE);
+	klass->properties.settings[V3270_SETTING_DYNAMIC_SPACING] =
+		g_param_spec_boolean(
+			"dynamic_font_spacing",
+			"dynamic_font_spacing",
+			_( "State of the dynamic font spacing" ),
+			FALSE,
+			G_PARAM_READABLE|G_PARAM_WRITABLE
+		);
 
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_DYNAMIC_SPACING,
-		klass->properties.dynamic_spacing
+		klass->properties.settings[V3270_SETTING_DYNAMIC_SPACING]
 	);
 
 	// Lu names
-	klass->properties.lu_names = g_param_spec_string(
-							"lu_names",
-							"lu_names",
-							_("Comma separated list of LU names"),
-							FALSE,
-							G_PARAM_READABLE|G_PARAM_WRITABLE
-						);
+	klass->properties.settings[V3270_SETTING_LU_NAMES] =
+		g_param_spec_string(
+			"lu_names",
+			"lu_names",
+			_("Comma separated list of LU names"),
+			NULL,
+			G_PARAM_READABLE|G_PARAM_WRITABLE
+		);
 
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_LU_NAMES,
-		klass->properties.lu_names
+		klass->properties.settings[V3270_SETTING_LU_NAMES]
 	);
 
 	// Trace

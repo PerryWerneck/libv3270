@@ -105,7 +105,7 @@ static void update_luname(H3270 *session, const char G_GNUC_UNUSED(*name))
 static gboolean	v3270_update_url(v3270 *terminal)
 {
 	debug("url=%s",v3270_get_url(GTK_WIDGET(terminal)));
-	g_object_notify_by_pspec(G_OBJECT(terminal), GTK_V3270_GET_CLASS(terminal)->properties.url);
+	v3270_notify_setting(GTK_WIDGET(terminal),V3270_SETTING_URL);
 	return FALSE;
 }
 

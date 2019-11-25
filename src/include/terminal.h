@@ -32,6 +32,22 @@
 
 G_BEGIN_DECLS
 
+ /// @brief V3270 Properties saved to the configuration file.
+ typedef enum
+ {
+	V3270_SETTING_URL,
+	V3270_SETTING_FONT_FAMILY,
+	V3270_SETTING_AUTO_DISCONNECT,
+	V3270_SETTING_REMAP_FILE,
+	V3270_SETTING_DYNAMIC_SPACING,
+	V3270_SETTING_LU_NAMES,
+	V3270_SETTING_MODEL_NUMBER,
+
+ 	V3270_SETTING_COUNT					///< @brief Number of setting properties.
+ } V3270_SETTING;
+
+ G_GNUC_INTERNAL void v3270_notify_setting(GtkWidget *widget, V3270_SETTING id);
+
  struct _v3270Class
  {
 	GtkWidgetClass parent_class;
@@ -41,20 +57,17 @@ G_BEGIN_DECLS
 
 		size_t		  count;							// Number of properties.
 
-		GParamSpec * font_family;
 		GParamSpec * toggle[LIB3270_TOGGLE_COUNT];		// Toggle properties.
+
+		// Properties saved to the configuration file.
+		GParamSpec * settings[V3270_SETTING_COUNT];
 
 		// Signal related properties
 		GParamSpec * online;
-		GParamSpec * url;
 		GParamSpec * associated_lu;
 		GParamSpec * model;
 		GParamSpec * selection;
 		GParamSpec * session_name;
-		GParamSpec * auto_disconnect;
-		GParamSpec * remap_file;
-		GParamSpec * dynamic_spacing;
-		GParamSpec * lu_names;
 		GParamSpec * trace;
 
 		struct

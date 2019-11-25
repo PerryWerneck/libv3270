@@ -179,13 +179,8 @@
 		save_by_pspec(widget,klass->responses[ix],key_file,group_name);
 
 	// Save V3270 properties
-	save_by_pspec(widget,klass->properties.font_family,key_file,group_name);
-	save_by_pspec(widget,klass->properties.url,key_file,group_name);
-	save_by_pspec(widget,klass->properties.session_name,key_file,group_name);
-	save_by_pspec(widget,klass->properties.auto_disconnect,key_file,group_name);
-	save_by_pspec(widget,klass->properties.remap_file,key_file,group_name);
-	save_by_pspec(widget,klass->properties.dynamic_spacing,key_file,group_name);
-	save_by_pspec(widget,klass->properties.lu_names,key_file,group_name);
+	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
+		save_by_pspec(widget,klass->properties.settings[ix],key_file,group_name);
 
 	// Save V3270 colors
 	str = g_string_new("");

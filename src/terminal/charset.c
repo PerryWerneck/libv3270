@@ -337,8 +337,8 @@
 	g_free(cfg.host);
 	g_free(cfg.display);
 
-	debug("%s=%p",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.remap_file);
-	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.remap_file);
+	debug("%s=%p",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_REMAP_FILE]);
+	v3270_notify_setting(widget,V3270_SETTING_REMAP_FILE);
 
  }
 
