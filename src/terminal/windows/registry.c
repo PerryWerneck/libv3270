@@ -32,6 +32,7 @@
  #include <terminal.h>
  #include <internals.h>
  #include <v3270/settings.h>
+ #include <lib3270/log.h>
  #include <lib3270/toggle.h>
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
@@ -60,7 +61,7 @@
 			}
 			else
 			{
-				RegDeleteKey(hKey,name);
+				RegDeleteValue(hKey,name);
 			}
 		}
 		break;
@@ -76,7 +77,7 @@
 			}
 			else
 			{
-				RegDeleteKey(hKey,name);
+				RegDeleteValue(hKey,name);
 			}
 		}
 		break;
@@ -92,7 +93,7 @@
 			}
 			else
 			{
-				RegDeleteKey(hKey,name);
+				RegDeleteValue(hKey,name);
 			}
 
 		}
@@ -109,7 +110,7 @@
 			}
 			else
 			{
-				RegDeleteKey(hKey,name);
+				RegDeleteValue(hKey,name);
 			}
 
 		}

@@ -65,6 +65,35 @@
  }
  */
 
+#ifdef _WIN32
+
+ static int get_registry(HKEY *hKey,REGSAM samDesired)
+ {
+ 	DWORD	disp;
+
+	if(RegCreateKeyEx(HKEY_CURRENT_USER,"software\\v3270",0,NULL,REG_OPTION_NON_VOLATILE,samDesired,NULL,hKey,&disp) != ERROR_SUCCESS)
+	{
+		g_warning("Can't open registry");
+		return -1;
+	}
+
+	return 0;
+
+ }
+
+ static void save_settings(GtkWidget *terminal, GtkWidget *window)
+ {
+ 	HKEY hKey = 0;
+
+	if(get_registry(&hKey,KEY_SET_VALUE))
+		return;
+
+	v3270_to_registry(terminal,hKey,"terminal");
+	RegCloseKey(hKey);
+ }
+
+#else
+
  static GKeyFile * get_key_file()
  {
 	GKeyFile * key_file = g_key_file_new();
@@ -81,7 +110,11 @@
 	g_key_file_save_to_file(key_file,"terminal.conf",NULL);
 	g_key_file_free(key_file);
 
+
  }
+
+#endif // _WIN32	
+
 
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
@@ -108,10 +141,14 @@
 #endif // _WIN32
 
 		// Load settings before connecting the signals.
+#ifdef _WIN32
+
+#else
 		debug("%s: Loading settings...",__FUNCTION__);
 		GKeyFile * key_file = get_key_file();
 		v3270_load_key_file(terminal,key_file,"terminal");
 		g_key_file_free(key_file);
+#endif // _WIN32
 
 	}
 
