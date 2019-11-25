@@ -128,21 +128,39 @@
  {
  	const gchar * name = g_param_spec_get_name(pspec);
 
+	BYTE data[4097];
+	unsigned long datatype;
+	unsigned long datalen 	= 4096;
+
+	memset(data,0,sizeof(data));
+
+	if(RegQueryValueExA(hKey,name,NULL,&datatype,data,&datalen) != ERROR_SUCCESS)
+		return;
+
 	GValue value = G_VALUE_INIT;
 	g_value_init(&value, pspec->value_type);
+	g_object_get_property(G_OBJECT(widget),name,&value);
 
 	switch(pspec->value_type)
 	{
 	case G_TYPE_STRING:
+		if(datatype == REG_SZ)
+			g_value_set_string(&value, (const gchar *) data);
 		break;
 
 	case G_TYPE_BOOLEAN:
+		if(datatype == REG_DWORD)
+			g_value_set_boolean(&value,  * ((DWORD *) data) == 0 ? FALSE : TRUE);
 		break;
 
 	case G_TYPE_INT:
+		if(datatype == REG_DWORD)
+			g_value_set_int(&value, (gint) * ((DWORD *) data));
 		break;
 
 	case G_TYPE_UINT:
+		if(datatype == REG_DWORD)
+			g_value_set_uint(&value, (guint) * ((DWORD *) data));
 		break;
 
 	default:
@@ -158,7 +176,7 @@
  }
 
  /// @brief Reads the terminal settings from the group group_name in registry.
- LIB3270_EXPORT void v3270_to_registry(GtkWidget *widget, HKEY *hParent, const gchar *group_name)
+ LIB3270_EXPORT void v3270_to_registry(GtkWidget *widget, HKEY hParent, const gchar *group_name)
  {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
@@ -209,7 +227,7 @@
  }
 
  /// @brief This function adds the terminal settings from widget to windows registry.
- LIB3270_EXPORT gboolean v3270_load_registry(GtkWidget *widget, HKEY *hParent, const gchar *group_name)
+ LIB3270_EXPORT gboolean v3270_load_registry(GtkWidget *widget, HKEY hParent, const gchar *group_name)
  {
 	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
 

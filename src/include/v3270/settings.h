@@ -49,9 +49,9 @@
 
 #ifdef _WIN32
 
- LIB3270_EXPORT gboolean v3270_load_registry(GtkWidget *widget, HKEY *hKey, const gchar *group_name);
+ LIB3270_EXPORT gboolean v3270_load_registry(GtkWidget *widget, HKEY hKey, const gchar *group_name);
 
- LIB3270_EXPORT void v3270_to_registry(GtkWidget *widget, HKEY *hKey, const gchar *group_name);
+ LIB3270_EXPORT void v3270_to_registry(GtkWidget *widget, HKEY hKey, const gchar *group_name);
 
 #endif // _WIN32
 
