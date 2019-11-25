@@ -53,17 +53,17 @@
  {
  	{
  		.left = 2,
- 		.top = 2,
+ 		.top = 3,
  		.id = LIB3270_TOGGLE_CONNECT_ON_STARTUP,
  	},
  	{
  		.left = 3,
- 		.top = 2,
+ 		.top = 3,
 		.id = LIB3270_TOGGLE_RECONNECT,
  	},
  	{
  		.left = 4,
- 		.top = 2,
+ 		.top = 3,
 		.id = LIB3270_TOGGLE_KEEP_ALIVE,
  	}
 
@@ -249,7 +249,6 @@
 		.width_chars = 50,
  	},
 
-
  };
 
  struct _V3270HostSelectWidget
@@ -263,6 +262,7 @@
 		GtkComboBox			* combos[G_N_ELEMENTS(combos)];			///< @brief Combo-boxes.
 		GtkComboBox			* charset;								///< @brief Charset combo box.
 		GtkToggleButton		* toggles[G_N_ELEMENTS(toggleList)];	///< @brief Toggle checks.
+		GtkSpinButton		* auto_disconnect;						///< @brief Auto disconnect.
 
 	} input;
 
@@ -381,6 +381,21 @@ static void select_remap_file(GtkEditable *editable, G_GNUC_UNUSED GtkEntryIconP
 
 }
 
+static gboolean auto_disconnect_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
+
+	GtkAdjustment	* adjustment = gtk_spin_button_get_adjustment (spin);
+	guint			  value = (guint) gtk_adjustment_get_value(adjustment);
+
+	if(value < 1) {
+		gtk_entry_set_text(GTK_ENTRY(spin), "");
+	} else {
+		g_autofree gchar * text = g_strdup_printf ("%d", value);
+		gtk_entry_set_text(GTK_ENTRY(spin), text);
+	}
+
+	return TRUE;
+}
+
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
 	// Cell renderer
@@ -467,12 +482,29 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	}
 
+	// Auto disconnect
+	{
+		GtkWidget *label = gtk_label_new_with_mnemonic(_("Auto _disconnect"));
+
+		gtk_widget_set_halign(label,GTK_ALIGN_END);
+
+		widget->input.auto_disconnect = GTK_SPIN_BUTTON(gtk_spin_button_new_with_range(0,60,1));
+		gtk_widget_set_tooltip_markup(GTK_WIDGET(widget->input.auto_disconnect),_("IDLE minutes for automatic disconnection"));
+		gtk_label_set_mnemonic_widget(GTK_LABEL(label),GTK_WIDGET(widget->input.auto_disconnect));
+
+		gtk_spin_button_set_increments(widget->input.auto_disconnect,1,1);
+
+		gtk_grid_attach(GTK_GRID(connection),label,0,2,1,1);
+		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.auto_disconnect),1,2,1,1);
+		g_signal_connect(G_OBJECT(widget->input.auto_disconnect),"output",G_CALLBACK(auto_disconnect_format),widget);
+	}
+
 	// SSL checkbox
 	{
 		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
 		gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
 		gtk_widget_set_halign(GTK_WIDGET(widget->input.ssl),GTK_ALIGN_START);
-		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.ssl),1,2,1,1);
+		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.ssl),1,3,1,1);
 	}
 
 	// Toggle checkboxes
@@ -703,6 +735,9 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 	// Apply oversize
 	lib3270_set_oversize(hSession,gtk_entry_get_text(widget->input.entry[ENTRY_OVERSIZE]));
 
+	// Apply auto-disconnect
+	v3270_set_auto_disconnect(terminal,gtk_spin_button_get_value_as_int(widget->input.auto_disconnect));
+
 }
 
 static void load(GtkWidget *w, GtkWidget *terminal)
@@ -834,6 +869,9 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 	// Load oversize
 	const char * oversize = lib3270_get_oversize(hSession);
 	gtk_entry_set_text(widget->input.entry[ENTRY_OVERSIZE],oversize ? oversize : "");
+
+	// Load auto disconnect
+	gtk_spin_button_set_value(widget->input.auto_disconnect, v3270_get_auto_disconnect(terminal));
 
 }
 
