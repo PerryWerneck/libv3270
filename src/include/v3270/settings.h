@@ -31,6 +31,10 @@
 
  #define V3270SETTINGS_H_INCLUDED 1
 
+#ifdef _WIN32
+	#include <windows.h>
+#endif // _WIN32
+
  #include <gtk/gtk.h>
 
  G_BEGIN_DECLS

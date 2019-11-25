@@ -28,6 +28,7 @@
  */
 
  #include <clipboard.h>
+ #include <v3270/dialogs.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -172,6 +173,7 @@ static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_ato
 
 }
 
+/*
 LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
@@ -194,4 +196,51 @@ LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget)
 	);
 
 }
+*/
+
+LIB3270_EXPORT void v3270_clipboard_get_from_url(GtkWidget *widget, const gchar *url)
+{
+	g_return_if_fail(GTK_IS_V3270(widget));
+
+	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GTK_V3270(widget)->selection.target);
+
+	if(!url || !*url || g_str_has_prefix(url,"clipboard://") || g_str_has_prefix(url,"tn3270://"))
+	{
+		gtk_clipboard_request_targets(
+			clipboard,
+			(GtkClipboardTargetsReceivedFunc) targets_received,
+			(gpointer) widget
+		);
+	}
+	else if(g_str_has_prefix(url,"text://"))
+	{
+		gtk_clipboard_request_text(
+			clipboard,
+			(GtkClipboardTextReceivedFunc) text_received,
+			(gpointer) widget
+		);
+
+	}
+	else if(g_str_has_prefix(url,"file://"))
+	{
+		GtkWidget * dialog = v3270_load_dialog_new(widget, url+7);
+		gtk_widget_show_all(dialog);
+		v3270_load_dialog_run(dialog);
+		gtk_widget_destroy(dialog);
+	}
+
+}
+
+
+LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
+{
+	v3270_clipboard_get_from_url(widget,NULL);
+}
+
+LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget)
+{
+	v3270_clipboard_get_from_url(widget,"text://");
+}
+
+
 
