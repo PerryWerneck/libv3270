@@ -133,11 +133,12 @@ G_BEGIN_DECLS
 	GtkWidget parent;
 
 	// flags
-	int selecting		: 1;	/**< Selecting region */
-	int moving			: 1;	/**< Moving selected region */
-	int resizing		: 1;	/**< Resizing selected region */
-	int scaled_fonts	: 1;	/**< Use scaled fonts */
-	int drawing			: 1;	/**< Draw widget? */
+	int selecting		: 1;	/// @brief Selecting region
+	int moving			: 1;	/// @brief Moving selected region
+	int resizing		: 1;	/// @brief Resizing selected region
+	int scaled_fonts	: 1;	/// @brief Use scaled fonts
+	int drawing			: 1;	/// @brief Draw widget?
+	int freeze			: 1;	/// @brief Truee when the "save settings" signal is disabled.
 
     /// @brief Action properties.
    	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];

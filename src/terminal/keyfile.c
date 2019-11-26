@@ -57,7 +57,7 @@
 		{
 			const gchar * current = g_value_get_string(&value);
 
-			debug("%s=%s (default: %s)",name,current,G_PARAM_SPEC_STRING(pspec)->default_value);
+//			debug("%s=%s (default: %s)",name,current,G_PARAM_SPEC_STRING(pspec)->default_value);
 
 			if(current && strcmp(current,G_PARAM_SPEC_STRING(pspec)->default_value ? G_PARAM_SPEC_STRING(pspec)->default_value : ""))
 			{
@@ -84,7 +84,7 @@
 		{
 			gboolean current = g_value_get_boolean(&value);
 
-			debug("%s=%s (default: %s)",name,current ? "ON" : "OFF" ,G_PARAM_SPEC_BOOLEAN(pspec)->default_value ? "ON" : "OFF");
+//			debug("%s=%s (default: %s)",name,current ? "ON" : "OFF" ,G_PARAM_SPEC_BOOLEAN(pspec)->default_value ? "ON" : "OFF");
 
 			if(current != G_PARAM_SPEC_BOOLEAN(pspec)->default_value)
 			{

@@ -37,7 +37,7 @@
 	v3270		* window	= GTK_V3270(object);
  	v3270Class	* klass		= GTK_V3270_GET_CLASS(object);
 
- 	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
+// 	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
 
  	if(prop_id >= klass->properties.type.responses)
 	{
@@ -46,7 +46,7 @@
  	else if(prop_id >= klass->properties.type.str)
 	{
 		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - klass->properties.type.str));
-		debug("%s.%s.%s",__FUNCTION__,"string",prop->name);
+//		debug("%s.%s.%s",__FUNCTION__,"string",prop->name);
 
 		if(prop->get)
 			g_value_set_string(value,prop->get(window->host));
@@ -55,7 +55,7 @@
 	else if(prop_id >= klass->properties.type.uint)
 	{
 		const LIB3270_UINT_PROPERTY * prop = (lib3270_get_unsigned_properties_list()+(prop_id - klass->properties.type.uint));
-		debug("%s.%s.%s",__FUNCTION__,"unsigned",prop->name);
+//		debug("%s.%s.%s",__FUNCTION__,"unsigned",prop->name);
 
 		if(prop->get)
 			g_value_set_uint(value,prop->get(window->host));
@@ -64,7 +64,7 @@
 	else if(prop_id >= klass->properties.type.integer)
 	{
 		const LIB3270_INT_PROPERTY * prop = (lib3270_get_int_properties_list()+(prop_id - klass->properties.type.integer));
-		debug("%s.%s.%s",__FUNCTION__,"integer",prop->name);
+//		debug("%s.%s.%s",__FUNCTION__,"integer",prop->name);
 
 		if(prop->get)
 			g_value_set_int(value,prop->get(window->host));
@@ -73,7 +73,7 @@
 	else if(prop_id >= klass->properties.type.boolean)
 	{
 		const LIB3270_INT_PROPERTY * prop = (lib3270_get_boolean_properties_list()+(prop_id - klass->properties.type.boolean));
-		debug("%s.%s.%s",__FUNCTION__,"boolean",prop->name);
+//		debug("%s.%s.%s",__FUNCTION__,"boolean",prop->name);
 
 		if(prop->get)
 			g_value_set_boolean(value,prop->get(window->host) != 0 ? TRUE : FALSE);

@@ -30,6 +30,7 @@
  #include "../private.h"
  #include <internals.h>
  #include <v3270/settings.h>
+ #include <terminal.h>
  #include <lib3270/log.h>
 
  G_DEFINE_TYPE(V3270SettingsDialog, V3270SettingsDialog, GTK_TYPE_DIALOG);
@@ -123,6 +124,14 @@ static void revert_settings(GtkWidget *widget, GtkWidget G_GNUC_UNUSED(* termina
 		v3270_settings_revert(widget);
 }
 
+static gboolean bg_emit_save_settings(GObject *widget)
+{
+	debug("Unfreezing and emitting save settings for terminal %p",widget);
+	GTK_V3270(widget)->freeze = 0;
+	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
+ 	return FALSE;
+}
+
 void v3270_settings_dialog_apply(GtkWidget *dialog)
 {
 	debug("%s",__FUNCTION__);
@@ -131,13 +140,17 @@ void v3270_settings_dialog_apply(GtkWidget *dialog)
 	if(!terminal)
 		return;
 
+	// Freeze to avoid multiple "save settings" signals.
+	GTK_V3270(terminal)->freeze = 1;
+
 	gtk_container_foreach(
 		GTK_CONTAINER(GTK_V3270_SETTINGS_DIALOG(dialog)->tabs),
 		(GtkCallback) apply_settings,
 		terminal
 	);
 
-	v3270_emit_save_settings(terminal);
+	// Delay the "unfreeze" signal.
+	g_idle_add((GSourceFunc) bg_emit_save_settings, G_OBJECT(terminal));
 
 }
 
