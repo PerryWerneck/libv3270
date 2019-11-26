@@ -765,7 +765,9 @@ LIB3270_EXPORT GtkIMContext * v3270_get_im_context(GtkWidget *widget)
 
 static gboolean bg_emit_save_settings(GObject *widget)
 {
+	GTK_V3270(widget)->freeze = 0;
 	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
+	g_object_unref(widget);
  	return FALSE;
 }
 
@@ -773,6 +775,10 @@ void v3270_emit_save_settings(GtkWidget *widget)
 {
 	debug("%s(Freeze is %s)",__FUNCTION__,GTK_V3270(widget)->freeze ? "ON" : "OFF");
 	if(widget && GTK_IS_V3270(widget) && !GTK_V3270(widget)->freeze)
+	{
+		g_object_ref(widget);
+		GTK_V3270(widget)->freeze = 1;
 		g_idle_add((GSourceFunc) bg_emit_save_settings, G_OBJECT(widget));
+	}
 }
 
