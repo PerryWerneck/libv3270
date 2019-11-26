@@ -39,6 +39,12 @@
 
  static void save_by_pspec(GtkWidget *widget, GParamSpec *pspec, GKeyFile *key_file, const gchar *group_name)
  {
+ 	if(!pspec)
+	{
+		g_warning("Invalid property");
+		return;
+	}
+
  	const gchar * name = g_param_spec_get_name(pspec);
 	GValue value = G_VALUE_INIT;
 
@@ -162,6 +168,12 @@
 
  static void load_by_pspec(GtkWidget *widget, GParamSpec *pspec, GKeyFile *key_file, const gchar *group_name)
  {
+ 	if(!pspec)
+	{
+		g_warning("Invalid property");
+		return;
+	}
+
  	const gchar * name = g_param_spec_get_name(pspec);
  	GError		* error = NULL;
 
@@ -214,8 +226,6 @@
 	g_return_if_fail(GTK_IS_V3270(widget));
 
 	size_t		  ix;
-	GString		* str;
-
 	v3270 		* terminal	= GTK_V3270(widget);
 	v3270Class	* klass		= GTK_V3270_GET_CLASS(widget);
 
@@ -230,24 +240,6 @@
 	// Save V3270 properties
 	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
 		save_by_pspec(widget,klass->properties.settings[ix],key_file,group_name);
-
-	// Save V3270 colors
-	str = g_string_new("");
-	for(ix=0; ix<V3270_COLOR_COUNT; ix++)
-	{
-		if(ix)
-			g_string_append_c(str,';');
-		g_string_append_printf(str,"%s",gdk_rgba_to_string(v3270_get_color(widget,ix)));
-	}
-
-	g_key_file_set_string(
-		key_file,
-		group_name,
-		"colors",
-		str->str
-	);
-
-	g_string_free(str,TRUE);
 
  }
 
@@ -274,9 +266,6 @@
 	// Load V3270 properties
 	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
 		load_by_pspec(widget,klass->properties.settings[ix],key_file,group_name);
-
-	// Load V3270 colors
-	v3270_set_colors(widget,g_key_file_get_string(key_file,group_name,"colors",NULL));
 
 	g_object_thaw_notify(G_OBJECT(widget));
 

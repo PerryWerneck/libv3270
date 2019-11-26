@@ -135,6 +135,10 @@
 			v3270_set_trace(GTK_WIDGET(object), g_value_get_boolean(value));
 			break;
 
+		case V3270_PROPERTY_TERMINAL_COLORS:
+			v3270_set_colors(GTK_WIDGET(object),g_value_get_string(value));
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 

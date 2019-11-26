@@ -121,6 +121,22 @@
 			g_value_set_boolean(value,v3270_get_trace(GTK_WIDGET(object)));
 			break;
 
+		case V3270_PROPERTY_TERMINAL_COLORS:
+			{
+				size_t ix;
+				GString * str = g_string_new("");
+				for(ix=0; ix<V3270_COLOR_COUNT; ix++)
+				{
+					if(ix)
+						g_string_append_c(str,';');
+					g_string_append_printf(str,"%s",gdk_rgba_to_string(v3270_get_color(GTK_WIDGET(object),ix)));
+				}
+
+				g_value_take_string(value,g_string_free(str,FALSE));
+
+			}
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 

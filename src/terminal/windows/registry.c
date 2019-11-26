@@ -41,6 +41,12 @@
 
  static void save_by_pspec(GtkWidget *widget, GParamSpec *pspec, HKEY hKey)
  {
+ 	if(!pspec)
+	{
+		g_warning("Invalid property");
+		return;
+	}
+
  	const gchar * name = g_param_spec_get_name(pspec);
 
 	GValue value = G_VALUE_INIT;
@@ -127,6 +133,12 @@
 
  static void load_by_pspec(GtkWidget *widget, GParamSpec *pspec, HKEY hKey)
  {
+ 	if(!pspec)
+	{
+		g_warning("Invalid property");
+		return;
+	}
+
  	const gchar * name = g_param_spec_get_name(pspec);
 
 	BYTE data[4097];
@@ -209,19 +221,6 @@
 	// Save V3270 properties
 	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
 		save_by_pspec(widget,klass->properties.settings[ix],hKey);
-
-	// Save V3270 colors
-	str = g_string_new("");
-	for(ix=0; ix<V3270_COLOR_COUNT; ix++)
-	{
-		if(ix)
-			g_string_append_c(str,';');
-		g_string_append_printf(str,"%s",gdk_rgba_to_string(v3270_get_color(widget,ix)));
-	}
-
-	RegSetValueEx(hKey,"colors",0,REG_SZ,(const BYTE *) str->str,strlen(str->str)+1);
-
-	g_string_free(str,TRUE);
 
 	RegCloseKey(hKey);
 

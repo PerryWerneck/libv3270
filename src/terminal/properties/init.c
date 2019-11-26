@@ -41,16 +41,17 @@
  		const char	*name;
  		GParamSpec	**prop;
  	} properties[] = {
- 		{ "connected",			&klass->properties.online									},
- 		{ "associated-lu",		&klass->properties.associated_lu							},
- 		{ "url",				&klass->properties.settings[V3270_SETTING_URL]				},
- 		{ "model-number",		&klass->properties.settings[V3270_SETTING_MODEL_NUMBER]		},
- 		{ "has-selection",		&klass->properties.selection								},
- 		{ "oversize",			&klass->properties.settings[V3270_SETTING_OVERSIZE]			},
- 		{ "host-charset",		&klass->properties.settings[V3270_SETTING_HOST_CHARSET]		},
- 		{ "unlock-delay",		&klass->properties.settings[V3270_SETTING_UNLOCK_DELAY]		},
- 		{ "color-type",			&klass->properties.settings[V3270_SETTING_COLOR_TYPE]		},
- 		{ "host-type",			&klass->properties.settings[V3270_SETTING_HOST_TYPE]		},
+ 		{ "connected",				&klass->properties.online									},
+ 		{ "associated-lu",			&klass->properties.associated_lu							},
+ 		{ "url",					&klass->properties.settings[V3270_SETTING_URL]				},
+ 		{ "model-number",			&klass->properties.settings[V3270_SETTING_MODEL_NUMBER]		},
+ 		{ "has-selection",			&klass->properties.selection								},
+ 		{ "oversize",				&klass->properties.settings[V3270_SETTING_OVERSIZE]			},
+ 		{ "host-charset",			&klass->properties.settings[V3270_SETTING_HOST_CHARSET]		},
+ 		{ "unlock-delay",			&klass->properties.settings[V3270_SETTING_UNLOCK_DELAY]		},
+ 		{ "color-type",				&klass->properties.settings[V3270_SETTING_COLOR_TYPE]		},
+ 		{ "host-type",				&klass->properties.settings[V3270_SETTING_HOST_TYPE]		},
+ 		{ "crl-preferred-protocol",	&klass->properties.settings[V3270_SETTING_CRL_PROTOCOL]		},
  	};
 
  	size_t ix;
@@ -207,6 +208,21 @@
 		klass->properties.trace
 	);
 
+	// Colors
+	klass->properties.settings[V3270_SETTING_TERMINAL_COLORS] =
+		g_param_spec_string(
+			"colors",
+			"colors",
+			_("The terminal colors"),
+			v3270_default_colors,
+			G_PARAM_READABLE|G_PARAM_WRITABLE
+		);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_TERMINAL_COLORS,
+		klass->properties.settings[V3270_SETTING_TERMINAL_COLORS]
+	);
 
 	//
 	// Create dynamic properties
