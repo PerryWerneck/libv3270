@@ -77,9 +77,8 @@
 	}
  	else if(prop_id >= klass->properties.type.toggle)
 	{
-		debug("%s.%s",__FUNCTION__,"toggle");
-		lib3270_set_toggle(window->host,prop_id - klass->properties.type.toggle, (int) g_value_get_boolean (value));
-
+		debug("%s.%s=%s",__FUNCTION__,"toggle",g_value_get_boolean(value) ? "ON" : "OFF");
+		lib3270_set_toggle(window->host,prop_id - klass->properties.type.toggle, (int) g_value_get_boolean(value));
 	}
 	else
 	{

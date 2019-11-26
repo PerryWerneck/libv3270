@@ -122,4 +122,6 @@ void v3270_update_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID id, unsigned char 
 	g_object_notify_by_pspec(G_OBJECT(widget), klass->properties.toggle[id]);
 	g_signal_emit(widget, v3270_widget_signal[V3270_SIGNAL_TOGGLE_CHANGED], 0, (guint) id, (gboolean) (value != 0), (gchar *) name);
 
+	v3270_emit_save_settings(widget);
+
 }

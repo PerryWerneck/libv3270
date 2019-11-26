@@ -84,6 +84,8 @@
 		{
 			gboolean current = g_value_get_boolean(&value);
 
+			debug("%s=%s (default: %s)",name,current ? "ON" : "OFF" ,G_PARAM_SPEC_BOOLEAN(pspec)->default_value ? "ON" : "OFF");
+
 			if(current != G_PARAM_SPEC_BOOLEAN(pspec)->default_value)
 			{
 				g_key_file_set_boolean(
