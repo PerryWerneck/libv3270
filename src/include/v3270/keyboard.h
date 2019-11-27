@@ -35,23 +35,38 @@
 
     G_BEGIN_DECLS
 
-    #define GTK_TYPE_V3270FT			(V3270Keyboard_get_type ())
-    #define GTK_V3270FT(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270Keyboard, V3270Keyboard))
-    #define GTK_V3270FT_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270Keyboard, V3270KeyboardClass))
-    #define GTK_IS_V3270FT(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270Keyboard))
-    #define GTK_IS_V3270FT_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270Keyboard))
-    #define GTK_V3270FT_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270Keyboard, V3270KeyboardClass))
+    #define GTK_TYPE_V3270_ACCELERATOR	            (V3270Accelerator_get_type ())
+    #define GTK_V3270_ACCELERATOR(obj)			    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_ACCELERATOR, V3270Accelerator))
+    #define GTK_V3270_ACCELERATOR_CLASS(klass)	    (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_ACCELERATOR, V3270AcceleratorClass))
+    #define GTK_IS_V3270_ACCELERATOR(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_ACCELERATOR))
+    #define GTK_IS_V3270_ACCELERATOR_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_ACCELERATOR))
+    #define GTK_V3270_ACCELERATOR_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_ACCELERATOR, V3270AcceleratorClass))
 
-    typedef struct _V3270Keyboard
+    typedef struct _V3270Accelerator
     {
-        GtkAccelKey parent;
-    } V3270Keyboard;
+        GObject         parent;
+        guint           accel_key;
+        GdkModifierType accel_mods;
+    } V3270Accelerator;
 
-    typedef struct _V3270KeyboardClass
+    typedef struct _V3270AcceleratorClass
     {
-        GtkAccelKeyClass parent_class;
-    } V3270KeyboardClass;
+        GObjectClass parent_class;
 
+        void (*activate)(GObject *accelerator, GtkWidget *widget);
+        const gchar * (*get_name)(GObject *accelerator);
+
+    } V3270AcceleratorClass;
+
+    LIB3270_EXPORT GType          V3270Accelerator_get_type(void);
+
+    LIB3270_EXPORT GObject      * v3270_accelerator_new_from_lib3270_action(const LIB3270_ACTION *action);
+
+    LIB3270_EXPORT void           v3270_accelerator_activate(GtkWidget *widget);
+    LIB3270_EXPORT const gchar  * v3270_accelerator_get_name(GObject *accelerator);
+    LIB3270_EXPORT void           v3270_accelerator_parse(GObject *object, const gchar *accelerator);
+
+    LIB3270_EXPORT void           v3270_append_accelerator(GtkWidget *terminal, GObject *accelerator);
 
  G_END_DECLS
 
