@@ -69,27 +69,27 @@
 		{
 		case GTK_PRINT_OPERATION_RESULT_ERROR:
 			debug("%s: Error on print operation",__FUNCTION__);
-			lib3270_trace_event(operation->widget->host,"%s\n",_("Error on print operation"));
+			lib3270_write_event_trace(operation->widget->host,"%s\n",_("Error on print operation"));
 			break;
 
 		case GTK_PRINT_OPERATION_RESULT_APPLY:
 			debug("%s: The print settings should be stored.",__FUNCTION__);
-			lib3270_trace_event(operation->widget->host,"%s\n",_("The print settings should be stored."));
+			lib3270_write_event_trace(operation->widget->host,"%s\n",_("The print settings should be stored."));
 			break;
 
 		case GTK_PRINT_OPERATION_RESULT_CANCEL:
 			debug("%s: The print operation has been canceled, the print settings should not be stored.", __FUNCTION__);
-			lib3270_trace_event(operation->widget->host,"%s\n",_("The print operation has been canceled, the print settings should not be stored."));
+			lib3270_write_event_trace(operation->widget->host,"%s\n",_("The print operation has been canceled, the print settings should not be stored."));
 			break;
 
 		case GTK_PRINT_OPERATION_RESULT_IN_PROGRESS:
 			debug("%s: The print operation is running",__FUNCTION__);
-			lib3270_trace_event(operation->widget->host,"%s\n",_("The print operation is running"));
+			lib3270_write_event_trace(operation->widget->host,"%s\n",_("The print operation is running"));
 			break;
 
 		default:
 			debug("Unexpected status %d in print operation",(int) result);
-			lib3270_trace_event(operation->widget->host,_("Unexpected status %d in print operation"),(int) result);
+			lib3270_write_event_trace(operation->widget->host,_("Unexpected status %d in print operation"),(int) result);
 
 		}
 

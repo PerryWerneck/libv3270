@@ -56,3 +56,4 @@ ValgrindOut.xml
 *.patch
 *.sh
 *.conf
+*.pdf

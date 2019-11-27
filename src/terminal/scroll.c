@@ -45,15 +45,15 @@ gboolean v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 {
 	v3270 * terminal = GTK_V3270(widget);
 
-	lib3270_trace_event(terminal->host,"scroll event direction=%d",(int) event->direction);
+	lib3270_write_event_trace(terminal->host,"scroll event direction=%d",(int) event->direction);
 
 	if(lib3270_get_program_message(terminal->host) != LIB3270_MESSAGE_NONE || event->direction < 0 || event->direction > G_N_ELEMENTS(terminal->scroll))
 	{
-		lib3270_trace_event(terminal->host,"  dropped (not available)\n");
+		lib3270_write_event_trace(terminal->host,"  dropped (not available)\n");
 		return FALSE;
 	}
 
-	lib3270_trace_event(terminal->host,"\n");
+	lib3270_write_event_trace(terminal->host,"\n");
 
 	debug("%d %p", (int) event->direction, terminal->scroll[event->direction]);
 

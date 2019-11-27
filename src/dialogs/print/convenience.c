@@ -44,7 +44,7 @@
  	if(!(widget && GTK_IS_V3270(widget)))
 		return errno = EINVAL;
 
-	lib3270_trace_event(v3270_get_session(widget),"print action activated (type=%d)\n",(int) mode);
+	lib3270_write_event_trace(v3270_get_session(widget),"print action activated (type=%d)\n",(int) mode);
 
 	if(!v3270_is_connected(widget))
 		return errno = ENOTCONN;

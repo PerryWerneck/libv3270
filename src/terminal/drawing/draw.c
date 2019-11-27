@@ -40,6 +40,7 @@
  #include <lib3270/session.h>
  #include <lib3270/toggle.h>
  #include <internals.h>
+ #include <lib3270/trace.h>
 
  #include <v3270.h>
  #include <terminal.h>
@@ -256,6 +257,7 @@ static void draw_small_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo
 
 static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, GdkRectangle *rect)
 {
+	// https://unicode.org/charts/PDF/U2300.pdf
 	static const struct CharList
 	{
 		unsigned char chr;
@@ -350,25 +352,25 @@ void v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 
 			cairo_rel_line_to(cr,0,rect->height);
 			break;
 
-		case 0xd4: // CG 0xac, LR corner
+		case 0xd4: // CG 0xac, LR corner ⌟
 			cairo_move_to(cr,rect->x, rect->y+(rect->height/2));
 			cairo_rel_line_to(cr,rect->width/2,0);
 			cairo_rel_line_to(cr,0,-(rect->height/2));
 			break;
 
-		case 0xd5: // CG 0xad, UR corner
+		case 0xd5: // CG 0xad, UR corner ⌝
 			cairo_move_to(cr,rect->x, rect->y+(rect->height/2));
 			cairo_rel_line_to(cr,rect->width/2,0);
 			cairo_rel_line_to(cr,0,rect->height/2);
 			break;
 
-		case 0xc5: // CG 0xa4, UL corner
+		case 0xc5: // CG 0xa4, UL corner ⌜
 			cairo_move_to(cr,rect->x+rect->width,rect->y+(rect->height/2));
 			cairo_rel_line_to(cr,-(rect->width/2),0);
 			cairo_rel_line_to(cr,0,(rect->height/2));
 			break;
 
-		case 0xc4: // CG 0xa3, LL corner
+		case 0xc4: // CG 0xa3, LL corner ⌞
 			cairo_move_to(cr,rect->x+rect->width,rect->y+(rect->height/2));
 			cairo_rel_line_to(cr,-(rect->width/2),0);
 			cairo_rel_line_to(cr,0,-(rect->height/2));
@@ -405,7 +407,10 @@ void v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 
 		default:
 
 			if(!draw_cg(cr, chr, font, rect))
+			{
+				lib3270_write_screen_trace(session,"I don't known how to draw CG character %02x\n",(int) chr);
 				cairo_rectangle(cr, rect->x+1, rect->y+1, rect->width-2, rect->height-2);
+			}
 
 		}
 	}
