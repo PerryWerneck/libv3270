@@ -180,6 +180,12 @@ static void finalize(GObject *object)
 		terminal->host = NULL;
 	}
 
+	if(terminal->accelerators)
+	{
+		g_slist_free_full(terminal->accelerators,g_free);
+		terminal->accelerators = NULL;
+	}
+
 	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);
  }
 
@@ -525,6 +531,9 @@ static void v3270_init(v3270 *widget)
 
 	for(ix = 0; ix < G_N_ELEMENTS(widget->responses); ix++)
 		widget->responses[ix] = GTK_RESPONSE_NONE;
+
+	// Init accelerators
+	v3270_init_accelerators(widget);
 
 }
 

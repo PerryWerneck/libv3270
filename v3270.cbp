@@ -173,11 +173,11 @@
 		<Unit filename="src/include/terminal.h" />
 		<Unit filename="src/include/v3270.h" />
 		<Unit filename="src/include/v3270/accessible.h" />
+		<Unit filename="src/include/v3270/actions.h" />
 		<Unit filename="src/include/v3270/colorscheme.h" />
 		<Unit filename="src/include/v3270/dialogs.h" />
 		<Unit filename="src/include/v3270/filetransfer.h" />
 		<Unit filename="src/include/v3270/ftprogress.h" />
-		<Unit filename="src/include/v3270/keyboard.h" />
 		<Unit filename="src/include/v3270/print.h" />
 		<Unit filename="src/include/v3270/security.h" />
 		<Unit filename="src/include/v3270/settings.h" />
@@ -268,6 +268,10 @@
 		<Unit filename="src/terminal/keyboard.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/keyboard/init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/keyboard/private.h" />
 		<Unit filename="src/terminal/keyfile.c">
 			<Option compilerVar="CC" />
 		</Unit>

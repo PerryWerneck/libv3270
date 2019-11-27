@@ -273,11 +273,6 @@
  LIB3270_EXPORT	void			  v3270_set_remap_filename(GtkWidget *widget, const gchar *path);
  LIB3270_EXPORT const gchar		* v3270_get_remap_filename(GtkWidget *widget);
 
- // Actions
- LIB3270_EXPORT void			  v3270_set_scroll_action(GtkWidget *widget, GdkScrollDirection direction, GtkAction *action) G_GNUC_DEPRECATED;
- LIB3270_EXPORT void			  v3270_tab(GtkWidget *widget);
- LIB3270_EXPORT void			  v3270_backtab(GtkWidget *widget);
-
  // SSL & Security
  LIB3270_EXPORT const gchar		* v3270_get_ssl_state_icon_name(GtkWidget *widget);
  LIB3270_EXPORT const gchar		* v3270_get_ssl_state_message(GtkWidget *widget);

@@ -217,6 +217,9 @@ G_BEGIN_DECLS
 
 	GtkWidget * trace;										///< @brief Trace window handle.
 
+	// Keyboard accelerators.
+	GSList * accelerators;									///< @brief Keyboard accelerators.
+
  };
 
  G_GNUC_INTERNAL void v3270_activate(GtkWidget *widget);

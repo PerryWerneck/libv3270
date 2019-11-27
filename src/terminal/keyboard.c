@@ -32,6 +32,7 @@
 
  #include <lib3270.h>
  #include <lib3270/actions.h>
+ #include <v3270/actions.h>
  #include <lib3270/log.h>
  #include <gtk/gtk.h>
  #include <string.h>
@@ -57,6 +58,7 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
+	/*
 	 static struct _keycode
 	 {
 		guint			  keyval;
@@ -64,19 +66,16 @@
 		int				  (*exec)(H3270 *session);
 	 } keycode[] =
 	 {
-		{ GDK_Left,				0,					lib3270_cursor_left		},
-		{ GDK_Up,				0,					lib3270_cursor_up		},
-		{ GDK_Right,			0,					lib3270_cursor_right	},
-		{ GDK_Down,				0,					lib3270_cursor_down		},
-		{ GDK_Tab,				0,					lib3270_nextfield		},
-		{ GDK_ISO_Left_Tab,		GDK_SHIFT_MASK,		lib3270_previousfield	},
+		{ GDK_Left,				0,					lib3270_cursor_left		}, // OK
+		{ GDK_Up,				0,					lib3270_cursor_up		}, // OK
+		{ GDK_Right,			0,					lib3270_cursor_right	},  // OK
+		{ GDK_Down,				0,					lib3270_cursor_down		}, // OK
+		{ GDK_Tab,				0,					lib3270_nextfield		}, // OK
+		{ GDK_ISO_Left_Tab,		GDK_SHIFT_MASK,		lib3270_previousfield	}, // OK
 		{ GDK_KP_Left,			0,					lib3270_cursor_left		},
 		{ GDK_KP_Up,			0,					lib3270_cursor_up		},
 		{ GDK_KP_Right,			0,					lib3270_cursor_right	},
 		{ GDK_KP_Down,			0,					lib3270_cursor_down		},
-
-//		{ GDK_KP_Add,			GDK_NUMLOCK_MASK,	NULL					},
-//		{ GDK_KP_Subtract,		GDK_NUMLOCK_MASK,	NULL					},
 
 		{ GDK_3270_PrintScreen,	0,					lib3270_print_all		},
 		{ GDK_P,				GDK_CONTROL_MASK,	lib3270_print_all		},
@@ -85,14 +84,14 @@
 
 		{ GDK_Print,			GDK_CONTROL_MASK,	lib3270_print_all		},
 		{ GDK_Print,			GDK_SHIFT_MASK,		lib3270_sysreq			},
-//		{ GDK_Control_R,		0,					NULL					},
-//		{ GDK_Control_L,		0,					NULL					},
 
 
 //#ifdef WIN32
 //		{ GDK_Pause,			0,					NULL					},
 //#endif
+
 	};
+	*/
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -124,7 +123,7 @@
 
  static gboolean check_keypress(v3270 *widget, GdkEventKey *event)
  {
-	int				f;
+//	int				f;
 	GdkModifierType	state	= event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK);
 	gboolean		handled = FALSE;
 
@@ -150,6 +149,19 @@
 	}
 #endif // DEBUG
 
+	// Check accelerator table.
+	GSList * acccelerator;
+	for(acccelerator = widget->accelerators; acccelerator; acccelerator = g_slist_next(acccelerator))
+	{
+		if(v3270_accelerator_compare((V3270Accelerator *) acccelerator->data, event->keyval, state))
+		{
+			v3270_accelerator_activate((V3270Accelerator *) acccelerator->data,GTK_WIDGET(widget));
+			return TRUE;
+		}
+
+	}
+
+	// Check PFKeys
 	if(event->keyval >= GDK_F1 && event->keyval <= GDK_F12 && !(state & (GDK_CONTROL_MASK|GDK_ALT_MASK)))
 	{
 		int pfcode = (event->keyval - GDK_F1) + ((state & GDK_SHIFT_MASK) ? 13 : 1);
@@ -161,6 +173,7 @@
 		}
 	}
 
+	/*
 	for(f=0; f < (int) G_N_ELEMENTS(keycode);f++)
 	{
 		if(keycode[f].keyval == event->keyval && state == keycode[f].state)
@@ -173,6 +186,7 @@
 
 		}
 	}
+	*/
 
  	return FALSE;
  }

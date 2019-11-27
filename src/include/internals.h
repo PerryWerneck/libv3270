@@ -309,7 +309,6 @@ G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned
 
  G_GNUC_INTERNAL void		  v3270_blink_ssl(v3270 *terminal);
 
- G_GNUC_INTERNAL void		  v3270_init_properties(GObjectClass * gobject_class);
  G_GNUC_INTERNAL void		  v3270_queue_draw_area(GtkWidget *widget, gint x, gint y, gint width, gint height);
 
  G_GNUC_INTERNAL void		  v3270_disable_updates(GtkWidget *widget);
@@ -340,8 +339,12 @@ G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned
  G_GNUC_INTERNAL gchar		* v3270_translate_rgba_to_text(GdkRGBA *clr);
 
  // Properties
+ G_GNUC_INTERNAL void		  v3270_init_properties(GObjectClass * gobject_class);
  G_GNUC_INTERNAL gboolean	  v3270_update_associated_lu(v3270 *terminal);
  G_GNUC_INTERNAL void		  v3270_update_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID id, unsigned char value, const char *name);
+
+ // Accelerators
+ G_GNUC_INTERNAL void		  v3270_init_accelerators(v3270 *widget);
 
 G_END_DECLS
 

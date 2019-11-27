@@ -38,6 +38,7 @@ SOURCES= \
 	$(wildcard src/terminal/properties/*.c) \
 	$(wildcard src/terminal/drawing/*.c) \
 	$(wildcard src/terminal/font/*.c) \
+	$(wildcard src/terminal/keyboard/*.c) \
 	$(wildcard src/filetransfer/*.c) \
 	$(wildcard src/selection/*.c) \
 	$(wildcard src/selection/@OSNAME@/*.c) \
