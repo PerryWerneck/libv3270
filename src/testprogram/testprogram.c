@@ -106,14 +106,17 @@
  	debug("%s: Saving settings for windows %p",__FUNCTION__,window);
 
  	GKeyFile * key_file = get_key_file();
+
 	v3270_to_key_file(terminal,key_file,"terminal");
+	v3270_accelerator_map_to_key_file(terminal, key_file, "accelerators");
+
 	g_key_file_save_to_file(key_file,"terminal.conf",NULL);
 	g_key_file_free(key_file);
 
 
  }
 
-#endif // _WIN32	
+#endif // _WIN32
 
 
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {

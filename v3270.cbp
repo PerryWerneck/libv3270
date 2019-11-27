@@ -274,6 +274,9 @@
 		<Unit filename="src/terminal/keyboard/init.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/keyboard/keyfile.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/keyboard/private.h" />
 		<Unit filename="src/terminal/keyfile.c">
 			<Option compilerVar="CC" />

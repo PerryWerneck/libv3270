@@ -96,13 +96,6 @@
 
  }
 
-#ifdef DEBUG
-	void show_accelerator(const V3270Accelerator * accel, const char *keys, gpointer ptr)
-	{
-		debug("%s=%s",v3270_accelerator_get_name(accel),keys);
-	}
-#endif // DEBUG
-
  void v3270_init_accelerators(v3270 *widget)
  {
  	size_t ix;
@@ -164,10 +157,6 @@
 	}
 
 	v3270_accelerator_map_sort(widget);
-
-#ifdef DEBUG
-	v3270_accelerator_map_foreach(widget,show_accelerator,NULL);
-#endif // DEBUG
 
  }
 

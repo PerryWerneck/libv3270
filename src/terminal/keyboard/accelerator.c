@@ -142,6 +142,8 @@
 
 					g_autofree gchar * keyname = gtk_accelerator_name(accel->key,accel->mods);
 					g_string_append(str,keyname);
+
+
 				}
 
 				accelerator = g_slist_next(accelerator);
@@ -153,4 +155,9 @@
 
 		g_string_free(str,FALSE);
 
+ }
+
+ LIB3270_EXPORT gchar * v3270_accelerator_get_label(const V3270Accelerator * accel)
+ {
+    return gtk_accelerator_get_label(accel->key,accel->mods);
  }
