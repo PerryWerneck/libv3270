@@ -40,11 +40,21 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
-/*
+ static int fire_keypad_action(GtkWidget *widget, const struct InternalAction * action);
+
  static const struct InternalAction InternalActions[] =
  {
+ 	{
+ 		GDK_KP_Add,
+ 		GDK_NUMLOCK_MASK,
+ 		G_CALLBACK(fire_keypad_action)
+	},
+ 	{
+ 		GDK_KP_Subtract,
+ 		GDK_NUMLOCK_MASK,
+ 		G_CALLBACK(fire_keypad_action)
+	}
  };
-*/
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -60,6 +70,27 @@
 		rc = action->activate(hSession);
 
 	debug("%s(%s)=%d %s",__FUNCTION__,action->name,rc,strerror(rc));
+	return rc;
+
+ }
+
+ static int fire_keypad_action(GtkWidget *widget, const struct InternalAction * action)
+ {
+ 	int rc = 0;
+ 	debug("%s",__FUNCTION__);
+
+	if(v3270_get_toggle(widget,LIB3270_TOGGLE_KP_ALTERNATIVE))
+	{
+		if(action->key == GDK_KP_Add)
+			rc = lib3270_nextfield(GTK_V3270(widget)->host);
+		else
+			rc = lib3270_previousfield(GTK_V3270(widget)->host);
+	}
+	else
+	{
+		v3270_set_string(widget, action->key == GDK_KP_Add ? "+" : "-");
+	}
+
 	return rc;
 
  }
@@ -105,7 +136,6 @@
 
 	}
 
-	/*
 	// Create accelerators for internal actions.
 	{
         size_t ix;
@@ -124,7 +154,6 @@
 
 		}
 	}
-	*/
 
 	v3270_accelerator_map_sort(widget);
 

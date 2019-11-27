@@ -150,15 +150,12 @@
 #endif // DEBUG
 
 	// Check accelerator table.
-	GSList * acccelerator;
-	for(acccelerator = widget->accelerators; acccelerator; acccelerator = g_slist_next(acccelerator))
+	const V3270Accelerator * acel = v3270_get_accelerator(GTK_WIDGET(widget), event->keyval, state);
+	if(acel)
 	{
-		if(v3270_accelerator_compare((V3270Accelerator *) acccelerator->data, event->keyval, state))
-		{
-			v3270_accelerator_activate((V3270Accelerator *) acccelerator->data,GTK_WIDGET(widget));
-			return TRUE;
-		}
-
+		debug("%s will fire",__FUNCTION__);
+		v3270_accelerator_activate(acel,GTK_WIDGET(widget));
+		return TRUE;
 	}
 
 	// Check PFKeys
@@ -173,21 +170,6 @@
 		}
 	}
 
-	/*
-	for(f=0; f < (int) G_N_ELEMENTS(keycode);f++)
-	{
-		if(keycode[f].keyval == event->keyval && state == keycode[f].state)
-		{
-			if(keycode[f].exec)
-				keycode[f].exec(widget->host);
-			else
-				return FALSE;
-			return TRUE;
-
-		}
-	}
-	*/
-
  	return FALSE;
  }
 
@@ -197,6 +179,22 @@
 
 	terminal->activity.timestamp = time(0);
  	update_keyboard_state(terminal,event,TRUE);
+
+	if(event->state & GDK_NUMLOCK_MASK)
+	{
+		// Hack for special keys
+		const V3270Accelerator * acel = v3270_get_accelerator(widget, event->keyval, event->state);
+
+		debug("acel=%p",acel);
+
+		if(acel)
+		{
+			debug("%s will fire",__FUNCTION__);
+			v3270_accelerator_activate(acel,GTK_WIDGET(widget));
+			gtk_im_context_reset(terminal->input_method);
+			return TRUE;
+		}
+	}
 
 	if(gtk_im_context_filter_keypress(terminal->input_method,event))
 		return TRUE;

@@ -68,13 +68,25 @@
  	return accell->key == keyval && accell->mods == mods;
  }
 
- void v3270_accelerator_activate(V3270Accelerator * accell, GtkWidget *terminal)
+ void v3270_accelerator_activate(const V3270Accelerator * acel, GtkWidget *terminal)
  {
- 	int rc = ((int (*)(GtkWidget *, const void *)) accell->activate)(terminal,accell->arg);
+ 	int rc = ((int (*)(GtkWidget *, const void *)) acel->activate)(terminal,acel->arg);
 
  	if(rc)
 		gdk_display_beep(gdk_display_get_default());
 
  }
 
+ const V3270Accelerator * v3270_get_accelerator(GtkWidget *widget, guint keyval, GdkModifierType state)
+ {
+	GSList * acccelerator;
+	for(acccelerator = GTK_V3270(widget)->accelerators; acccelerator; acccelerator = g_slist_next(acccelerator))
+	{
+		if(v3270_accelerator_compare((V3270Accelerator *) acccelerator->data, keyval, state))
+			return (V3270Accelerator *) acccelerator->data;
+	}
+
+	return NULL;
+
+ }
 

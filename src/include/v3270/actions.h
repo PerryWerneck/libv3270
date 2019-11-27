@@ -44,9 +44,9 @@
 	/// @brief Reset accelerator map to defaults.
 	LIB3270_EXPORT void			v3270_accelerator_map_reset(GtkWidget *widget);
 
-	LIB3270_EXPORT void			v3270_accelerator_activate(V3270Accelerator * accell, GtkWidget *terminal);
-	LIB3270_EXPORT gboolean		v3270_accelerator_compare(const V3270Accelerator * accell, const guint keyval, const GdkModifierType mods);
-
+	LIB3270_EXPORT const V3270Accelerator * v3270_get_accelerator(GtkWidget *widget, guint keyval, GdkModifierType state);
+	LIB3270_EXPORT void						v3270_accelerator_activate(const V3270Accelerator * accell, GtkWidget *terminal);
+	LIB3270_EXPORT gboolean					v3270_accelerator_compare(const V3270Accelerator * accell, const guint keyval, const GdkModifierType mods);
 
 	G_END_DECLS
 
