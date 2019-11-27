@@ -144,6 +144,22 @@
 
 /*--[ Internal Widgets & Tools ]---------------------------------------------------------------------*/
 
+ enum
+ {
+ 	V3270_ACCELERATOR_TYPE_INTERNAL,			///< @brief Accelerator is internal.
+ 	V3270_ACCELERATOR_TYPE_LIB3270_ACTION,		///< @brief Accelerator is a lib3270 action.
+ 	V3270_ACCELERATOR_TYPE_GTK_ACTION,			///< @brief Accelerator is a GTK Action (Deprececated).
+ };
+
+ struct _V3270Accelerator
+ {
+ 	unsigned short		type;
+	guint           	key;
+	GdkModifierType 	mods;
+	gconstpointer		arg;
+	GCallback			activate;
+ };
+
  typedef enum v3270_toggleable_dialog
  {
 	V3270_TOGGLEABLE_DIALOG_PASTE_FAILED,

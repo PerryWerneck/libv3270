@@ -32,6 +32,19 @@
  #include <internals.h>
  #include <terminal.h>
  #include <lib3270/actions.h>
+ #include <gdk/gdkkeysyms-compat.h>
+
+ #ifndef GDK_NUMLOCK_MASK
+	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
+ #endif
+
+/*--[ Globals ]--------------------------------------------------------------------------------------*/
+
+/*
+ static const struct InternalAction InternalActions[] =
+ {
+ };
+*/
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -56,54 +69,66 @@
  	size_t ix;
 
 	// Create accelerators for lib3270 actions.
-	const LIB3270_ACTION * actions = lib3270_get_actions();
-
-	for(ix = 0; actions[ix].name; ix++)
 	{
-		if(actions[ix].keys)
+		const LIB3270_ACTION * actions = lib3270_get_actions();
+
+		for(ix = 0; actions[ix].name; ix++)
 		{
-			size_t key;
-
-			gchar ** keys = g_strsplit(actions[ix].keys,",",-1);
-
-			for(key = 0; keys[key]; key++)
+			if(actions[ix].keys)
 			{
+				size_t key;
 
-				V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
+				gchar ** keys = g_strsplit(actions[ix].keys,",",-1);
 
-				accelerator->type 		= ACCELERATOR_TYPE_LIB3270_ACTION;
-				accelerator->arg 		= (gconstpointer) &actions[ix];
-				accelerator->activate	= G_CALLBACK(fire_lib3270_action);
+				for(key = 0; keys[key]; key++)
+				{
 
-				debug("%s=%s",actions[ix].name,keys[key]);
+					V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
 
-				gtk_accelerator_parse(keys[key],&accelerator->key,&accelerator->mods);
+					accelerator->type 		= V3270_ACCELERATOR_TYPE_LIB3270_ACTION;
+					accelerator->arg 		= (gconstpointer) &actions[ix];
+					accelerator->activate	= G_CALLBACK(fire_lib3270_action);
 
-				widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+					debug("%s=%s",actions[ix].name,keys[key]);
+
+					gtk_accelerator_parse(keys[key],&accelerator->key,&accelerator->mods);
+
+					widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+
+				}
+
+				g_strfreev(keys);
 
 			}
-
-			g_strfreev(keys);
 
 		}
 
 	}
 
+	/*
+	// Create accelerators for internal actions.
+	{
+        size_t ix;
+
+        for(ix = 0 ; ix < G_N_ELEMENTS(InternalActions); ix++)
+		{
+			V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
+
+			accelerator->type 		= V3270_ACCELERATOR_TYPE_INTERNAL;
+			accelerator->arg 		= (gconstpointer) &InternalActions[ix];
+			accelerator->activate	= InternalActions[ix].activate;
+			accelerator->key		= InternalActions[ix].key;
+			accelerator->mods		= InternalActions[ix].mods;
+
+			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+
+		}
+	}
+	*/
+
+	v3270_accelerator_map_sort(widget);
 
  }
 
- gboolean v3270_accelerator_compare(const V3270Accelerator * accell, const guint keyval, const GdkModifierType mods)
- {
- 	return accell->key == keyval && accell->mods == mods;
- }
-
- void v3270_accelerator_activate(V3270Accelerator * accell, GtkWidget *terminal)
- {
- 	int rc = ((int (*)(GtkWidget *, const void *)) accell->activate)(terminal,accell->arg);
-
- 	if(rc)
-		gdk_display_beep(gdk_display_get_default());
-
- }
 
 

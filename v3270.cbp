@@ -268,6 +268,9 @@
 		<Unit filename="src/terminal/keyboard.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/keyboard/accelerator.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/keyboard/init.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -290,6 +293,9 @@
 		</Unit>
 		<Unit filename="src/terminal/properties/private.h" />
 		<Unit filename="src/terminal/properties/set.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/scroll.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/security.c">

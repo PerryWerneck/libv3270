@@ -42,7 +42,7 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
- static GtkAction *action_scroll[] = { NULL, NULL, NULL, NULL };
+// static GtkAction *action_scroll[] = { NULL, NULL, NULL, NULL };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -314,28 +314,3 @@ gboolean v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event)
 	return FALSE;
 }
 
-LIB3270_EXPORT void v3270_set_scroll_action(GtkWidget *widget, GdkScrollDirection direction, GtkAction *action)
-{
- 	g_return_if_fail(GTK_IS_V3270(widget));
-	action_scroll[((int) direction) & 0x03] = action;
-}
-
-gboolean v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event)
-{
-	H3270	* hSession	= v3270_get_session(widget);
-
-	lib3270_trace_event(hSession,"scroll event direction=%d",(int) event->direction);
-
-	if(lib3270_get_program_message(hSession) != LIB3270_MESSAGE_NONE || event->direction < 0 || event->direction > G_N_ELEMENTS(action_scroll))
-	{
-		lib3270_trace_event(hSession,"  dropped (not available)\n");
-		return FALSE;
-	}
-
-	lib3270_trace_event(hSession,"\n");
-
-	if(action_scroll[event->direction])
-		gtk_action_activate(action_scroll[event->direction]);
-
-	return TRUE;
- }

@@ -220,6 +220,9 @@ G_BEGIN_DECLS
 	// Keyboard accelerators.
 	GSList * accelerators;									///< @brief Keyboard accelerators.
 
+	// Scroll actions.
+	GtkAction * scroll[4];									///< @brief Scroll actions.
+
  };
 
  G_GNUC_INTERNAL void v3270_activate(GtkWidget *widget);

@@ -30,17 +30,14 @@
  #include <config.h>
  #include <v3270.h>
  #include <v3270/actions.h>
+ #include <internals.h>
 
- enum
+ struct InternalAction
  {
- 	ACCELERATOR_TYPE_LIB3270_ACTION,		///< @brief Accelerator is a lib3270 action
- };
-
- struct _V3270Accelerator
- {
- 	unsigned short		type;
 	guint           	key;
 	GdkModifierType 	mods;
-	gconstpointer		arg;
 	GCallback			activate;
  };
+
+ G_GNUC_INTERNAL void v3270_accelerator_map_sort(v3270 *widget);
+
