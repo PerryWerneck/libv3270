@@ -33,6 +33,7 @@
  #include <terminal.h>
  #include <lib3270/actions.h>
  #include <gdk/gdkkeysyms-compat.h>
+ #include <v3270/actions.h>
 
  #ifndef GDK_NUMLOCK_MASK
 	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
@@ -95,6 +96,13 @@
 
  }
 
+#ifdef DEBUG
+	void show_accelerator(const V3270Accelerator * accel, const char *keys, gpointer ptr)
+	{
+		debug("%s=%s",v3270_accelerator_get_name(accel),keys);
+	}
+#endif // DEBUG
+
  void v3270_init_accelerators(v3270 *widget)
  {
  	size_t ix;
@@ -120,7 +128,7 @@
 					accelerator->arg 		= (gconstpointer) &actions[ix];
 					accelerator->activate	= G_CALLBACK(fire_lib3270_action);
 
-					debug("%s=%s",actions[ix].name,keys[key]);
+//					debug("%s=%s",actions[ix].name,keys[key]);
 
 					gtk_accelerator_parse(keys[key],&accelerator->key,&accelerator->mods);
 
@@ -156,6 +164,10 @@
 	}
 
 	v3270_accelerator_map_sort(widget);
+
+#ifdef DEBUG
+	v3270_accelerator_map_foreach(widget,show_accelerator,NULL);
+#endif // DEBUG
 
  }
 

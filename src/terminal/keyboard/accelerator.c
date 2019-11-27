@@ -90,3 +90,67 @@
 
  }
 
+ const gchar * v3270_accelerator_get_description(const V3270Accelerator * accel)
+ {
+	switch(accel->type)
+	{
+	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
+		return gettext(((LIB3270_ACTION *) accel->arg)->summary);
+
+	// case V3270_ACCELERATOR_TYPE_INTERNAL:
+	// case V3270_ACCELERATOR_TYPE_GTK_ACTION:
+
+	}
+
+	return NULL;
+ }
+
+ const gchar * v3270_accelerator_get_name(const V3270Accelerator * accel)
+ {
+	switch(accel->type)
+	{
+	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
+		return gettext(((LIB3270_ACTION *) accel->arg)->name);
+
+	// case V3270_ACCELERATOR_TYPE_INTERNAL:
+	// case V3270_ACCELERATOR_TYPE_GTK_ACTION:
+
+	}
+
+	return NULL;
+ }
+
+ void v3270_accelerator_map_foreach(GtkWidget *widget,void (*call)(const V3270Accelerator * accel, const char *keys, gpointer ptr), gpointer ptr)
+ {
+		GSList	* accelerator = GTK_V3270(widget)->accelerators;
+		GString	* str = g_string_new("");
+
+		while(accelerator)
+		{
+            V3270Accelerator * current = (V3270Accelerator *) accelerator->data;
+
+            g_string_truncate(str,0);
+
+            while(accelerator && (((V3270Accelerator *) accelerator->data)->activate == current->activate) && (((V3270Accelerator *) accelerator->data)->arg == current->arg))
+			{
+				V3270Accelerator *accel = (V3270Accelerator *) accelerator->data;
+				if(accel->key)
+				{
+
+					if(str->str[0])
+						g_string_append(str," ");
+
+					g_autofree gchar * keyname = gtk_accelerator_name(accel->key,accel->mods);
+					g_string_append(str,keyname);
+				}
+
+				accelerator = g_slist_next(accelerator);
+			}
+
+			call(current,str->str,ptr);
+
+		}
+
+		g_string_free(str,FALSE);
+
+ }
