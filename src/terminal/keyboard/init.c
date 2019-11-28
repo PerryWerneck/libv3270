@@ -40,9 +40,14 @@
 	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
  #endif
 
+ #ifndef GDK_ALT_MASK
+	#define GDK_ALT_MASK GDK_MOD1_MASK
+ #endif
+
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
  static int fire_keypad_action(GtkWidget *widget, const struct InternalAction * action);
+ static int fire_zoom_action(GtkWidget *widget, const struct InternalAction * action);
 
  static const struct InternalAction InternalActions[] =
  {
@@ -68,15 +73,13 @@
  		.activate = G_CALLBACK(fire_copy_accelerator)
 	},
 
-	/*
 	{
 		.operation = V3270_COPY_APPEND,
 		.name = "copy-append",
 		.key = 'c',
-		.mods = GDK_CONTROL_MASK|GDK_ALT_MASK,
+		.mods = GDK_ALT_MASK,
  		.activate = G_CALLBACK(fire_copy_accelerator)
 	},
-	*/
 
 	{
 		.operation = V3270_COPY_TEXT,
@@ -94,15 +97,13 @@
  		.activate = G_CALLBACK(fire_copy_accelerator)
 	},
 
-	/*
 	{
 		.operation = ACCEL_OPERATION_CUT|V3270_COPY_APPEND,
 		.name = "cut-append",
-		.key = 0,
-		.mods = 0,
+		.key = 'x',
+		.mods = GDK_ALT_MASK,
  		.activate = G_CALLBACK(fire_copy_accelerator)
 	},
-	*/
 
 	{
 		.operation = ACCEL_OPERATION_DEFAULT,
@@ -112,12 +113,29 @@
  		.activate = G_CALLBACK(fire_paste_accelerator)
 	},
 
-	/*
-	<accelerator action='zoom' mode='in' key='<ctrl>KP_Add' group='online' />
-	<accelerator action='zoom' mode='out' key='<ctrl>KP_Subtract' group='online' />
-	<accelerator action='zoom' mode='fit' key='<ctrl>0' group='online' />
-	*/
+ 	{
+ 		.operation = 0,
+ 		.name = "zoom-in",
+ 		.key = GDK_KP_Add,
+ 		.mods = GDK_CONTROL_MASK,
+ 		.activate = G_CALLBACK(fire_zoom_action)
+	},
 
+ 	{
+ 		.operation = 1,
+ 		.name = "zoom-out",
+ 		.key = GDK_KP_Subtract,
+ 		.mods = GDK_CONTROL_MASK,
+ 		.activate = G_CALLBACK(fire_zoom_action)
+	},
+
+ 	{
+ 		.operation = 2,
+ 		.name = "zoom-fit-best",
+ 		.key = '0',
+ 		.mods = GDK_CONTROL_MASK,
+ 		.activate = G_CALLBACK(fire_zoom_action)
+	},
 
  };
 
@@ -164,6 +182,12 @@
 
 	return rc;
 
+ }
+
+ static int fire_zoom_action(GtkWidget *widget, const struct InternalAction * action)
+ {
+ 	debug("%s",__FUNCTION__);
+ 	return 0;
  }
 
  void v3270_init_accelerators(v3270 *widget)
