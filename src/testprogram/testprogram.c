@@ -99,7 +99,7 @@
  static GKeyFile * get_key_file()
  {
 	GKeyFile * key_file = g_key_file_new();
-	g_key_file_load_from_file(key_file,"terminal.conf",G_KEY_FILE_KEEP_COMMENTS,NULL);
+	g_key_file_load_from_file(key_file,"terminal.conf",G_KEY_FILE_NONE,NULL);
 	return key_file;
  }
 
