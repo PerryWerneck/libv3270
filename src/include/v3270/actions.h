@@ -37,7 +37,30 @@
 
     typedef struct _V3270Accelerator V3270Accelerator;
 
+	typedef enum _v3270_action_flag
+	{
+		V3270_ACTION_FLAG_DEFAULT	= 0x00000000,
+		V3270_ACTION_FLAG_CUT		= 0x10000000,
+	} V3270_ACTION_FLAGS;
 
+	typedef struct _v3270_action
+	{
+		LIB3270_PROPERTY_HEAD
+
+		V3270_ACTION_FLAGS	  flags;	///< @brief (The flags for activation.
+
+		guint           	  key;
+		GdkModifierType 	  mods;
+
+		int (*activate)(GtkWidget *widget, const struct _v3270_action *action);
+
+	} V3270_ACTION;
+
+
+	///
+	/// @brief Get internal V3270 action table.
+	///
+	LIB3270_EXPORT const V3270_ACTION * v3270_get_actions();
 
     //
     // Actions

@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como - e possui - linhas de código.
+ * Este programa está nomeado como properties.c e possui - linhas de código.
  *
  * Contatos:
  *
@@ -27,11 +27,36 @@
  *
  */
 
- #include <config.h>
+ #include "private.h"
  #include <v3270.h>
- #include <v3270/actions.h>
- #include <internals.h>
+ #include <lib3270/trace.h>
+ #include <lib3270/log.h>
 
-  G_GNUC_INTERNAL void v3270_accelerator_map_sort(v3270 *widget);
+/*--[ Implement ]------------------------------------------------------------------------------------*/
+
+ int fire_zoom_action(GtkWidget *widget, const V3270_ACTION * action) {
+
+ 	debug("%s",__FUNCTION__);
+
+	switch(action->flags)
+	{
+	case 0:	// Zoom in
+		v3270_zoom_in(widget);
+		break;
+
+	case 1:	// Zoom out
+		v3270_zoom_out(widget);
+		break;
+
+	case 2: // Zoom fit best
+		v3270_zoom_best(widget);
+		break;
+
+	default:
+		g_warning("Unexpected zoom flags %u",(unsigned int) action->flags);
+	}
+
+	return 0;
+ }
 
 

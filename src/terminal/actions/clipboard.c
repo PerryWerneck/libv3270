@@ -34,23 +34,23 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- int fire_copy_accelerator(GtkWidget *widget, const struct InternalAction * action) {
+ int fire_copy_accelerator(GtkWidget *widget, const V3270_ACTION * action) {
 
 	debug("%s",__FUNCTION__);
 
 	v3270_clipboard_set(
 		widget,
-		(action->operation & 0x0F),
-		(action->operation & ACCEL_OPERATION_CUT) != 0
+		(action->flags & 0x0F),
+		(action->flags & V3270_ACTION_FLAG_CUT) != 0
 	);
 
 	return EINVAL;
  }
 
- int fire_paste_accelerator(GtkWidget *widget, const struct InternalAction * action) {
+ int fire_paste_accelerator(GtkWidget *widget, const V3270_ACTION * action) {
 
 
-	switch(action->operation)
+	switch((int) action->flags)
 	{
 	case 0:	// Default paste.
 		v3270_clipboard_get_from_url(widget,NULL);
@@ -65,7 +65,7 @@
 		break;
 
 	default:
-		g_warning("Unexpected paste operation %u",(unsigned int) action->operation);
+		g_warning("Unexpected paste flags %u",(unsigned int) action->flags);
 	}
 
 	return 0;

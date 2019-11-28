@@ -32,6 +32,7 @@
  #include <internals.h>
  #include <terminal.h>
  #include <lib3270/actions.h>
+ #include <v3270/actions.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -98,8 +99,11 @@
 	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
 		return gettext(((LIB3270_ACTION *) accel->arg)->summary);
 
-	// case V3270_ACCELERATOR_TYPE_INTERNAL:
-	// case V3270_ACCELERATOR_TYPE_GTK_ACTION:
+	case V3270_ACCELERATOR_TYPE_INTERNAL:
+		return ((V3270_ACTION *) accel->arg)->summary;
+
+	case V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE:
+		return ((LIB3270_TOGGLE *) accel->arg)->summary;
 
 	}
 
@@ -117,7 +121,7 @@
 		return ((LIB3270_TOGGLE *) accel->arg)->name;
 
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
-		return ((struct InternalAction *) accel->arg)->name;
+		return ((V3270_ACTION *) accel->arg)->name;
 
 	case V3270_ACCELERATOR_TYPE_CUSTOM:
 		return ((V3270CustomAccelerator *) accel)->name;

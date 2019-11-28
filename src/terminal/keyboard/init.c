@@ -44,109 +44,6 @@
 	#define GDK_ALT_MASK GDK_MOD1_MASK
  #endif
 
-/*--[ Globals ]--------------------------------------------------------------------------------------*/
-
- static int fire_keypad_action(GtkWidget *widget, const struct InternalAction * action);
- static int fire_zoom_action(GtkWidget *widget, const struct InternalAction * action);
-
- static const struct InternalAction InternalActions[] =
- {
- 	{
- 		.name = "keypad-add",
- 		.key = GDK_KP_Add,
- 		.mods = GDK_NUMLOCK_MASK,
- 		.activate = G_CALLBACK(fire_keypad_action)
-	},
- 	{
- 		.name = "keypad-subtract",
- 		.key = GDK_KP_Subtract,
- 		.mods = GDK_NUMLOCK_MASK,
- 		.activate = G_CALLBACK(fire_keypad_action)
-	},
-
-	// Standard Clipboard actions
-	{
-		.operation = V3270_COPY_DEFAULT,
-		.name = "copy",
-		.key = 'c',
-		.mods = GDK_CONTROL_MASK,
- 		.activate = G_CALLBACK(fire_copy_accelerator)
-	},
-
-	{
-		.operation = V3270_COPY_APPEND,
-		.name = "copy-append",
-		.key = 'c',
-		.mods = GDK_ALT_MASK,
- 		.activate = G_CALLBACK(fire_copy_accelerator)
-	},
-
-	{
-		.operation = V3270_COPY_TEXT,
-		.name = "copy-text",
-		.key = 'c',
-		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
- 		.activate = G_CALLBACK(fire_copy_accelerator)
-	},
-
-	{
-		.operation = ACCEL_OPERATION_CUT|V3270_COPY_DEFAULT,
-		.name = "cut",
-		.key = 'x',
-		.mods = GDK_CONTROL_MASK,
- 		.activate = G_CALLBACK(fire_copy_accelerator)
-	},
-
-	{
-		.operation = ACCEL_OPERATION_CUT|V3270_COPY_APPEND,
-		.name = "cut-append",
-		.key = 'x',
-		.mods = GDK_ALT_MASK,
- 		.activate = G_CALLBACK(fire_copy_accelerator)
-	},
-
-	{
-		.operation = ACCEL_OPERATION_CUT|V3270_COPY_TEXT,
-		.name = "cut-text",
-		.key = 'x',
-		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
- 		.activate = G_CALLBACK(fire_copy_accelerator)
-	},
-
-	{
-		.operation = ACCEL_OPERATION_DEFAULT,
-		.name = "paste",
-		.key = 'v',
-		.mods = GDK_CONTROL_MASK,
- 		.activate = G_CALLBACK(fire_paste_accelerator)
-	},
-
- 	{
- 		.operation = 0,
- 		.name = "zoom-in",
- 		.key = GDK_KP_Add,
- 		.mods = GDK_CONTROL_MASK,
- 		.activate = G_CALLBACK(fire_zoom_action)
-	},
-
- 	{
- 		.operation = 1,
- 		.name = "zoom-out",
- 		.key = GDK_KP_Subtract,
- 		.mods = GDK_CONTROL_MASK,
- 		.activate = G_CALLBACK(fire_zoom_action)
-	},
-
- 	{
- 		.operation = 2,
- 		.name = "zoom-fit-best",
- 		.key = '0',
- 		.mods = GDK_CONTROL_MASK,
- 		.activate = G_CALLBACK(fire_zoom_action)
-	},
-
- };
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  static int fire_lib3270_action(GtkWidget *widget, const LIB3270_ACTION * action)
@@ -171,7 +68,7 @@
  	return lib3270_toggle(v3270_get_session(widget),action->id);
  }
 
- static int fire_keypad_action(GtkWidget *widget, const struct InternalAction * action)
+ int fire_keypad_action(GtkWidget *widget, const struct _v3270_action * action)
  {
  	int rc = 0;
  	debug("%s",__FUNCTION__);
@@ -190,12 +87,6 @@
 
 	return rc;
 
- }
-
- static int fire_zoom_action(GtkWidget *widget, const struct InternalAction * action)
- {
- 	debug("%s",__FUNCTION__);
- 	return 0;
  }
 
  void v3270_init_accelerators(v3270 *widget)
@@ -267,15 +158,17 @@
 	{
         size_t ix;
 
-        for(ix = 0 ; ix < G_N_ELEMENTS(InternalActions); ix++)
+		const V3270_ACTION * actions = v3270_get_actions();
+
+        for(ix = 0 ; actions[ix].name; ix++)
 		{
 			V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
 
 			accelerator->type 		= V3270_ACCELERATOR_TYPE_INTERNAL;
-			accelerator->arg 		= (gconstpointer) &InternalActions[ix];
-			accelerator->activate	= InternalActions[ix].activate;
-			accelerator->key		= InternalActions[ix].key;
-			accelerator->mods		= InternalActions[ix].mods;
+			accelerator->arg 		= (gconstpointer) &actions[ix];
+			accelerator->activate	= G_CALLBACK(actions[ix].activate);
+			accelerator->key		= actions[ix].key;
+			accelerator->mods		= actions[ix].mods;
 
 			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
 
