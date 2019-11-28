@@ -46,15 +46,71 @@
  static const struct InternalAction InternalActions[] =
  {
  	{
- 		GDK_KP_Add,
- 		GDK_NUMLOCK_MASK,
- 		G_CALLBACK(fire_keypad_action)
+ 		.name = "keypad-add",
+ 		.key = GDK_KP_Add,
+ 		.mods = GDK_NUMLOCK_MASK,
+ 		.activate = G_CALLBACK(fire_keypad_action)
 	},
  	{
- 		GDK_KP_Subtract,
- 		GDK_NUMLOCK_MASK,
- 		G_CALLBACK(fire_keypad_action)
-	}
+ 		.name = "keypad-subtract",
+ 		.key = GDK_KP_Subtract,
+ 		.mods = GDK_NUMLOCK_MASK,
+ 		.activate = G_CALLBACK(fire_keypad_action)
+	},
+
+	// Standard Clipboard actions
+	{
+		.operation = V3270_COPY_DEFAULT,
+		.name = "copy",
+		.key = 'c',
+		.mods = GDK_CONTROL_MASK,
+ 		.activate = G_CALLBACK(fire_copy_accelerator)
+	},
+
+	/*
+	{
+		.operation = V3270_COPY_APPEND,
+		.name = "copy-append",
+		.key = 'c',
+		.mods = GDK_CONTROL_MASK|GDK_ALT_MASK,
+ 		.activate = G_CALLBACK(fire_copy_accelerator)
+	},
+	*/
+
+	{
+		.operation = V3270_COPY_TEXT,
+		.name = "copy-text",
+		.key = 'c',
+		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
+ 		.activate = G_CALLBACK(fire_copy_accelerator)
+	},
+
+	{
+		.operation = ACCEL_OPERATION_CUT|V3270_COPY_DEFAULT,
+		.name = "cut",
+		.key = 'x',
+		.mods = GDK_CONTROL_MASK,
+ 		.activate = G_CALLBACK(fire_copy_accelerator)
+	},
+
+	/*
+	{
+		.operation = ACCEL_OPERATION_CUT|V3270_COPY_APPEND,
+		.name = "cut-append",
+		.key = 0,
+		.mods = 0,
+ 		.activate = G_CALLBACK(fire_copy_accelerator)
+	},
+	*/
+
+	{
+		.operation = ACCEL_OPERATION_DEFAULT,
+		.name = "paste",
+		.key = 'v',
+		.mods = GDK_CONTROL_MASK,
+ 		.activate = G_CALLBACK(fire_paste_accelerator)
+	},
+
  };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -159,6 +215,4 @@
 	v3270_accelerator_map_sort(widget);
 
  }
-
-
 

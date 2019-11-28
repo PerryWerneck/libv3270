@@ -174,8 +174,8 @@
 	}
 
 	// Set accelerators
-	v3270_accelerator_map_add_entry(terminal, "copy", 'c', GDK_CONTROL_MASK, G_CALLBACK(accel_copy), window);
-	v3270_accelerator_map_add_entry(terminal, "paste", 'v', GDK_CONTROL_MASK, G_CALLBACK(accel_paste), window);
+	// v3270_accelerator_map_add_entry(terminal, "copy", 'c', GDK_CONTROL_MASK, G_CALLBACK(accel_copy), window);
+	// v3270_accelerator_map_add_entry(terminal, "paste", 'v', GDK_CONTROL_MASK, G_CALLBACK(accel_paste), window);
 
 	// Create trace window
 	v3270_set_trace(terminal,TRUE);

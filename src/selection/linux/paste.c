@@ -240,11 +240,13 @@ LIB3270_EXPORT void v3270_clipboard_get_from_url(GtkWidget *widget, const gchar 
 
 LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
 {
+	debug("%s",__FUNCTION__);
 	v3270_clipboard_get_from_url(widget,NULL);
 }
 
 LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget)
 {
+	debug("%s",__FUNCTION__);
 	v3270_clipboard_get_from_url(widget,"text://");
 }
 

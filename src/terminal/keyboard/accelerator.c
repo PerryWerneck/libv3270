@@ -81,16 +81,8 @@
  {
 	GSList * ix;
 
-	debug("%s: %u %u",__FUNCTION__,(unsigned int) keyval, (unsigned int) state);
-
 	for(ix = GTK_V3270(widget)->accelerators; ix; ix = g_slist_next(ix))
 	{
-		debug(
-			"%s: %u %u",
-				v3270_accelerator_get_name((V3270Accelerator *) ix->data),
-				(unsigned int) ((V3270Accelerator *) ix->data)->key,
-				(unsigned int) ((V3270Accelerator *) ix->data)->mods
-		);
 		if(v3270_accelerator_compare((V3270Accelerator *) ix->data, keyval, state))
 			return (V3270Accelerator *) ix->data;
 	}
@@ -119,7 +111,10 @@
 	switch(accel->type)
 	{
 	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
-		return gettext(((LIB3270_ACTION *) accel->arg)->name);
+		return ((LIB3270_ACTION *) accel->arg)->name;
+
+	case V3270_ACCELERATOR_TYPE_INTERNAL:
+		return ((struct InternalAction *) accel->arg)->name;
 
 	case V3270_ACCELERATOR_TYPE_CUSTOM:
 		return ((V3270CustomAccelerator *) accel)->name;

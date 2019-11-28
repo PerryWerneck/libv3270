@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como - e possui - linhas de código.
+ * Este programa está nomeado como properties.c e possui - linhas de código.
  *
  * Contatos:
  *
@@ -27,30 +27,48 @@
  *
  */
 
- #include <config.h>
+ #include "private.h"
  #include <v3270.h>
- #include <v3270/actions.h>
- #include <internals.h>
+ #include <lib3270/trace.h>
+ #include <lib3270/log.h>
 
- enum
- {
- 	ACCEL_OPERATION_DEFAULT	= 0x00000000,
- 	ACCEL_OPERATION_CUT		= 0x10000000,
- };
+/*--[ Implement ]------------------------------------------------------------------------------------*/
 
- #define ACCEL_OPERATION_MASK (ACCEL_OPERATION_CUT|ACCEL_OPERATION_APPEND)
+ int fire_copy_accelerator(GtkWidget *widget, const struct InternalAction * action) {
 
- struct InternalAction
- {
- 	unsigned int		  operation;
- 	const gchar			* name;
-	guint           	  key;
-	GdkModifierType 	  mods;
-	GCallback			  activate;
- };
+	debug("%s",__FUNCTION__);
 
- G_GNUC_INTERNAL void v3270_accelerator_map_sort(v3270 *widget);
+	v3270_clipboard_set(
+		widget,
+		(action->operation & 0x0F),
+		(action->operation & ACCEL_OPERATION_CUT) != 0
+	);
 
- G_GNUC_INTERNAL int fire_copy_accelerator(GtkWidget *widget, const struct InternalAction * action);
- G_GNUC_INTERNAL int fire_paste_accelerator(GtkWidget *widget, const struct InternalAction * action);
+	return EINVAL;
+ }
+
+ int fire_paste_accelerator(GtkWidget *widget, const struct InternalAction * action) {
+
+
+	switch(action->operation)
+	{
+	case 0:	// Default paste.
+		v3270_clipboard_get_from_url(widget,NULL);
+		break;
+
+	case 1:	// Text paste.
+		v3270_clipboard_get_from_url(widget,"text://");
+		break;
+
+	case 2: // File paste.
+		v3270_clipboard_get_from_url(widget,"file://");
+		break;
+
+	default:
+		g_warning("Unexpected paste operation %u",(unsigned int) action->operation);
+	}
+
+	return 0;
+ }
+
 
