@@ -32,8 +32,8 @@
  #include <v3270/actions.h>
  #include <internals.h>
 
- G_GNUC_INTERNAL int fire_copy_accelerator(GtkWidget *widget, const struct _v3270_action * action);
- G_GNUC_INTERNAL int fire_paste_accelerator(GtkWidget *widget, const struct _v3270_action * action);
- G_GNUC_INTERNAL int fire_zoom_action(GtkWidget *widget, const struct _v3270_action * action);
- G_GNUC_INTERNAL int fire_keypad_action(GtkWidget *widget, const struct _v3270_action * action);
+ G_GNUC_INTERNAL int fire_copy_accelerator(const V3270_ACTION *action, GtkWidget *widget);
+ G_GNUC_INTERNAL int fire_paste_accelerator(const V3270_ACTION *action, GtkWidget *widget);
+ G_GNUC_INTERNAL int fire_zoom_action(const V3270_ACTION *action, GtkWidget *widget);
+ G_GNUC_INTERNAL int fire_keypad_action(const V3270_ACTION *action, GtkWidget *widget);
 

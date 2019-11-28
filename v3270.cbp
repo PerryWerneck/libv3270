@@ -222,8 +222,14 @@
 		<Unit filename="src/terminal/actions.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/actions/clipboard.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/actions/private.h" />
 		<Unit filename="src/terminal/actions/table.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/actions/zoom.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/blink.c">
@@ -275,9 +281,6 @@
 		<Unit filename="src/terminal/keyboard/accelerator.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/terminal/keyboard/clipboard.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/terminal/keyboard/init.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -285,9 +288,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/keyboard/private.h" />
-		<Unit filename="src/terminal/keyboard/zoom.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/terminal/keyfile.c">
 			<Option compilerVar="CC" />
 		</Unit>

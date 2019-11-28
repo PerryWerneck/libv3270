@@ -120,14 +120,6 @@
 
 #endif // _WIN32
 
- static void accel_copy(GtkWidget *widget, GtkWidget *window) {
- 	debug("%s",__FUNCTION__);
- }
-
- static void accel_paste(GtkWidget *widget, GtkWidget *window) {
- 	debug("%s",__FUNCTION__);
- }
-
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
@@ -172,10 +164,6 @@
 #endif // _WIN32
 
 	}
-
-	// Set accelerators
-	// v3270_accelerator_map_add_entry(terminal, "copy", 'c', GDK_CONTROL_MASK, G_CALLBACK(accel_copy), window);
-	// v3270_accelerator_map_add_entry(terminal, "paste", 'v', GDK_CONTROL_MASK, G_CALLBACK(accel_paste), window);
 
 	// Create trace window
 	v3270_set_trace(terminal,TRUE);

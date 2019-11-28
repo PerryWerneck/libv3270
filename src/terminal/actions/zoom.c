@@ -34,11 +34,11 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- int fire_zoom_action(GtkWidget *widget, const V3270_ACTION * action) {
+ int fire_zoom_action(const V3270_ACTION *action, GtkWidget *widget) {
 
  	debug("%s",__FUNCTION__);
 
-	switch(action->flags)
+	switch( ((int) action->flags) )
 	{
 	case 0:	// Zoom in
 		v3270_zoom_in(widget);

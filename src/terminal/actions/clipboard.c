@@ -34,7 +34,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- int fire_copy_accelerator(GtkWidget *widget, const V3270_ACTION * action) {
+ int fire_copy_accelerator(const V3270_ACTION * action, GtkWidget *widget) {
 
 	debug("%s",__FUNCTION__);
 
@@ -47,7 +47,7 @@
 	return EINVAL;
  }
 
- int fire_paste_accelerator(GtkWidget *widget, const V3270_ACTION * action) {
+ int fire_paste_accelerator(const V3270_ACTION * action, GtkWidget *widget) {
 
 
 	switch((int) action->flags)

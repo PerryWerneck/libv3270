@@ -52,7 +52,7 @@
 		guint           	  key;
 		GdkModifierType 	  mods;
 
-		int (*activate)(GtkWidget *widget, const struct _v3270_action *action);
+		int (*activate)(const struct _v3270_action *action, GtkWidget *widget);
 
 	} V3270_ACTION;
 
