@@ -79,11 +79,20 @@
 
  const V3270Accelerator * v3270_get_accelerator(GtkWidget *widget, guint keyval, GdkModifierType state)
  {
-	GSList * acccelerator;
-	for(acccelerator = GTK_V3270(widget)->accelerators; acccelerator; acccelerator = g_slist_next(acccelerator))
+	GSList * ix;
+
+	debug("%s: %u %u",__FUNCTION__,(unsigned int) keyval, (unsigned int) state);
+
+	for(ix = GTK_V3270(widget)->accelerators; ix; ix = g_slist_next(ix))
 	{
-		if(v3270_accelerator_compare((V3270Accelerator *) acccelerator->data, keyval, state))
-			return (V3270Accelerator *) acccelerator->data;
+		debug(
+			"%s: %u %u",
+				v3270_accelerator_get_name((V3270Accelerator *) ix->data),
+				(unsigned int) ((V3270Accelerator *) ix->data)->key,
+				(unsigned int) ((V3270Accelerator *) ix->data)->mods
+		);
+		if(v3270_accelerator_compare((V3270Accelerator *) ix->data, keyval, state))
+			return (V3270Accelerator *) ix->data;
 	}
 
 	return NULL;
@@ -112,8 +121,8 @@
 	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
 		return gettext(((LIB3270_ACTION *) accel->arg)->name);
 
-	// case V3270_ACCELERATOR_TYPE_INTERNAL:
-	// case V3270_ACCELERATOR_TYPE_GTK_ACTION:
+	case V3270_ACCELERATOR_TYPE_CUSTOM:
+		return ((V3270CustomAccelerator *) accel)->name;
 
 	}
 
@@ -140,9 +149,11 @@
 					if(str->str[0])
 						g_string_append(str," ");
 
-					g_autofree gchar * keyname = gtk_accelerator_name(accel->key,accel->mods);
-					g_string_append(str,keyname);
-
+					if(accel->key)
+					{
+						g_autofree gchar * keyname = gtk_accelerator_name(accel->key,accel->mods);
+						g_string_append(str,keyname);
+					}
 
 				}
 
@@ -157,7 +168,65 @@
 
  }
 
- LIB3270_EXPORT gchar * v3270_accelerator_get_label(const V3270Accelerator * accel)
+ gchar * v3270_accelerator_get_label(const V3270Accelerator * accel)
  {
     return gtk_accelerator_get_label(accel->key,accel->mods);
+ }
+
+ V3270Accelerator * v3270_accelerator_map_add_entry(GtkWidget *widget, const gchar *name, guint accel_key, GdkModifierType accel_mods, GCallback callback, gpointer data)
+ {
+	GSList				* ix;
+ 	v3270 				* terminal = GTK_V3270(widget);
+	V3270Accelerator	* accel = NULL;
+
+	// Find accel by name
+	for(ix = terminal->accelerators; ix; ix = g_slist_next(ix))
+	{
+		const gchar * nm = v3270_accelerator_get_name((V3270Accelerator *) ix->data);
+		if(nm && !g_ascii_strcasecmp(name,nm))
+		{
+			accel = (V3270Accelerator *) ix->data;
+			break;
+		}
+	}
+
+	if(!accel)
+	{
+		// Not found, create a custom accelerator.
+		debug("%s: Adding accelerator %s",__FUNCTION__,name);
+
+		V3270CustomAccelerator *customAccel = g_new0(V3270CustomAccelerator,1);
+
+		customAccel->parent.type	= V3270_ACCELERATOR_TYPE_CUSTOM;
+		customAccel->name			= name;
+
+		terminal->accelerators = g_slist_prepend(terminal->accelerators,customAccel);
+
+		accel = (V3270Accelerator *) customAccel;
+	}
+
+	accel->arg 		= data;
+	accel->activate	= callback;
+	accel->key		= accel_key;
+	accel->mods		= accel_mods;
+
+	// Any other accell in the same key? If yes, clear it.
+	for(ix = terminal->accelerators; ix; ix = g_slist_next(ix))
+	{
+		V3270Accelerator * acc = (V3270Accelerator *) ix->data;
+		if((acc == accel) || !(acc->key == accel->key && acc->mods == accel->mods))
+			continue;
+
+		debug("Resetting accelerator \"%s\"",v3270_accelerator_get_name(acc));
+
+		acc->key 	= 0;
+		acc->mods	= 0;
+
+	}
+
+	// Sort!
+	v3270_accelerator_map_sort(terminal);
+
+	return accel;
+
  }

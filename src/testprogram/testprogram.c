@@ -40,7 +40,9 @@
  #include <v3270/settings.h>
  #include <v3270/trace.h>
  #include <lib3270/log.h>
+ #include <v3270/actions.h>
  #include <stdlib.h>
+ #include <gdk/gdkkeysyms-compat.h>
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -118,6 +120,13 @@
 
 #endif // _WIN32
 
+ static void accel_copy(GtkWidget *widget, GtkWidget *window) {
+ 	debug("%s",__FUNCTION__);
+ }
+
+ static void accel_paste(GtkWidget *widget, GtkWidget *window) {
+ 	debug("%s",__FUNCTION__);
+ }
 
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
@@ -164,15 +173,12 @@
 
 	}
 
+	// Set accelerators
+	v3270_accelerator_map_add_entry(terminal, "copy", 'c', GDK_CONTROL_MASK, G_CALLBACK(accel_copy), window);
+	v3270_accelerator_map_add_entry(terminal, "paste", 'v', GDK_CONTROL_MASK, G_CALLBACK(accel_paste), window);
+
 	// Create trace window
 	v3270_set_trace(terminal,TRUE);
-
-	/*
-	GtkWidget *trace = v3270_trace_new(terminal);
-	debug("Trace=%p",trace);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),trace,gtk_label_new("Trace"));
-	// v3270_trace_window_new(terminal,NULL);
-	*/
 
 	// Setup and show main window
 	gtk_window_set_title(GTK_WINDOW(window),v3270_get_session_title(terminal));

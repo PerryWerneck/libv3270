@@ -53,7 +53,7 @@
 		((struct Args *) ptr)->key_file,
 		((struct Args *) ptr)->group_name,
 		key,
-		keys
+		(keys ? keys : "")
 	);
 
  }
