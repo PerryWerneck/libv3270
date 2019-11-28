@@ -106,6 +106,14 @@
 	},
 
 	{
+		.operation = ACCEL_OPERATION_CUT|V3270_COPY_TEXT,
+		.name = "cut-text",
+		.key = 'x',
+		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
+ 		.activate = G_CALLBACK(fire_copy_accelerator)
+	},
+
+	{
 		.operation = ACCEL_OPERATION_DEFAULT,
 		.name = "paste",
 		.key = 'v',
