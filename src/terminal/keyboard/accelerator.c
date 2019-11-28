@@ -113,6 +113,9 @@
 	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
 		return ((LIB3270_ACTION *) accel->arg)->name;
 
+	case V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE:
+		return ((LIB3270_TOGGLE *) accel->arg)->name;
+
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
 		return ((struct InternalAction *) accel->arg)->name;
 

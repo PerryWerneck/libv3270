@@ -148,6 +148,7 @@
  {
  	V3270_ACCELERATOR_TYPE_INTERNAL,			///< @brief Accelerator is internal.
  	V3270_ACCELERATOR_TYPE_LIB3270_ACTION,		///< @brief Accelerator is a lib3270 action.
+ 	V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE,		///< @brief Accelerator is a lib3270 toggle.
  	V3270_ACCELERATOR_TYPE_CUSTOM,				///< @brief Custom (application based) accelerator.
  };
 

@@ -34,6 +34,7 @@
  #include <lib3270/actions.h>
  #include <gdk/gdkkeysyms-compat.h>
  #include <v3270/actions.h>
+ #include <lib3270/toggle.h>
 
  #ifndef GDK_NUMLOCK_MASK
 	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
@@ -111,6 +112,13 @@
  		.activate = G_CALLBACK(fire_paste_accelerator)
 	},
 
+	/*
+	<accelerator action='zoom' mode='in' key='<ctrl>KP_Add' group='online' />
+	<accelerator action='zoom' mode='out' key='<ctrl>KP_Subtract' group='online' />
+	<accelerator action='zoom' mode='fit' key='<ctrl>0' group='online' />
+	*/
+
+
  };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -129,6 +137,12 @@
 	debug("%s(%s)=%d %s",__FUNCTION__,action->name,rc,strerror(rc));
 	return rc;
 
+ }
+
+ static int fire_lib3270_toggle(GtkWidget *widget, const LIB3270_TOGGLE * action)
+ {
+    debug("%s(%s)",__FUNCTION__,action->name);
+ 	return lib3270_toggle(v3270_get_session(widget),action->id);
  }
 
  static int fire_keypad_action(GtkWidget *widget, const struct InternalAction * action)
@@ -189,6 +203,30 @@
 
 			}
 
+		}
+
+	}
+
+	// Create accelerators for lib3270 toggles.
+	{
+		const LIB3270_TOGGLE * toggles = lib3270_get_toggles();
+		size_t ix;
+
+		for(ix = 0; toggles[ix].name; ix++)
+		{
+			if(toggles[ix].key)
+			{
+				V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
+
+				accelerator->type 		= V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE;
+				accelerator->arg 		= (gconstpointer) &toggles[ix];
+				accelerator->activate	= G_CALLBACK(fire_lib3270_toggle);
+
+				gtk_accelerator_parse(toggles[ix].key,&accelerator->key,&accelerator->mods);
+
+				widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+
+			}
 		}
 
 	}
