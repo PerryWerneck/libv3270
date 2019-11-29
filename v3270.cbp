@@ -272,6 +272,9 @@
 		<Unit filename="src/terminal/font/properties.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/font/translate.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/get.c">
 			<Option compilerVar="CC" />
 		</Unit>

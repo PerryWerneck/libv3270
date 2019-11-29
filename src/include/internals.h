@@ -142,6 +142,8 @@
  /// @brief Add current lib3270 selection to a list
  G_GNUC_INTERNAL GList			* g_list_append_lib3270_selection(GList *list, H3270 *hSession, gboolean all);
 
+ G_GNUC_INTERNAL const gchar 	* v3270_translate_cg_to_utf(unsigned char chr);
+
 /*--[ Internal Widgets & Tools ]---------------------------------------------------------------------*/
 
  enum

@@ -257,8 +257,6 @@ static void draw_small_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo
 
 static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, GdkRectangle *rect)
 {
-	size_t ix;
-
 	// 0x00 is always blank.
 	if(!chr)
 		return TRUE;
@@ -277,6 +275,7 @@ static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, Gdk
 		return TRUE;
 	}
 
+	/*
 	// Check for UTF-8 CG - https://unicode.org/charts/PDF/U2300.pdf
 	static const struct CharList
 	{
@@ -292,15 +291,14 @@ static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, Gdk
 		{ 0xb8, "÷"	}, // Division Sign ÷
 		{ 0x90, "⎕"	}, // APL FUNCTIONAL SYMBOL QUAD
 	};
+	*/
 
+	const gchar * utf =  v3270_translate_cg_to_utf(chr);
 
-	for(ix = 0; ix < G_N_ELEMENTS(charlist); ix++)
+	if(utf)
 	{
-		if(chr == charlist[ix].chr)
-		{
-			v3270_draw_text(cr,rect,font,charlist[ix].utf);
-			return TRUE;
-		}
+		v3270_draw_text(cr,rect,font,utf);
+		return TRUE;
 	}
 
 	debug("%s: Unknown char 0x%02x",__FUNCTION__,(int) chr);
@@ -410,10 +408,18 @@ void v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 
 			cairo_rel_line_to(cr,rect->width,0);
 			break;
 
+		case 0x90: // APL FUNCTIONAL SYMBOL QUAD
+			cairo_rectangle(cr, rect->x+1, rect->y+1, rect->width-2, rect->height-2);
+			break;
+
 		default:
 
 			if(!draw_cg(cr, chr, font, rect))
+			{
 				lib3270_write_screen_trace(session,"I don't known how to draw CG character %02x\n",(int) chr);
+				cairo_rectangle(cr, rect->x+1, rect->y+1, rect->width-2, rect->height-2);
+
+			}
 
 		}
 	}

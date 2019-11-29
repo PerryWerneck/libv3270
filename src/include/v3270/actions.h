@@ -43,18 +43,20 @@
 		V3270_ACTION_FLAG_CUT		= 0x10000000,
 	} V3270_ACTION_FLAGS;
 
-	typedef struct _v3270_action
+	typedef struct _v3270_action V3270_ACTION;
+
+	struct _v3270_action
 	{
 		LIB3270_PROPERTY_HEAD
 
-		V3270_ACTION_FLAGS	  flags;	///< @brief (The flags for activation.
+		V3270_ACTION_FLAGS	  flags;	///< @brief (The flags for activation).
 
 		guint           	  key;
 		GdkModifierType 	  mods;
 
-		int (*activate)(const struct _v3270_action *action, GtkWidget *widget);
+		int (*activate)(GtkWidget *widget, const V3270_ACTION *action);
 
-	} V3270_ACTION;
+	};
 
 
 	///

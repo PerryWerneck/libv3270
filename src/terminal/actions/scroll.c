@@ -34,6 +34,7 @@
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
  #include <gdk/gdkkeysyms-compat.h>
+ #include <lib3270/selection.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -92,6 +93,9 @@ gboolean v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		case GDK_SCROLL_RIGHT:
 			lib3270_move_selection(terminal->host,LIB3270_DIR_RIGHT);
 			return TRUE;
+
+		case GDK_SCROLL_SMOOTH:
+			return FALSE;
         }
 
 	}
