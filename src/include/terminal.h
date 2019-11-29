@@ -221,7 +221,11 @@ G_BEGIN_DECLS
 	GSList * accelerators;									///< @brief Keyboard accelerators.
 
 	// Scroll actions.
-	GtkAction * scroll[4];									///< @brief Scroll actions.
+	struct
+	{
+		void (*activate)(GtkWidget *, gpointer);			///< @brief Callback for scroll activation.
+		gpointer arg;										///< @brief Argument for callback.
+	} scroll[4];											///< @brief Scroll actions.
 
  };
 

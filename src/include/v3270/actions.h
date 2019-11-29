@@ -70,6 +70,8 @@
 	//
 	// Misc
 	//
+	LIB3270_EXPORT void			v3270_set_scroll_handler(GtkWidget *widget, GdkScrollDirection direction, GCallback callback, gpointer data);
+
 	LIB3270_EXPORT void			v3270_set_scroll_action(GtkWidget *widget, GdkScrollDirection direction, GtkAction *action) G_GNUC_DEPRECATED;
 
 	//

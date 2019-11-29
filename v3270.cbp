@@ -226,6 +226,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/actions/private.h" />
+		<Unit filename="src/terminal/actions/scroll.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/actions/table.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -306,9 +309,6 @@
 		</Unit>
 		<Unit filename="src/terminal/properties/private.h" />
 		<Unit filename="src/terminal/properties/set.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/terminal/scroll.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/terminal/security.c">
