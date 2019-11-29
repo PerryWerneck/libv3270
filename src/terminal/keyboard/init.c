@@ -46,7 +46,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- static int fire_lib3270_action(const LIB3270_ACTION * action, GtkWidget *widget)
+ static int fire_lib3270_action(GtkWidget *widget, const LIB3270_ACTION * action)
  {
  	int rc = EPERM;
 
@@ -62,13 +62,13 @@
 
  }
 
- static int fire_lib3270_toggle(const LIB3270_TOGGLE * action, GtkWidget *widget)
+ static int fire_lib3270_toggle(GtkWidget *widget, const LIB3270_TOGGLE * action)
  {
     debug("%s(%s)",__FUNCTION__,action->name);
  	return lib3270_toggle(v3270_get_session(widget),action->id);
  }
 
- int fire_keypad_action(const struct _v3270_action * action, GtkWidget *widget)
+ int fire_keypad_action(GtkWidget *widget, const struct _v3270_action * action)
  {
  	int rc = 0;
  	debug("%s",__FUNCTION__);

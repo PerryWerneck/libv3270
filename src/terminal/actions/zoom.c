@@ -34,7 +34,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- int fire_zoom_action(const V3270_ACTION *action, GtkWidget *widget) {
+ int fire_zoom_action(GtkWidget *widget, const V3270_ACTION *action) {
 
  	debug("%s",__FUNCTION__);
 

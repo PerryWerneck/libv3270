@@ -71,7 +71,7 @@
 
  void v3270_accelerator_activate(const V3270Accelerator * acel, GtkWidget *terminal)
  {
- 	int rc = ((int (*)(gconstpointer, GtkWidget *)) acel->activate)(acel->arg,terminal);
+ 	int rc = ((int (*)(GtkWidget *, gconstpointer)) acel->activate)(terminal, acel->arg);
 
  	if(rc)
 		gdk_display_beep(gdk_display_get_default());
