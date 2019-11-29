@@ -257,23 +257,11 @@ static void draw_small_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo
 
 static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, GdkRectangle *rect)
 {
-	// https://unicode.org/charts/PDF/U2300.pdf
-	static const struct CharList
-	{
-		unsigned char chr;
-		const gchar * utf;
-	} charlist[] =
-	{
-		{ 0x8c, "≤" }, // CG 0xf7, less or equal "≤"
-		{ 0xae, "≥" }, // CG 0xd9, greater or equal "≥"
-		{ 0xbe, "≠" }, // CG 0x3e, not equal "≠"
-		{ 0xad, "[" }, // "["
-		{ 0xbd, "]" }, // "]"
-		{ 0xb8, "÷"	}, // Division Sign ÷
-
-	};
-
 	size_t ix;
+
+	// 0x00 is always blank.
+	if(!chr)
+		return TRUE;
 
 	if(chr >= 0xf0 && chr <= 0xf9)
 	{
@@ -288,6 +276,23 @@ static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, Gdk
 		draw_small_text(cr, rect, font, str, 1);
 		return TRUE;
 	}
+
+	// Check for UTF-8 CG - https://unicode.org/charts/PDF/U2300.pdf
+	static const struct CharList
+	{
+		unsigned char chr;
+		const gchar * utf;
+	} charlist[] =
+	{
+		{ 0x8c, "≤" }, // CG 0xf7, less or equal "≤"
+		{ 0xae, "≥" }, // CG 0xd9, greater or equal "≥"
+		{ 0xbe, "≠" }, // CG 0xbe, not equal "≠"
+		{ 0xad, "[" }, // "["
+		{ 0xbd, "]" }, // "]"
+		{ 0xb8, "÷"	}, // Division Sign ÷
+		{ 0x90, "⎕"	}, // APL FUNCTIONAL SYMBOL QUAD
+	};
+
 
 	for(ix = 0; ix < G_N_ELEMENTS(charlist); ix++)
 	{
@@ -333,6 +338,7 @@ void v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 
 	else if(attr & LIB3270_ATTR_CG)
 	{
 
+		//http://www.prycroft6.com.au/misc/3270eds.html
 		switch(chr)
 		{
 		case 0xd3: // CG 0xab, plus
@@ -407,10 +413,7 @@ void v3270_draw_char(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 
 		default:
 
 			if(!draw_cg(cr, chr, font, rect))
-			{
 				lib3270_write_screen_trace(session,"I don't known how to draw CG character %02x\n",(int) chr);
-				cairo_rectangle(cr, rect->x+1, rect->y+1, rect->width-2, rect->height-2);
-			}
 
 		}
 	}
