@@ -29,6 +29,7 @@
 
  #include <config.h>
  #include <gtk/gtk.h>
+ #include <terminal.h>
  #include "private.h"
 
  //#include <v3270/actions.h>
@@ -65,4 +66,94 @@
 	g_key_file_remove_group(key_file,group_name,NULL);
 	v3270_accelerator_map_foreach(GTK_WIDGET(widget),save_accelerator,&args);
 
+ }
+
+ void v3270_accelerator_map_set_entry(v3270 *terminal, const gchar *name, const gchar *keys)
+ {
+	V3270Accelerator * accel = NULL;
+
+	// Find accelerator by name
+	{
+		GSList * ix = terminal->accelerators;
+
+		while(ix)
+		{
+			const gchar *accel_name = v3270_accelerator_get_name((V3270Accelerator *) ix->data);
+
+			if(accel_name && !g_ascii_strcasecmp(accel_name,name))
+			{
+				// It's the same name, steal it.
+				if(!accel)
+					accel = (V3270Accelerator *) ix->data;
+				else
+					g_free(ix->data);
+
+				terminal->accelerators = g_slist_remove_link(terminal->accelerators, ix);
+				ix = terminal->accelerators;
+
+			}
+			else
+			{
+				// Not the same name, get the next one.
+				ix = g_slist_next(ix);
+			}
+		}
+
+	}
+
+	if(!accel)
+	{
+		debug("Can't find accelerator \"%s\"",name);
+		g_warning("Can't find accelerator \"%s\"",name);
+		return;
+	}
+
+	debug("Recreating accelerators for action \"%s\"",v3270_accelerator_get_name(accel));
+
+	{
+		size_t ix;
+		gchar ** keycodes = g_strsplit(keys,",",-1);
+
+		for(ix=0;keycodes[ix];ix++)
+		{
+			V3270Accelerator * acc = v3270_accelerator_copy(accel);
+			gtk_accelerator_parse(keycodes[ix],&acc->key,&acc->mods);
+			terminal->accelerators = g_slist_prepend(terminal->accelerators,acc);
+		}
+
+		g_strfreev(keycodes);
+	}
+
+	g_free(accel);
+ }
+
+ gboolean v3270_accelerator_map_load_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name)
+ {
+ 	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
+
+ 	if(!group_name)
+		group_name = "accelerators";
+
+ 	v3270 * terminal = GTK_V3270(widget);
+
+ 	gchar **keys = g_key_file_get_keys(key_file,group_name,NULL,NULL);
+
+	if(!keys)
+		return FALSE;
+
+	size_t ix;
+	for(ix = 0; keys[ix]; ix++)
+	{
+		g_autofree gchar * value = g_key_file_get_string(key_file, group_name, keys[ix],NULL);
+
+		if(value)
+			v3270_accelerator_map_set_entry(terminal,keys[ix],value);
+
+	}
+
+	g_strfreev(keys);
+
+	v3270_accelerator_map_sort(terminal);
+
+ 	return TRUE;
  }

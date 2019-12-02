@@ -32,6 +32,7 @@
  #include <v3270/actions.h>
  #include <internals.h>
 
-  G_GNUC_INTERNAL void v3270_accelerator_map_sort(v3270 *widget);
+  G_GNUC_INTERNAL void				  v3270_accelerator_map_sort(v3270 *widget);
+  G_GNUC_INTERNAL V3270Accelerator	* v3270_accelerator_copy(const V3270Accelerator *accel);
 
 

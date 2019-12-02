@@ -129,7 +129,9 @@
 				{
 					if(ix)
 						g_string_append_c(str,';');
-					g_string_append_printf(str,"%s",gdk_rgba_to_string(v3270_get_color(GTK_WIDGET(object),ix)));
+
+					g_autofree gchar * rgb = gdk_rgba_to_string(v3270_get_color(GTK_WIDGET(object),ix));
+					g_string_append(str,rgb);
 				}
 
 				g_value_take_string(value,g_string_free(str,FALSE));

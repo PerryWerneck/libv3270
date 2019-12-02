@@ -195,7 +195,7 @@
 	switch(pspec->value_type)
 	{
 	case G_TYPE_STRING:
-		g_value_set_string(&value, g_key_file_get_string(key_file,group_name,name,NULL));
+		g_value_take_string(&value, g_key_file_get_string(key_file,group_name,name,NULL));
 		break;
 
 	case G_TYPE_BOOLEAN:
@@ -254,6 +254,9 @@
 
 	v3270 		* terminal	= GTK_V3270(widget);
 	v3270Class	* klass		= GTK_V3270_GET_CLASS(widget);
+
+	if(!group_name)
+		group_name = "terminal";
 
 	g_object_freeze_notify(G_OBJECT(widget));
 

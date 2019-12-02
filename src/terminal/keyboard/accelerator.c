@@ -43,6 +43,26 @@
 	return a->arg - b->arg;
  }
 
+ V3270Accelerator * v3270_accelerator_copy(const V3270Accelerator *accel)
+ {
+ 	V3270Accelerator * rc = NULL;
+
+ 	if(accel->type == V3270_ACCELERATOR_TYPE_CUSTOM)
+	{
+		V3270CustomAccelerator * customAccel = g_new0(V3270CustomAccelerator,1);
+		*customAccel = *((V3270CustomAccelerator *) accel);
+		rc = (V3270Accelerator *) customAccel;
+	}
+	else
+	{
+		rc = g_new0(V3270Accelerator,1);
+		*rc = *accel;
+	}
+
+ 	return rc;
+ }
+
+
  void v3270_accelerator_map_reset(GtkWidget *widget)
  {
  	v3270 * terminal = GTK_V3270(widget);
@@ -166,7 +186,7 @@
 
 		}
 
-		g_string_free(str,FALSE);
+		g_string_free(str,TRUE);
 
  }
 

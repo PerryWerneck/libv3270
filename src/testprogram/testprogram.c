@@ -159,7 +159,9 @@
 #else
 		debug("%s: Loading settings...",__FUNCTION__);
 		GKeyFile * key_file = get_key_file();
-		v3270_load_key_file(terminal,key_file,"terminal");
+		v3270_load_key_file(terminal,key_file,NULL);
+		v3270_accelerator_map_load_key_file(terminal,key_file,NULL);
+
 		g_key_file_free(key_file);
 #endif // _WIN32
 
@@ -169,7 +171,8 @@
 	v3270_set_trace(terminal,TRUE);
 
 	// Setup and show main window
-	gtk_window_set_title(GTK_WINDOW(window),v3270_get_session_title(terminal));
+	g_autofree gchar * title = v3270_get_session_title(terminal);
+	gtk_window_set_title(GTK_WINDOW(window),title);
 	gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
 	gtk_container_add(GTK_CONTAINER(window),vBox);
