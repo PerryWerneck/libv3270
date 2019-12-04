@@ -257,8 +257,8 @@ static void draw_small_text(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo
 
 static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, GdkRectangle *rect)
 {
-	// 0x00 is always blank.
-	if(!chr)
+	// 0x00 & 0x20 are both blank.
+	if(!chr || chr == 0x20)
 		return TRUE;
 
 	if(chr >= 0xf0 && chr <= 0xf9)
@@ -274,24 +274,6 @@ static gboolean draw_cg(cairo_t *cr, unsigned char chr, v3270FontInfo *font, Gdk
 		draw_small_text(cr, rect, font, str, 1);
 		return TRUE;
 	}
-
-	/*
-	// Check for UTF-8 CG - https://unicode.org/charts/PDF/U2300.pdf
-	static const struct CharList
-	{
-		unsigned char chr;
-		const gchar * utf;
-	} charlist[] =
-	{
-		{ 0x8c, "≤" }, // CG 0xf7, less or equal "≤"
-		{ 0xae, "≥" }, // CG 0xd9, greater or equal "≥"
-		{ 0xbe, "≠" }, // CG 0xbe, not equal "≠"
-		{ 0xad, "[" }, // "["
-		{ 0xbd, "]" }, // "]"
-		{ 0xb8, "÷"	}, // Division Sign ÷
-		{ 0x90, "⎕"	}, // APL FUNCTIONAL SYMBOL QUAD
-	};
-	*/
 
 	const gchar * utf =  v3270_translate_cg_to_utf(chr);
 
