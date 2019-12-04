@@ -145,6 +145,7 @@
 				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 				GTK_MESSAGE_INFO,
 				GTK_BUTTONS_NONE,
+				"%s",
 				summary
 			);
 
