@@ -151,6 +151,7 @@
  	V3270_ACCELERATOR_TYPE_INTERNAL,			///< @brief Accelerator is internal.
  	V3270_ACCELERATOR_TYPE_LIB3270_ACTION,		///< @brief Accelerator is a lib3270 action.
  	V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE,		///< @brief Accelerator is a lib3270 toggle.
+ 	V3270_ACCELERATOR_TYPE_PFKEY,				///< @brief Accelerator is a PFKey redirector.
  	V3270_ACCELERATOR_TYPE_CUSTOM,				///< @brief Custom (application based) accelerator.
  };
 
@@ -168,6 +169,13 @@
  	struct _V3270Accelerator parent;
  	const gchar *name;
  } V3270CustomAccelerator;
+
+ typedef struct _V3270PFKeyAccelerator
+ {
+ 	struct _V3270Accelerator parent;
+ 	const gchar *name;
+ 	unsigned short keycode;
+ } V3270PFKeyAccelerator;
 
  typedef enum v3270_toggleable_dialog
  {

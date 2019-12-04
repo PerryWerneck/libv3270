@@ -30,9 +30,8 @@
  #include <config.h>
  #include <gtk/gtk.h>
  #include <terminal.h>
+ #include <lib3270/actions.h>
  #include "private.h"
-
- //#include <v3270/actions.h>
 
  struct Args
  {
@@ -44,18 +43,37 @@
 
  static void save_accelerator(const V3270Accelerator * accel, const char *keys, gpointer ptr)
  {
- 	const gchar * key = v3270_accelerator_get_name(accel);
- 	if(!key)
-		return;
 
-	debug("%s=%s",v3270_accelerator_get_name(accel),keys);
+ 	if(accel->type == V3270_ACCELERATOR_TYPE_PFKEY)
+	{
+		// It's a PF-Key action!
+		g_autofree gchar * key = g_strdup_printf("pf%u",((V3270PFKeyAccelerator *)accel)->keycode);
 
-	g_key_file_set_string(
-		((struct Args *) ptr)->key_file,
-		((struct Args *) ptr)->group_name,
-		key,
-		(keys ? keys : "")
-	);
+		debug("%s=%s",((V3270PFKeyAccelerator *)accel)->name,key);
+
+		g_key_file_set_string(
+			((struct Args *) ptr)->key_file,
+			((struct Args *) ptr)->group_name,
+			((V3270PFKeyAccelerator *)accel)->name,
+			key
+		);
+
+	}
+ 	else
+	{
+		const gchar * key = v3270_accelerator_get_name(accel);
+		if(!key)
+			return;
+
+		debug("%s=%s",v3270_accelerator_get_name(accel),keys);
+
+		g_key_file_set_string(
+			((struct Args *) ptr)->key_file,
+			((struct Args *) ptr)->group_name,
+			key,
+			(keys ? keys : "")
+		);
+	}
 
  }
 
@@ -66,6 +84,11 @@
 	g_key_file_remove_group(key_file,group_name,NULL);
 	v3270_accelerator_map_foreach(GTK_WIDGET(widget),save_accelerator,&args);
 
+ }
+
+ static int fire_pfkey_action(GtkWidget *widget, V3270PFKeyAccelerator *accel)
+ {
+ 	return lib3270_pfkey(v3270_get_session(widget),(int) accel->keycode);
  }
 
  void v3270_accelerator_map_set_entry(v3270 *terminal, const gchar *name, const gchar *keys)
@@ -103,8 +126,47 @@
 
 	if(!accel)
 	{
-		debug("Can't find accelerator \"%s\"",name);
-		g_warning("Can't find accelerator \"%s\"",name);
+		// Is a special PFKey action?
+
+		// Page_Down=pf8
+
+		unsigned int pfkey = 0;
+
+		if(sscanf(keys,"pf%u",&pfkey) == 1)
+		{
+			guint key;
+			GdkModifierType mods;
+
+			debug("Creating special accelerator for PF%u",pfkey);
+
+			gtk_accelerator_parse(name,&key,&mods);
+
+			if(!key)
+			{
+				g_warning("Can't parse accelerator %s",name);
+				return;
+			}
+
+			// Remap PFKey accelerator
+			V3270PFKeyAccelerator *pfAccel  = g_new0(V3270PFKeyAccelerator,1);
+
+			pfAccel->keycode			= (unsigned short) pfkey;
+			pfAccel->name				= g_intern_string(name);
+			pfAccel->parent.type		= V3270_ACCELERATOR_TYPE_PFKEY;
+			pfAccel->parent.key			= key;
+			pfAccel->parent.mods		= mods;
+			pfAccel->parent.arg			= (gconstpointer) pfAccel;
+			pfAccel->parent.activate	= G_CALLBACK(fire_pfkey_action);
+
+			terminal->accelerators = g_slist_prepend(terminal->accelerators,pfAccel);
+
+		}
+		else
+		{
+			debug("Can't find accelerator \"%s\"",name);
+			g_warning("Can't find accelerator \"%s\"",name);
+		}
+
 		return;
 	}
 
@@ -112,7 +174,7 @@
 
 	{
 		size_t ix;
-		gchar ** keycodes = g_strsplit(keys,",",-1);
+		gchar ** keycodes = g_strsplit(keys," ",-1);
 
 		for(ix=0;keycodes[ix];ix++)
 		{
