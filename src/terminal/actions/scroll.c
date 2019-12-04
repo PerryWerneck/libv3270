@@ -73,33 +73,6 @@ gboolean v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		return TRUE;
 	}
 
-	// Has selection?
-	if(lib3270_has_selection(terminal->host))
-	{
-        switch(event->direction)
-        {
-		case GDK_SCROLL_UP:
-			lib3270_move_selection(terminal->host,LIB3270_DIR_UP);
-			return TRUE;
-
-		case GDK_SCROLL_DOWN:
-			lib3270_move_selection(terminal->host,LIB3270_DIR_DOWN);
-			return TRUE;
-
-		case GDK_SCROLL_LEFT:
-			lib3270_move_selection(terminal->host,LIB3270_DIR_LEFT);
-			return TRUE;
-
-		case GDK_SCROLL_RIGHT:
-			lib3270_move_selection(terminal->host,LIB3270_DIR_RIGHT);
-			return TRUE;
-
-		case GDK_SCROLL_SMOOTH:
-			return FALSE;
-        }
-
-	}
-
 	// Check for fallbacks
 	size_t ix;
 
@@ -137,6 +110,37 @@ gboolean v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 		}
 
 	}
+
+	/*
+
+	// Has selection?
+	if(lib3270_has_selection(terminal->host))
+	{
+        switch(event->direction)
+        {
+		case GDK_SCROLL_UP:
+			lib3270_move_selection(terminal->host,LIB3270_DIR_UP);
+			return TRUE;
+
+		case GDK_SCROLL_DOWN:
+			lib3270_move_selection(terminal->host,LIB3270_DIR_DOWN);
+			return TRUE;
+
+		case GDK_SCROLL_LEFT:
+			lib3270_move_selection(terminal->host,LIB3270_DIR_LEFT);
+			return TRUE;
+
+		case GDK_SCROLL_RIGHT:
+			lib3270_move_selection(terminal->host,LIB3270_DIR_RIGHT);
+			return TRUE;
+
+		case GDK_SCROLL_SMOOTH:
+			return FALSE;
+        }
+
+	}
+
+	*/
 
 	return FALSE;
  }
