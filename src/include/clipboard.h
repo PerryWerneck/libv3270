@@ -92,8 +92,8 @@
 	/// @brief Get contents.
 	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_text(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all);
 	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_table(v3270 * terminal, const GList *selection, const gchar *delimiter, const gchar *encoding, gboolean all);
-	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all);
-	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all);
+	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all, const V3270SelectionOption options);
+	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all, const V3270SelectionOption options);
 
 	G_GNUC_INTERNAL const GList	* v3270_get_selection_blocks(GtkWidget *widget);
 

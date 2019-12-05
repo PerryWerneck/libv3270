@@ -386,7 +386,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 			break;
 
 		case 2: // "HyperText Markup Language (HTML)"
-			text = v3270_get_selection_as_html_div(GTK_V3270(dialog->terminal),selection,encoding, dialog->mode == LIB3270_CONTENT_ALL);
+			text = v3270_get_selection_as_html_div(GTK_V3270(dialog->terminal),selection,encoding, dialog->mode == LIB3270_CONTENT_ALL, V3270_SELECTION_DEFAULT);
 			break;
 
 		default:

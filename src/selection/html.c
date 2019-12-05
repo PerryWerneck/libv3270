@@ -49,7 +49,7 @@ static void get_element_colors(v3270 * terminal, unsigned short attr, gchar **fg
 }
 
 /// @brief Get formatted contents as HTML DIV.
-static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all)
+static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all, const V3270SelectionOption options)
 {
 	const GList	* element	= selection;
 	GString		* string	= g_string_new("");
@@ -58,12 +58,12 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 
 	g_string_append(string,"<div style=\"padding:1em;display:inline-block");
 
-	if(terminal->selection.options & V3270_SELECTION_FONT_FAMILY)
+	if(options & V3270_SELECTION_FONT_FAMILY)
 	{
 		g_string_append_printf(string,";font-family:%s,monospace",terminal->font.family);
 	}
 
-	if(terminal->selection.options & V3270_SELECTION_COLORS)
+	if(options & V3270_SELECTION_COLORS)
 	{
 		bgColor = gdk_rgba_to_string(terminal->color+V3270_COLOR_BACKGROUND);
 		g_string_append_printf(string,";background-color:%s",bgColor);
@@ -78,7 +78,7 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 		unsigned int row, col, src = 0;
 		unsigned short flags = block->contents[0].attribute.visual;
 
-		if(terminal->selection.options & V3270_SELECTION_COLORS)
+		if(options & V3270_SELECTION_COLORS)
 		{
 			get_element_colors(terminal,flags,&fgColor,&bgColor);
 
@@ -105,7 +105,7 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 				{
 					flags = block->contents[src].attribute.visual;
 
-					if(terminal->selection.options & V3270_SELECTION_COLORS)
+					if(options & V3270_SELECTION_COLORS)
 					{
 						get_element_colors(terminal,flags,&fgColor,&bgColor);
 
@@ -140,7 +140,7 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 #endif // DEBUG
 		}
 
-		if(terminal->selection.options & V3270_SELECTION_COLORS)
+		if(options & V3270_SELECTION_COLORS)
 		{
 			g_string_append(string,"</span>");
 		}
@@ -154,14 +154,12 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 
 	g_string_append(string,"</div>");
 
-	debug("\n%s\n------------> %u",string->str,(unsigned int) terminal->selection.options);
-
 	return g_string_free(string,FALSE);
 
 }
 
 /// @brief Get formatted contents as HTML TABLE.
-static gchar * get_as_table(v3270 * terminal, const GList *selection, gboolean all)
+static gchar * get_as_table(v3270 * terminal, const GList *selection, gboolean all, const V3270SelectionOption G_GNUC_UNUSED(options)) // TODO: Use options to set colors & font.
 {
 	const GList			* element	= selection;
 	GString				* string	= g_string_new("<table><tbody>");
@@ -231,15 +229,15 @@ static gchar * get_as_table(v3270 * terminal, const GList *selection, gboolean a
 
 }
 
-gchar * v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all)
+gchar * v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all, const V3270SelectionOption options)
 {
-	g_autofree char * text = get_as_div(terminal, selection, all);
+	g_autofree char * text = get_as_div(terminal, selection, all, options);
 	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 }
 
-gchar * v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all)
+gchar * v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all, const V3270SelectionOption options)
 {
-	g_autofree char * text = get_as_table(terminal, selection, all);
+	g_autofree char * text = get_as_table(terminal, selection, all, options);
 	return g_convert(text, -1, (encoding ? encoding : "UTF-8"), lib3270_get_display_charset(terminal->host), NULL, NULL, NULL);
 }
 
@@ -247,8 +245,8 @@ gchar * v3270_get_copy_as_html(v3270 * terminal, const gchar *encoding)
 {
 
 	if(terminal->selection.format == V3270_COPY_TABLE)
-		return v3270_get_selection_as_html_table(terminal, terminal->selection.blocks, encoding, FALSE);
+		return v3270_get_selection_as_html_table(terminal, terminal->selection.blocks, encoding, FALSE, terminal->selection.options);
 
-	return v3270_get_selection_as_html_div(terminal, terminal->selection.blocks, encoding, FALSE);
+	return v3270_get_selection_as_html_div(terminal, terminal->selection.blocks, encoding, FALSE, terminal->selection.options);
 
 }
