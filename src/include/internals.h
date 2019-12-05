@@ -137,6 +137,9 @@
  /// @brief Emit the "save-settings" signal.
  G_GNUC_INTERNAL void			  v3270_emit_save_settings(GtkWidget *widget);
 
+ /// @brief Emit "has-text" signal.
+ G_GNUC_INTERNAL void			  v3270_emit_copy_state(GtkWidget *widget);
+
  G_GNUC_INTERNAL gchar 			* v3270_convert_to_3270_charset(GtkWidget *widget, const gchar *text, const gchar *encoding, GError **error);
 
  /// @brief Add current lib3270 selection to a list

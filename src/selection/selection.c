@@ -61,6 +61,17 @@ const GList * v3270_get_selection_blocks(GtkWidget *widget)
 	return GTK_V3270(widget)->selection.blocks;
 }
 
+gboolean v3270_has_copy(GtkWidget *widget)
+{
+	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
+	return GTK_V3270(widget)->selection.blocks != NULL;
+}
+
+void v3270_emit_copy_state(GtkWidget *widget)
+{
+	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, GTK_V3270(widget)->selection.blocks != NULL);
+	lib3270_action_group_notify(GTK_V3270(widget)->host,LIB3270_ACTION_GROUP_COPY);
+}
 
 /**
  * Get lib3270 selection as a g_malloc buffer.

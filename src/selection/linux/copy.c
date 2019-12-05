@@ -116,8 +116,7 @@ void v3270_update_system_clipboard(GtkWidget *widget)
     if(!terminal->selection.blocks)
     {
     	// No clipboard data, return.
-		g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, FALSE);
-		lib3270_action_group_notify(terminal->host,LIB3270_ACTION_GROUP_COPY);
+    	v3270_emit_copy_state(widget);
     	return;
     }
 
@@ -171,8 +170,7 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 	gtk_target_table_free(targets, n_targets);
 	gtk_target_list_unref(list);
 
-	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, TRUE);
-	lib3270_action_group_notify(terminal->host,LIB3270_ACTION_GROUP_COPY);
+   	v3270_emit_copy_state(widget);
 
 }
 

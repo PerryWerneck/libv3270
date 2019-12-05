@@ -211,12 +211,14 @@
  LIB3270_EXPORT void			  v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut);
  LIB3270_EXPORT void			  v3270_clipboard_get_from_url(GtkWidget *widget, const gchar *url);
 
+ /// @brief Check if the widget has saved text.
+ LIB3270_EXPORT gboolean		  v3270_has_copy(GtkWidget *widget);
+
  LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget) G_GNUC_DEPRECATED;
  LIB3270_EXPORT void 			  v3270_paste_text(GtkWidget *widget) G_GNUC_DEPRECATED;
  LIB3270_EXPORT void			  v3270_paste_from_file(GtkWidget *widget) G_GNUC_DEPRECATED;
  LIB3270_EXPORT void			  v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut) G_GNUC_DEPRECATED;
  LIB3270_EXPORT void			  v3270_append_selection(GtkWidget *widget, gboolean cut) G_GNUC_DEPRECATED;
-
 
  // Selections
 
