@@ -224,6 +224,26 @@
 		klass->properties.settings[V3270_SETTING_TERMINAL_COLORS]
 	);
 
+	// Clipboard options
+	klass->properties.settings[V3270_SETTING_SELECTION_OPTIONS] =
+		g_param_spec_uint(
+			"selection_flags",
+			"selection_flags",
+			_("Flags to cut&paste"),
+			0,
+			G_MAXUINT,
+			V3270_SELECTION_DEFAULT,
+			G_PARAM_READABLE|G_PARAM_WRITABLE
+		);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_SELECTION_OPTIONS,
+		klass->properties.settings[V3270_SETTING_SELECTION_OPTIONS]
+	);
+
+
+
 	//
 	// Create dynamic properties
 	//

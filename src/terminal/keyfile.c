@@ -189,6 +189,8 @@
 		return;
 	}
 
+	debug("%s(%s)",__FUNCTION__,name);
+
 	GValue value = G_VALUE_INIT;
 	g_value_init(&value, pspec->value_type);
 

@@ -139,6 +139,10 @@
 			}
 			break;
 
+		case V3270_PROPERTY_SELECTION_OPTIONS:
+			g_value_set_uint(value,(guint) window->selection.options);
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 

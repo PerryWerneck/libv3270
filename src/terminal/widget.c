@@ -499,6 +499,7 @@ static void v3270_init(v3270 *widget)
 
 	// Setup clipboard.
 	widget->selection.target		= GDK_SELECTION_CLIPBOARD;
+	widget->selection.options		= V3270_SELECTION_DEFAULT;
 
 	// Reset timer
 	widget->activity.timestamp		= time(0);

@@ -53,17 +53,24 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 {
 	const GList	* element	= selection;
 	GString		* string	= g_string_new("");
-	gchar 		* bgColor	= gdk_rgba_to_string(terminal->color+V3270_COLOR_BACKGROUND);
+	gchar 		* bgColor;
 	gchar 		* fgColor;
 
-	g_string_append_printf(
-		string,
-		"<div style=\"font-family:%s,monospace;padding:1em;display:inline-block;background-color:%s\">",
-			terminal->font.family,
-			bgColor
-	);
+	g_string_append(string,"<div style=\"padding:1em;display:inline-block");
 
-	g_free(bgColor);
+	if(terminal->selection.options & V3270_SELECTION_FONT_FAMILY)
+	{
+		g_string_append_printf(string,";font-family:%s,monospace",terminal->font.family);
+	}
+
+	if(terminal->selection.options & V3270_SELECTION_COLORS)
+	{
+		bgColor = gdk_rgba_to_string(terminal->color+V3270_COLOR_BACKGROUND);
+		g_string_append_printf(string,";background-color:%s",bgColor);
+		g_free(bgColor);
+	}
+
+	g_string_append(string,"\">");
 
 	while(element)
 	{
@@ -71,17 +78,20 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 		unsigned int row, col, src = 0;
 		unsigned short flags = block->contents[0].attribute.visual;
 
-		get_element_colors(terminal,flags,&fgColor,&bgColor);
+		if(terminal->selection.options & V3270_SELECTION_COLORS)
+		{
+			get_element_colors(terminal,flags,&fgColor,&bgColor);
 
-		g_string_append_printf(
-			string,
-			"<span style=\"background-color:%s;color:%s\">",
-			bgColor,
-			fgColor
-		);
+			g_string_append_printf(
+				string,
+				"<span style=\"background-color:%s;color:%s\">",
+				bgColor,
+				fgColor
+			);
 
-		g_free(bgColor);
-		g_free(fgColor);
+			g_free(bgColor);
+			g_free(fgColor);
+		}
 
 #ifdef DEBUG
 		g_string_append_c(string,'\n');
@@ -95,18 +105,20 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 				{
 					flags = block->contents[src].attribute.visual;
 
-					get_element_colors(terminal,flags,&fgColor,&bgColor);
+					if(terminal->selection.options & V3270_SELECTION_COLORS)
+					{
+						get_element_colors(terminal,flags,&fgColor,&bgColor);
 
-					g_string_append_printf(
-						string,
-						"</span><span style=\"background-color:%s;color:%s\">",
-						bgColor,
-						fgColor
-					);
+						g_string_append_printf(
+							string,
+							"</span><span style=\"background-color:%s;color:%s\">",
+							bgColor,
+							fgColor
+						);
 
-					g_free(bgColor);
-					g_free(fgColor);
-
+						g_free(bgColor);
+						g_free(fgColor);
+					}
 
 				}
 
@@ -128,7 +140,10 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 #endif // DEBUG
 		}
 
-		g_string_append(string,"</span>");
+		if(terminal->selection.options & V3270_SELECTION_COLORS)
+		{
+			g_string_append(string,"</span>");
+		}
 
 		element = g_list_next(element);
 	}
@@ -138,6 +153,8 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 #endif // DEBUG
 
 	g_string_append(string,"</div>");
+
+	debug("\n%s\n------------> %u",string->str,(unsigned int) terminal->selection.options);
 
 	return g_string_free(string,FALSE);
 

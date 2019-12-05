@@ -49,6 +49,7 @@ G_BEGIN_DECLS
 	V3270_SETTING_HOST_TYPE,
 	V3270_SETTING_CRL_PROTOCOL,
 	V3270_SETTING_TERMINAL_COLORS,
+	V3270_SETTING_SELECTION_OPTIONS,
 
  	V3270_SETTING_COUNT					///< @brief Number of setting properties.
  } V3270_SETTING;
@@ -116,6 +117,16 @@ G_BEGIN_DECLS
   #define KEY_FLAG_ALT	0x0002
  #endif // !WIN32
 
+ typedef enum _V3270SelectionOption {
+
+ 	V3270_SELECTION_PLAIN_TEXT		= 0x0000,	///< @brief Uses only plain text.
+ 	V3270_SELECTION_FONT_FAMILY		= 0x0001,	///< @brief Inform font-family.
+ 	V3270_SELECTION_COLORS			= 0x0002,	///< @brief Inform terminal colors.
+
+ } V3270SelectionOption;
+
+ #define V3270_SELECTION_DEFAULT (V3270_SELECTION_FONT_FAMILY|V3270_SELECTION_COLORS)
+
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
  struct v3270_ssl_status_msg
@@ -149,10 +160,11 @@ G_BEGIN_DECLS
 
 	struct {
 
-		int 				  baddr;		///< @brief Selection address.
-		GdkAtom				  target;		///< @brief A GdkAtom which identifies the clipboard to use. GDK_SELECTION_CLIPBOARD gives the default clipboard.
-		V3270_COPY_MODE		  format;		///< @brief Copy mode.
-		GList				* blocks;		///< @brief Selection blocks.
+		int 					  baddr;		///< @brief Selection address.
+		GdkAtom					  target;		///< @brief A GdkAtom which identifies the clipboard to use. GDK_SELECTION_CLIPBOARD gives the default clipboard.
+		V3270_COPY_MODE			  format;		///< @brief Copy mode.
+		GList					* blocks;		///< @brief Selection blocks.
+		V3270SelectionOption	  options;		///< @brief Selection options.
 
 	} selection;
 

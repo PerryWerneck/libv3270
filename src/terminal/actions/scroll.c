@@ -39,9 +39,12 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 // Callback for compatibility with the old application.
-static void activate_action(GtkWidget *terminal, GtkAction *action)
+static void activate_action(GtkWidget G_GNUC_UNUSED(*terminal), GtkAction *action)
 {
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	gtk_action_activate(action);
+	#pragma GCC diagnostic pop
 }
 
 LIB3270_EXPORT void v3270_set_scroll_action(GtkWidget *widget, GdkScrollDirection direction, GtkAction *action)

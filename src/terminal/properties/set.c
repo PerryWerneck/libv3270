@@ -138,6 +138,10 @@
 			v3270_set_colors(GTK_WIDGET(object),g_value_get_string(value));
 			break;
 
+		case V3270_PROPERTY_SELECTION_OPTIONS:
+			GTK_V3270(object)->selection.options = (V3270SelectionOption) g_value_get_uint(value);
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 
