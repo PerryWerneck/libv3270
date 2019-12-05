@@ -243,6 +243,21 @@
 	);
 
 
+	klass->properties.has_copy =
+		g_param_spec_boolean(
+			"has_copy",
+			"has_copy",
+			_( "True if the terminal has copy blocks" ),
+			FALSE,
+			G_PARAM_READABLE
+		);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_HAS_COPY,
+		klass->properties.has_copy
+	);
+
 
 	//
 	// Create dynamic properties

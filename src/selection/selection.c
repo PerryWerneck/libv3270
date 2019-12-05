@@ -70,6 +70,7 @@ gboolean v3270_has_copy(GtkWidget *widget)
 void v3270_emit_copy_state(GtkWidget *widget)
 {
 	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, GTK_V3270(widget)->selection.blocks != NULL);
+	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.has_copy);
 	lib3270_action_group_notify(GTK_V3270(widget)->host,LIB3270_ACTION_GROUP_COPY);
 }
 

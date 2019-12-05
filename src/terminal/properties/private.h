@@ -58,8 +58,9 @@
 	V3270_PROPERTY_TRACE				= 9,	///< @brief Is the trace widget active?
 	V3270_PROPERTY_TERMINAL_COLORS		= 10,	///< @brief Terminal colors.
 	V3270_PROPERTY_SELECTION_OPTIONS	= 11,
+	V3270_PROPERTY_HAS_COPY				= 12,	///< @brief Terminal has copy.
 
-	V3270_PROPERTY_DYNAMIC				= 12	///< @brief Id of the first LIB3270 internal property.
+	V3270_PROPERTY_DYNAMIC				= 13	///< @brief Id of the first LIB3270 internal property.
  };
 
  G_GNUC_INTERNAL void v3270_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);

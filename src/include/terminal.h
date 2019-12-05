@@ -77,6 +77,7 @@ G_BEGIN_DECLS
 		GParamSpec * selection;
 		GParamSpec * session_name;
 		GParamSpec * trace;
+		GParamSpec * has_copy;
 
 		struct
 		{

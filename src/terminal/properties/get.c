@@ -143,6 +143,9 @@
 			g_value_set_uint(value,(guint) window->selection.options);
 			break;
 
+		case V3270_PROPERTY_HAS_COPY:
+			g_value_set_boolean(value,window->selection.blocks != NULL);
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 
