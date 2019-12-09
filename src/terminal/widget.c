@@ -773,11 +773,13 @@ LIB3270_EXPORT GtkIMContext * v3270_get_im_context(GtkWidget *widget)
 	return GTK_V3270(widget)->input_method;
 }
 
-static gboolean bg_emit_save_settings(GObject *widget)
+static gboolean bg_emit_save_settings(v3270 *terminal)
 {
-	GTK_V3270(widget)->freeze = 0;
-	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
-	g_object_unref(widget);
+	terminal->freeze = 0;
+	terminal->save_settings = 0;
+
+	g_signal_emit(terminal,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
+	g_object_unref(terminal);
  	return FALSE;
 }
 

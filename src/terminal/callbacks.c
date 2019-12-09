@@ -77,17 +77,19 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE_ID id, unsigned char va
 
 static gboolean bg_update_message(H3270 *session)
 {
-	void *widget = lib3270_get_user_data(session);
- 	// trace("-----A %s %p",__FUNCTION__, lib3270_get_user_data(session));
+	v3270 *terminal = (v3270 *) lib3270_get_user_data(session);
 
 	g_signal_emit(
-		GTK_WIDGET(widget),
+		terminal,
 		v3270_widget_signal[V3270_SIGNAL_MESSAGE_CHANGED],
 		0,
 		(gint) lib3270_get_program_message(session)
 	);
 
  	//trace("-----B %s %p",__FUNCTION__, lib3270_get_user_data(session));
+
+ 	if(terminal->save_settings)
+		v3270_emit_save_settings(GTK_WIDGET(terminal));
 
  	return FALSE;
 }
