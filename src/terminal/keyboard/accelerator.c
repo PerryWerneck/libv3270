@@ -89,17 +89,34 @@
 	switch(accel->type)
 	{
 	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
-		return gettext(((LIB3270_ACTION *) accel->arg)->summary);
+
+		if( ((LIB3270_ACTION *) accel->arg)->summary )
+			return gettext(((LIB3270_ACTION *) accel->arg)->summary);
+
+		if( ((LIB3270_ACTION *) accel->arg)->description )
+			return gettext(((LIB3270_ACTION *) accel->arg)->description);
+
+		break;
 
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
-		return ((V3270_ACTION *) accel->arg)->summary;
+		if( ((V3270_ACTION *) accel->arg)->summary )
+			return ((V3270_ACTION *) accel->arg)->summary;
+
+		break;
 
 	case V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE:
-		return ((LIB3270_TOGGLE *) accel->arg)->summary;
+
+		if(((LIB3270_TOGGLE *) accel->arg)->summary)
+			return ((LIB3270_TOGGLE *) accel->arg)->summary;
+
+		if(((LIB3270_TOGGLE *) accel->arg)->description)
+			return ((LIB3270_TOGGLE *) accel->arg)->description;
+
+		break;
 
 	}
 
-	return NULL;
+	return v3270_accelerator_get_name(accel);
  }
 
  const gchar * v3270_accelerator_get_name(const V3270Accelerator * accel)
