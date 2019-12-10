@@ -76,13 +76,14 @@
 
  enum
  {
-	DESCRIPTION,
-	MAIN_MASK,
-	MAIN_VALUE,
-	ALTERNATIVE_MASK,
-	ALTERNATIVE_VALUE,
+ 	ACTION,				///< @brief The action object.
+	DESCRIPTION,		///< @brief The action description.
+	MAIN_MASK,			///< @brief The mask for the main accelerator.
+	MAIN_VALUE,			///< @brief The value for the main accelerator.
+	ALTERNATIVE_MASK,	///< @brief The mask for the alternative accelerator.
+	ALTERNATIVE_VALUE,	///< @brief The value for the alternative accelerator.
 
-	COLUMNS
+	COLUMNS				///< @brief Number of view columns.
  };
 
  static void V3270AcceleratorSettings_init(V3270AcceleratorSettings *widget)
@@ -93,7 +94,7 @@
  	GtkCellRenderer * accel_renderer = gtk_cell_renderer_accel_new();
 	g_object_set(accel_renderer, "accel-mode", GTK_CELL_RENDERER_ACCEL_MODE_GTK,"editable", TRUE, NULL);
 
-	GtkTreeModel * model = (GtkTreeModel *) gtk_tree_store_new(COLUMNS, G_TYPE_STRING, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INT, G_TYPE_UINT);
+	GtkTreeModel * model = (GtkTreeModel *) gtk_tree_store_new(COLUMNS, G_TYPE_POINTER, G_TYPE_STRING, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INT, G_TYPE_UINT);
 	GtkWidget * view = gtk_tree_view_new_with_model(model);
 
 	gtk_widget_set_tooltip_markup(view,_("Keyboard accelerators"));
