@@ -103,6 +103,9 @@
 		NULL);
 
 	widget->store = GTK_LIST_STORE(gtk_list_store_new(COLUMNS, G_TYPE_POINTER, G_TYPE_STRING, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INT, G_TYPE_UINT));
+
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(widget->store),1,GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID);
+
 	GtkWidget * view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(widget->store));
 
 	gtk_widget_set_tooltip_markup(view,_("Keyboard accelerators"));
@@ -142,6 +145,9 @@
 		GtkWidget * box	= gtk_scrolled_window_new(NULL,NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(box),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
 		gtk_container_add(GTK_CONTAINER(box),view);
+
+		gtk_widget_set_vexpand(view,TRUE);
+		gtk_widget_set_hexpand(view,TRUE);
 
 		gtk_widget_set_vexpand(box,TRUE);
 		gtk_widget_set_hexpand(box,TRUE);
