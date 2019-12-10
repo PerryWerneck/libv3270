@@ -120,13 +120,14 @@ G_BEGIN_DECLS
 
  typedef enum _V3270SelectionOption {
 
- 	V3270_SELECTION_PLAIN_TEXT		= 0x0000,	///< @brief Uses only plain text.
- 	V3270_SELECTION_FONT_FAMILY		= 0x0001,	///< @brief Inform font-family.
- 	V3270_SELECTION_COLORS			= 0x0002,	///< @brief Inform terminal colors.
+ 	V3270_SELECTION_PLAIN_TEXT			= 0x0000,	///< @brief Uses only plain text.
+ 	V3270_SELECTION_FONT_FAMILY			= 0x0001,	///< @brief Inform font-family.
+ 	V3270_SELECTION_COLORS				= 0x0002,	///< @brief Inform terminal colors.
+ 	V3270_SELECTION_NON_BREAKABLE_SPACE	= 0x0004,	///< @brief Use non breakable spaces.
 
  } V3270SelectionOption;
 
- #define V3270_SELECTION_DEFAULT (V3270_SELECTION_FONT_FAMILY|V3270_SELECTION_COLORS)
+ #define V3270_SELECTION_DEFAULT (V3270_SELECTION_FONT_FAMILY|V3270_SELECTION_COLORS|V3270_SELECTION_NON_BREAKABLE_SPACE)
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 

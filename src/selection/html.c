@@ -128,7 +128,7 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 				}
 				else
 				{
-					g_string_append(string,"&nbsp;");
+					g_string_append(string,((options & V3270_SELECTION_NON_BREAKABLE_SPACE) ? "&nbsp;" : " "));
 				}
 
 				src++;

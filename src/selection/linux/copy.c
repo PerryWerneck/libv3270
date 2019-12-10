@@ -91,7 +91,7 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 		}
 		break;
 
-	case CLIPBOARD_TYPE_V3270_UNPROTECTED:
+	case CLIPBOARD_TYPE_V3270_FORMATTED:
 		{
 			g_autofree gchar *data = v3270_get_copy_as_data_block(terminal);
 			gtk_selection_data_set(
@@ -131,12 +131,12 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 
 	gtk_target_list_add_text_targets(list, CLIPBOARD_TYPE_TEXT);
 
-	if(terminal->selection.options != V3270_SELECTION_PLAIN_TEXT)
+	if((terminal->selection.options & V3270_SELECTION_PLAIN_TEXT) == 0)
 	{
 		static const GtkTargetEntry targets[] = {
-			{ "text/csv",					 		0, CLIPBOARD_TYPE_CSV				},
-			{ "text/html",							0, CLIPBOARD_TYPE_HTML				},
-			{ "application/x-v3270-unprotected",	0, CLIPBOARD_TYPE_V3270_UNPROTECTED	},
+			{ "text/csv",				 		0, CLIPBOARD_TYPE_CSV				},
+			{ "text/html",						0, CLIPBOARD_TYPE_HTML				},
+			{ "application/x-v3270-formatted",	0, CLIPBOARD_TYPE_V3270_FORMATTED	},
 		};
 
 		gtk_target_list_add_table(list, targets, G_N_ELEMENTS(targets));

@@ -202,7 +202,7 @@ static void v3270_class_init(v3270Class *klass)
 	gobject_class->finalize							= finalize;
 
 	// Atoms
-	klass->clipboard_formatted						= gdk_atom_intern_static_string("application/x-v3270-unprotected");
+	klass->clipboard_formatted						= gdk_atom_intern_static_string("application/x-v3270-formatted");
 
 	// Widget methods
 	widget_class->realize 							= v3270_realize;
