@@ -111,8 +111,7 @@ make %{?_smp_mflags}
 %doc AUTHORS README.md
 %license LICENSE
 %else
-%license LICENSE
-%doc AUTHORS README.md
+%doc LICENSE AUTHORS README.md
 %endif
 
 %{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
