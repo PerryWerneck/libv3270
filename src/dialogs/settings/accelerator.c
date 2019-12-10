@@ -36,6 +36,8 @@
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
  #include <lib3270/log.h>
+ #include <v3270/actions.h>
+ #include <terminal.h>
 
 /*--[ Widget Definition ]----------------------------------------------------------------------------*/
 
@@ -49,6 +51,8 @@
  typedef struct _V3270AcceleratorSettings
  {
  	V3270Settings parent;
+
+ 	GtkListStore * store;
 
  } V3270AcceleratorSettings;
 
@@ -92,10 +96,14 @@
  	GtkCellRenderer * text_renderer = gtk_cell_renderer_text_new();
 
  	GtkCellRenderer * accel_renderer = gtk_cell_renderer_accel_new();
-	g_object_set(accel_renderer, "accel-mode", GTK_CELL_RENDERER_ACCEL_MODE_GTK,"editable", TRUE, NULL);
+	g_object_set(
+		accel_renderer,
+			"accel-mode", GTK_CELL_RENDERER_ACCEL_MODE_OTHER,
+			"editable", TRUE,
+		NULL);
 
-	GtkTreeModel * model = (GtkTreeModel *) gtk_tree_store_new(COLUMNS, G_TYPE_POINTER, G_TYPE_STRING, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INT, G_TYPE_UINT);
-	GtkWidget * view = gtk_tree_view_new_with_model(model);
+	widget->store = GTK_LIST_STORE(gtk_list_store_new(COLUMNS, G_TYPE_POINTER, G_TYPE_STRING, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INT, G_TYPE_UINT));
+	GtkWidget * view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(widget->store));
 
 	gtk_widget_set_tooltip_markup(view,_("Keyboard accelerators"));
 
@@ -153,12 +161,62 @@ LIB3270_EXPORT GtkWidget * v3270_accelerator_settings_new()
  	return GTK_WIDGET(settings);
 }
 
+
 void load(GtkWidget *widget, GtkWidget *terminal)
 {
+	struct KeyMap
+	{
+		guint           	  key;
+		GdkModifierType 	  mods;
+	};
+
+	debug("%s::%s","V3270AcceleratorSettings",__FUNCTION__);
+
+	GtkListStore * store = GTK_V3270_ACCELERATOR_SETTINGS(widget)->store;
+	GSList		 * accelerator = GTK_V3270(terminal)->accelerators;
+
+	while(accelerator)
+	{
+		struct KeyMap keymaps[2];
+		size_t ix = 0;
+		V3270Accelerator * current = (V3270Accelerator *) accelerator->data;
+
+		memset(keymaps,0,sizeof(keymaps));
+
+		while(accelerator && (((V3270Accelerator *) accelerator->data)->activate == current->activate) && (((V3270Accelerator *) accelerator->data)->arg == current->arg))
+		{
+			V3270Accelerator *accel = (V3270Accelerator *) accelerator->data;
+
+			if(ix < G_N_ELEMENTS(keymaps))
+			{
+				keymaps[ix].key = accel->key;
+				keymaps[ix].mods = accel->mods;
+				ix++;
+			}
+
+			accelerator = g_slist_next(accelerator);
+		}
+
+		// Add entry
+		GtkTreeIter iter;
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(
+			store,
+			&iter,
+			ACTION,				current,
+			DESCRIPTION,		v3270_accelerator_get_description(current),
+			MAIN_MASK,			keymaps[0].mods,
+			MAIN_VALUE,			keymaps[0].key,
+			ALTERNATIVE_MASK,	keymaps[1].mods,
+			ALTERNATIVE_VALUE,	keymaps[1].key,
+			-1
+		);
+
+	}
 
 }
 
 void apply(GtkWidget *widget, GtkWidget *terminal)
 {
-
+	debug("%s::%s","V3270AcceleratorSettings",__FUNCTION__);
 }
