@@ -57,15 +57,14 @@
 	unsigned short	  attr;		///< @brief Character attribute.
  };
 
-
-/// @brief Head for settings widgets.
-#define ENTRY_FIELD_HEAD   \
-	gint left; \
-	gint top; \
-	gint width; \
-	gint height; \
- 	const gchar * label; \
- 	const gchar * tooltip;
+ /// @brief Head for settings widgets.
+ #define ENTRY_FIELD_HEAD \
+			gint left; \
+			gint top; \
+			gint width; \
+			gint height; \
+			const gchar * label; \
+			const gchar * tooltip;
 
  struct v3270_entry_field
  {

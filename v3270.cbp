@@ -60,9 +60,6 @@
 		<Unit filename="src/dialogs/font/select.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/dialogs/hostselect.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/dialogs/linux/select.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -102,7 +99,13 @@
 		<Unit filename="src/dialogs/security.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/settings/accelerator.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/settings/dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dialogs/settings/host.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/settings/widget.c">

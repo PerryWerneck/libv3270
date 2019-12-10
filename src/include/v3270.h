@@ -284,7 +284,6 @@
 
  // Auxiliary widgets
  LIB3270_EXPORT void			  v3270_select_host(GtkWidget *widget);
- LIB3270_EXPORT GtkWidget		* v3270_font_chooser_widget_new();
 
  // Print
  LIB3270_EXPORT int				  v3270_print(GtkWidget *widget, GError **error);

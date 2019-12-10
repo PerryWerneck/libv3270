@@ -134,6 +134,15 @@
  LIB3270_EXPORT void v3270_settings_dialog_apply(GtkWidget *widget);
  LIB3270_EXPORT void v3270_settings_dialog_revert(GtkWidget *widget);
 
+ LIB3270_EXPORT GtkWidget		* v3270_host_settings_new();
+ LIB3270_EXPORT GtkWidget		* v3270_accelerator_settings_new();
+ LIB3270_EXPORT GtkWidget		* v3270_font_settings_new();
+
+ LIB3270_EXPORT GtkWidget		* v3270_font_chooser_widget_new() G_GNUC_DEPRECATED;
+ LIB3270_EXPORT GtkWidget		* v3270_host_select_new() G_GNUC_DEPRECATED;
+
+
+
  G_END_DECLS
 
 #endif // V3270SETTINGS_H_INCLUDED

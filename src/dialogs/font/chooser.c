@@ -207,7 +207,7 @@
 
 	if(chooser->font.face) {
 
-		debug("%s",__FUNCTION__);
+//		debug("%s",__FUNCTION__);
 
 		cairo_set_font_face(cr,chooser->font.face);
 		cairo_set_font_size(cr,15);
@@ -321,7 +321,7 @@ static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 
 }
 
-GtkWidget * v3270_font_chooser_widget_new()
+GtkWidget * v3270_font_settings_new()
 {
  	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(GTK_TYPE_V3270_FONT_CHOOSER, NULL));
 
@@ -331,3 +331,7 @@ GtkWidget * v3270_font_chooser_widget_new()
 	return GTK_WIDGET(settings);
 }
 
+GtkWidget * v3270_font_chooser_widget_new()
+{
+	return v3270_font_settings_new();
+}

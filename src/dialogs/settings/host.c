@@ -28,11 +28,11 @@
  */
 
  /**
-  * @brief Implements the host properties widget.
+  * @brief Implements the host settings widget.
   *
   */
 
- #include "private.h"
+ #include <internals.h>
  #include <hostselect.h>
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
@@ -606,7 +606,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 }
 
-LIB3270_EXPORT GtkWidget * v3270_host_select_new()
+LIB3270_EXPORT GtkWidget * v3270_host_settings_new()
 {
  	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(GTK_TYPE_V3270HostSelectWidget, NULL));
 
@@ -614,6 +614,11 @@ LIB3270_EXPORT GtkWidget * v3270_host_select_new()
  	settings->label = _("Host");
 
  	return GTK_WIDGET(settings);
+}
+
+LIB3270_EXPORT GtkWidget * v3270_host_select_new()
+{
+	return v3270_host_settings_new();
 }
 
 LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
