@@ -114,6 +114,11 @@
 
 		break;
 
+	case V3270_ACCELERATOR_TYPE_PFKEY:
+		if( ((V3270PFKeyAccelerator *)accel)->name )
+			return ((V3270PFKeyAccelerator *)accel)->name;
+		break;
+
 	}
 
 	return v3270_accelerator_get_name(accel);

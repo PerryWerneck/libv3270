@@ -30,6 +30,10 @@
  /**
   * @brief Implements the accelerator settings widget.
   *
+  * References:
+  *
+  * <https://github.com/Apress/foundations-of-gtk-dev/blob/master/chapter_8/accelerators.c>
+  *
   */
 
  #include <internals.h>
@@ -38,6 +42,7 @@
  #include <lib3270/log.h>
  #include <v3270/actions.h>
  #include <terminal.h>
+ #include <gdk/gdkkeysyms-compat.h>
 
 /*--[ Widget Definition ]----------------------------------------------------------------------------*/
 
@@ -69,6 +74,9 @@
  static void load(GtkWidget *w, GtkWidget *terminal);
  static void apply(GtkWidget *w, GtkWidget *terminal);
 
+ static void accel_edited(GtkCellRendererAccel*, gchar*, guint, GdkModifierType, guint, V3270AcceleratorSettings*);
+ static void alternative_edited(GtkCellRendererAccel*, gchar*, guint, GdkModifierType, guint, V3270AcceleratorSettings*);
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  static void V3270AcceleratorSettings_class_init(V3270AcceleratorSettingsClass *klass)
@@ -95,12 +103,22 @@
  	// Create Accelerator list
  	GtkCellRenderer * text_renderer = gtk_cell_renderer_text_new();
 
- 	GtkCellRenderer * accel_renderer = gtk_cell_renderer_accel_new();
+ 	GtkCellRenderer * accel_renderer[] = { gtk_cell_renderer_accel_new(), gtk_cell_renderer_accel_new() };
+
 	g_object_set(
-		accel_renderer,
+		accel_renderer[0],
 			"accel-mode", GTK_CELL_RENDERER_ACCEL_MODE_OTHER,
 			"editable", TRUE,
 		NULL);
+
+	g_object_set(
+		accel_renderer[1],
+			"accel-mode", GTK_CELL_RENDERER_ACCEL_MODE_OTHER,
+			"editable", TRUE,
+		NULL);
+
+	g_signal_connect (G_OBJECT (accel_renderer[0]), "accel_edited", G_CALLBACK (accel_edited), widget);
+	g_signal_connect (G_OBJECT (accel_renderer[1]), "accel_edited", G_CALLBACK (alternative_edited), widget);
 
 	widget->store = GTK_LIST_STORE(gtk_list_store_new(COLUMNS, G_TYPE_POINTER, G_TYPE_STRING, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INT, G_TYPE_UINT));
 
@@ -124,7 +142,7 @@
 		GTK_TREE_VIEW(view),
 		-1,
 		_("Accelerator"),
-		accel_renderer,
+		accel_renderer[0],
 		"accel-mods", MAIN_MASK,
 		"accel-key", MAIN_VALUE,
 		NULL
@@ -134,7 +152,7 @@
 		GTK_TREE_VIEW(view),
 		-1,
 		_("Alternative"),
-		accel_renderer,
+		accel_renderer[1],
 		"accel-mods", ALTERNATIVE_MASK,
 		"accel-key", ALTERNATIVE_VALUE,
 		NULL
@@ -155,7 +173,8 @@
 		gtk_grid_attach(GTK_GRID(widget),box,0,0,4,4);
 	}
 
- }
+}
+
 
 LIB3270_EXPORT GtkWidget * v3270_accelerator_settings_new()
 {
@@ -167,6 +186,163 @@ LIB3270_EXPORT GtkWidget * v3270_accelerator_settings_new()
  	return GTK_WIDGET(settings);
 }
 
+struct AccelEditInfo
+{
+	GtkWidget * widget;
+	gint response;
+	V3270Accelerator * origin;
+	V3270Accelerator * accel;
+	GtkTreePath *path;
+	guint accel_key;
+	GdkModifierType mask;
+	int id_key;
+	int id_mask;
+};
+
+static gboolean check_accel(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, struct AccelEditInfo * info)
+{
+	static const gint columns[] = { MAIN_MASK, MAIN_VALUE, ALTERNATIVE_MASK, ALTERNATIVE_VALUE };
+	size_t ix;
+	GValue value;
+
+	debug("%s",__FUNCTION__);
+
+	for(ix = 0; ix < 2; ix++)
+	{
+		guint          	  key;
+		GdkModifierType	  mask;
+
+		memset(&value,0,sizeof(value));
+		gtk_tree_model_get_value(model, iter, columns[(ix * 2)], &value);
+		mask = (GdkModifierType) g_value_get_int(&value);
+		g_value_unset(&value);
+
+		memset(&value,0,sizeof(value));
+		gtk_tree_model_get_value(model, iter, columns[(ix * 2)+1], &value);
+		key = g_value_get_uint(&value);
+		g_value_unset(&value);
+
+		if(key == info->accel_key && mask == info->mask) {
+
+			debug("************ Index %d cmp=%d",(unsigned int) ix, gtk_tree_path_compare(path, info->path));
+            GtkWidget * dialog;
+
+			if(gtk_tree_path_compare(path, info->path))
+			{
+				// Another entry, rejects.
+				memset(&value,0,sizeof(value));
+				gtk_tree_model_get_value(model, iter, ACTION, &value);
+				info->accel = (V3270Accelerator *) g_value_get_pointer(&value);
+				g_value_unset(&value);
+
+				debug("Key is already set on accel %s",v3270_accelerator_get_name(info->accel));
+
+				// Ask for what the user wants to do.
+				dialog = gtk_message_dialog_new_with_markup(
+								GTK_WINDOW(gtk_widget_get_toplevel(info->widget)),
+								GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+								GTK_MESSAGE_QUESTION,
+								GTK_BUTTONS_YES_NO,
+								_( "The selected accelerator is in use by action <b>%s</b> (<b>%s</b>)" ),
+								v3270_accelerator_get_description(info->accel),
+								v3270_accelerator_get_name(info->accel)
+							);
+
+				gtk_message_dialog_format_secondary_markup(
+					GTK_MESSAGE_DIALOG(dialog),
+					_( "Assign it to action (<b>%s</b>)?"),
+					v3270_accelerator_get_name(info->origin)
+				);
+
+			}
+			else
+			{
+				// It's on the same entry.
+				dialog = gtk_message_dialog_new_with_markup(
+								GTK_WINDOW(gtk_widget_get_toplevel(info->widget)),
+								GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+								GTK_MESSAGE_QUESTION,
+								GTK_BUTTONS_CANCEL,
+								_( "The selected accelerator is in use by the same action" )
+							);
+
+			}
+
+			gtk_window_set_title(GTK_WINDOW(dialog),_("Accelerator is in use"));
+			gtk_widget_show_all(dialog);
+
+			info->response = gtk_dialog_run(GTK_DIALOG(dialog));
+			if(info->response == GTK_RESPONSE_YES)
+			{
+				debug("%s: Removing accelerator from the other action",__FUNCTION__);
+
+			}
+
+			gtk_widget_destroy(dialog);
+
+			return TRUE;
+
+		}
+
+	}
+
+	return FALSE;
+
+}
+
+static void change_accel(V3270AcceleratorSettings *widget, gchar *path, guint accel_key, GdkModifierType mask, int id_key, int id_mask)
+{
+	struct AccelEditInfo info = {
+		.response = GTK_RESPONSE_YES,
+		.widget = GTK_WIDGET(widget),
+		.accel = NULL,
+		.accel_key = accel_key,
+		.mask = mask,
+		.id_key = id_key,
+		.id_mask = id_mask,
+		.path = gtk_tree_path_new_from_string(path)
+	};
+
+	GtkTreeIter iter;
+	if(gtk_tree_model_get_iter(GTK_TREE_MODEL(widget->store),&iter,info.path))
+	{
+		GValue value;
+		memset(&value,0,sizeof(value));
+		gtk_tree_model_get_value(GTK_TREE_MODEL(widget->store), &iter, ACTION, &value);
+		info.origin = (V3270Accelerator *) g_value_get_pointer(&value);
+		g_value_unset(&value);
+
+		if(!info.origin)
+		{
+			g_warning("Can't identify the origin accelerator, aborting action");
+			return;
+		}
+
+	}
+
+	gtk_tree_model_foreach(GTK_TREE_MODEL(widget->store), (GtkTreeModelForeachFunc) check_accel, &info);
+
+	gtk_tree_path_free(info.path);
+
+	if(info.response == GTK_RESPONSE_YES)
+	{
+		debug("%s: Aplicar alteração",__FUNCTION__);
+
+	}
+
+}
+
+static void accel_edited(GtkCellRendererAccel *renderer, gchar *path, guint accel_key, GdkModifierType mask, guint hardware_keycode, V3270AcceleratorSettings *widget)
+{
+	debug("%s(%s)",__FUNCTION__,path);
+	change_accel(widget, path, accel_key, mask, MAIN_MASK, MAIN_VALUE);
+}
+
+static void alternative_edited(GtkCellRendererAccel *renderer, gchar *path, guint accel_key, GdkModifierType mask, guint hardware_keycode, V3270AcceleratorSettings *widget)
+{
+	debug("%s(%s)",__FUNCTION__,path);
+	change_accel(widget, path, accel_key, mask, ALTERNATIVE_MASK, ALTERNATIVE_VALUE);
+}
 
 void load(GtkWidget *widget, GtkWidget *terminal)
 {
@@ -195,8 +371,17 @@ void load(GtkWidget *widget, GtkWidget *terminal)
 
 			if(ix < G_N_ELEMENTS(keymaps))
 			{
-				keymaps[ix].key = accel->key;
-				keymaps[ix].mods = accel->mods;
+				if(accel->type == V3270_ACCELERATOR_TYPE_PFKEY)
+				{
+					keymaps[ix].key = GDK_F1 + (((V3270PFKeyAccelerator *)accel)->keycode - 1);
+					keymaps[ix].mods = 0;
+				}
+				else
+				{
+					keymaps[ix].key = accel->key;
+					keymaps[ix].mods = accel->mods;
+				}
+
 				ix++;
 			}
 
@@ -206,6 +391,7 @@ void load(GtkWidget *widget, GtkWidget *terminal)
 		// Add entry
 		GtkTreeIter iter;
 		gtk_list_store_append(store, &iter);
+
 		gtk_list_store_set(
 			store,
 			&iter,
@@ -218,6 +404,7 @@ void load(GtkWidget *widget, GtkWidget *terminal)
 			-1
 		);
 
+
 	}
 
 }
@@ -226,3 +413,4 @@ void apply(GtkWidget *widget, GtkWidget *terminal)
 {
 	debug("%s::%s","V3270AcceleratorSettings",__FUNCTION__);
 }
+
