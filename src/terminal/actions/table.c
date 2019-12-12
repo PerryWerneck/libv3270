@@ -63,6 +63,7 @@
 	{
 		.flags = 0,
 		.name = "copy",
+		.summary = N_( "Copy" ),
 		.key = 'c',
 		.mods = GDK_CONTROL_MASK,
  		.activate = fire_copy_accelerator
@@ -71,6 +72,7 @@
 	{
 		.flags = V3270_COPY_APPEND,
 		.name = "copy-append",
+		.summary = N_( "Add to copy" ),
 		.key = 'c',
 		.mods = GDK_ALT_MASK,
  		.activate = fire_copy_accelerator
@@ -79,6 +81,7 @@
 	{
 		.flags = V3270_COPY_TEXT,
 		.name = "copy-text",
+		.summary = N_( "Copy as plain text" ),
 		.key = 'c',
 		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
  		.activate = fire_copy_accelerator
@@ -87,6 +90,7 @@
 	{
 		.flags = V3270_ACTION_FLAG_CUT|V3270_COPY_DEFAULT,
 		.name = "cut",
+		.summary = N_( "Cut" ),
 		.key = 'x',
 		.mods = GDK_CONTROL_MASK,
  		.activate = fire_copy_accelerator
@@ -95,6 +99,7 @@
 	{
 		.flags = V3270_ACTION_FLAG_CUT|V3270_COPY_APPEND,
 		.name = "cut-append",
+		.summary = N_( "Cut and append to copy" ),
 		.key = 'x',
 		.mods = GDK_ALT_MASK,
  		.activate = fire_copy_accelerator
@@ -103,6 +108,7 @@
 	{
 		.flags = V3270_ACTION_FLAG_CUT|V3270_COPY_TEXT,
 		.name = "cut-text",
+		.summary = N_( "Cut as plain text" ),
 		.key = 'x',
 		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
  		.activate = fire_copy_accelerator
@@ -111,6 +117,7 @@
 	{
 		.flags = 0,
 		.name = "paste",
+		.summary = N_("Paste"),
 		.key = 'v',
 		.mods = GDK_CONTROL_MASK,
  		.activate = fire_paste_accelerator
@@ -119,6 +126,7 @@
 	{
 		.flags = 1,
 		.name = "paste-text",
+		.summary = N_("Paste as plain text"),
 		.key = 'v',
 		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
  		.activate = fire_paste_accelerator
@@ -127,6 +135,7 @@
 	{
 		.flags = 2,
 		.name = "paste-file",
+		.summary = N_("Paste from text file"),
 		.key = 'v',
 		.mods = GDK_ALT_MASK,
  		.activate = fire_paste_accelerator
@@ -135,6 +144,7 @@
  	{
  		.flags = 0,
  		.name = "zoom-in",
+ 		.summary = N_("Zoom in"),
  		.key = GDK_KP_Add,
  		.mods = GDK_CONTROL_MASK,
  		.activate = fire_zoom_action
@@ -143,6 +153,7 @@
  	{
  		.flags = 1,
  		.name = "zoom-out",
+ 		.summary = N_("Zoom out"),
  		.key = GDK_KP_Subtract,
  		.mods = GDK_CONTROL_MASK,
  		.activate = fire_zoom_action
@@ -151,6 +162,7 @@
  	{
  		.flags = 2,
  		.name = "zoom-fit-best",
+ 		.summary = N_("Zoom to best size"),
  		.key = '0',
  		.mods = GDK_CONTROL_MASK,
  		.activate = fire_zoom_action
