@@ -95,7 +95,7 @@
  {
 	V3270Accelerator * accel = NULL;
 
-	// Find accelerator by name
+	// Remove accelerator by name
 	{
 		GSList * ix = terminal->accelerators;
 

@@ -56,9 +56,41 @@
  }
 
 
- gboolean v3270_accelerator_compare(const V3270Accelerator * accell, const guint keyval, const GdkModifierType mods)
+ gboolean v3270_accelerator_compare(const V3270Accelerator * accel, const guint keyval, const GdkModifierType mods)
  {
- 	return accell->key == keyval && accell->mods == mods;
+ 	// Problems:
+
+	debug("%s: keys: %08x %08x",__FUNCTION__,accel->key,keyval);
+
+	// It's the same key?
+	if(accel->key != keyval)
+	{
+		g_autofree gchar * acckey = gtk_accelerator_name(accel->key,accel->mods);
+		g_autofree gchar * qkey = gtk_accelerator_name(keyval,mods);
+		debug("%s: Rejected by key %08x %08x (%s %s)",__FUNCTION__,accel->key,keyval,acckey,qkey);
+		return FALSE;
+	}
+
+	// The same key and same mods, Found it!
+ 	if(accel->mods == mods)
+		return TRUE;
+
+#ifdef DEBUG
+	{
+		g_autofree gchar * acckey = gtk_accelerator_name(accel->key,accel->mods);
+		g_autofree gchar * qkey = gtk_accelerator_name(keyval,mods);
+		debug("%s: accel=%s (%0u/%08x) query=%s (%u/%08x) xor=%08x and=%08x",__FUNCTION__,acckey,accel->key,accel->mods,qkey,keyval,mods,(accel->mods^mods),(accel->mods & mods));
+	}
+#endif // DEBUG
+
+	// All of the required mods is "ON"?
+ 	if(accel->mods != (mods & accel->mods))
+	{
+		debug("%s: Rejected %08x %08x",__FUNCTION__,accel->mods,(mods & accel->mods));
+		return FALSE;
+	}
+
+	return TRUE;
  }
 
  void v3270_accelerator_activate(const V3270Accelerator * acel, GtkWidget *terminal)
@@ -80,6 +112,33 @@
 			return (V3270Accelerator *) ix->data;
 	}
 
+#ifdef DEBUG
+	{
+		g_autofree gchar * keyname = gtk_accelerator_name(keyval,state);
+		debug("%s: Can't find accelerator for %s",__FUNCTION__,keyname);
+		debug("Keyval: %d (%s) State: %04x %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+				keyval,
+				gdk_keyval_name(keyval),
+				state,
+				state & GDK_SHIFT_MASK		? " GDK_SHIFT_MASK"		: "",
+				state & GDK_LOCK_MASK		? " GDK_LOCK_MASK"		: "",
+				state & GDK_CONTROL_MASK	? " GDK_CONTROL_MASK"	: "",
+				state & GDK_MOD1_MASK		? " GDK_MOD1_MASK"		: "",
+				state & GDK_MOD2_MASK		? " GDK_MOD2_MASK"		: "",
+				state & GDK_MOD3_MASK		? " GDK_MOD3_MASK"		: "",
+				state & GDK_MOD4_MASK		? " GDK_MOD4_MASK"		: "",
+				state & GDK_MOD5_MASK		? " GDK_MOD5_MASK"		: "",
+				state & GDK_BUTTON1_MASK	? " GDK_BUTTON1_MASK"	: "",
+				state & GDK_BUTTON2_MASK	? " GDK_BUTTON2_MASK"	: "",
+				state & GDK_BUTTON3_MASK	? " GDK_BUTTON3_MASK"	: "",
+				state & GDK_BUTTON4_MASK	? " GDK_BUTTON4_MASK"	: "",
+				state & GDK_BUTTON5_MASK	? " GDK_BUTTON5_MASK"	: "",
+				state & GDK_RELEASE_MASK	? " GDK_RELEASE_MASK"	: "",
+				state & GDK_MODIFIER_MASK	? " GDK_MODIFIER_MASK"	: ""
+			);
+
+	}
+#endif // DEBUG
 	return NULL;
 
  }

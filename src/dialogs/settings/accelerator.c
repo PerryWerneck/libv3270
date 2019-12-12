@@ -71,6 +71,12 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
+ struct KeyMap
+ {
+	guint           	  key;
+	GdkModifierType 	  mods;
+ };
+
  static void load(GtkWidget *w, GtkWidget *terminal);
  static void apply(GtkWidget *w, GtkWidget *terminal);
 
@@ -197,6 +203,8 @@ struct AccelEditInfo
 	int id_key;
 	int id_mask;
 };
+
+
 
 static gboolean check_accel(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, struct AccelEditInfo * info)
 {
@@ -370,12 +378,6 @@ static void alternative_edited(GtkCellRendererAccel G_GNUC_UNUSED(*accel), gchar
 
 void load(GtkWidget *widget, GtkWidget *terminal)
 {
-	struct KeyMap
-	{
-		guint           	  key;
-		GdkModifierType 	  mods;
-	};
-
 	debug("%s::%s","V3270AcceleratorSettings",__FUNCTION__);
 
 	GtkListStore * store = GTK_V3270_ACCELERATOR_SETTINGS(widget)->store;
@@ -433,8 +435,75 @@ void load(GtkWidget *widget, GtkWidget *terminal)
 
 }
 
-void apply(GtkWidget *widget, GtkWidget *terminal)
+static gboolean add_accel(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, GSList **accelerators)
 {
+	static const gint columns[] = { MAIN_MASK, MAIN_VALUE, ALTERNATIVE_MASK, ALTERNATIVE_VALUE };
+	size_t ix;
+	GValue value;
+	struct KeyMap keymap[2];
+
+	V3270Accelerator * accel;
+
+	memset(&value,0,sizeof(value));
+	gtk_tree_model_get_value(model, iter, ACTION, &value);
+	accel = (V3270Accelerator *) g_value_get_pointer(&value);
+	g_value_unset(&value);
+
+	for(ix = 0; ix < 2; ix++)
+	{
+		guint          	  key;
+		GdkModifierType	  mask;
+
+		memset(&value,0,sizeof(value));
+		gtk_tree_model_get_value(model, iter, columns[(ix * 2)], &value);
+		keymap[ix].mods = (GdkModifierType) g_value_get_int(&value);
+		g_value_unset(&value);
+
+		memset(&value,0,sizeof(value));
+		gtk_tree_model_get_value(model, iter, columns[(ix * 2)+1], &value);
+		keymap[ix].key = g_value_get_uint(&value);
+		g_value_unset(&value);
+
+	}
+
+	// Allways create the "main" accelerator to keep the action active.
+	V3270Accelerator * acc = v3270_accelerator_copy(accel);
+	acc->key	= keymap[0].key;
+	acc->mods	= keymap[0].mods;
+	*accelerators = g_slist_prepend(*accelerators,acc);
+
+	// The alternative one is created only when set.
+	if(keymap[1].key)
+	{
+		acc = v3270_accelerator_copy(accel);
+		acc->key	= keymap[1].key;
+		acc->mods	= keymap[1].mods;
+		*accelerators = g_slist_prepend(*accelerators,acc);
+	}
+
+	return FALSE;
+}
+
+void apply(GtkWidget *s, GtkWidget *t)
+{
+	v3270 						* terminal = GTK_V3270(t);
+	V3270AcceleratorSettings	* settings = GTK_V3270_ACCELERATOR_SETTINGS(s);
+
 	debug("%s::%s","V3270AcceleratorSettings",__FUNCTION__);
+
+    // Create a new accelerator table.
+	GSList * accelerators = NULL;
+
+	gtk_tree_model_foreach(GTK_TREE_MODEL(settings->store), (GtkTreeModelForeachFunc) add_accel, &accelerators);
+
+    // Replace the accelerator table.
+	if(terminal->accelerators)
+		g_slist_free_full(terminal->accelerators,g_free);
+
+	terminal->accelerators = accelerators;
+
+	// And sort it.
+	v3270_accelerator_map_sort(terminal);
+
 }
 

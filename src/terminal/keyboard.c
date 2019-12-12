@@ -56,43 +56,6 @@
 	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
 #endif
 
-/*--[ Globals ]--------------------------------------------------------------------------------------*/
-
-	/*
-	 static struct _keycode
-	 {
-		guint			  keyval;
-		GdkModifierType	  state;
-		int				  (*exec)(H3270 *session);
-	 } keycode[] =
-	 {
-		{ GDK_Left,				0,					lib3270_cursor_left		}, // OK
-		{ GDK_Up,				0,					lib3270_cursor_up		}, // OK
-		{ GDK_Right,			0,					lib3270_cursor_right	},  // OK
-		{ GDK_Down,				0,					lib3270_cursor_down		}, // OK
-		{ GDK_Tab,				0,					lib3270_nextfield		}, // OK
-		{ GDK_ISO_Left_Tab,		GDK_SHIFT_MASK,		lib3270_previousfield	}, // OK
-		{ GDK_KP_Left,			0,					lib3270_cursor_left		},
-		{ GDK_KP_Up,			0,					lib3270_cursor_up		},
-		{ GDK_KP_Right,			0,					lib3270_cursor_right	},
-		{ GDK_KP_Down,			0,					lib3270_cursor_down		},
-
-		{ GDK_3270_PrintScreen,	0,					lib3270_print_all		},
-		{ GDK_P,				GDK_CONTROL_MASK,	lib3270_print_all		},
-
-		{ GDK_Sys_Req,			0,					lib3270_sysreq			},
-
-		{ GDK_Print,			GDK_CONTROL_MASK,	lib3270_print_all		},
-		{ GDK_Print,			GDK_SHIFT_MASK,		lib3270_sysreq			},
-
-
-//#ifdef WIN32
-//		{ GDK_Pause,			0,					NULL					},
-//#endif
-
-	};
-	*/
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  #define keyval_is_alt() (event->keyval == GDK_Alt_L || event->keyval == GDK_Meta_L || event->keyval == GDK_ISO_Level3_Shift)
@@ -121,11 +84,65 @@
 
  }
 
- static gboolean check_keypress(v3270 *widget, GdkEventKey *event)
+ static gboolean check_keypress(v3270 *widget, const GdkEventKey *event)
  {
-//	int				f;
-	GdkModifierType	state	= event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK);
-	gboolean		handled = FALSE;
+ 	GdkKeymap * keymap = gdk_keymap_get_for_display(gtk_widget_get_display(GTK_WIDGET(widget)));
+
+ 	// From gtk_accelerator_name at https://gitlab.gnome.org/GNOME/gtk/blob/master/gtk/gtkaccelgroup.c
+ 	// Side steps issue from https://mail.gnome.org/archives/gtk-app-devel-list/2007-August/msg00053.html
+	guint keyval = gdk_keyval_to_lower(event->keyval);
+
+	// Add virtual modifiers to event state.
+	GdkModifierType state = event->state & ~GDK_RELEASE_MASK;
+ 	gdk_keymap_add_virtual_modifiers(keymap,&state);
+
+ 	// Check if the application can handle the key.
+	gboolean handled = FALSE;
+	g_signal_emit(
+		GTK_WIDGET(widget),
+		v3270_widget_signal[V3270_SIGNAL_KEYPRESS],
+		0,
+		keyval,
+		state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK),	// FIXME: Remove the reset flags after the main application update.
+		&handled
+	);
+
+	debug("Keyboard action was %s (keyval=%08x state=%08x)",handled ? "Handled" : "Not handled",event->keyval,event->state);
+	if(handled)
+		return TRUE;
+
+	//
+	// Check for accelerator.
+	//
+	const V3270Accelerator * accel = v3270_get_accelerator(GTK_WIDGET(widget), keyval, state);
+	if(accel)
+	{
+		debug("%s will fire",__FUNCTION__);
+		v3270_accelerator_activate(accel,GTK_WIDGET(widget));
+		return TRUE;
+	}
+
+	// Check PFKeys
+	if(keyval >= GDK_F1 && keyval <= GDK_F12 && !(state & (GDK_CONTROL_MASK|GDK_ALT_MASK)))
+	{
+		int pfcode = (keyval - GDK_F1) + ((state & GDK_SHIFT_MASK) ? 13 : 1);
+
+		debug("%s: PF%d will fire",__FUNCTION__,pfcode);
+
+		if(pfcode > 0 && pfcode < 25)
+		{
+			lib3270_pfkey(widget->host,pfcode);
+			return TRUE;
+		}
+		else
+		{
+			g_warning("Invalid PFCode %d",pfcode);
+		}
+	}
+
+ 	/*
+	gboolean				  handled	= FALSE;
+	const V3270Accelerator	* accel;
 
 #ifdef WIN32
 	// FIXME (perry#1#): Find a better way!
@@ -133,35 +150,46 @@
 		event->keyval = GDK_Pause;
 
 	// Windows sets <ctrl> in left/right control
-	else if(state & GDK_CONTROL_MASK && (event->keyval == GDK_Control_R || event->keyval == GDK_Control_L))
-		state &= ~GDK_CONTROL_MASK;
+	else if(event->state & GDK_CONTROL_MASK && (event->keyval == GDK_Control_R || event->keyval == GDK_Control_L))
+		event->state &= ~GDK_CONTROL_MASK;
 #endif
 
-	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_KEYPRESS], 0, event->keyval, state, &handled);
+	g_signal_emit(
+		GTK_WIDGET(widget),
+		v3270_widget_signal[V3270_SIGNAL_KEYPRESS],
+		0,
+		event->keyval,
+		event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK),
+		&handled
+	);
 	debug("Keyboard action was %s",handled ? "Handled" : "Not handled");
 	if(handled)
 		return TRUE;
 
 #ifdef DEBUG
 	{
-		g_autofree gchar * keyname = gtk_accelerator_name(event->keyval, state);
+		g_autofree gchar * keyname = gtk_accelerator_name(event->keyval, event->state);
 		debug("Keyname: %s",keyname);
 	}
 #endif // DEBUG
 
 	// Check accelerator table.
-	const V3270Accelerator * acel = v3270_get_accelerator(GTK_WIDGET(widget), event->keyval, state);
-	if(acel)
+	accel = v3270_get_accelerator(GTK_WIDGET(widget), event->keyval, event->state);
+
+	if(!accel)
+		accel = v3270_get_accelerator(GTK_WIDGET(widget), event->keyval, event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK));
+
+	if(accel)
 	{
 		debug("%s will fire",__FUNCTION__);
-		v3270_accelerator_activate(acel,GTK_WIDGET(widget));
+		v3270_accelerator_activate(accel,GTK_WIDGET(widget));
 		return TRUE;
 	}
 
 	// Check PFKeys
-	if(event->keyval >= GDK_F1 && event->keyval <= GDK_F12 && !(state & (GDK_CONTROL_MASK|GDK_ALT_MASK)))
+	if(event->keyval >= GDK_F1 && event->keyval <= GDK_F12 && !(event->state & (GDK_CONTROL_MASK|GDK_ALT_MASK)))
 	{
-		int pfcode = (event->keyval - GDK_F1) + ((state & GDK_SHIFT_MASK) ? 13 : 1);
+		int pfcode = (event->keyval - GDK_F1) + ((event->state & GDK_SHIFT_MASK) ? 13 : 1);
 
 		if(pfcode > 0 && pfcode < 25)
 		{
@@ -169,6 +197,7 @@
 			return TRUE;
 		}
 	}
+	*/
 
  	return FALSE;
  }
