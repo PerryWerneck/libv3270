@@ -158,6 +158,7 @@
 		break;
 
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
+
 		if( ((V3270_ACTION *) accel->arg)->summary )
 			return gettext(((V3270_ACTION *) accel->arg)->summary);
 
@@ -177,8 +178,10 @@
 		break;
 
 	case V3270_ACCELERATOR_TYPE_PFKEY:
+
 		if( ((V3270PFKeyAccelerator *)accel)->name )
 			return ((V3270PFKeyAccelerator *)accel)->name;
+
 		break;
 
 	}

@@ -79,7 +79,7 @@
 	//
 	// Keyboard accelerators
 	//
-	LIB3270_EXPORT void						v3270_backtab(GtkWidget *widget);
+	LIB3270_EXPORT void						  v3270_backtab(GtkWidget *widget);
 
 	/// @brief Reset accelerator map to defaults.
 	LIB3270_EXPORT void						  v3270_accelerator_map_reset(GtkWidget *widget);
@@ -97,6 +97,8 @@
 	/// @brief Converts the accelerator into a string which can be used to represent the accelerator to the user.
 	/// @return A newly-allocated string representing the accelerator.
 	LIB3270_EXPORT gchar 					* v3270_accelerator_get_label(const V3270Accelerator * accel);
+
+	LIB3270_EXPORT V3270Accelerator			* v3270_accelerator_copy(const V3270Accelerator *accel);
 
 	G_END_DECLS
 

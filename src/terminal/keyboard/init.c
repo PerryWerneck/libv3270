@@ -99,7 +99,7 @@
 
 		for(ix = 0; actions[ix].name; ix++)
 		{
-			if(actions[ix].keys)
+			if(actions[ix].keys && *actions[ix].keys)
 			{
 				size_t key;
 
@@ -125,6 +125,16 @@
 				g_strfreev(keys);
 
 			}
+			else
+			{
+				V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
+
+				accelerator->type = V3270_ACCELERATOR_TYPE_LIB3270_ACTION;
+				accelerator->arg  = (gconstpointer) &actions[ix];
+				accelerator->activate = G_CALLBACK(fire_lib3270_action);
+				widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+
+			}
 
 		}
 
@@ -137,19 +147,17 @@
 
 		for(ix = 0; toggles[ix].name; ix++)
 		{
+			V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
+
+			accelerator->type = V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE;
+			accelerator->arg = (gconstpointer) &toggles[ix];
+			accelerator->activate = G_CALLBACK(fire_lib3270_toggle);
+
 			if(toggles[ix].key)
-			{
-				V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
-
-				accelerator->type 		= V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE;
-				accelerator->arg 		= (gconstpointer) &toggles[ix];
-				accelerator->activate	= G_CALLBACK(fire_lib3270_toggle);
-
 				gtk_accelerator_parse(toggles[ix].key,&accelerator->key,&accelerator->mods);
 
-				widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
 
-			}
 		}
 
 	}
@@ -164,11 +172,11 @@
 		{
 			V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
 
-			accelerator->type 		= V3270_ACCELERATOR_TYPE_INTERNAL;
-			accelerator->arg 		= (gconstpointer) &actions[ix];
-			accelerator->activate	= G_CALLBACK(actions[ix].activate);
-			accelerator->key		= actions[ix].key;
-			accelerator->mods		= actions[ix].mods;
+			accelerator->type = V3270_ACCELERATOR_TYPE_INTERNAL;
+			accelerator->arg = (gconstpointer) &actions[ix];
+			accelerator->activate = G_CALLBACK(actions[ix].activate);
+			accelerator->key = actions[ix].key;
+			accelerator->mods = actions[ix].mods;
 
 			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
 

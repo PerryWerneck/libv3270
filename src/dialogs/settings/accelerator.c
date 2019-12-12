@@ -104,10 +104,27 @@
 	COLUMNS				///< @brief Number of view columns.
  };
 
+ static void realize(GtkWidget G_GNUC_UNUSED(*widget), GtkTreeView *view)
+ {
+ 	gtk_tree_view_columns_autosize(view);
+ }
+
  static void V3270AcceleratorSettings_init(V3270AcceleratorSettings *widget)
  {
- 	// Create Accelerator list
+ 	// Create description list
  	GtkCellRenderer * text_renderer = gtk_cell_renderer_text_new();
+
+ 	/*
+	g_object_set(
+		text_renderer,
+		"alignment", PANGO_ALIGN_LEFT,
+		"wrap-width", 100,
+		"wrap-mode", PANGO_WRAP_WORD_CHAR,
+		NULL
+	);
+	*/
+
+ 	// Create accelerator render
  	GtkCellRenderer * accel_renderer[] = { gtk_cell_renderer_accel_new(), gtk_cell_renderer_accel_new() };
 
 	g_object_set(
@@ -130,19 +147,40 @@
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(widget->store),1,GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID);
 
 	GtkWidget * view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(widget->store));
+	g_signal_connect(G_OBJECT(widget),"realize",G_CALLBACK(realize),view);
 
-	gtk_widget_set_tooltip_markup(view,_("Keyboard accelerators"));
-
-	gtk_tree_view_insert_column_with_attributes(
-		GTK_TREE_VIEW(view),
-		-1,
-		_("Action"),
-		text_renderer,
-		"text",
-		DESCRIPTION,
+	/*
+	g_object_set(
+		view,
+		"horizontal-separator", 50,
+		"vertical-separator", 50,
 		NULL
 	);
+	*/
 
+	gtk_widget_set_tooltip_markup(view,_("Keyboard accelerators"));
+	gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(view),FALSE);
+
+	// Description column
+	GtkTreeViewColumn * column =
+		gtk_tree_view_column_new_with_attributes(
+			_("Action"),
+			text_renderer,
+			"text",
+			DESCRIPTION,
+			NULL
+		);
+
+	gtk_tree_view_column_set_resizable(column, TRUE);
+	gtk_tree_view_column_set_min_width(column, 500);
+
+	gtk_tree_view_insert_column(
+		GTK_TREE_VIEW(view),
+		column,
+		-1
+	);
+
+	// Accelerator columns
 	gtk_tree_view_insert_column_with_attributes(
 		GTK_TREE_VIEW(view),
 		-1,
@@ -169,13 +207,15 @@
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(box),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
 		gtk_container_add(GTK_CONTAINER(box),view);
 
+		/*
 		gtk_widget_set_vexpand(view,TRUE);
 		gtk_widget_set_hexpand(view,TRUE);
+		*/
 
 		gtk_widget_set_vexpand(box,TRUE);
 		gtk_widget_set_hexpand(box,TRUE);
 
-		gtk_grid_attach(GTK_GRID(widget),box,0,0,4,4);
+		gtk_grid_attach(GTK_GRID(widget),box,0,0,10,10);
 	}
 
 }
@@ -435,7 +475,7 @@ void load(GtkWidget *widget, GtkWidget *terminal)
 
 }
 
-static gboolean add_accel(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, GSList **accelerators)
+static gboolean add_accel(GtkTreeModel *model, GtkTreePath G_GNUC_UNUSED(*path), GtkTreeIter *iter, GSList **accelerators)
 {
 	static const gint columns[] = { MAIN_MASK, MAIN_VALUE, ALTERNATIVE_MASK, ALTERNATIVE_VALUE };
 	size_t ix;
@@ -451,9 +491,6 @@ static gboolean add_accel(GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *i
 
 	for(ix = 0; ix < 2; ix++)
 	{
-		guint          	  key;
-		GdkModifierType	  mask;
-
 		memset(&value,0,sizeof(value));
 		gtk_tree_model_get_value(model, iter, columns[(ix * 2)], &value);
 		keymap[ix].mods = (GdkModifierType) g_value_get_int(&value);

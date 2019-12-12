@@ -379,7 +379,8 @@ G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned
  G_GNUC_INTERNAL void		  v3270_update_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID id, unsigned char value, const char *name);
 
  // Accelerators
- G_GNUC_INTERNAL void		  v3270_init_accelerators(v3270 *widget);
+ G_GNUC_INTERNAL void				  v3270_accelerator_map_sort(v3270 *widget);
+ G_GNUC_INTERNAL void				  v3270_init_accelerators(v3270 *widget);
 
 G_END_DECLS
 
