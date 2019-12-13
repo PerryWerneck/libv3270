@@ -42,19 +42,11 @@
  #include <internals.h>
  #include <terminal.h>
 
-#if GTK_CHECK_VERSION(3,0,0)
+ #if GTK_CHECK_VERSION(3,0,0)
 	#include <gdk/gdkkeysyms-compat.h>
-#else
+ #else
 	#include <gdk/gdkkeysyms.h>
-#endif
-
-#ifndef GDK_ALT_MASK
-	#define GDK_ALT_MASK GDK_MOD1_MASK
-#endif
-
-#ifndef GDK_NUMLOCK_MASK
-	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
-#endif
+ #endif
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -84,130 +76,6 @@
 
  }
 
- static gboolean check_keypress(v3270 *widget, const GdkEventKey *event)
- {
- 	//GdkKeymap * keymap = gdk_keymap_get_for_display(gtk_widget_get_display(GTK_WIDGET(widget)));
-
- 	// From gtk_accelerator_name at https://gitlab.gnome.org/GNOME/gtk/blob/master/gtk/gtkaccelgroup.c
- 	// Side steps issue from https://mail.gnome.org/archives/gtk-app-devel-list/2007-August/msg00053.html
-	guint keyval = gdk_keyval_to_lower(event->keyval);
-
-	// Add virtual modifiers to event state.
-	GdkModifierType state = event->state & GDK_MODIFIER_MASK;
-	// gdk_keymap_add_virtual_modifiers(keymap,&state);
-
-/*
-#ifdef WIN32
-	// FIXME (perry#1#): Find a better way!
-	if( event->keyval == 0xffffff && event->hardware_keycode == 0x0013)
-		keyval = GDK_Pause;
-
-	// Windows sets <ctrl> in left/right control
-	else if(state & GDK_CONTROL_MASK && (keyval == GDK_Control_R || keyval == GDK_Control_L))
-		state &= ~GDK_CONTROL_MASK;
-#endif
-*/
-
- 	// Check if the application can handle the key.
-	gboolean handled = FALSE;
-	g_signal_emit(
-		GTK_WIDGET(widget),
-		v3270_widget_signal[V3270_SIGNAL_KEYPRESS],
-		0,
-		keyval,
-		event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK),	// FIXME: use the processed state after the main application update.
-		&handled
-	);
-
-	//debug("Keyboard action was %s (keyval=%08x state=%08x)",handled ? "Handled" : "Not handled",event->keyval,event->state);
-	if(handled)
-		return TRUE;
-
-	if(!gtk_accelerator_valid(keyval,state))
-		return FALSE;
-
-	//
-	// Check for accelerator.
-	//
-	const V3270Accelerator * accel = v3270_get_accelerator(GTK_WIDGET(widget), keyval, state);
-	if(accel)
-	{
-		debug("%s will fire",__FUNCTION__);
-		v3270_accelerator_activate(accel,GTK_WIDGET(widget));
-		return TRUE;
-	}
-
-	// Check PFKeys
-	if(keyval >= GDK_F1 && keyval <= GDK_F12 && !(state & (GDK_CONTROL_MASK|GDK_ALT_MASK)))
-	{
-		int pfcode = (keyval - GDK_F1) + ((state & GDK_SHIFT_MASK) ? 13 : 1);
-
-		debug("%s: PF%d will fire",__FUNCTION__,pfcode);
-
-		if(pfcode > 0 && pfcode < 25)
-		{
-			if(lib3270_pfkey(widget->host,pfcode))
-				gdk_display_beep(gtk_widget_get_display(GTK_WIDGET(widget)));
-			return TRUE;
-		}
-		else
-		{
-			g_warning("Invalid PFCode %d",pfcode);
-		}
-	}
-
- 	/*
-	gboolean				  handled	= FALSE;
-	const V3270Accelerator	* accel;
-
-	g_signal_emit(
-		GTK_WIDGET(widget),
-		v3270_widget_signal[V3270_SIGNAL_KEYPRESS],
-		0,
-		event->keyval,
-		event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK),
-		&handled
-	);
-	debug("Keyboard action was %s",handled ? "Handled" : "Not handled");
-	if(handled)
-		return TRUE;
-
-#ifdef DEBUG
-	{
-		g_autofree gchar * keyname = gtk_accelerator_name(event->keyval, event->state);
-		debug("Keyname: %s",keyname);
-	}
-#endif // DEBUG
-
-	// Check accelerator table.
-	accel = v3270_get_accelerator(GTK_WIDGET(widget), event->keyval, event->state);
-
-	if(!accel)
-		accel = v3270_get_accelerator(GTK_WIDGET(widget), event->keyval, event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK));
-
-	if(accel)
-	{
-		debug("%s will fire",__FUNCTION__);
-		v3270_accelerator_activate(accel,GTK_WIDGET(widget));
-		return TRUE;
-	}
-
-	// Check PFKeys
-	if(event->keyval >= GDK_F1 && event->keyval <= GDK_F12 && !(event->state & (GDK_CONTROL_MASK|GDK_ALT_MASK)))
-	{
-		int pfcode = (event->keyval - GDK_F1) + ((event->state & GDK_SHIFT_MASK) ? 13 : 1);
-
-		if(pfcode > 0 && pfcode < 25)
-		{
-			lib3270_pfkey(widget->host,pfcode);
-			return TRUE;
-		}
-	}
-	*/
-
- 	return FALSE;
- }
-
  gboolean v3270_key_press_event(GtkWidget *widget, GdkEventKey *event)
  {
 	v3270 * terminal = GTK_V3270(widget);
@@ -215,29 +83,79 @@
 	terminal->activity.timestamp = time(0);
  	update_keyboard_state(terminal,event,TRUE);
 
-	if(event->state & GDK_NUMLOCK_MASK)
+#ifdef DEBUG
 	{
-		// Hack for special keys
-		const V3270Accelerator * acel = v3270_get_accelerator(widget, event->keyval, event->state);
+		g_autofree gchar * keyname = gtk_accelerator_name(event->keyval,event->state);
+		debug("%s Keyval: %d (%s) State: %04x %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+				__FUNCTION__,
+				event->keyval,
+				gdk_keyval_name(event->keyval),
+				event->state,
+				event->state & GDK_SHIFT_MASK		? " GDK_SHIFT_MASK"		: "",
+				event->state & GDK_LOCK_MASK		? " GDK_LOCK_MASK"		: "",
+				event->state & GDK_CONTROL_MASK		? " GDK_CONTROL_MASK"	: "",
+				event->state & GDK_MOD1_MASK		? " GDK_MOD1_MASK"		: "",
+				event->state & GDK_MOD2_MASK		? " GDK_MOD2_MASK"		: "",
+				event->state & GDK_MOD3_MASK		? " GDK_MOD3_MASK"		: "",
+				event->state & GDK_MOD4_MASK		? " GDK_MOD4_MASK"		: "",
+				event->state & GDK_MOD5_MASK		? " GDK_MOD5_MASK"		: "",
+				event->state & GDK_BUTTON1_MASK		? " GDK_BUTTON1_MASK"	: "",
+				event->state & GDK_BUTTON2_MASK		? " GDK_BUTTON2_MASK"	: "",
+				event->state & GDK_BUTTON3_MASK		? " GDK_BUTTON3_MASK"	: "",
+				event->state & GDK_BUTTON4_MASK		? " GDK_BUTTON4_MASK"	: "",
+				event->state & GDK_BUTTON5_MASK		? " GDK_BUTTON5_MASK"	: "",
+				event->state & GDK_RELEASE_MASK		? " GDK_RELEASE_MASK"	: "",
+				event->state & GDK_MODIFIER_MASK	? " GDK_MODIFIER_MASK"	: ""
+			);
 
-		debug("acel=%p",acel);
-
-		if(acel)
-		{
-			debug("%s will fire",__FUNCTION__);
-			v3270_accelerator_activate(acel,GTK_WIDGET(widget));
-			gtk_im_context_reset(terminal->input_method);
-			return TRUE;
-		}
 	}
+#endif // DEBUG
 
 	if(gtk_im_context_filter_keypress(terminal->input_method,event))
 		return TRUE;
 
-	if(check_keypress(terminal,event))
-	{
-		gtk_im_context_reset(terminal->input_method);
+	/*
+	if(!gtk_accelerator_valid(event->keyval,event->state))
+		return FALSE;
+	*/
+
+	// Signal to the application.
+	gboolean handled = FALSE;
+	g_signal_emit(
+		GTK_WIDGET(widget),
+		v3270_widget_signal[V3270_SIGNAL_KEYPRESS],
+		0,
+		event->keyval,
+		event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_MOD1_MASK),
+		&handled
+	);
+	debug("Keyboard action was %s",handled ? "Handled" : "Not handled");
+	if(handled)
 		return TRUE;
+
+
+	// Check for accelerator
+	const V3270Accelerator * accelerator = v3270_accelerator_map_lookup_entry(widget, event->keyval, event->state);
+	if(accelerator)
+	{
+		debug("Found accelerator %s",v3270_accelerator_get_name(accelerator));
+		v3270_accelerator_activate(accelerator,widget);
+		return TRUE;
+	}
+
+	if(event->keyval >= GDK_F1 && event->keyval <= GDK_F12 && !(event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK)))
+	{
+		// It's a PFKey Action.
+		int pfcode = (event->keyval - GDK_F1) + ((event->state & GDK_SHIFT_MASK) ? 13 : 1);
+
+		if(pfcode > 0 && pfcode < 25)
+		{
+			if(lib3270_pfkey(GTK_V3270(widget)->host,pfcode))
+				gdk_display_beep(gtk_widget_get_display(widget));
+
+			return TRUE;
+		}
+
 	}
 
 	return FALSE;
@@ -248,10 +166,42 @@
  {
 	v3270 * terminal = GTK_V3270(widget);
 
+	terminal->activity.timestamp = time(0);
  	update_keyboard_state(terminal,event,FALSE);
+
+/*
+#ifdef DEBUG
+	{
+		g_autofree gchar * keyname = gtk_accelerator_name(event->keyval,event->state);
+		debug("%s Keyval: %d (%s) State: %04x %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+				__FUNCTION__,
+				event->keyval,
+				gdk_keyval_name(event->keyval),
+				event->state,
+				event->state & GDK_SHIFT_MASK		? " GDK_SHIFT_MASK"		: "",
+				event->state & GDK_LOCK_MASK		? " GDK_LOCK_MASK"		: "",
+				event->state & GDK_CONTROL_MASK		? " GDK_CONTROL_MASK"	: "",
+				event->state & GDK_MOD1_MASK		? " GDK_MOD1_MASK"		: "",
+				event->state & GDK_MOD2_MASK		? " GDK_MOD2_MASK"		: "",
+				event->state & GDK_MOD3_MASK		? " GDK_MOD3_MASK"		: "",
+				event->state & GDK_MOD4_MASK		? " GDK_MOD4_MASK"		: "",
+				event->state & GDK_MOD5_MASK		? " GDK_MOD5_MASK"		: "",
+				event->state & GDK_BUTTON1_MASK		? " GDK_BUTTON1_MASK"	: "",
+				event->state & GDK_BUTTON2_MASK		? " GDK_BUTTON2_MASK"	: "",
+				event->state & GDK_BUTTON3_MASK		? " GDK_BUTTON3_MASK"	: "",
+				event->state & GDK_BUTTON4_MASK		? " GDK_BUTTON4_MASK"	: "",
+				event->state & GDK_BUTTON5_MASK		? " GDK_BUTTON5_MASK"	: "",
+				event->state & GDK_RELEASE_MASK		? " GDK_RELEASE_MASK"	: "",
+				event->state & GDK_MODIFIER_MASK	? " GDK_MODIFIER_MASK"	: ""
+			);
+
+	}
+#endif // DEBUG
+*/
 
 	if(gtk_im_context_filter_keypress(terminal->input_method,event))
 		return TRUE;
+
 
 	return FALSE;
 

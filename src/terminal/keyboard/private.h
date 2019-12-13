@@ -32,6 +32,20 @@
  #include <v3270/actions.h>
  #include <internals.h>
 
+ #if GTK_CHECK_VERSION(3,0,0)
+	#include <gdk/gdkkeysyms-compat.h>
+ #else
+	#include <gdk/gdkkeysyms.h>
+ #endif
+
+ #ifndef GDK_ALT_MASK
+	#define GDK_ALT_MASK GDK_MOD1_MASK
+ #endif
+
+ #ifndef GDK_NUMLOCK_MASK
+	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
+ #endif
+
  G_GNUC_INTERNAL int fire_pfkey_action(GtkWidget *widget, V3270PFKeyAccelerator *accel);
 
 

@@ -158,3 +158,31 @@
 	return accel;
 
  }
+
+ const V3270Accelerator	* v3270_accelerator_map_lookup_entry(GtkWidget *widget, guint keyval, GdkModifierType state)
+ {
+ 	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+
+ 	// Convert keyval
+	keyval = gdk_keyval_to_lower(keyval);
+
+	// Remove unnecessary modifiers
+	state &= (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK);
+
+	GSList * ix;
+	for(ix = GTK_V3270(widget)->accelerators; ix; ix = g_slist_next(ix))
+	{
+		V3270Accelerator *accel = (V3270Accelerator *) ix->data;
+
+		// First check the keycode.
+		if(accel->key != keyval)
+			continue;
+
+		if(accel->mods == state)
+			return accel;
+
+	}
+
+ 	return NULL;
+ }
+

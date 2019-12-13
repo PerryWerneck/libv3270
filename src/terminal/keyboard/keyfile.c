@@ -172,6 +172,7 @@
 				// Standard accelerator.
 				V3270Accelerator * acc = v3270_accelerator_copy(accel);
 				gtk_accelerator_parse(keycodes[ix],&acc->key,&acc->mods);
+				acc->key = gdk_keyval_to_lower(acc->key);
 				terminal->accelerators = g_slist_prepend(terminal->accelerators,acc);
 			}
 
