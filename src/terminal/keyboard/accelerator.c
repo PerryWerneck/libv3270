@@ -40,16 +40,28 @@
  {
  	V3270Accelerator * rc = NULL;
 
- 	if(accel->type == V3270_ACCELERATOR_TYPE_CUSTOM)
-	{
-		V3270CustomAccelerator * customAccel = g_new0(V3270CustomAccelerator,1);
-		*customAccel = *((V3270CustomAccelerator *) accel);
-		rc = (V3270Accelerator *) customAccel;
-	}
-	else
-	{
+ 	switch(accel->type)
+ 	{
+ 	case V3270_ACCELERATOR_TYPE_CUSTOM:
+		{
+			V3270CustomAccelerator * customAccel = g_new0(V3270CustomAccelerator,1);
+			*customAccel = *((V3270CustomAccelerator *) accel);
+			rc = (V3270Accelerator *) customAccel;
+		}
+		break;
+
+	case V3270_ACCELERATOR_TYPE_PFKEY:
+		{
+			V3270PFKeyAccelerator * customAccel = g_new0(V3270PFKeyAccelerator,1);
+			*customAccel = *((V3270PFKeyAccelerator *) accel);
+			rc = (V3270Accelerator *) customAccel;
+		}
+		break;
+
+	default:
 		rc = g_new0(V3270Accelerator,1);
 		*rc = *accel;
+
 	}
 
  	return rc;
@@ -174,6 +186,9 @@
 
 	case V3270_ACCELERATOR_TYPE_PFKEY:
 
+		if( ((V3270PFKeyAccelerator *)accel)->description )
+			return ((V3270PFKeyAccelerator *)accel)->description;
+
 		if( ((V3270PFKeyAccelerator *)accel)->name )
 			return ((V3270PFKeyAccelerator *)accel)->name;
 
@@ -199,6 +214,9 @@
 
 	case V3270_ACCELERATOR_TYPE_CUSTOM:
 		return ((V3270CustomAccelerator *) accel)->name;
+
+	case V3270_ACCELERATOR_TYPE_PFKEY:
+		return ((V3270PFKeyAccelerator *) accel)->name;
 
 	}
 

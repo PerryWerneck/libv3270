@@ -32,5 +32,7 @@
  #include <v3270/actions.h>
  #include <internals.h>
 
+ G_GNUC_INTERNAL int fire_pfkey_action(GtkWidget *widget, V3270PFKeyAccelerator *accel);
+
 
 

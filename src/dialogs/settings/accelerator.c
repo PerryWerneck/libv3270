@@ -111,6 +111,8 @@
 
  static void V3270AcceleratorSettings_init(V3270AcceleratorSettings *widget)
  {
+ 	size_t ix;
+
  	// Create description list
  	GtkCellRenderer * text_renderer = gtk_cell_renderer_text_new();
 
@@ -171,8 +173,8 @@
 			NULL
 		);
 
-	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_min_width(column, 500);
+	gtk_tree_view_column_set_resizable(column, TRUE);
 
 	gtk_tree_view_insert_column(
 		GTK_TREE_VIEW(view),
@@ -200,6 +202,13 @@
 		"accel-key", ALTERNATIVE_VALUE,
 		NULL
 	);
+
+	for(ix = 1; ix < 3; ix++)
+	{
+		GtkTreeViewColumn * column = gtk_tree_view_get_column(GTK_TREE_VIEW(view), ix);
+		gtk_tree_view_column_set_min_width(column, 200);
+		gtk_tree_view_column_set_resizable(column, TRUE);
+	}
 
 	// Create scroller view
 	{
@@ -405,7 +414,7 @@ static void accel_edited(GtkCellRendererAccel G_GNUC_UNUSED(*accel), gchar *path
 	change_accel(widget, path, accel_key, mask, MAIN_VALUE, MAIN_MASK);
 }
 
-static void alternative_edited(GtkCellRendererAccel G_GNUC_UNUSED(*accel), gchar *path, guint accel_key, GdkModifierType mask, guint G_GNUC_UNUSED(hardware_keycode), V3270AcceleratorSettings *widget)
+static void alternative_edited(GtkCellRendererAccel G_GNUC_UNUSED(*renderer), gchar *path, guint accel_key, GdkModifierType mask, guint G_GNUC_UNUSED(hardware_keycode), V3270AcceleratorSettings *widget)
 {
 #ifdef DEBUG
 	{
@@ -413,6 +422,43 @@ static void alternative_edited(GtkCellRendererAccel G_GNUC_UNUSED(*accel), gchar
 		debug("%s(%s) = %u/%d (%s)",__FUNCTION__,path,accel_key,mask,keyname);
 	}
 #endif // DEBUG
+
+	// Check for "single-accel" actions
+	V3270Accelerator *accel = NULL;
+	GtkTreePath * tree_path = gtk_tree_path_new_from_string(path);
+	GtkTreeIter iter;
+	if(gtk_tree_model_get_iter(GTK_TREE_MODEL(widget->store),&iter,tree_path))
+	{
+		GValue value;
+		memset(&value,0,sizeof(value));
+		gtk_tree_model_get_value(GTK_TREE_MODEL(widget->store), &iter, ACTION, &value);
+		accel = (V3270Accelerator *) g_value_get_pointer(&value);
+		g_value_unset(&value);
+	}
+	gtk_tree_path_free(tree_path);
+
+	if(accel && accel->type == V3270_ACCELERATOR_TYPE_PFKEY)
+	{
+		GtkWidget * dialog =
+			gtk_message_dialog_new_with_markup(
+				GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(widget))),
+				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+				GTK_MESSAGE_ERROR,
+				GTK_BUTTONS_CANCEL,
+				_( "The action \"%s\" can't manage alternative keys" ),
+				v3270_accelerator_get_description(accel)
+			);
+
+		gtk_window_set_title(GTK_WINDOW(dialog),_("Rejected by action"));
+		gtk_widget_show_all(dialog);
+
+		g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
+		g_signal_connect(dialog,"response",G_CALLBACK(gtk_widget_destroy),NULL);
+
+		return;
+	}
+
+	// Call the common validation.
 	change_accel(widget, path, accel_key, mask, ALTERNATIVE_VALUE, ALTERNATIVE_MASK);
 }
 

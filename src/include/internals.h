@@ -176,6 +176,7 @@
  {
  	struct _V3270Accelerator parent;
  	const gchar *name;
+ 	const gchar *description;
  	unsigned short keycode;
  } V3270PFKeyAccelerator;
 

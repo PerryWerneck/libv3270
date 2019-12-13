@@ -143,7 +143,6 @@
 	// Create accelerators for lib3270 toggles.
 	{
 		const LIB3270_TOGGLE * toggles = lib3270_get_toggles();
-		size_t ix;
 
 		for(ix = 0; toggles[ix].name; ix++)
 		{
@@ -164,8 +163,6 @@
 
 	// Create accelerators for internal actions.
 	{
-        size_t ix;
-
 		const V3270_ACTION * actions = v3270_get_actions();
 
         for(ix = 0 ; actions[ix].name; ix++)
@@ -181,6 +178,51 @@
 			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
 
 		}
+	}
+
+	// Create PF-Key accelerators
+	{
+		static const struct
+		{
+			guint 				  key;
+			GdkModifierType		  mods;
+			const gchar			* name;
+			const gchar			* description;
+			unsigned short		  pfkey;
+		} accels[] =
+		{
+			{
+				.key = GDK_Page_Up,
+				.name = "page-up",
+				.description = N_( "Previous page" ),
+				.pfkey = 7
+			},
+			{
+				.key = GDK_Page_Down,
+				.name = "page-down",
+				.description = N_( "Next page" ),
+				.pfkey = 8
+			}
+		};
+
+        for(ix = 0 ; ix < G_N_ELEMENTS(accels); ix++)
+		{
+			V3270PFKeyAccelerator * accelerator = g_new0(V3270PFKeyAccelerator,1);
+
+			accelerator->keycode			= accels[ix].pfkey;
+			accelerator->name				= accels[ix].name;
+			accelerator->description		= accels[ix].description;
+			accelerator->parent.type		= V3270_ACCELERATOR_TYPE_PFKEY;
+			accelerator->parent.key			= accels[ix].key;
+			accelerator->parent.mods		= accels[ix].mods;
+			accelerator->parent.arg			= (gconstpointer) accelerator;
+			accelerator->parent.activate	= G_CALLBACK(fire_pfkey_action);
+
+			debug("****************************%p [%s]",accelerator,accelerator->name);
+			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+
+		}
+
 	}
 
 	v3270_accelerator_map_sort(widget);

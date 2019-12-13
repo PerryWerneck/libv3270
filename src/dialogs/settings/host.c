@@ -626,7 +626,7 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 	g_return_if_fail(GTK_IS_V3270(widget));
 
 	GtkWidget * dialog = v3270_settings_dialog_new();
-	GtkWidget * settings = v3270_host_select_new();
+	GtkWidget * settings = v3270_host_settings_new();
 
 	gtk_window_set_title(GTK_WINDOW(dialog), v3270_settings_get_title(settings));
 	gtk_container_add(GTK_CONTAINER(dialog), settings);
