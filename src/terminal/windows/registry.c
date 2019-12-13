@@ -205,7 +205,6 @@
 
 	// Save settings
 	size_t		  ix;
-	GString		* str;
 
 	v3270 		* terminal	= GTK_V3270(widget);
 	v3270Class	* klass		= GTK_V3270_GET_CLASS(widget);
