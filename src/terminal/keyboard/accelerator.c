@@ -36,7 +36,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- V3270Accelerator * v3270_accelerator_copy(const V3270Accelerator *accel)
+ V3270Accelerator * v3270_accelerator_clone(const V3270Accelerator *accel)
  {
  	V3270Accelerator * rc = NULL;
 
@@ -187,10 +187,7 @@
 	case V3270_ACCELERATOR_TYPE_PFKEY:
 
 		if( ((V3270PFKeyAccelerator *)accel)->description )
-			return ((V3270PFKeyAccelerator *)accel)->description;
-
-		if( ((V3270PFKeyAccelerator *)accel)->name )
-			return ((V3270PFKeyAccelerator *)accel)->name;
+			return gettext(((V3270PFKeyAccelerator *)accel)->description);
 
 		break;
 

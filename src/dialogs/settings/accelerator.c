@@ -550,7 +550,7 @@ static gboolean add_accel(GtkTreeModel *model, GtkTreePath G_GNUC_UNUSED(*path),
 	}
 
 	// Allways create the "main" accelerator to keep the action active.
-	V3270Accelerator * acc = v3270_accelerator_copy(accel);
+	V3270Accelerator * acc = v3270_accelerator_clone(accel);
 	acc->key	= keymap[0].key;
 	acc->mods	= keymap[0].mods;
 	*accelerators = g_slist_prepend(*accelerators,acc);
@@ -558,7 +558,7 @@ static gboolean add_accel(GtkTreeModel *model, GtkTreePath G_GNUC_UNUSED(*path),
 	// The alternative one is created only when set.
 	if(keymap[1].key)
 	{
-		acc = v3270_accelerator_copy(accel);
+		acc = v3270_accelerator_clone(accel);
 		acc->key	= keymap[1].key;
 		acc->mods	= keymap[1].mods;
 		*accelerators = g_slist_prepend(*accelerators,acc);

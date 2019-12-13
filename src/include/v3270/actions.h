@@ -98,7 +98,7 @@
 	/// @return A newly-allocated string representing the accelerator.
 	LIB3270_EXPORT gchar 					* v3270_accelerator_get_label(const V3270Accelerator * accel);
 
-	LIB3270_EXPORT V3270Accelerator			* v3270_accelerator_copy(const V3270Accelerator *accel);
+	LIB3270_EXPORT V3270Accelerator			* v3270_accelerator_clone(const V3270Accelerator *accel);
 	LIB3270_EXPORT const V3270Accelerator	* v3270_accelerator_map_lookup_entry(GtkWidget *widget, guint keyval, GdkModifierType state);
 
 	G_END_DECLS

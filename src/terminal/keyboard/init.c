@@ -218,7 +218,6 @@
 			accelerator->parent.arg			= (gconstpointer) accelerator;
 			accelerator->parent.activate	= G_CALLBACK(fire_pfkey_action);
 
-			debug("****************************%p [%s]",accelerator,accelerator->name);
 			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
 
 		}

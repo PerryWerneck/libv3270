@@ -154,23 +154,15 @@
 				debug("Creating special accelerator %s",v3270_accelerator_get_name(accel));
 
 				// Remap PFKey accelerator
-				V3270PFKeyAccelerator *pfAccel  = g_new0(V3270PFKeyAccelerator,1);
-
-				pfAccel->keycode			= (unsigned short) pfkey;
-				pfAccel->name				= ((V3270PFKeyAccelerator *) accel)->name;
-				pfAccel->parent.type		= V3270_ACCELERATOR_TYPE_PFKEY;
-				pfAccel->parent.key			= accel->key;
-				pfAccel->parent.mods 		= accel->mods;
-				pfAccel->parent.arg			= (gconstpointer) pfAccel;
-				pfAccel->parent.activate	= G_CALLBACK(fire_pfkey_action);
-
-				terminal->accelerators = g_slist_prepend(terminal->accelerators,pfAccel);
+				V3270Accelerator * acc = v3270_accelerator_clone(accel);
+				((V3270PFKeyAccelerator *) acc)->keycode = (unsigned short) pfkey;
+				terminal->accelerators = g_slist_prepend(terminal->accelerators,acc);
 
 			}
 			else
 			{
 				// Standard accelerator.
-				V3270Accelerator * acc = v3270_accelerator_copy(accel);
+				V3270Accelerator * acc = v3270_accelerator_clone(accel);
 				gtk_accelerator_parse(keycodes[ix],&acc->key,&acc->mods);
 				acc->key = gdk_keyval_to_lower(acc->key);
 				terminal->accelerators = g_slist_prepend(terminal->accelerators,acc);
