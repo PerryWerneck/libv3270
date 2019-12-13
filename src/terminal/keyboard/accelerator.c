@@ -60,14 +60,14 @@
  {
  	// Problems:
 
-	debug("%s: keys: %08x %08x",__FUNCTION__,accel->key,keyval);
+//	debug("%s: keys: %08x %08x",__FUNCTION__,accel->key,keyval);
 
 	// It's the same key?
 	if(accel->key != keyval)
 	{
 		g_autofree gchar * acckey = gtk_accelerator_name(accel->key,accel->mods);
 		g_autofree gchar * qkey = gtk_accelerator_name(keyval,mods);
-		debug("%s: Rejected by key %08x %08x (%s %s)",__FUNCTION__,accel->key,keyval,acckey,qkey);
+//		debug("%s: Rejected by key %08x %08x (%s %s)",__FUNCTION__,accel->key,keyval,acckey,qkey);
 		return FALSE;
 	}
 
@@ -75,20 +75,15 @@
  	if(accel->mods == mods)
 		return TRUE;
 
+/*
 #ifdef DEBUG
 	{
 		g_autofree gchar * acckey = gtk_accelerator_name(accel->key,accel->mods);
 		g_autofree gchar * qkey = gtk_accelerator_name(keyval,mods);
-		debug("%s: accel=%s (%0u/%08x) query=%s (%u/%08x) xor=%08x and=%08x",__FUNCTION__,acckey,accel->key,accel->mods,qkey,keyval,mods,(accel->mods^mods),(accel->mods & mods));
+//		debug("%s: accel=%s (%0u/%08x) query=%s (%u/%08x) xor=%08x and=%08x",__FUNCTION__,acckey,accel->key,accel->mods,qkey,keyval,mods,(accel->mods^mods),(accel->mods & mods));
 	}
 #endif // DEBUG
-
-	// All of the required mods is "ON"?
- 	if(accel->mods != (mods & accel->mods))
-	{
-		debug("%s: Rejected %08x %08x",__FUNCTION__,accel->mods,(mods & accel->mods));
-		return FALSE;
-	}
+*/
 
 	return TRUE;
  }
@@ -98,7 +93,7 @@
  	int rc = ((int (*)(GtkWidget *, gconstpointer)) acel->activate)(terminal, acel->arg);
 
  	if(rc)
-		gdk_display_beep(gdk_display_get_default());
+		gdk_display_beep(gtk_widget_get_display(terminal));
 
  }
 

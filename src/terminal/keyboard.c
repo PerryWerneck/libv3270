@@ -86,15 +86,27 @@
 
  static gboolean check_keypress(v3270 *widget, const GdkEventKey *event)
  {
- 	GdkKeymap * keymap = gdk_keymap_get_for_display(gtk_widget_get_display(GTK_WIDGET(widget)));
+ 	//GdkKeymap * keymap = gdk_keymap_get_for_display(gtk_widget_get_display(GTK_WIDGET(widget)));
 
  	// From gtk_accelerator_name at https://gitlab.gnome.org/GNOME/gtk/blob/master/gtk/gtkaccelgroup.c
  	// Side steps issue from https://mail.gnome.org/archives/gtk-app-devel-list/2007-August/msg00053.html
 	guint keyval = gdk_keyval_to_lower(event->keyval);
 
 	// Add virtual modifiers to event state.
-	GdkModifierType state = event->state & ~GDK_RELEASE_MASK;
- 	gdk_keymap_add_virtual_modifiers(keymap,&state);
+	GdkModifierType state = event->state & GDK_MODIFIER_MASK;
+	// gdk_keymap_add_virtual_modifiers(keymap,&state);
+
+/*
+#ifdef WIN32
+	// FIXME (perry#1#): Find a better way!
+	if( event->keyval == 0xffffff && event->hardware_keycode == 0x0013)
+		keyval = GDK_Pause;
+
+	// Windows sets <ctrl> in left/right control
+	else if(state & GDK_CONTROL_MASK && (keyval == GDK_Control_R || keyval == GDK_Control_L))
+		state &= ~GDK_CONTROL_MASK;
+#endif
+*/
 
  	// Check if the application can handle the key.
 	gboolean handled = FALSE;
@@ -103,13 +115,16 @@
 		v3270_widget_signal[V3270_SIGNAL_KEYPRESS],
 		0,
 		keyval,
-		state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK),	// FIXME: Remove the reset flags after the main application update.
+		event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK),	// FIXME: use the processed state after the main application update.
 		&handled
 	);
 
-	debug("Keyboard action was %s (keyval=%08x state=%08x)",handled ? "Handled" : "Not handled",event->keyval,event->state);
+	//debug("Keyboard action was %s (keyval=%08x state=%08x)",handled ? "Handled" : "Not handled",event->keyval,event->state);
 	if(handled)
 		return TRUE;
+
+	if(!gtk_accelerator_valid(keyval,state))
+		return FALSE;
 
 	//
 	// Check for accelerator.
@@ -131,7 +146,8 @@
 
 		if(pfcode > 0 && pfcode < 25)
 		{
-			lib3270_pfkey(widget->host,pfcode);
+			if(lib3270_pfkey(widget->host,pfcode))
+				gdk_display_beep(gtk_widget_get_display(GTK_WIDGET(widget)));
 			return TRUE;
 		}
 		else
@@ -143,16 +159,6 @@
  	/*
 	gboolean				  handled	= FALSE;
 	const V3270Accelerator	* accel;
-
-#ifdef WIN32
-	// FIXME (perry#1#): Find a better way!
-	if( event->keyval == 0xffffff && event->hardware_keycode == 0x0013)
-		event->keyval = GDK_Pause;
-
-	// Windows sets <ctrl> in left/right control
-	else if(event->state & GDK_CONTROL_MASK && (event->keyval == GDK_Control_R || event->keyval == GDK_Control_L))
-		event->state &= ~GDK_CONTROL_MASK;
-#endif
 
 	g_signal_emit(
 		GTK_WIDGET(widget),
