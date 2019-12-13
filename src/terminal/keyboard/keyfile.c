@@ -141,26 +141,17 @@
 
 			if(accel->type == V3270_ACCELERATOR_TYPE_PFKEY)
 			{
+				// It's a PFKey redirector
+
 				unsigned int pfkey = 0;
 
 				if(sscanf(keycodes[ix],"pf%u",&pfkey) != 1)
 				{
-					g_warning("Can't parse accelerator %s",keys);
+					g_warning("Can't parse key \"%s\" for accelerator %s",keycodes[ix],v3270_accelerator_get_name(accel));
 					return;
 				}
-
-				// It's a PFKey redirector
-				guint key;
-				GdkModifierType mods;
 
 				debug("Creating special accelerator %s",v3270_accelerator_get_name(accel));
-				gtk_accelerator_parse(keycodes[ix],&key,&mods);
-
-				if(!key)
-				{
-					g_warning("Can't parse accelerator %s",v3270_accelerator_get_name(accel));
-					return;
-				}
 
 				// Remap PFKey accelerator
 				V3270PFKeyAccelerator *pfAccel  = g_new0(V3270PFKeyAccelerator,1);
@@ -168,8 +159,8 @@
 				pfAccel->keycode			= (unsigned short) pfkey;
 				pfAccel->name				= ((V3270PFKeyAccelerator *) accel)->name;
 				pfAccel->parent.type		= V3270_ACCELERATOR_TYPE_PFKEY;
-				pfAccel->parent.key			= key;
-				pfAccel->parent.mods 		= mods;
+				pfAccel->parent.key			= accel->key;
+				pfAccel->parent.mods 		= accel->mods;
 				pfAccel->parent.arg			= (gconstpointer) pfAccel;
 				pfAccel->parent.activate	= G_CALLBACK(fire_pfkey_action);
 
