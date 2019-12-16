@@ -117,6 +117,7 @@
   	GtkDialog		  parent;
   	GtkNotebook		* tabs;
   	GtkWidget		* terminal;
+  	gboolean		  has_subtitle;
  } V3270SettingsDialog;
 
  typedef struct _V3270SettingsDialogClass	{
@@ -127,6 +128,7 @@
 
  LIB3270_EXPORT GtkWidget * v3270_settings_dialog_new();
  LIB3270_EXPORT void v3270_settings_dialog_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal);
+ LIB3270_EXPORT void v3270_settings_dialog_set_has_subtitle(GtkWidget *widget, gboolean has_subtitle);
 
  /// @brief Process GtkDialog's "response" signal.
  LIB3270_EXPORT void v3270_setttings_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget *terminal);

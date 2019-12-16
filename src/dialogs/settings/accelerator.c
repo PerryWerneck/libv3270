@@ -234,7 +234,7 @@ LIB3270_EXPORT GtkWidget * v3270_accelerator_settings_new()
 {
  	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(GTK_TYPE_V3270_ACCELERATOR_SETTINGS, NULL));
 
- 	settings->title = _("Accelerator properties");
+ 	settings->title = _("Keyboard accelerators");
  	settings->label = _("Accelerators");
 
  	return GTK_WIDGET(settings);

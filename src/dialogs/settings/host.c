@@ -610,7 +610,7 @@ LIB3270_EXPORT GtkWidget * v3270_host_settings_new()
 {
  	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(GTK_TYPE_V3270HostSelectWidget, NULL));
 
- 	settings->title = _("Host properties");
+ 	settings->title = _("Host settings");
  	settings->label = _("Host");
 
  	return GTK_WIDGET(settings);
@@ -627,6 +627,8 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 
 	GtkWidget * dialog = v3270_settings_dialog_new();
 	GtkWidget * settings = v3270_host_settings_new();
+
+	v3270_settings_dialog_set_has_subtitle(dialog,FALSE);
 
 	gtk_window_set_title(GTK_WINDOW(dialog), v3270_settings_get_title(settings));
 	gtk_container_add(GTK_CONTAINER(dialog), settings);

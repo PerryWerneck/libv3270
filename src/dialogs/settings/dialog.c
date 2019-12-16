@@ -37,7 +37,8 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static gboolean on_tab_focus(V3270Settings *settings, GdkEvent G_GNUC_UNUSED(*event), GtkWindow *dialog)
+/*
+static gboolean on_tab_focus(V3270Settings *settings, GdkEvent G_GNUC_UNUSED(*event), V3270SettingsDialog *dialog)
 {
 	debug("title: %s",settings->title);
 	debug("label: %s",settings->label);
@@ -46,6 +47,21 @@ static gboolean on_tab_focus(V3270Settings *settings, GdkEvent G_GNUC_UNUSED(*ev
 		gtk_window_set_title(dialog,settings->title);
 
  	return FALSE;
+}
+*/
+
+void on_switch_page(GtkNotebook *notebook, V3270Settings *settings, guint page_num, V3270SettingsDialog *dialog)
+{
+	debug("title: %s",settings->title);
+	debug("label: %s",settings->label);
+
+	if(dialog->has_subtitle) {
+		GtkWidget * header_bar = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
+		if(header_bar) {
+			gtk_header_bar_set_subtitle(GTK_HEADER_BAR(header_bar),settings->title);
+		}
+	}
+
 }
 
 static void check_valid(GtkWidget *widget, gboolean *valid)
@@ -85,7 +101,7 @@ static void add(GtkContainer *container, GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270_SETTINGS(widget));
 
-	debug("Added settings dialog %p",widget);
+	debug("*************************** Added settings dialog %p",widget);
 
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 	gtk_container_set_border_width(GTK_CONTAINER(widget),18);
@@ -106,7 +122,7 @@ static void add(GtkContainer *container, GtkWidget *widget)
 		label
 	);
 
-	g_signal_connect(G_OBJECT(widget), "focus-in-event", G_CALLBACK(on_tab_focus), container);
+//	g_signal_connect(G_OBJECT(widget), "focus-in-event", G_CALLBACK(on_tab_focus), container);
 	g_signal_connect(G_OBJECT(widget), "validity", G_CALLBACK(on_validity), container);
 
 
@@ -183,6 +199,9 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 {
 	GtkWidget * content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
+	// Get use of header bar.
+	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &dialog->has_subtitle, NULL);
+
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 	//gtk_box_set_spacing(GTK_BOX(content_area),18);
 	//gtk_container_set_border_width(GTK_CONTAINER(content_area),18);
@@ -205,7 +224,9 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 	gtk_notebook_set_show_border(dialog->tabs, FALSE);
 	g_signal_connect(G_OBJECT(dialog->tabs), "page-added", G_CALLBACK(on_page_changed), dialog);
 	g_signal_connect(G_OBJECT(dialog->tabs), "page-removed", G_CALLBACK(on_page_changed), dialog);
+	g_signal_connect(G_OBJECT(dialog->tabs), "switch-page", G_CALLBACK(on_switch_page), dialog);
 	gtk_box_pack_start(GTK_BOX(content_area),GTK_WIDGET(dialog->tabs),TRUE,TRUE,0);
+
 
 }
 
@@ -252,6 +273,12 @@ void v3270_settings_dialog_set_terminal_widget(GtkWidget *widget, GtkWidget *ter
 		(GtkCallback) set_terminal_widget,
 		terminal
 	);
+}
+
+void v3270_settings_dialog_set_has_subtitle(GtkWidget *widget, gboolean has_subtitle)
+{
+	g_return_if_fail(GTK_IS_V3270_SETTINGS_DIALOG(widget));
+	GTK_V3270_SETTINGS_DIALOG(widget)->has_subtitle = has_subtitle;
 }
 
 void v3270_setttings_dialog_response(GtkDialog *dialog, gint response_id, GtkWidget G_GNUC_UNUSED(*terminal))
