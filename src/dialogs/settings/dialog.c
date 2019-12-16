@@ -320,6 +320,8 @@ void v3270_settings_popup_dialog(GtkWidget *widget, GtkWidget *terminal, gboolea
 	GtkWidget 		* dialog = v3270_settings_dialog_new();
 	V3270Settings	* settings = GTK_V3270_SETTINGS(widget);
 
+	v3270_settings_dialog_set_has_subtitle(dialog,FALSE);
+
 	if(settings->title)
 		gtk_window_set_title(GTK_WINDOW(dialog),settings->title);
 

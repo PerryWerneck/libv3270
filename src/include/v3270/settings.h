@@ -140,6 +140,8 @@
  /// @brief Create font settings widget.
  LIB3270_EXPORT GtkWidget		* v3270_font_settings_new();
 
+ /// @brief Create color settings widget.
+ LIB3270_EXPORT GtkWidget		* v3270_color_settings_new();
 
  G_END_DECLS
 

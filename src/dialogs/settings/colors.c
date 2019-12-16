@@ -32,7 +32,9 @@
   *
   */
 
- #include "private.h"
+// #include "private.h"
+ #include <internals.h>
+ #include <lib3270.h>
  #include <v3270/colorscheme.h>
  #include <v3270/settings.h>
  #include <v3270/dialogs.h>
@@ -368,6 +370,11 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
 
  LIB3270_EXPORT GtkWidget * v3270_color_selection_new()
  {
+ 	return v3270_color_settings_new();
+ }
+
+ LIB3270_EXPORT GtkWidget * v3270_color_settings_new()
+ {
  	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(GTK_TYPE_V3270_COLOR_SELECTION, NULL));
 
  	settings->title = _("Terminal colors");
@@ -379,7 +386,7 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
  LIB3270_EXPORT void v3270_edit_color_table(GtkWidget *terminal)
  {
  	v3270_settings_popup_dialog(
-		v3270_color_selection_new(),
+		v3270_color_settings_new(),
 		terminal,
 		FALSE
 	);

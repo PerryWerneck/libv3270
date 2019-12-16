@@ -42,9 +42,6 @@
 			<Add option="-fPIC" />
 		</Linker>
 		<Unit filename="configure.ac" />
-		<Unit filename="src/dialogs/colors.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/dialogs/colorscheme.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -100,6 +97,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/settings/accelerator.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dialogs/settings/colors.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/dialogs/settings/dialog.c">
