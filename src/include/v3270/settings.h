@@ -113,16 +113,8 @@
  #define GTK_IS_V3270_SETTINGS_DIALOG_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_SETTINGS_DIALOG))
  #define GTK_V3270_SETTINGS_DIALOG_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_SETTINGS_DIALOG, V3270SettingsDialogClass))
 
- typedef struct _V3270SettingsDialog {
-  	GtkDialog		  parent;
-  	GtkNotebook		* tabs;
-  	GtkWidget		* terminal;
-  	gboolean		  has_subtitle;
- } V3270SettingsDialog;
-
- typedef struct _V3270SettingsDialogClass	{
- 	GtkDialogClass parent_class;
- } V3270SettingsDialogClass;
+ typedef struct _V3270SettingsDialog V3270SettingsDialog;
+ typedef struct _V3270SettingsDialogClass V3270SettingsDialogClass;
 
  LIB3270_EXPORT GType V3270SettingsDialog_get_type(void);
 
@@ -136,14 +128,17 @@
  LIB3270_EXPORT void v3270_settings_dialog_apply(GtkWidget *widget);
  LIB3270_EXPORT void v3270_settings_dialog_revert(GtkWidget *widget);
 
- LIB3270_EXPORT GtkWidget		* v3270_host_settings_new();
- LIB3270_EXPORT GtkWidget		* v3270_font_settings_new();
-
  LIB3270_EXPORT GtkWidget		* v3270_font_chooser_widget_new() G_GNUC_DEPRECATED;
  LIB3270_EXPORT GtkWidget		* v3270_host_select_new() G_GNUC_DEPRECATED;
 
- // Accelerator settings.
+ /// @brief Create accelerator settings widget.
  LIB3270_EXPORT GtkWidget		* v3270_accelerator_settings_new();
+
+ /// @brief Create host settings widget.
+ LIB3270_EXPORT GtkWidget		* v3270_host_settings_new();
+
+ /// @brief Create font settings widget.
+ LIB3270_EXPORT GtkWidget		* v3270_font_settings_new();
 
 
  G_END_DECLS

@@ -33,6 +33,17 @@
  #include <terminal.h>
  #include <lib3270/log.h>
 
+ struct _V3270SettingsDialog {
+  	GtkDialog		  parent;
+  	GtkNotebook		* tabs;
+  	GtkWidget		* terminal;
+  	gboolean		  has_subtitle;
+ };
+
+ struct _V3270SettingsDialogClass	{
+ 	GtkDialogClass parent_class;
+ };
+
  G_DEFINE_TYPE(V3270SettingsDialog, V3270SettingsDialog, GTK_TYPE_DIALOG);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -50,7 +61,7 @@ static gboolean on_tab_focus(V3270Settings *settings, GdkEvent G_GNUC_UNUSED(*ev
 }
 */
 
-void on_switch_page(GtkNotebook *notebook, V3270Settings *settings, guint page_num, V3270SettingsDialog *dialog)
+void on_switch_page(GtkNotebook G_GNUC_UNUSED(*notebook), V3270Settings *settings, guint G_GNUC_UNUSED(page_num), V3270SettingsDialog *dialog)
 {
 	debug("title: %s",settings->title);
 	debug("label: %s",settings->label);
@@ -100,8 +111,6 @@ static void on_validity(V3270Settings G_GNUC_UNUSED(*settings), gboolean valid, 
 static void add(GtkContainer *container, GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270_SETTINGS(widget));
-
-	debug("*************************** Added settings dialog %p",widget);
 
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 	gtk_container_set_border_width(GTK_CONTAINER(widget),18);
@@ -221,7 +230,7 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 
 	gtk_notebook_set_scrollable(dialog->tabs,TRUE);
 	gtk_notebook_set_show_tabs(dialog->tabs,FALSE);
-	gtk_notebook_set_show_border(dialog->tabs, FALSE);
+	// gtk_notebook_set_show_border(dialog->tabs, TRUE);
 	g_signal_connect(G_OBJECT(dialog->tabs), "page-added", G_CALLBACK(on_page_changed), dialog);
 	g_signal_connect(G_OBJECT(dialog->tabs), "page-removed", G_CALLBACK(on_page_changed), dialog);
 	g_signal_connect(G_OBJECT(dialog->tabs), "switch-page", G_CALLBACK(on_switch_page), dialog);
