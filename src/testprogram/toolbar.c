@@ -68,7 +68,7 @@
 
  	gtk_window_set_title(GTK_WINDOW(dialog),"Session properties");
 	gtk_container_add(GTK_CONTAINER(dialog), v3270_host_settings_new());
-	gtk_container_add(GTK_CONTAINER(dialog), v3270_color_selection_new());
+	gtk_container_add(GTK_CONTAINER(dialog), v3270_color_settings_new());
 	gtk_container_add(GTK_CONTAINER(dialog), v3270_font_settings_new());
 	gtk_container_add(GTK_CONTAINER(dialog), v3270_accelerator_settings_new());
 
@@ -209,7 +209,7 @@
 
 //		{ "network-server",				G_CALLBACK(host_clicked),			"Configure host"				},
 //		{ "preferences-desktop-font",	G_CALLBACK(font_clicked),			"Select font"					},
-//		{ "gtk-select-color",			G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
+		{ "gtk-select-color",			G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
 
 
 		{ "zoom-in",					G_CALLBACK(zoom_in_clicked),		"Zoom in"						},
