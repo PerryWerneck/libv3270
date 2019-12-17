@@ -789,9 +789,24 @@ LIB3270_EXPORT GtkIMContext * v3270_get_im_context(GtkWidget *widget)
 
 static gboolean bg_emit_save_settings(v3270 *terminal)
 {
+	GdkWindow * window = gtk_widget_get_window(GTK_WIDGET(terminal));
+	gdk_window_set_cursor(
+		window,
+		GTK_V3270_GET_CLASS(terminal)->cursors[LIB3270_POINTER_WAITING]
+	);
+
+	gdk_display_sync(gtk_widget_get_display(GTK_WIDGET(terminal)));
+
 	terminal->freeze = 0;
 	g_signal_emit(terminal,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
+
+	gdk_window_set_cursor(
+		window,
+		NULL
+	);
+
 	g_object_unref(terminal);
+
  	return FALSE;
 }
 
