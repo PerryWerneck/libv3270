@@ -149,14 +149,6 @@ static void revert_settings(GtkWidget *widget, GtkWidget G_GNUC_UNUSED(* termina
 		v3270_settings_revert(widget);
 }
 
-static gboolean bg_emit_save_settings(GObject *widget)
-{
-	debug("Unfreezing and emitting save settings for terminal %p",widget);
-	GTK_V3270(widget)->freeze = 0;
-	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
- 	return FALSE;
-}
-
 void v3270_settings_dialog_apply(GtkWidget *dialog)
 {
 	debug("%s",__FUNCTION__);
@@ -164,6 +156,14 @@ void v3270_settings_dialog_apply(GtkWidget *dialog)
 	GtkWidget * terminal = GTK_V3270_SETTINGS_DIALOG(dialog)->terminal;
 	if(!terminal)
 		return;
+
+	GdkWindow * window = gtk_widget_get_window(dialog);
+	gdk_window_set_cursor(
+		window,
+		GTK_V3270_GET_CLASS(terminal)->cursors[LIB3270_POINTER_WAITING]
+	);
+
+	gdk_display_sync(gtk_widget_get_display(dialog));
 
 	// Freeze to avoid multiple "save settings" signals.
 	GTK_V3270(terminal)->freeze = 1;
@@ -174,8 +174,14 @@ void v3270_settings_dialog_apply(GtkWidget *dialog)
 		terminal
 	);
 
-	// Delay the "unfreeze" signal.
-	g_idle_add((GSourceFunc) bg_emit_save_settings, G_OBJECT(terminal));
+	// Don't delay save settings signal!
+	GTK_V3270(terminal)->freeze = 0;
+	g_signal_emit(terminal,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
+
+	gdk_window_set_cursor(
+		window,
+		NULL
+	);
 
 }
 
