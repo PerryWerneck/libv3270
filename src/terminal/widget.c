@@ -648,6 +648,17 @@ static void release_cursor_timer(v3270 *widget)
 	widget->cursor.timer = NULL;
 }
 
+static gboolean bg_pos_realize(v3270 *terminal)
+{
+	if(lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_FULL_SCREEN))
+		gtk_window_fullscreen(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(terminal))));
+
+	if(lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_CONNECT_ON_STARTUP) && lib3270_is_disconnected(terminal->host))
+		v3270_reconnect(GTK_WIDGET(terminal));
+
+	return FALSE;
+}
+
 static void v3270_realize(GtkWidget	* widget)
 {
 	if(!gtk_widget_get_has_window(widget))
@@ -681,6 +692,8 @@ static void v3270_realize(GtkWidget	* widget)
 		gtk_widget_set_window(widget, window);
 
 		gtk_im_context_set_client_window(GTK_V3270(widget)->input_method,window);
+
+		g_idle_add((GSourceFunc) bg_pos_realize, GTK_V3270(widget));
 
 	}
 

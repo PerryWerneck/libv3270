@@ -456,7 +456,7 @@ $(BINDBG)/$(LIBNAME)@EXEEXT@: \
 run: \
 	$(BINDBG)/$(LIBNAME)@EXEEXT@
 
-	@LD_LIBRARY_PATH=$(BINDBG) \
+	@G_DEBUG=fatal-warnings \
 		$(BINDBG)/$(LIBNAME)@EXEEXT@
 
 mem-check: \

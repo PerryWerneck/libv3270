@@ -95,12 +95,16 @@ void v3270_update_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID id, unsigned char 
 		break;
 
 	case LIB3270_TOGGLE_FULL_SCREEN:
-		if(value)
-			gtk_window_fullscreen(GTK_WINDOW(gtk_widget_get_toplevel(widget)));
-		else
-			gtk_window_unfullscreen(GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+		if(gtk_widget_get_realized(widget))
+		{
+			if(value)
+				gtk_window_fullscreen(GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+			else
+				gtk_window_unfullscreen(GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+		}
 		break;
 
+	case LIB3270_TOGGLE_CONNECT_ON_STARTUP:
 	case LIB3270_TOGGLE_DS_TRACE:
 	case LIB3270_TOGGLE_SSL_TRACE:
 	case LIB3270_TOGGLE_SCREEN_TRACE:
@@ -108,7 +112,6 @@ void v3270_update_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID id, unsigned char 
 	case LIB3270_TOGGLE_RECONNECT:
 	case LIB3270_TOGGLE_SMART_PASTE:
 	case LIB3270_TOGGLE_KEEP_SELECTED:
-	case LIB3270_TOGGLE_CONNECT_ON_STARTUP:
 	case LIB3270_TOGGLE_KP_ALTERNATIVE:
 	case LIB3270_TOGGLE_NETWORK_TRACE:
 	case LIB3270_TOGGLE_BEEP:
