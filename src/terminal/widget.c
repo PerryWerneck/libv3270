@@ -493,6 +493,7 @@ static void v3270_init(v3270 *widget)
 
 	widget->host = lib3270_session_new(NULL);
 	lib3270_set_user_data(widget->host,widget);
+	lib3270_set_url(widget->host,NULL);
 
 	// Install callbacks
 	v3270_install_callbacks(widget);
@@ -789,8 +790,6 @@ LIB3270_EXPORT GtkIMContext * v3270_get_im_context(GtkWidget *widget)
 static gboolean bg_emit_save_settings(v3270 *terminal)
 {
 	terminal->freeze = 0;
-	terminal->save_settings = 0;
-
 	g_signal_emit(terminal,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
 	g_object_unref(terminal);
  	return FALSE;

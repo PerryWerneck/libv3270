@@ -87,10 +87,6 @@ static gboolean bg_update_message(H3270 *session)
 	);
 
  	//trace("-----B %s %p",__FUNCTION__, lib3270_get_user_data(session));
-
- 	if(terminal->save_settings)
-		v3270_emit_save_settings(GTK_WIDGET(terminal));
-
  	return FALSE;
 }
 

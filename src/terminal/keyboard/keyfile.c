@@ -65,7 +65,7 @@
 		if(!key)
 			return;
 
-		debug("%s=%s",v3270_accelerator_get_name(accel),keys);
+//		debug("%s=%s",v3270_accelerator_get_name(accel),keys);
 
 		g_key_file_set_string(
 			((struct Args *) ptr)->key_file,
@@ -130,7 +130,7 @@
 		return;
 	}
 
-	debug("Recreating accelerators for action \"%s\"",v3270_accelerator_get_name(accel));
+//	debug("Recreating accelerators for action \"%s\"",v3270_accelerator_get_name(accel));
 
 	{
 		size_t ix;
@@ -190,6 +190,9 @@
 	if(!keys)
 		return FALSE;
 
+	g_object_freeze_notify(G_OBJECT(widget));
+	terminal->freeze = 1;
+
 	size_t ix;
 	for(ix = 0; keys[ix]; ix++)
 	{
@@ -203,6 +206,9 @@
 	g_strfreev(keys);
 
 	v3270_accelerator_map_sort(terminal);
+
+	g_object_thaw_notify(G_OBJECT(widget));
+	terminal->freeze = 0;
 
  	return TRUE;
  }

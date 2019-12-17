@@ -152,7 +152,6 @@ G_BEGIN_DECLS
 	int scaled_fonts	: 1;	/// @brief Use scaled fonts
 	int drawing			: 1;	/// @brief Draw widget?
 	int freeze			: 1;	/// @brief Truee when the "save settings" signal is disabled.
-	int save_settings	: 1;	/// @brief The settings were changed.
 
     /// @brief Action properties.
    	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];

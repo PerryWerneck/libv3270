@@ -261,6 +261,7 @@
 		group_name = "terminal";
 
 	g_object_freeze_notify(G_OBJECT(widget));
+	terminal->freeze = 1;
 
 	// Load Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
@@ -275,6 +276,7 @@
 		load_by_pspec(widget,klass->properties.settings[ix],key_file,group_name);
 
 	g_object_thaw_notify(G_OBJECT(widget));
+	terminal->freeze = 0;
 
 	return TRUE;
  }
