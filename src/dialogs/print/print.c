@@ -244,6 +244,8 @@
 		g_object_ref(G_OBJECT(opr->widget));
 	}
 
+	g_signal_emit(GTK_WIDGET(opr->widget), v3270_widget_signal[V3270_SIGNAL_PRINT_SETUP], 0, operation);
+
  }
 
  GtkPrintOperation * v3270_print_operation_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode)
@@ -265,8 +267,8 @@
 	operation->widget		= NULL;
 	operation->session		= NULL;
 
-	v3270_print_operation_set_terminal(GTK_PRINT_OPERATION(operation),GTK_WIDGET(widget));
 	v3270_set_mono_color_table(operation->settings.colors,"#000000","#FFFFFF");
+	v3270_print_operation_set_terminal(GTK_PRINT_OPERATION(operation),GTK_WIDGET(widget));
 
 	// Get contents.
 	switch(operation->mode)

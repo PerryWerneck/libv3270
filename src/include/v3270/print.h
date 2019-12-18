@@ -67,6 +67,9 @@
 
  LIB3270_EXPORT void				  v3270_print_operation_apply_settings(GtkPrintOperation *operation, GtkWidget *settings);
 
+ LIB3270_EXPORT void				  v3270_print_operation_to_key_file(GtkPrintOperation *operation, GKeyFile *key_file);
+ LIB3270_EXPORT void				  v3270_print_operation_load_key_file(GtkPrintOperation *operation, GKeyFile *key_file);
+
  LIB3270_EXPORT void				  v3270_print_operation_set_terminal(GtkPrintOperation * operation, GtkWidget *terminal);
  LIB3270_EXPORT GtkWidget			* v3270_print_operation_get_terminal(GtkPrintOperation *operation);
 

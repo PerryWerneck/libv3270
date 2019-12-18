@@ -435,6 +435,15 @@ static void v3270_class_init(v3270Class *klass)
 						v3270_VOID__VOID_POINTER_UINT,
 						G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_UINT, 0);
 
+	v3270_widget_signal[V3270_SIGNAL_PRINT_SETUP] =
+		g_signal_new(	I_("print-setup"),
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_FIRST,
+						0,
+						NULL, NULL,
+						v3270_VOID__VOID_POINTER,
+						G_TYPE_NONE, 2, G_TYPE_POINTER, 0);
+
 	v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS] =
 		g_signal_new(	I_("save-settings"),
 						G_OBJECT_CLASS_TYPE (gobject_class),

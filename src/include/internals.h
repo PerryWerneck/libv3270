@@ -103,6 +103,7 @@
  	// Print session signals.
  	//
  	V3270_SIGNAL_PRINT_DONE,
+ 	V3270_SIGNAL_PRINT_SETUP,
 
  	//
  	// Settings signals (Mostly fired by V3270Settings dialogs).
