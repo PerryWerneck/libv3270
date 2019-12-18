@@ -37,6 +37,8 @@
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
 
+ static const HKEY predefined[] = { HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE };
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  static void save_by_pspec(GtkWidget *widget, GParamSpec *pspec, HKEY hKey)
@@ -269,3 +271,34 @@
 
 	return TRUE;
  }
+
+ gboolean v3270_win32_open_regkey(GtkWidget *widget, HKEY *hKey, REGSAM samDesired) {
+
+	const gchar * session_name = GTK_V3270(widget)->session.name;
+
+	if(!session_name)
+		session_name = g_get_application_name();
+
+	size_t				  ix;
+	g_autofree gchar	* path = g_strjoin("\\software\\",session_name,NULL);
+
+	// Remove delimiters
+	static const gchar	  delim[] = { ':', '.', '?' };
+	for(ix = 0; ix < G_N_ELEMENTS(delim); ix++) {
+
+		gchar * p = strchr(path,delim[ix]);
+		if(p)
+			*p = 0;
+	}
+
+	for(ix=0;ix < G_N_ELEMENTS(predefined);ix++) {
+
+		if(RegOpenKeyEx(predefined[ix],path,0,samDesired,hKey) == ERROR_SUCCESS)
+			return TRUE;
+
+	}
+
+	return FALSE;
+
+ }
+
