@@ -442,7 +442,7 @@ static void v3270_class_init(v3270Class *klass)
 						0,
 						NULL, NULL,
 						v3270_VOID__VOID_POINTER,
-						G_TYPE_NONE, 2, G_TYPE_POINTER, 0);
+						G_TYPE_NONE, 1, G_TYPE_POINTER, 0);
 
 	v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS] =
 		g_signal_new(	I_("save-settings"),
