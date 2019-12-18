@@ -311,7 +311,7 @@
  LIB3270_EXPORT void			  gtk_entry_set_printf(GtkEntry *entry, const gchar *fmt, ...) G_GNUC_PRINTF(2,3);
 
 #ifdef _WIN32
- LIB3270_EXPORT gboolean		  v3270_win32_create_regkey(GtkWidget *widget, REGSAM samDesired, PHKEY phkResult);
+ LIB3270_EXPORT gboolean		  v3270_win32_open_regkey(GtkWidget *widget, HKEY *hKey, REGSAM samDesired);
 #endif // _WIN32
 
  G_END_DECLS
