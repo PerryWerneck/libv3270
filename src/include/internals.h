@@ -102,15 +102,12 @@
  	//
  	// Print session signals.
  	//
- 	V3270_SIGNAL_PRINT_SETUP,
- 	V3270_SIGNAL_PRINT_APPLY,
  	V3270_SIGNAL_PRINT_DONE,
 
  	//
  	// Settings signals (Mostly fired by V3270Settings dialogs).
  	//
  	V3270_SIGNAL_SAVE_SETTINGS,		///< @brief Notify main application to save all widget settings.
- 	V3270_SIGNAL_UPDATE_CONFIG,		///< @brief Update config signal (deprecated!)
 
  	V3270_SIGNAL_LAST
  };

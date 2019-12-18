@@ -353,15 +353,6 @@ static void v3270_class_init(v3270Class *klass)
 						v3270_VOID__VOID,
 						G_TYPE_NONE, 0);
 
-	v3270_widget_signal[V3270_SIGNAL_UPDATE_CONFIG] =
-		g_signal_new(	I_("update_config"),
-						G_OBJECT_CLASS_TYPE (gobject_class),
-						G_SIGNAL_RUN_FIRST,
-						0,
-						NULL, NULL,
-						v3270_VOID__VOID_POINTER_POINTER,
-						G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
-
 	v3270_widget_signal[V3270_SIGNAL_MODEL_CHANGED] =
 		g_signal_new(	I_("model_changed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
@@ -434,24 +425,6 @@ static void v3270_class_init(v3270Class *klass)
 						v3270_BOOLEAN__VOID_BOOLEAN_UINT_POINTER,
 						G_TYPE_BOOLEAN, 3, G_TYPE_BOOLEAN, G_TYPE_UINT, G_TYPE_POINTER);
 
-
-	v3270_widget_signal[V3270_SIGNAL_PRINT_SETUP] =
-		g_signal_new(	I_("print-begin"),
-						G_OBJECT_CLASS_TYPE (gobject_class),
-						G_SIGNAL_RUN_FIRST,
-						0,
-						NULL, NULL,
-						v3270_VOID__VOID_POINTER,
-						G_TYPE_NONE, 1, G_TYPE_POINTER, 0);
-
-	v3270_widget_signal[V3270_SIGNAL_PRINT_APPLY] =
-		g_signal_new(	I_("print-apply"),
-						G_OBJECT_CLASS_TYPE (gobject_class),
-						G_SIGNAL_RUN_FIRST,
-						0,
-						NULL, NULL,
-						v3270_VOID__VOID_POINTER,
-						G_TYPE_NONE, 1, G_TYPE_POINTER, 0);
 
 	v3270_widget_signal[V3270_SIGNAL_PRINT_DONE] =
 		g_signal_new(	I_("print-done"),

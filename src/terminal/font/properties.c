@@ -105,7 +105,7 @@ LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 		terminal->font.family = g_strdup(name);
 		terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
 
-		g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_UPDATE_CONFIG], 0, "font-family", name);
+		v3270_emit_save_settings(widget);
 
 		debug("%s: %p",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_FONT_FAMILY]);
 		v3270_notify_setting(widget,V3270_SETTING_FONT_FAMILY);

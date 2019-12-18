@@ -83,7 +83,7 @@ LIB3270_EXPORT void v3270_set_colors(GtkWidget *widget, const gchar *colors)
 	}
 
 	v3270_set_color_table(GTK_V3270(widget)->color,colors);
-	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_UPDATE_CONFIG], 0, "colors", colors);
+	v3270_emit_save_settings(widget);
 	v3270_reload(widget);
 
 }
