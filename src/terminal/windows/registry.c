@@ -28,6 +28,7 @@
  */
 
  #include <config.h>
+ #include <winsock2.h>
  #include <windows.h>
  #include <terminal.h>
  #include <internals.h>

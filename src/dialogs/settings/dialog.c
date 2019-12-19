@@ -61,7 +61,7 @@ static gboolean on_tab_focus(V3270Settings *settings, GdkEvent G_GNUC_UNUSED(*ev
 }
 */
 
-void on_switch_page(GtkNotebook G_GNUC_UNUSED(*notebook), V3270Settings *settings, guint G_GNUC_UNUSED(page_num), V3270SettingsDialog *dialog)
+static void on_switch_page(GtkNotebook G_GNUC_UNUSED(*notebook), V3270Settings *settings, guint G_GNUC_UNUSED(page_num), V3270SettingsDialog *dialog)
 {
 	debug("title: %s",settings->title);
 	debug("label: %s",settings->label);

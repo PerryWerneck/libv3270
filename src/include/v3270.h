@@ -32,6 +32,7 @@
  #define V3270_H_INCLUDED 1
 
  #ifdef _WIN32
+	#include <winsock2.h>
 	#include <windows.h>
  #endif // _WIN32
 
