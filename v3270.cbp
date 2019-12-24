@@ -231,7 +231,13 @@
 		<Unit filename="src/terminal/actions/clipboard.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/actions/print.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/actions/private.h" />
+		<Unit filename="src/terminal/actions/save.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/actions/scroll.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como - e possui - linhas de código.
+ * Este programa está nomeado como properties.c e possui - linhas de código.
  *
  * Contatos:
  *
@@ -27,15 +27,40 @@
  *
  */
 
- #include <config.h>
+ #include "private.h"
  #include <v3270.h>
- #include <v3270/actions.h>
- #include <internals.h>
+ #include <lib3270/trace.h>
+ #include <lib3270/log.h>
 
- G_GNUC_INTERNAL int fire_copy_accelerator(GtkWidget *widget, const V3270_ACTION *action);
- G_GNUC_INTERNAL int fire_paste_accelerator(GtkWidget *widget, const V3270_ACTION *action);
- G_GNUC_INTERNAL int fire_zoom_action(GtkWidget *widget, const V3270_ACTION *action);
- G_GNUC_INTERNAL int fire_save_action(GtkWidget *widget, const V3270_ACTION *action);
- G_GNUC_INTERNAL int fire_print_action(GtkWidget *widget, const V3270_ACTION *action);
- G_GNUC_INTERNAL int fire_keypad_action(GtkWidget *widget, const V3270_ACTION *action);
+/*--[ Implement ]------------------------------------------------------------------------------------*/
+
+ int fire_print_action(GtkWidget *widget, const V3270_ACTION *action) {
+
+ 	debug("%s",__FUNCTION__);
+
+	switch( ((int) action->flags) )
+	{
+	case -1:						// Default action (depends on selection)
+		v3270_print(widget,NULL);
+		break;
+
+	case LIB3270_CONTENT_ALL:		// All terminal contents
+		v3270_print_all(widget,NULL);
+		break;
+
+	case LIB3270_CONTENT_SELECTED:	// Only selected area.
+		v3270_print_selected(widget,NULL);
+		break;
+
+	case LIB3270_CONTENT_COPY:		// Copy buffer.
+		v3270_print_copy(widget,NULL);
+		break;
+
+	default:
+		g_warning("Unexpected print flags %u",(unsigned int) action->flags);
+	}
+
+	return 0;
+ }
+
 

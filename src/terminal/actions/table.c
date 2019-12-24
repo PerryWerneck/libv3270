@@ -63,6 +63,7 @@
 	{
 		.flags = 0,
 		.name = "copy",
+		.icon = "edit-copy",
 		.summary = N_( "Copy" ),
 		.key = 'c',
 		.mods = GDK_CONTROL_MASK,
@@ -81,6 +82,7 @@
 	{
 		.flags = V3270_COPY_TEXT,
 		.name = "copy-text",
+		.icon = "edit-copy",
 		.summary = N_( "Copy as plain text" ),
 		.key = 'c',
 		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
@@ -90,6 +92,7 @@
 	{
 		.flags = V3270_ACTION_FLAG_CUT|V3270_COPY_DEFAULT,
 		.name = "cut",
+		.icon = "edit-cut",
 		.summary = N_( "Cut" ),
 		.key = 'x',
 		.mods = GDK_CONTROL_MASK,
@@ -108,6 +111,7 @@
 	{
 		.flags = V3270_ACTION_FLAG_CUT|V3270_COPY_TEXT,
 		.name = "cut-text",
+		.icon = "edit-cut",
 		.summary = N_( "Cut as plain text" ),
 		.key = 'x',
 		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
@@ -117,6 +121,7 @@
 	{
 		.flags = 0,
 		.name = "paste",
+		.icon = "edit-paste",
 		.summary = N_("Paste"),
 		.key = 'v',
 		.mods = GDK_CONTROL_MASK,
@@ -126,6 +131,7 @@
 	{
 		.flags = 1,
 		.name = "paste-text",
+		.icon = "edit-paste",
 		.summary = N_("Paste as plain text"),
 		.key = 'v',
 		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
@@ -144,6 +150,7 @@
  	{
  		.flags = 0,
  		.name = "zoom-in",
+ 		.icon = "zoom-in",
  		.summary = N_("Zoom in"),
  		.key = GDK_KP_Add,
  		.mods = GDK_CONTROL_MASK,
@@ -154,6 +161,7 @@
  		.flags = 1,
  		.name = "zoom-out",
  		.summary = N_("Zoom out"),
+ 		.icon = "zoom-out",
  		.key = GDK_KP_Subtract,
  		.mods = GDK_CONTROL_MASK,
  		.activate = fire_zoom_action
@@ -163,9 +171,88 @@
  		.flags = 2,
  		.name = "zoom-fit-best",
  		.summary = N_("Zoom to best size"),
+ 		.icon = "zoom-fit-best",
  		.key = '0',
  		.mods = GDK_CONTROL_MASK,
  		.activate = fire_zoom_action
+	},
+
+	//
+	// Save actions
+	//
+	{
+ 		.flags = -1,
+ 		.name = "save",
+ 		.icon = "document-save-as",
+ 		.summary = N_("Save screen or selection"),
+ 		.activate = fire_save_action
+
+	},
+
+	{
+ 		.flags = LIB3270_CONTENT_ALL,
+ 		.name = "save-all",
+ 		.icon = "document-save-as",
+ 		.summary = N_("Save screen"),
+ 		.activate = fire_save_action
+
+	},
+
+	{
+ 		.flags = LIB3270_CONTENT_SELECTED,
+ 		.name = "save-selected",
+ 		.icon = "document-save-as",
+ 		.summary = N_("Save selected area"),
+ 		.activate = fire_save_action
+
+	},
+
+	{
+ 		.flags = LIB3270_CONTENT_COPY,
+ 		.name = "save-copy",
+ 		.icon = "document-save-as",
+ 		.summary = N_("Save Copy"),
+ 		.activate = fire_save_action
+
+	},
+
+	//
+	// Print actions
+	//
+	{
+ 		.flags = -1,
+ 		.name = "print",
+ 		.icon = "document-print",
+ 		.summary = N_("Print screen or selection"),
+ 		.activate = fire_print_action
+
+	},
+
+	{
+ 		.flags = LIB3270_CONTENT_ALL,
+ 		.name = "print-all",
+ 		.icon = "document-print",
+ 		.summary = N_("Print screen"),
+ 		.activate = fire_print_action
+
+	},
+
+	{
+ 		.flags = LIB3270_CONTENT_SELECTED,
+ 		.name = "print-selected",
+ 		.icon = "document-print",
+ 		.summary = N_("Print selected area"),
+ 		.activate = fire_print_action
+
+	},
+
+	{
+ 		.flags = LIB3270_CONTENT_COPY,
+ 		.name = "print-copy",
+ 		.icon = "document-print",
+ 		.summary = N_("Print Copy"),
+ 		.activate = fire_print_action
+
 	},
 
 	{
