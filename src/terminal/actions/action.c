@@ -53,9 +53,10 @@
  static	const GVariantType	* get_state_type(GAction *action);
  static	GVariant			* get_state_property(GAction *action);
 
- static	GVariant 			* internal_get_state_property(GAction *action, GtkWidget *terminal);
  static gboolean			  internal_get_enabled(GAction *action, GtkWidget *terminal);
  static void 				  internal_activate(GAction *action, GVariant *parameter, GtkWidget *terminal);
+
+ static	GVariant 			* internal_get_state(GAction *action, GtkWidget *terminal);
  static GVariant			* internal_get_state_hint(GAction *action, GtkWidget *terminal);
 
  static	const GVariantType	* get_parameter_type(GAction *action);
@@ -97,6 +98,9 @@
 
 	klass->change_widget		= change_widget;
 	klass->get_enabled			= internal_get_enabled;
+	klass->get_state			= internal_get_state;
+	klass->get_state_hint		= internal_get_state_hint;
+
 
  	object_class->finalize		= finalize;
 	object_class->get_property	= get_property;
@@ -187,8 +191,8 @@
 	action->types.parameter		= NULL;
 
 	action->activate			= internal_activate;
-	action->get_state_property	= internal_get_state_property;
-	action->get_state_hint		= internal_get_state_hint;
+//	action->get_state_property	= internal_get_state_property;
+//	action->get_state_hint		= internal_get_state_hint;
 
  }
 
@@ -262,7 +266,7 @@
  	return NULL;
  }
 
- GVariant * internal_get_state_property(GAction *object, GtkWidget G_GNUC_UNUSED(*terminal)) {
+ GVariant * internal_get_state(GAction *object, GtkWidget G_GNUC_UNUSED(*terminal)) {
 
 	V3270Action * action = V3270_ACTION(object);
 
@@ -273,19 +277,7 @@
  }
 
  GVariant * get_state_property(GAction *object) {
-
-	V3270Action * action = V3270_ACTION(object);
-	GVariant * state;
-
-	if(action->terminal)
-		state = action->get_state_property(object,action->terminal);
-	else
-		state = internal_get_state_property(object,NULL);
-
- 	if(state)
-		g_variant_ref(state);
-
-	return state;
+	return V3270_ACTION_GET_CLASS(object)->get_state(object,V3270_ACTION(object)->terminal);
  }
 
  const GVariantType * get_parameter_type(GAction *action) {
@@ -297,8 +289,7 @@
  }
 
  GVariant * get_state_hint(GAction *object) {
- 	V3270Action *action = V3270_ACTION(object);
-	return action->get_state_hint(object,action->terminal);
+	return V3270_ACTION_GET_CLASS(object)->get_state_hint(object,V3270_ACTION(object)->terminal);
  }
 
  void change_state(GAction G_GNUC_UNUSED(*object), GVariant G_GNUC_UNUSED(*value)) {

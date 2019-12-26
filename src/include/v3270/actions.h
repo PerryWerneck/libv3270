@@ -128,12 +128,6 @@
 		/// @brief Activation method.
 		void (*activate)(GAction *action, GVariant *parameter, GtkWidget *terminal);
 
-		/// @brief Get State method.
-		GVariant * (*get_state_property)(GAction *action, GtkWidget *terminal);
-
-		/// @brief Get state hint.
-		GVariant * (*get_state_hint)(GAction *action, GtkWidget *terminal);
-
 	} V3270Action;
 
 	typedef struct _V3270ActionClass {
@@ -147,6 +141,9 @@
 
 		void (*change_widget)(GAction *action, GtkWidget *from, GtkWidget *to);
 		gboolean (*get_enabled)(GAction *action, GtkWidget *terminal);
+
+		GVariant * (*get_state)(GAction *action, GtkWidget *terminal);
+		GVariant * (*get_state_hint)(GAction *action, GtkWidget *terminal);
 
 	} V3270ActionClass;
 
