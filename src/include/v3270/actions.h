@@ -32,6 +32,7 @@
     #define V3270_ACTIONS_H_INCLUDED 1
 
     #include <gtk/gtk.h>
+    #include <lib3270/actions.h>
 
     G_BEGIN_DECLS
 
@@ -163,6 +164,8 @@
 	LIB3270_EXPORT const gchar	* v3270_action_get_label(GAction *action);
 	LIB3270_EXPORT const gchar	* v3270_action_get_tooltip(GAction *action);
 	LIB3270_EXPORT GdkPixbuf	* v3270_action_get_pixbuf(GAction *action, GtkIconSize icon_size, GtkIconLookupFlags flags);
+
+	LIB3270_EXPORT GAction		* g_action_new_from_lib3270(const LIB3270_ACTION * definition);
 
 	LIB3270_EXPORT void			  g_action_map_add_v3270_actions(GActionMap *action_map);
 	LIB3270_EXPORT void			  g_action_map_add_lib3270_actions(GActionMap *action_map);
