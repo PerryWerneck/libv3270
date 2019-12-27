@@ -120,11 +120,6 @@
 		const LIB3270_PROPERTY	* info;			///> @brief Action info.
 		const void 				* listener;		///> @brief Signal listener for the action group.
 
-		struct {
-			const GVariantType	* state;		///> @brief State type type.
-			const GVariantType	* parameter;	///> @brief Parameter type.
-		} types;
-
 		/// @brief Activation method.
 		void (*activate)(GAction *action, GVariant *parameter, GtkWidget *terminal);
 
@@ -139,11 +134,14 @@
 			GParamSpec * enabled;
 		} properties;
 
-		void (*change_widget)(GAction *action, GtkWidget *from, GtkWidget *to);
-		gboolean (*get_enabled)(GAction *action, GtkWidget *terminal);
+		struct {
+			const GVariantType 	* type;                ///> @brief State type.
+		} state;
 
-		GVariant * (*get_state)(GAction *action, GtkWidget *terminal);
-		GVariant * (*get_state_hint)(GAction *action, GtkWidget *terminal);
+		void (*change_widget)(GAction *action, GtkWidget *from, GtkWidget *to);
+
+		gboolean	  		  (*get_enabled)(GAction *action, GtkWidget *terminal);
+		GVariant			* (*get_state)(GAction *action, GtkWidget *terminal);
 
 	} V3270ActionClass;
 

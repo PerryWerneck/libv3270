@@ -43,27 +43,22 @@
  static void get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
  static void set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
 
- static gboolean get_enabled(GAction *action);
- static void activate(GAction *action, GVariant *parameter);
-
  static void change_widget(GAction *action, GtkWidget *from, GtkWidget *to);
-
  static void finalize(GObject *object);
 
- static	const GVariantType	* get_state_type(GAction *action);
- static	GVariant			* get_state_property(GAction *action);
+ static gboolean			  get_enabled(GAction *action, GtkWidget *terminal);
+ static void 				  activate(GAction *action, GVariant *parameter, GtkWidget *terminal);
+ static	GVariant 			* get_state(GAction *action, GtkWidget *terminal);
 
- static gboolean			  internal_get_enabled(GAction *action, GtkWidget *terminal);
- static void 				  internal_activate(GAction *action, GVariant *parameter, GtkWidget *terminal);
-
- static	GVariant 			* internal_get_state(GAction *action, GtkWidget *terminal);
- static GVariant			* internal_get_state_hint(GAction *action, GtkWidget *terminal);
-
- static	const GVariantType	* get_parameter_type(GAction *action);
- static GVariant			* get_state_hint(GAction *action);
- static const gchar			* get_name(GAction *action);
-
- static void				  change_state(GAction *action, GVariant *value);
+ static const gchar			* iface_get_name(GAction *action);
+ static	const GVariantType	* iface_get_parameter_type(GAction *action);
+ static GVariant			* iface_get_state_hint(GAction *action);
+ static	const GVariantType	* iface_get_state_type(GAction *action);
+ static	GVariant			* iface_get_state(GAction *action);
+ static gboolean			  iface_get_enabled(GAction *action);
+ static GVariant			* iface_get_state(GAction *object);
+ static void				  iface_change_state(GAction *object, GVariant *value);
+ static void				  iface_activate(GAction *object, GVariant *parameter);
 
  enum {
 	PROP_NONE,
@@ -79,17 +74,6 @@
 
  G_DEFINE_TYPE_WITH_CODE(V3270Action, V3270Action, G_TYPE_OBJECT, G_IMPLEMENT_INTERFACE(G_TYPE_ACTION, V3270_action_iface_init))
 
- void V3270_action_iface_init(GActionInterface *iface) {
-	iface->get_name = get_name;
-	iface->get_parameter_type = get_parameter_type;
-	iface->get_state_type = get_state_type;
-	iface->get_state_hint = get_state_hint;
-	iface->get_enabled = get_enabled;
-	iface->get_state = get_state_property;
-	iface->change_state = change_state;
-	iface->activate = activate;
- }
-
  void V3270Action_class_init(V3270ActionClass *klass) {
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
@@ -97,10 +81,10 @@
 	debug("%s",__FUNCTION__);
 
 	klass->change_widget		= change_widget;
-	klass->get_enabled			= internal_get_enabled;
-	klass->get_state			= internal_get_state;
-	klass->get_state_hint		= internal_get_state_hint;
+	klass->get_enabled			= get_enabled;
+	klass->get_state			= get_state;
 
+	klass->state.type 			= NULL;
 
  	object_class->finalize		= finalize;
 	object_class->get_property	= get_property;
@@ -188,11 +172,7 @@
 
 	action->terminal			= NULL;
 	action->info				= &default_info;
-	action->types.parameter		= NULL;
-
-	action->activate			= internal_activate;
-//	action->get_state_property	= internal_get_state_property;
-//	action->get_state_hint		= internal_get_state_hint;
+	action->activate			= activate;
 
  }
 
@@ -217,7 +197,7 @@
 
 	switch (prop_id) {
     case PROP_NAME:
-		g_value_set_string(value, get_name(action));
+		g_value_set_string(value, g_action_get_name(action));
 		break;
 
 	case PROP_ICON_NAME:
@@ -233,19 +213,19 @@
 		break;
 
 	case PROP_PARAMETER_TYPE:
-		g_value_set_boxed(value, get_parameter_type(action));
+		g_value_set_boxed(value, g_action_get_parameter_type(action));
 		break;
 
 	case PROP_ENABLED:
-		g_value_set_boolean(value, get_enabled(action));
+		g_value_set_boolean(value, g_action_get_enabled(action));
 		break;
 
 	case PROP_STATE_TYPE:
-		g_value_set_boxed(value, get_state_type(action));
+		g_value_set_boxed(value, g_action_get_state_type(action));
 		break;
 
 	case PROP_STATE:
-		g_value_take_variant(value, get_state_property(action));
+		g_value_take_variant(value, g_action_get_state(action));
 		break;
 
 	default:
@@ -254,46 +234,8 @@
 
  }
 
- void set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec) {
- 	g_message("Action property \"%s\" is read-only",pspec->name);
- }
-
- const gchar * get_name(GAction *action) {
- 	return V3270_ACTION_GET_DESCRIPTOR(action)->name;
- }
-
- GVariant * internal_get_state_hint(GAction G_GNUC_UNUSED(*action), GtkWidget G_GNUC_UNUSED(*terminal)) {
- 	return NULL;
- }
-
- GVariant * internal_get_state(GAction *object, GtkWidget G_GNUC_UNUSED(*terminal)) {
-
-	V3270Action * action = V3270_ACTION(object);
-
-	if(action->types.state == G_VARIANT_TYPE_BOOLEAN)
-		return g_variant_new_boolean(FALSE);
-
-	return NULL;
- }
-
- GVariant * get_state_property(GAction *object) {
-	return V3270_ACTION_GET_CLASS(object)->get_state(object,V3270_ACTION(object)->terminal);
- }
-
- const GVariantType * get_parameter_type(GAction *action) {
- 	return V3270_ACTION(action)->types.parameter;
- }
-
- const GVariantType * get_state_type(GAction *object) {
-	return V3270_ACTION(object)->types.state;
- }
-
- GVariant * get_state_hint(GAction *object) {
-	return V3270_ACTION_GET_CLASS(object)->get_state_hint(object,V3270_ACTION(object)->terminal);
- }
-
- void change_state(GAction G_GNUC_UNUSED(*object), GVariant G_GNUC_UNUSED(*value)) {
- 	debug("%s",__FUNCTION__);
+ void set_property(GObject *object, guint G_GNUC_UNUSED(prop_id), const GValue G_GNUC_UNUSED(*value), GParamSpec *pspec) {
+ 	g_message("Action %s property %s is read-only",g_action_get_name(G_ACTION(object)),pspec->name);
  }
 
  static gboolean bg_notify_enabled(GObject *action) {
@@ -338,7 +280,7 @@
 
 		g_idle_add((GSourceFunc) bg_notify_enabled, G_OBJECT(action));
 
-		if(action->types.state)
+		if(V3270_ACTION_GET_CLASS(action)->state.type)
 			g_idle_add((GSourceFunc) bg_notify_state, G_OBJECT(action));
 
  	}
@@ -367,7 +309,123 @@
 	return V3270_ACTION(object)->terminal;
  }
 
- gboolean get_enabled(GAction *object) {
+ gboolean get_enabled(GAction G_GNUC_UNUSED(*object), GtkWidget *terminal) {
+ 	return terminal != NULL;
+ }
+
+ void activate(GAction *action, GVariant G_GNUC_UNUSED(*parameter), GtkWidget G_GNUC_UNUSED(*terminal)) {
+	g_message("Action %s can't be activated",g_action_get_name(action));
+ }
+
+ const gchar * v3270_action_get_icon_name(GAction *action) {
+ 	return V3270_ACTION_GET_DESCRIPTOR(action)->icon;
+ }
+
+ const gchar * v3270_action_get_label(GAction *action) {
+	const gchar * label = V3270_ACTION_GET_DESCRIPTOR(action)->label;
+
+	if(label)
+		return gettext(label);
+
+	return NULL;
+ }
+
+ const gchar * v3270_action_get_tooltip(GAction *action) {
+
+	const gchar * tooltip;
+
+	tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->description;
+	if(tooltip)
+		return gettext(tooltip);
+
+	tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->summary;
+	if(tooltip)
+		return gettext(tooltip);
+
+	return NULL;
+ }
+
+ //
+ // Action methods.
+ //
+ H3270 * v3270_action_get_session(GAction *action) {
+ 	g_return_val_if_fail(V3270_IS_ACTION(action),NULL);
+ 	return v3270_get_session(V3270_ACTION(action)->terminal);
+ }
+
+ GAction * v3270_action_new() {
+	return G_ACTION(g_object_new(V3270_TYPE_ACTION, NULL));
+ }
+
+ GdkPixbuf * v3270_action_get_pixbuf(GAction *action, GtkIconSize icon_size, GtkIconLookupFlags flags) {
+
+	const gchar * icon_name = v3270_action_get_icon_name(action);
+
+	if(!icon_name)
+		return NULL;
+
+	return gtk_icon_theme_load_icon(
+					gtk_icon_theme_get_default(),
+					icon_name,
+					icon_size,
+					flags,
+					NULL
+			);
+
+ }
+
+//
+// Default methods.
+//
+ GVariant * get_state(GAction G_GNUC_UNUSED(*object), GtkWidget *terminal) {
+	return g_variant_new_boolean(terminal != NULL);
+ }
+
+//
+// Interface Methods.
+//
+ void V3270_action_iface_init(GActionInterface *iface) {
+	iface->get_name				= iface_get_name;
+	iface->get_parameter_type	= iface_get_parameter_type;
+	iface->get_state_type		= iface_get_state_type;
+	iface->get_state_hint		= iface_get_state_hint;
+	iface->get_enabled			= iface_get_enabled;
+	iface->get_state			= iface_get_state;
+	iface->change_state			= iface_change_state;
+	iface->activate				= iface_activate;
+ }
+
+ const gchar * iface_get_name(GAction *action) {
+ 	return V3270_ACTION_GET_DESCRIPTOR(action)->name;
+ }
+
+ GVariant * iface_get_state(GAction *object) {
+
+ 	GtkWidget * terminal = V3270_ACTION(object)->terminal;
+
+ 	if(!terminal)
+		g_variant_new_boolean(FALSE);
+
+	return V3270_ACTION_GET_CLASS(object)->get_state(object,terminal);
+ }
+
+ const GVariantType * iface_get_parameter_type(GAction G_GNUC_UNUSED(*action)) {
+ 	return NULL;
+ }
+
+ const GVariantType * iface_get_state_type(GAction *object) {
+	return V3270_ACTION_GET_CLASS(object)->state.type;
+ }
+
+ GVariant * iface_get_state_hint(GAction G_GNUC_UNUSED(*object)) {
+	return NULL;
+ }
+
+ void iface_change_state(GAction G_GNUC_UNUSED(*object), GVariant G_GNUC_UNUSED(*value)) {
+ 	debug("%s",__FUNCTION__);
+ }
+
+ gboolean iface_get_enabled(GAction *object) {
 
  	V3270Action * action = V3270_ACTION(object);
 
@@ -387,82 +445,13 @@
 
  }
 
- void activate(GAction *object, GVariant *parameter) {
+ void iface_activate(GAction *object, GVariant *parameter) {
 
  	V3270Action * action = V3270_ACTION(object);
-
- 	debug("%s: terminal=%p",__FUNCTION__,action->terminal);
 
  	if(action && action->terminal) {
 		action->activate(object,parameter,action->terminal);
  	}
-
- }
-
- gboolean internal_get_enabled(GAction G_GNUC_UNUSED(*object), GtkWidget *terminal) {
- 	return terminal != NULL;
- }
-
- void internal_activate(GAction *action, GVariant G_GNUC_UNUSED(*parameter), GtkWidget G_GNUC_UNUSED(*terminal)) {
-	g_message("Action %s can't be activated",g_action_get_name(action));
- }
-
- const gchar * v3270_action_get_icon_name(GAction *action) {
- 	return V3270_ACTION_GET_DESCRIPTOR(action)->icon;
- }
-
- const gchar * v3270_action_get_label(GAction *action) {
-	const gchar * label = V3270_ACTION_GET_DESCRIPTOR(action)->label;
-
-	if(label)
-		return gettext(label);
-
-	return NULL;
- }
-
- const gchar * v3270_action_get_tooltip(GAction *action) {
-	const gchar * tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->description;
-
-	if(tooltip)
-		return gettext(tooltip);
-
-	return NULL;
- }
-
- H3270 * v3270_action_get_session(GAction *action) {
- 	g_return_val_if_fail(V3270_IS_ACTION(action),NULL);
- 	return v3270_get_session(V3270_ACTION(action)->terminal);
- }
-
- GAction * v3270_action_new() {
-	return G_ACTION(g_object_new(V3270_TYPE_ACTION, NULL));
- }
-
- /*
- static GdkPixbuf * pixbuf_from_icon_name(GValue *value, GtkIconSize icon_size) {
-
-	const gchar * icon_name = g_value_get_string(value);
-
-	if(!icon_name)
-		return NULL;
-
- }
- */
-
- GdkPixbuf * v3270_action_get_pixbuf(GAction *action, GtkIconSize icon_size, GtkIconLookupFlags flags) {
-
-	const gchar * icon_name = v3270_action_get_icon_name(action);
-
-	if(!icon_name)
-		return NULL;
-
-	return gtk_icon_theme_load_icon(
-					gtk_icon_theme_get_default(),
-					icon_name,
-					icon_size,
-					flags,
-					NULL
-			);
 
  }
 

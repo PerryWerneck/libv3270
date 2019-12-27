@@ -171,7 +171,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/include/clipboard.h" />
-		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/hostselect.h" />
 		<Unit filename="src/include/internals.h" />
