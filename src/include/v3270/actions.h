@@ -165,6 +165,9 @@
 	LIB3270_EXPORT GAction		* g_action_new_from_lib3270(const LIB3270_ACTION * definition);
 	LIB3270_EXPORT GAction		* g_action_new_from_toggle(const LIB3270_TOGGLE * definition);
 
+	LIB3270_EXPORT GAction		* v3270_pfkey_action_new(void);
+	LIB3270_EXPORT GAction		* v3270_pakey_action_new(void);
+
 	LIB3270_EXPORT void			  g_action_map_add_v3270_actions(GActionMap *action_map);
 	LIB3270_EXPORT void			  g_action_map_add_lib3270_actions(GActionMap *action_map);
 	LIB3270_EXPORT void			  g_action_map_add_lib3270_toggles(GActionMap *action_map);

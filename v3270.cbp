@@ -236,6 +236,12 @@
 		<Unit filename="src/terminal/actions/lib3270.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/actions/pakey.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/terminal/actions/pfkey.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/actions/print.c">
 			<Option compilerVar="CC" />
 		</Unit>
