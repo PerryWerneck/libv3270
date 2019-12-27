@@ -249,6 +249,9 @@
 		<Unit filename="src/terminal/actions/table.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/actions/toggle.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/actions/zoom.c">
 			<Option compilerVar="CC" />
 		</Unit>

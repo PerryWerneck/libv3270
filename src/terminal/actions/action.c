@@ -401,12 +401,20 @@
 
  GVariant * iface_get_state(GAction *object) {
 
- 	GtkWidget * terminal = V3270_ACTION(object)->terminal;
+ 	GtkWidget	* terminal = V3270_ACTION(object)->terminal;
+	GVariant	* state;
 
- 	if(!terminal)
-		g_variant_new_boolean(FALSE);
+ 	if(terminal) {
+		state = V3270_ACTION_GET_CLASS(object)->get_state(object,terminal);
+ 	} else {
+		state = g_variant_new_boolean(FALSE);
+ 	}
 
-	return V3270_ACTION_GET_CLASS(object)->get_state(object,terminal);
+ 	if(state)
+		g_variant_ref(state);
+
+	return state;
+
  }
 
  const GVariantType * iface_get_parameter_type(GAction G_GNUC_UNUSED(*action)) {
