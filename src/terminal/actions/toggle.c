@@ -110,7 +110,7 @@
  void Lib3270ToggleAction_class_init(Lib3270ToggleActionClass *klass) {
 
 	klass->parent_class.change_widget	= change_widget;
-	klass->parent_class.state.type		= G_VARIANT_TYPE_BOOLEAN;
+	klass->parent_class.type.state		= G_VARIANT_TYPE_BOOLEAN;
 	klass->parent_class.get_state		= get_state;
 
  }

@@ -84,7 +84,8 @@
 	klass->get_enabled			= get_enabled;
 	klass->get_state			= get_state;
 
-	klass->state.type 			= NULL;
+	klass->type.state 			= NULL;
+	klass->type.parameter		= NULL;
 
  	object_class->finalize		= finalize;
 	object_class->get_property	= get_property;
@@ -280,7 +281,7 @@
 
 		g_idle_add((GSourceFunc) bg_notify_enabled, G_OBJECT(action));
 
-		if(V3270_ACTION_GET_CLASS(action)->state.type)
+		if(V3270_ACTION_GET_CLASS(action)->type.state)
 			g_idle_add((GSourceFunc) bg_notify_state, G_OBJECT(action));
 
  	}
@@ -417,12 +418,12 @@
 
  }
 
- const GVariantType * iface_get_parameter_type(GAction G_GNUC_UNUSED(*action)) {
- 	return NULL;
+ const GVariantType * iface_get_parameter_type(GAction *object) {
+	return V3270_ACTION_GET_CLASS(object)->type.parameter;
  }
 
  const GVariantType * iface_get_state_type(GAction *object) {
-	return V3270_ACTION_GET_CLASS(object)->state.type;
+	return V3270_ACTION_GET_CLASS(object)->type.state;
  }
 
  GVariant * iface_get_state_hint(GAction G_GNUC_UNUSED(*object)) {

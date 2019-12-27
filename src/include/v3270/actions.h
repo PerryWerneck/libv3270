@@ -136,8 +136,9 @@
 		} properties;
 
 		struct {
-			const GVariantType 	* type;                ///> @brief State type.
-		} state;
+			const GVariantType 	* state;		///> @brief State type.
+			const GVariantType 	* parameter;	///> @brief State type.
+		} type;
 
 		void (*change_widget)(GAction *action, GtkWidget *from, GtkWidget *to);
 
