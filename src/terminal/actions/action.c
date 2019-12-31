@@ -255,7 +255,8 @@
  }
 
  void v3270_action_notify_state(GAction *action) {
-	g_idle_add((GSourceFunc) bg_notify_state, G_OBJECT(action));
+	if(V3270_ACTION_GET_CLASS(action)->type.state)
+		g_idle_add((GSourceFunc) bg_notify_state, G_OBJECT(action));
  }
 
  static void event_listener(H3270 G_GNUC_UNUSED(*hSession), void *object) {
@@ -402,17 +403,22 @@
 
  GVariant * iface_get_state(GAction *object) {
 
- 	GtkWidget	* terminal = V3270_ACTION(object)->terminal;
-	GVariant	* state;
+ 	GVariant * state = NULL;
 
- 	if(terminal) {
-		state = V3270_ACTION_GET_CLASS(object)->get_state(object,terminal);
- 	} else {
-		state = g_variant_new_boolean(FALSE);
+ 	if(V3270_ACTION_GET_CLASS(object)->type.state) {
+
+		GtkWidget	* terminal = V3270_ACTION(object)->terminal;
+
+		if(terminal) {
+			state = V3270_ACTION_GET_CLASS(object)->get_state(object,terminal);
+		} else {
+			state = g_variant_new_boolean(FALSE);
+		}
+
+		if(state)
+			g_variant_ref(state);
+
  	}
-
- 	if(state)
-		g_variant_ref(state);
 
 	return state;
 
