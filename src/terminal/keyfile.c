@@ -229,6 +229,9 @@
  {
 	g_return_if_fail(GTK_IS_V3270(widget));
 
+	if(!group_name)
+		group_name = "terminal";
+
 	size_t		  ix;
 	v3270 		* terminal	= GTK_V3270(widget);
 	v3270Class	* klass		= GTK_V3270_GET_CLASS(widget);

@@ -79,9 +79,12 @@
 
  void v3270_accelerator_map_to_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name)
  {
-	struct Args args = { key_file, group_name };
+	struct Args args = {
+		key_file,
+		(group_name ? group_name : "accelerators")
+	};
 
-	g_key_file_remove_group(key_file,group_name,NULL);
+	g_key_file_remove_group(key_file,args.group_name,NULL);
 	v3270_accelerator_map_foreach(GTK_WIDGET(widget),save_accelerator,&args);
 
  }
