@@ -120,7 +120,13 @@
 	for(ix = 0; actions[ix].name; ix++) {
 
 		GAction *action = g_action_new_from_lib3270(&actions[ix]);
-		g_action_map_add_action(action_map,action);
+
+		if(!g_action_get_name(action)) {
+			g_warning("Action \"%s\" is invalid",actions[ix].name);
+		} else {
+			g_action_map_add_action(action_map,action);
+		}
+
 
 	}
 

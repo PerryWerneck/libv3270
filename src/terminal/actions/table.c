@@ -344,7 +344,12 @@
 
 		action->info = (const LIB3270_PROPERTY *) &actions[ix];
 		action->activate = activate_v3270;
-		g_action_map_add_action(action_map,G_ACTION(action));
+
+		if(!g_action_get_name(G_ACTION(action))) {
+			g_warning("Action \"%s\" is invalid",actions[ix].name);
+		} else {
+			g_action_map_add_action(action_map,G_ACTION(action));
+		}
 
 	}
 
