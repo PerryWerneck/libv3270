@@ -43,6 +43,7 @@
  #include <v3270/actions.h>
  #include <stdlib.h>
  #include <gdk/gdkkeysyms-compat.h>
+ #include <locale.h>
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -188,19 +189,26 @@
 
 int main (int argc, char **argv) {
 
-  GtkApplication *app;
-  int status;
+	GtkApplication *app;
+	int status;
 
-  app = gtk_application_new ("br.com.bb.pw3270",G_APPLICATION_FLAGS_NONE);
+	// Setup locale
+#ifdef LC_ALL
+	setlocale( LC_ALL, "" );
+#endif
 
-  g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
+	textdomain("pw3270");
 
-  status = g_application_run (G_APPLICATION (app), argc, argv);
-  g_object_unref (app);
+	app = gtk_application_new ("br.com.bb.pw3270",G_APPLICATION_FLAGS_NONE);
 
-  g_message("rc=%d",status);
+	g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
 
-  return 0;
+	status = g_application_run (G_APPLICATION (app), argc, argv);
+	g_object_unref (app);
+
+	g_message("rc=%d",status);
+
+	return 0;
 
 }
 

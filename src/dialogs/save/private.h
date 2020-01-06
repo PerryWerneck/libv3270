@@ -27,12 +27,7 @@
  *
  */
 
- #include <config.h>
- #define ENABLE_NLS
-
- #ifndef GETTEXT_PACKAGE
-        #define GETTEXT_PACKAGE PACKAGE_NAME
- #endif
+ #include <internals.h>
 
  #include <libintl.h>
  #include <glib/gi18n.h>
