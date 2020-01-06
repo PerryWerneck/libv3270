@@ -96,6 +96,18 @@
 	},
 
 	{
+		.flags = V3270_COPY_TABLE,
+ 		.group = LIB3270_ACTION_GROUP_SELECTION,
+		.name = "copy-table",
+		.icon = "edit-copy",
+		.label = N_( "Copy as table" ),
+		.summary = N_( "Copy as table" ),
+		.key = 'c',
+		.mods = GDK_SHIFT_MASK|GDK_ALT_MASK,
+ 		.activate = fire_copy_accelerator
+	},
+
+	{
 		.flags = V3270_ACTION_FLAG_CUT|V3270_COPY_DEFAULT,
  		.group = LIB3270_ACTION_GROUP_SELECTION,
 		.name = "cut",
@@ -126,6 +138,18 @@
 		.summary = N_( "Cut as plain text" ),
 		.key = 'x',
 		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK,
+ 		.activate = fire_copy_accelerator
+	},
+
+	{
+		.flags = V3270_ACTION_FLAG_CUT|V3270_COPY_TABLE,
+ 		.group = LIB3270_ACTION_GROUP_SELECTION,
+		.name = "cut-table",
+		.icon = "edit-cut",
+		.label = N_( "Cut as table" ),
+		.summary = N_( "Cut as table" ),
+		.key = 'x',
+		.mods = GDK_SHIFT_MASK|GDK_ALT_MASK,
  		.activate = fire_copy_accelerator
 	},
 

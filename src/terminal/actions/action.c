@@ -170,7 +170,7 @@
  void V3270Action_init(V3270Action *action) {
 
 	static const LIB3270_PROPERTY default_info = {
-		.name = "unnamed"
+		.name = NULL
 	};
 
 	action->terminal			= NULL;
@@ -237,8 +237,8 @@
 
  }
 
- void set_property(GObject *object, guint G_GNUC_UNUSED(prop_id), const GValue G_GNUC_UNUSED(*value), GParamSpec *pspec) {
- 	g_message("Action %s property %s is read-only",g_action_get_name(G_ACTION(object)),pspec->name);
+ void set_property(GObject G_GNUC_UNUSED(*object), guint G_GNUC_UNUSED(prop_id), const GValue G_GNUC_UNUSED(*value), GParamSpec *pspec) {
+// 	g_message("Action %s property %s is read-only",g_action_get_name(G_ACTION(object)),pspec->name);
  }
 
  static gboolean bg_notify_enabled(GObject *action) {
