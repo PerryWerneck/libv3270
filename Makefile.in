@@ -29,7 +29,7 @@
 SONAME=@SONAME@
 LIBNAME=libv3270
 PRODUCT_NAME=@PRODUCT_NAME@
-INSTALL_PACKAGES=@INSTALL_PACKAGES@
+INSTALL_PACKAGES=@INSTALL_PACKAGES@ locale
 
 SOURCES= \
 	$(wildcard src/terminal/*.c) \
@@ -205,6 +205,11 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 	@$(MKDIR) $(dir $@)
 	@touch $@
 
+install-%: \
+	%/Makefile
+
+	@$(MAKE) -C `dirname $<` DESTDIR=$(DESTDIR) install
+
 
 #---[ Marshal Targets ]------------------------------------------------------------------
 
@@ -277,7 +282,7 @@ $(OBJDIR)/marshal/%.o: \
 all: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a \
-	$(POTDIR)/$(LIBNAME).pot
+	locale/$(PACKAGE_TARNAME).pot
 
 Release: \
 	$(BINRLS)/$(SONAME) \
@@ -399,9 +404,6 @@ install-dev: \
 		sdk/libv3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/libv3270.pc
 
-	# Install translation files
-	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
-	@$(INSTALL_DATA) $(POTDIR)/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/$(LIBNAME).pot
 
 install-glade:
 
@@ -431,7 +433,14 @@ $(POTDIR)/$(LIBNAME).pot: \
 	@$(MSGCAT) --sort-output $^ > $@
 
 locale: \
+	locale/$(LIBNAME).pot
+
+locale/$(LIBNAME).pot: \
 	$(POTDIR)/$(LIBNAME).pot
+
+	@rm -f $@
+	@$(MKDIR) $(@D)
+	@$(MSGCAT) --sort-output $^ > $@
 
 
 #---[ Debug Targets ]--------------------------------------------------------------------

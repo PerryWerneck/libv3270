@@ -117,9 +117,11 @@
 
 		GObject parent;
 
-		GtkWidget				* terminal;		///> @brief The active terminal widget.
-		const LIB3270_PROPERTY	* info;			///> @brief Action info.
-		const void 				* listener;		///> @brief Signal listener for the action group.
+		GtkWidget				* terminal;				///> @brief The active terminal widget.
+		const LIB3270_PROPERTY	* info;					///> @brief Action info.
+		const void 				* listener;				///> @brief Signal listener for the action group.
+
+		const gchar				* translation_domain;	///> @brief The translation domain for the action.
 
 		/// @brief Activation method.
 		void (*activate)(GAction *action, GVariant *parameter, GtkWidget *terminal);
@@ -144,6 +146,7 @@
 
 		gboolean	  		  (*get_enabled)(GAction *action, GtkWidget *terminal);
 		GVariant			* (*get_state)(GAction *action, GtkWidget *terminal);
+		const gchar			* (*translate)(GAction *action, const gchar *text);
 
 	} V3270ActionClass;
 
@@ -156,8 +159,11 @@
 	LIB3270_EXPORT void			  v3270_action_notify_state(GAction *action);
 	LIB3270_EXPORT void			  v3270_action_notify_enabled(GAction *action);
 
+	LIB3270_EXPORT const gchar	* v3270_action_translate(GAction *action, const gchar *text);
+
 	LIB3270_EXPORT H3270 		* v3270_action_get_session(GAction *action);
 	LIB3270_EXPORT const gchar	* v3270_action_get_icon_name(GAction *action);
+
 	LIB3270_EXPORT const gchar	* v3270_action_get_label(GAction *action);
 	LIB3270_EXPORT const gchar	* v3270_action_get_tooltip(GAction *action);
 	LIB3270_EXPORT GdkPixbuf	* v3270_action_get_pixbuf(GAction *action, GtkIconSize icon_size, GtkIconLookupFlags flags);
@@ -171,6 +177,7 @@
 	LIB3270_EXPORT void			  g_action_map_add_v3270_actions(GActionMap *action_map);
 	LIB3270_EXPORT void			  g_action_map_add_lib3270_actions(GActionMap *action_map);
 	LIB3270_EXPORT void			  g_action_map_add_lib3270_toggles(GActionMap *action_map);
+
 
 	G_END_DECLS
 

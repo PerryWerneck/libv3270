@@ -345,6 +345,7 @@ dnl ---------------------------------------------------------------------------
 AC_SUBST(INSTALL_PACKAGES)
 
 AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(locale/Makefile)
 AC_CONFIG_FILES(sdk/libv3270.pc)
 AC_CONFIG_FILES(glade/v3270.xml)
 

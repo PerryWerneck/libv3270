@@ -49,6 +49,7 @@
  static gboolean			  get_enabled(GAction *action, GtkWidget *terminal);
  static void 				  activate(GAction *action, GVariant *parameter, GtkWidget *terminal);
  static	GVariant 			* get_state(GAction *action, GtkWidget *terminal);
+ static const gchar			* translate(GAction *action, const gchar *text);
 
  static const gchar			* iface_get_name(GAction *action);
  static	const GVariantType	* iface_get_parameter_type(GAction *action);
@@ -83,6 +84,7 @@
 	klass->change_widget		= change_widget;
 	klass->get_enabled			= get_enabled;
 	klass->get_state			= get_state;
+	klass->translate			= translate;
 
 	klass->type.state 			= NULL;
 	klass->type.parameter		= NULL;
@@ -323,26 +325,28 @@
  	return V3270_ACTION_GET_DESCRIPTOR(action)->icon;
  }
 
+ const gchar * v3270_action_translate(GAction *action, const gchar *text) {
+	return V3270_ACTION_GET_CLASS(action)->translate(action,text);
+ }
+
  const gchar * v3270_action_get_label(GAction *action) {
 	const gchar * label = V3270_ACTION_GET_DESCRIPTOR(action)->label;
 
 	if(label)
-		return gettext(label);
+		return v3270_action_translate(action,label);
 
 	return NULL;
  }
 
  const gchar * v3270_action_get_tooltip(GAction *action) {
 
-	const gchar * tooltip;
+	const gchar * tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->description;
 
-	tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->description;
-	if(tooltip)
-		return gettext(tooltip);
+	if(!tooltip)
+		tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->summary;
 
-	tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->summary;
 	if(tooltip)
-		return gettext(tooltip);
+		return v3270_action_translate(action,tooltip);
 
 	return NULL;
  }
@@ -382,6 +386,18 @@
  GVariant * get_state(GAction G_GNUC_UNUSED(*object), GtkWidget *terminal) {
 	return g_variant_new_boolean(terminal != NULL);
  }
+
+ const gchar * translate(GAction *action, const gchar *msgid) {
+
+	const gchar * domainname = ((V3270Action *) action)->translation_domain ? ((V3270Action *) action)->translation_domain : G_STRINGIFY(PRODUCT_NAME);
+
+	if (msgid && *msgid)
+		return (const gchar*) g_dgettext (domainname, msgid);
+
+	return msgid;
+
+ }
+
 
 //
 // Interface Methods.
