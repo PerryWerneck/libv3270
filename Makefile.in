@@ -282,7 +282,7 @@ $(OBJDIR)/marshal/%.o: \
 all: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a \
-	locale/$(PACKAGE_TARNAME).pot
+	locale/$(LIBNAME).pot
 
 Release: \
 	$(BINRLS)/$(SONAME) \
@@ -315,6 +315,7 @@ $(BINRLS)/static/$(LIBNAME).a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
+	locale/$(LIBNAME).pot \
 	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
 install-linux-lib: \
@@ -511,6 +512,7 @@ clean: \
 	@rm -fr $(BASEDIR)/.tmp/$(LIBNAME)
 	@rm -fr $(POTDIR)/$(LIBNAME)
 	@rm -fr src/include/marshal
+	@rm -fr locale/$(LIBNAME).pot
 
 cleanDebug:
 

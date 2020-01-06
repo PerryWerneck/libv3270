@@ -103,8 +103,9 @@ make %{?_smp_mflags}
 
 %install
 %make_install
+%find_lang libv3270 langfiles
 
-%files -n %{name}-%{_libvrs}
+%files -n %{name}-%{_libvrs} -f langfiles
 
 # https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
 %if 0%{?sle_version} > 120200
