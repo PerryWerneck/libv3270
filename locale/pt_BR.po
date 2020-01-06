@@ -1,12 +1,12 @@
 #
-# Perry Werneck <perry.werneck@gmail.com>, 2012, 2013, 2014, 2016, 2017, 2018, 2019.
+# Perry Werneck <perry.werneck@gmail.com>, 2012, 2013, 2014, 2016, 2017, 2018, 2019, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-06 13:26-0300\n"
-"PO-Revision-Date: 2019-09-19 15:54-0300\n"
+"PO-Revision-Date: 2020-01-06 14:28-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -60,25 +60,23 @@ msgstr "Sobre a segurança"
 
 #: src/dialogs/settings/accelerator.c:189
 msgid "Accelerator"
-msgstr ""
+msgstr "Atalho"
 
 #: src/dialogs/settings/accelerator.c:327
 msgid "Accelerator is in use"
-msgstr ""
+msgstr "Atalho está em uso"
 
 #: src/dialogs/settings/accelerator.c:238
 msgid "Accelerators"
-msgstr ""
+msgstr "Atalhos"
 
 #: src/dialogs/settings/accelerator.c:169
-#, fuzzy
 msgid "Action"
-msgstr "Ação falhou"
+msgstr "Ação"
 
 #: src/terminal/actions/action.c:100
-#, fuzzy
 msgid "Action Name"
-msgstr "Ação falhou"
+msgstr "Nome da Ação"
 
 #: src/dialogs/print/settingsdialog.c:200
 #: src/dialogs/print/settingsdialog.c:236
@@ -94,9 +92,8 @@ msgid "Address or name of the host to connect."
 msgstr "Endereço ou nome do host a conectar."
 
 #: src/dialogs/settings/accelerator.c:199
-#, fuzzy
 msgid "Alternative"
-msgstr "Tela alternativa"
+msgstr "Alternativa"
 
 #: src/filetransfer/v3270ftprogress.c:83
 msgid "An error exists in the PC's file name."
@@ -121,16 +118,15 @@ msgstr "Adiciona conteúdo do arquivo origem ao final do arquivo destino."
 #: src/dialogs/settings/accelerator.c:309
 #, c-format
 msgid "Assign it to action (<b>%s</b>)?"
-msgstr ""
+msgstr "Associar com a ação (<b>%s</b>)?"
 
 #: src/dialogs/settings/host.c:487
-#, fuzzy
 msgid "Auto _disconnect"
-msgstr "Conexão automática"
+msgstr "Desconexão automática"
 
 #: src/dialogs/font/chooser.c:266
 msgid "Available fonts"
-msgstr ""
+msgstr "Fontes disponíveis"
 
 #: src/filetransfer/tables.c:118
 msgid "Avblock"
@@ -176,7 +172,7 @@ msgstr "Não é possível adicionar atividade"
 #: src/terminal/font/properties.c:40
 #, c-format
 msgid "Can't find a valid font with the name \"%s\""
-msgstr ""
+msgstr "Não encontrei uma fonte válida com o nome \"%s\""
 
 #: src/filetransfer/load.c:271
 #, c-format
@@ -262,22 +258,20 @@ msgid "Clipboard name"
 msgstr "Nome da área de transferência"
 
 #: src/dialogs/settings/colors.c:351
-#, fuzzy
 msgid "Color _theme"
-msgstr "Tema de cores:"
+msgstr "Tema de cores"
 
 #: src/dialogs/settings/colors.c:381
 msgid "Colors"
 msgstr "Cores"
 
 #: src/terminal/properties/init.c:186
-#, fuzzy
 msgid "Comma separated list of LU names"
-msgstr "Arquivo separado por vírgulas (CSV)"
+msgstr "Lista de LUs separadas por vírgula"
 
 #: src/dialogs/settings/host.c:247
 msgid "Comma separated list of LU names."
-msgstr ""
+msgstr "Lista de LUs separadas por vírgula."
 
 #: src/dialogs/save/save.c:55
 msgid "Comma-separated values (CSV)"
@@ -288,9 +282,8 @@ msgid "Command to execute"
 msgstr "Comando a executar"
 
 #: src/dialogs/settings/host.c:411
-#, fuzzy
 msgid "Connection"
-msgstr "X Conectando"
+msgstr "Conexão"
 
 #: src/terminal/callbacks.c:406
 msgid "Continue"
@@ -301,9 +294,8 @@ msgid "Copy"
 msgstr "Copiar"
 
 #: src/terminal/actions/table.c:92
-#, fuzzy
 msgid "Copy as plain text"
-msgstr "Copiar como tabela"
+msgstr "Copiar como texto puro"
 
 #: src/filetransfer/tables.c:81
 msgid "Creates a file with fixed-length records."
@@ -341,7 +333,7 @@ msgstr "Atual:"
 
 #: src/dialogs/settings/host.c:234
 msgid "Custom Remap"
-msgstr ""
+msgstr "Mapeamento personalizado"
 
 #: src/terminal/actions/table.c:103 src/terminal/actions/table.c:113
 #: src/terminal/actions/table.c:125
@@ -349,14 +341,12 @@ msgid "Cut"
 msgstr "Recortar"
 
 #: src/terminal/actions/table.c:114
-#, fuzzy
 msgid "Cut and append to copy"
-msgstr "Adicionar à cópia"
+msgstr "Recortar e adicionar à cópia"
 
 #: src/terminal/actions/table.c:126
-#, fuzzy
 msgid "Cut as plain text"
-msgstr "Texto puro"
+msgstr "Recortar como texto puro"
 
 #: src/filetransfer/tables.c:112
 msgid "Cylinders"
@@ -384,7 +374,7 @@ msgstr "Padrão"
 
 #: src/dialogs/popups.c:158
 msgid "Don't ask again"
-msgstr ""
+msgstr "Não perguntar de novo"
 
 #: src/filetransfer/tables.c:224
 msgid "ETA:"
@@ -392,21 +382,19 @@ msgstr "ETA:"
 
 #: src/dialogs/settings/host.c:422
 msgid "Emulation"
-msgstr ""
+msgstr "Emulação"
 
 #: src/terminal/actions/action.c:147
-#, fuzzy
 msgid "Enabled"
-msgstr "habilitar"
+msgstr "Habilitado"
 
 #: src/dialogs/popups.c:57 src/dialogs/popups.c:92
 msgid "Error"
 msgstr "Erro"
 
 #: src/dialogs/print/print.c:72
-#, fuzzy
 msgid "Error on print operation"
-msgstr "Erro na chamada vasprintf"
+msgstr "Erro na operação de impressão"
 
 #: src/filetransfer/tables.c:224
 msgid "Estimated transfer arrival"
@@ -426,16 +414,15 @@ msgstr "Arquivos a transferir"
 
 #: src/terminal/actions/table.c:192
 msgid "Fit best"
-msgstr ""
+msgstr "Melhor tamanho"
 
 #: src/filetransfer/tables.c:80
 msgid "Fixed"
 msgstr "Fixo"
 
 #: src/terminal/properties/init.c:232
-#, fuzzy
 msgid "Flags to cut&paste"
-msgstr "Arquivos a transferir"
+msgstr "Opções para recortar & colar"
 
 #: src/filetransfer/tables.c:51
 msgid ""
@@ -455,19 +442,18 @@ msgstr ""
 "registros no arquivo do PC."
 
 #: src/dialogs/font/chooser.c:329
-#, fuzzy
 msgid "Font"
-msgstr "_Fonte:"
+msgstr "Fonte"
 
 #: src/terminal/font/properties.c:39
 #, c-format
 msgid "Font \"%s\" is not monospace"
-msgstr ""
+msgstr "Fonte \"%s\" não é mono espaçada"
 
 #: src/terminal/font/properties.c:38
 #, c-format
 msgid "Font \"%s\" is valid"
-msgstr ""
+msgstr "Fonte \"%s\" é válida"
 
 #: src/terminal/properties/init.c:90
 msgid "Font family for terminal contents"
@@ -498,14 +484,12 @@ msgid "Green"
 msgstr "Verde"
 
 #: src/dialogs/settings/host.c:614
-#, fuzzy
 msgid "Host"
-msgstr "_Servidor"
+msgstr "Servidor"
 
 #: src/dialogs/settings/host.c:613
-#, fuzzy
 msgid "Host settings"
-msgstr "Configurações de impressão"
+msgstr "Configurações do servidor"
 
 #: src/dialogs/save/save.c:59
 msgid "HyperText Markup Language (HTML)"
@@ -525,11 +509,11 @@ msgstr "Minutos para desconexão automática"
 
 #: src/terminal/actions/action.c:108
 msgid "Icon Name"
-msgstr ""
+msgstr "Nome do ícone"
 
 #: src/terminal/actions/action.c:148
 msgid "If the action can be activated"
-msgstr ""
+msgstr "Se a ação pode ser ativada"
 
 #: src/filetransfer/transfer.c:80
 msgid "Ignore"
@@ -570,13 +554,12 @@ msgstr "Estado inválido"
 
 #: src/dialogs/settings/accelerator.c:163
 #: src/dialogs/settings/accelerator.c:237
-#, fuzzy
 msgid "Keyboard accelerators"
-msgstr "Estado de bloqueio do teclado"
+msgstr "Atalhos de teclado"
 
 #: src/dialogs/settings/host.c:246
 msgid "L_U Names"
-msgstr ""
+msgstr "Nomes de L_U"
 
 #: src/filetransfer/v3270ft.c:198 src/filetransfer/activitylist.c:384
 msgid "Load"
@@ -604,19 +587,19 @@ msgstr "Cores diversas"
 
 #: src/dialogs/settings/host.c:174
 msgid "Model 2 - 80x24"
-msgstr ""
+msgstr "Modelo 2 - 80x24"
 
 #: src/dialogs/settings/host.c:175
 msgid "Model 3 - 80x32"
-msgstr ""
+msgstr "Modelo 3 - 80x32"
 
 #: src/dialogs/settings/host.c:176
 msgid "Model 4 - 80x43"
-msgstr ""
+msgstr "Modelo 4 - 80x43"
 
 #: src/dialogs/settings/host.c:177
 msgid "Model 5 - 132x27"
-msgstr ""
+msgstr "Modelo 5 - 132x27"
 
 #: src/dialogs/settings/host.c:145
 msgid "Monochrome"
@@ -627,9 +610,8 @@ msgid "Mustard"
 msgstr "Mostarda"
 
 #: src/terminal/keyboard/init.c:203
-#, fuzzy
 msgid "Next page"
-msgstr "Próximo campo"
+msgstr "Próxima página"
 
 #: src/filetransfer/v3270ftprogress.c:429
 msgid "No active transfer"
@@ -637,7 +619,7 @@ msgstr "Nenhuma transferência ativa"
 
 #: src/terminal/properties/get.c:198
 msgid "No host defined"
-msgstr ""
+msgstr "Nenhum servidor definido"
 
 #: src/filetransfer/worker.c:280
 msgid "No transfer"
@@ -649,7 +631,7 @@ msgstr "Nenhuma transferência em andamento"
 
 #: src/selection/linux/paste.c:117
 msgid "None of the screens in the clipboard match with the current one."
-msgstr ""
+msgstr "Nenhuma das telas da área de transferência corresponde à atual."
 
 #: src/dialogs/settings/colors.c:175
 msgid "Normal/Protected"
@@ -717,34 +699,31 @@ msgstr "Outro (VM/CMS)"
 
 #: src/dialogs/settings/host.c:222
 msgid "Oversize"
-msgstr ""
+msgstr "Oversize"
 
 #: src/terminal/actions/action.c:131
 msgid "Parameter Type"
-msgstr ""
+msgstr "Tipo de parâmetro"
 
 #: src/terminal/actions/table.c:137 src/terminal/actions/table.c:148
 msgid "Paste"
 msgstr "Colar"
 
 #: src/terminal/actions/table.c:149
-#, fuzzy
 msgid "Paste as plain text"
-msgstr "_Colar como texto"
+msgstr "Colar como texto puro"
 
 #: src/terminal/actions/table.c:159
-#, fuzzy
 msgid "Paste file"
-msgstr "Colar conteúdo de um arquivo"
+msgstr "Colar arquivo"
 
 #: src/dialogs/load.c:246
 msgid "Paste from file"
 msgstr "Colar de um arquivo"
 
 #: src/terminal/actions/table.c:160
-#, fuzzy
 msgid "Paste from text file"
-msgstr "Colar de um arquivo"
+msgstr "Colar de um arquivo texto"
 
 #: src/filetransfer/tables.c:219
 msgid "Path and name of the local file"
@@ -752,7 +731,7 @@ msgstr "Caminho e nome do arquivo local"
 
 #: src/dialogs/settings/host.c:235
 msgid "Path to XML file with custom charset mapping."
-msgstr ""
+msgstr "Caminho do arquivo XML com o mapeamento personalizado de caracteres."
 
 #: src/dialogs/security.c:133 src/dialogs/security.c:152
 msgid "Peer certificate"
@@ -771,18 +750,16 @@ msgid "Port or service name (empty for \"telnet\")."
 msgstr "Nº da porta ou nome do serviço (em branco para \"telnet\")."
 
 #: src/dialogs/settings/colors.c:355
-#, fuzzy
 msgid "Predefined color theme"
-msgstr "Esquemas de cor pré-definidos"
+msgstr "Esquemas de cor pré-definido"
 
 #: src/filetransfer/set.c:176
 msgid "Preparing"
 msgstr "Preparando"
 
 #: src/terminal/keyboard/init.c:197
-#, fuzzy
 msgid "Previous page"
-msgstr "Campo anterior"
+msgstr "Página anterior"
 
 #: src/filetransfer/tables.c:179
 msgid ""
@@ -801,7 +778,6 @@ msgid "Print"
 msgstr "Imprimir"
 
 #: src/terminal/actions/table.c:287
-#, fuzzy
 msgid "Print Copy"
 msgstr "Imprimir cópia"
 
@@ -814,21 +790,18 @@ msgid "Print operation has failed"
 msgstr "Operação de impressão falhou"
 
 #: src/terminal/actions/table.c:266
-#, fuzzy
 msgid "Print screen"
-msgstr "Imrpime o conteúdo da tela"
+msgstr "Imrpimir tela"
 
 #: src/terminal/actions/table.c:256
-#, fuzzy
 msgid "Print screen or selection"
-msgstr "Imrpime o conteúdo da tela"
+msgstr "Imrpimir tela ou seleção"
 
 #: src/terminal/actions/table.c:276
 msgid "Print selected"
 msgstr "Imprimir seleção"
 
 #: src/terminal/actions/table.c:277
-#, fuzzy
 msgid "Print selected area"
 msgstr "Imprimir área selecionada"
 
@@ -874,7 +847,7 @@ msgstr "Vermelho"
 
 #: src/dialogs/settings/accelerator.c:452
 msgid "Rejected by action"
-msgstr ""
+msgstr "Rejeitado pela ação"
 
 #: src/terminal/charset.c:320
 msgid "Remap Failed"
@@ -924,7 +897,6 @@ msgid "Save"
 msgstr "Salvar"
 
 #: src/terminal/actions/table.c:242
-#, fuzzy
 msgid "Save Copy"
 msgstr "Salvar cópia"
 
@@ -933,9 +905,8 @@ msgid "Save _As"
 msgstr "Salvar _Como"
 
 #: src/terminal/actions/table.c:218
-#, fuzzy
 msgid "Save all"
-msgstr "Salvar"
+msgstr "Salvar tela"
 
 #: src/terminal/actions/table.c:240 src/dialogs/save/save.c:299
 msgid "Save copy"
@@ -950,9 +921,8 @@ msgid "Save screen"
 msgstr "Salvar tela"
 
 #: src/terminal/actions/table.c:209
-#, fuzzy
 msgid "Save screen or selection"
-msgstr "Salvar tela para arquivo"
+msgstr "Salvar tela ou seleção"
 
 #: src/terminal/actions/table.c:229
 msgid "Save selected"
@@ -1009,14 +979,12 @@ msgid "Select"
 msgstr "Selecionar"
 
 #: src/dialogs/settings/host.c:445
-#, fuzzy
 msgid "Select charset remap file"
-msgstr "Selecionar último arquivo"
+msgstr "Selecionar arquivo com mapeamento personalizado"
 
 #: src/dialogs/settings/host.c:344
-#, fuzzy
 msgid "Select custom charset mapping"
-msgstr "Define página de código do host"
+msgstr "Seleciona mapeamento de teclado personalizado"
 
 #: src/dialogs/save/save.c:113 src/dialogs/save/save.c:133
 msgid "Select destination file"
@@ -1141,31 +1109,28 @@ msgid "Starting transfer"
 msgstr "Iniciando transferência"
 
 #: src/terminal/actions/action.c:159
-#, fuzzy
 msgid "State"
 msgstr "Situação"
 
 #: src/terminal/actions/action.c:138
 msgid "State Type"
-msgstr ""
+msgstr "Tipo de situação"
 
 #: src/terminal/properties/init.c:170
 msgid "State of the dynamic font spacing"
-msgstr ""
+msgstr "Estado do espaçamento dinâmico"
 
 #: src/dialogs/settings/host.c:102
 msgid "System _type"
 msgstr "_Tipo de servidor"
 
 #: src/dialogs/settings/host.c:144
-#, fuzzy
 msgid "System default"
-msgstr "_Tipo de servidor"
+msgstr "Padrão do sistema"
 
 #: src/dialogs/settings/host.c:357
-#, fuzzy
 msgid "TN3270 Custom charset"
-msgstr "Página de código do host"
+msgstr "Código de página TN3270 personalizado"
 
 #: src/terminal/properties/init.c:105
 msgid "TN3270 Session name"
@@ -1177,9 +1142,8 @@ msgid "Terminal colors"
 msgstr "Cores do terminal"
 
 #: src/dialogs/font/chooser.c:328
-#, fuzzy
 msgid "Terminal font"
-msgstr "Nome do terminal"
+msgstr "Fonte do terminal"
 
 #: src/filetransfer/v3270ftprogress.c:211
 msgid ""
@@ -1192,23 +1156,21 @@ msgstr ""
 "been reached."
 
 #: src/dialogs/settings/host.c:597
-#, fuzzy
 msgid "The EBCDIC host character set. "
-msgstr "Re_mapear para caracteres EBCDIC."
+msgstr "A tabela de caracteres EBCDIC."
 
 #: src/dialogs/settings/accelerator.c:448
 #, c-format
 msgid "The action \"%s\" can't manage alternative keys"
-msgstr ""
+msgstr "A ação \"%s\" não permite uso de atalho alternativo"
 
 #: src/terminal/actions/action.c:116
-#, fuzzy
 msgid "The action label"
-msgstr "um atributo \"action\""
+msgstr "A etiqueda da ação"
 
 #: src/terminal/actions/action.c:124
 msgid "The action tooltip"
-msgstr ""
+msgstr "Dicas sobre a ação"
 
 #: src/filetransfer/worker.c:623
 msgid ""
@@ -1248,9 +1210,8 @@ msgid ""
 msgstr "O host detectou um erro no arquivo durante a operação de recebimento."
 
 #: src/terminal/actions/action.c:117
-#, fuzzy
 msgid "The label for the action"
-msgstr "Nome da LU ativa"
+msgstr "A etiqueta da ação"
 
 #: src/dialogs/settings/host.c:159
 msgid "The model of 3270 display to be emulated"
@@ -1261,60 +1222,56 @@ msgid "The name of the file in the host"
 msgstr "Nome do arquivo no host"
 
 #: src/terminal/actions/action.c:109
-#, fuzzy
 msgid "The name of the icon associated with the action"
-msgstr "Nome do arquivo no host"
+msgstr "Nome do ícone associado à ação"
 
 #: src/terminal/actions/action.c:101
-#, fuzzy
 msgid "The name used to invoke the action"
-msgstr "Nome da LU ativa"
+msgstr "Nome que é usado para invocar a ação"
 
 #: src/dialogs/print/print.c:82
 msgid ""
 "The print operation has been canceled, the print settings should not be "
 "stored."
 msgstr ""
+"A operação de impressão foi cancelada, configuração não deve ser salva."
 
 #: src/dialogs/print/print.c:87
-#, fuzzy
 msgid "The print operation is running"
-msgstr "Operação de impressão falhou"
+msgstr "Operação de impressão está em andamento"
 
 #: src/dialogs/print/print.c:77
 msgid "The print settings should be stored."
-msgstr ""
+msgstr "Configuração de impressão deve ser armazenada"
 
 #: src/dialogs/settings/accelerator.c:302
 #, c-format
 msgid "The selected accelerator is in use by action <b>%s</b> (<b>%s</b>)"
-msgstr ""
+msgstr "O atalho selecionado está em uso pela ação <b>%s</b> (<b>%s</b>)"
 
 #: src/dialogs/settings/accelerator.c:322
 msgid "The selected accelerator is in use by the same action"
-msgstr ""
+msgstr "O atalho selecionado está em uso na mesma ação"
 
 #: src/terminal/actions/action.c:160
-#, fuzzy
 msgid "The state the action is in"
-msgstr "A assinatura do certificado não é válida."
+msgstr "A situação da ação está em"
 
 #: src/terminal/properties/init.c:216
-#, fuzzy
 msgid "The terminal colors"
-msgstr "Cores do terminal"
+msgstr "As cores do terminal"
 
 #: src/terminal/actions/action.c:125
 msgid "The tooltip for the action"
-msgstr ""
+msgstr "A dica para a ação"
 
 #: src/terminal/actions/action.c:132
 msgid "The type of GVariant passed to activate()"
-msgstr ""
+msgstr "The type of GVariant passed to activate()"
 
 #: src/terminal/actions/action.c:139
 msgid "The type of the state kept by the action"
-msgstr ""
+msgstr "The type of the state kept by the action"
 
 #: src/filetransfer/v3270ftprogress.c:151
 msgid "There is not enough space available for data on the host."
@@ -1345,9 +1302,8 @@ msgid "Trace"
 msgstr "Trace"
 
 #: src/terminal/properties/init.c:201
-#, fuzzy
 msgid "Trace window"
-msgstr "_Fechar janela"
+msgstr "Janela de trace"
 
 #: src/filetransfer/tables.c:106
 msgid "Tracks"
@@ -1377,7 +1333,7 @@ msgstr "Velocidade de transferência"
 
 #: src/terminal/properties/init.c:250
 msgid "True if the terminal has copy blocks"
-msgstr ""
+msgstr "Verdadeiro se o terminal tiver blocos copiados"
 
 #: src/filetransfer/transfer.c:84
 msgid "Try again with the same file."
@@ -1392,9 +1348,8 @@ msgid "UTF-8"
 msgstr "UTF-8"
 
 #: src/selection/linux/paste.c:116
-#, fuzzy
 msgid "Unable to paste formatted data."
-msgstr "Incapaz de colar texto formatado"
+msgstr "Incapaz de colar texto formatado."
 
 #: src/filetransfer/tables.c:92
 msgid "Undefined"
@@ -1411,9 +1366,9 @@ msgid "Unexpected mode %d"
 msgstr "Modo inesperado %d"
 
 #: src/dialogs/print/print.c:92
-#, fuzzy, c-format
+#, c-format
 msgid "Unexpected status %d in print operation"
-msgstr "Tipo inesperado %d na fila de teclado"
+msgstr "Estado inesperado %d na operação de impressão"
 
 #: src/dialogs/save/save.c:149
 msgid "Untitled document"
@@ -1573,24 +1528,23 @@ msgstr "Você especificou uma opção inválida."
 
 #: src/terminal/actions/table.c:171
 msgid "Zoom in"
-msgstr ""
+msgstr "Ampliar"
 
 #: src/terminal/actions/table.c:181
 msgid "Zoom out"
-msgstr ""
+msgstr "Reduzir"
 
 #: src/terminal/actions/table.c:193
 msgid "Zoom to best size"
-msgstr ""
+msgstr "Ajustar para o melhor tamanho"
 
 #: src/filetransfer/tables.c:49
 msgid "_ASCII text"
 msgstr "Texto _ASCII"
 
 #: src/dialogs/settings/dialog.c:230
-#, fuzzy
 msgid "_Apply"
-msgstr "_Acrescentar"
+msgstr "_Aplicar"
 
 #: src/selection/linux/paste.c:84 src/selection/linux/paste.c:118
 #: src/dialogs/load.c:202 src/dialogs/load.c:221 src/dialogs/linux/select.c:51
@@ -1601,9 +1555,8 @@ msgid "_Cancel"
 msgstr "_Cancelar"
 
 #: src/dialogs/settings/host.c:596
-#, fuzzy
 msgid "_Charset"
-msgstr "Erro de codificação de caracteres"
+msgstr "Tabela de _Caracteres"
 
 #: src/trace/tracewindow.c:125 src/dialogs/transfer.c:167
 #: src/dialogs/transfer.c:187 src/dialogs/security.c:231
@@ -1639,9 +1592,8 @@ msgid "_Local file"
 msgstr "Arquivo _local:"
 
 #: src/dialogs/settings/host.c:158
-#, fuzzy
 msgid "_Model"
-msgstr "Nome do modelo"
+msgstr "_Modelo"
 
 #: src/filetransfer/v3270ft.c:333
 msgid "_Operation"
