@@ -235,7 +235,7 @@
 
 	{
  		.flags = LIB3270_CONTENT_COPY,
- 		.group = LIB3270_ACTION_GROUP_ONLINE,
+ 		.group = LIB3270_ACTION_GROUP_COPY,
  		.name = "save-copy",
  		.label = N_("Save copy"),
  		.icon = "document-save-as",
@@ -281,7 +281,7 @@
 
 	{
  		.flags = LIB3270_CONTENT_COPY,
- 		.group = LIB3270_ACTION_GROUP_ONLINE,
+ 		.group = LIB3270_ACTION_GROUP_COPY,
  		.name = "print-copy",
  		.icon = "document-print",
  		.label = N_("Print Copy"),
