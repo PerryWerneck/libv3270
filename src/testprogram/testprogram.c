@@ -44,6 +44,8 @@
  #include <stdlib.h>
  #include <gdk/gdkkeysyms-compat.h>
  #include <locale.h>
+ #include <libintl.h>
+
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 

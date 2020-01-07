@@ -146,7 +146,7 @@
 
  int v3270_print(GtkWidget *widget, GError **error)
  {
-	return v3270_print_dialog(widget,(lib3270_has_selection(GTK_V3270(widget)->host) ? LIB3270_CONTENT_SELECTED : LIB3270_CONTENT_ALL),error);
+	return v3270_print_dialog(widget,(lib3270_get_has_selection(GTK_V3270(widget)->host) ? LIB3270_CONTENT_SELECTED : LIB3270_CONTENT_ALL),error);
  }
 
 

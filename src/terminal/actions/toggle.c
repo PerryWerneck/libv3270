@@ -117,6 +117,7 @@
 
  void Lib3270ToggleAction_init(Lib3270ToggleAction *action) {
 	action->parent.activate	= activate;
+	action->parent.translation_domain = lib3270_get_translation_domain();
  }
 
  GAction * g_action_new_from_toggle(const LIB3270_TOGGLE * definition) {

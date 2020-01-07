@@ -30,6 +30,7 @@
  #include <internals.h>
  #include <lib3270.h>
  #include <lib3270/toggle.h>
+ #include <lib3270/properties.h>
 
  /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
@@ -108,7 +109,7 @@
 
  GtkWidget * v3270_toggle_button_new(LIB3270_TOGGLE_ID id)
  {
-	const LIB3270_TOGGLE * toggle = lib3270_toggle_get_from_id(id);
+	const LIB3270_PROPERTY * toggle = (const LIB3270_PROPERTY *) lib3270_toggle_get_from_id(id);
 
 	if(!toggle)
 		return NULL;
@@ -117,13 +118,13 @@
 
 	widget->id = id;
 
-	gtk_widget_set_name(GTK_WIDGET(widget),toggle->name);
-	gtk_button_set_label(GTK_BUTTON(widget),gettext(toggle->label));
+	gtk_widget_set_name(GTK_WIDGET(widget),lib3270_property_get_name(toggle));
+	gtk_button_set_label(GTK_BUTTON(widget),lib3270_property_get_label(toggle));
 
-	if(toggle->description)
-		gtk_widget_set_tooltip_text(GTK_WIDGET(widget),gettext(toggle->description));
-	else if(toggle->summary)
-		gtk_widget_set_tooltip_text(GTK_WIDGET(widget),gettext(toggle->summary));
+	const char * tooltip = lib3270_property_get_tooltip(toggle);
+
+	if(tooltip && *tooltip)
+		gtk_widget_set_tooltip_text(GTK_WIDGET(widget),tooltip);
 
 	gtk_widget_set_sensitive(GTK_WIDGET(widget),FALSE);
 

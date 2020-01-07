@@ -517,12 +517,12 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 			if(descriptor)
 			{
-				widget->input.toggles[toggle] = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(gettext(descriptor->label)));
+				widget->input.toggles[toggle] = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(lib3270_toggle_get_label(descriptor)));
 
-				if(descriptor->description && *descriptor->description)
-					gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.toggles[toggle]),gettext(descriptor->description));
-				else if(descriptor->summary && *descriptor->summary)
-					gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.toggles[toggle]),gettext(descriptor->summary));
+				const gchar *tooltip = lib3270_property_get_tooltip((const LIB3270_PROPERTY *) descriptor);
+
+				if(tooltip && *tooltip)
+					gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.toggles[toggle]),tooltip);
 
 				gtk_widget_set_halign(GTK_WIDGET(widget->input.toggles[toggle]),GTK_ALIGN_START);
 				gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.toggles[toggle]),toggleList[toggle].left,toggleList[toggle].top,1,1);

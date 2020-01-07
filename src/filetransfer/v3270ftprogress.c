@@ -602,7 +602,7 @@ static void ft_failed(H3270 *hSession, unsigned long length,double kbytes_sec,co
 				while(*text && g_ascii_isspace(*text))
 					text++;
 
-				delay_signal(hSession, V3270FTPROGRESS_SIGNAL_FAILED, text, gettext(ftmsg[f].text));
+				delay_signal(hSession, V3270FTPROGRESS_SIGNAL_FAILED, text, g_dgettext(PACKAGE_NAME,ftmsg[f].text));
 
 				return;
 
@@ -664,7 +664,7 @@ static void ft_message(G_GNUC_UNUSED H3270 *hSession, const char *text, void *wi
 	debug("%s(%s,%p)",__FUNCTION__,text,widget);
 
 	if(widget) {
-		v3270ftprogress_set_header(GTK_WIDGET(widget),gettext(text));
+		v3270ftprogress_set_header(GTK_WIDGET(widget),text);
 	}
 }
 
@@ -691,7 +691,7 @@ static void ft_aborting(G_GNUC_UNUSED H3270 *hSession, const char *reason, void 
 static void ft_state_changed(G_GNUC_UNUSED H3270 *hSession, G_GNUC_UNUSED LIB3270_FT_STATE state, const char *text, void *widget) {
 
 	if(widget) {
-		v3270ftprogress_set_header(GTK_WIDGET(widget),gettext(text));
+		v3270ftprogress_set_header(GTK_WIDGET(widget),text);
 	}
 
 }
@@ -751,9 +751,9 @@ void v3270ftprogress_start_transfer(GtkWidget *widget) {
 
 	if(!ft) {
 
-        if(message) {
+        if(message && *message) {
 
-			g_signal_emit(GTK_WIDGET(widget),v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED], 0, gettext(message), NULL);
+			g_signal_emit(GTK_WIDGET(widget),v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED], 0, message, NULL);
 
         } else {
 

@@ -43,7 +43,7 @@
 	debug("%s(%d)",__FUNCTION__,((int) action->flags));
 
 	if(((int) action->flags) < 0)
-		mode = lib3270_has_selection(GTK_V3270(widget)->host) ? LIB3270_CONTENT_SELECTED : LIB3270_CONTENT_ALL;
+		mode = lib3270_get_has_selection(GTK_V3270(widget)->host) ? LIB3270_CONTENT_SELECTED : LIB3270_CONTENT_ALL;
 
 	GtkWidget *dialog = v3270_save_dialog_new(widget,mode,NULL);
 	gtk_widget_show_all(dialog);

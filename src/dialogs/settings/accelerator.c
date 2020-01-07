@@ -95,7 +95,8 @@
  enum
  {
  	ACTION,				///< @brief The action object.
-	DESCRIPTION,		///< @brief The action description.
+ 	NAME,				///< @brief The action name.
+	SUMMARY,			///< @brief The action summary.
 	MAIN_MASK,			///< @brief The mask for the main accelerator.
 	MAIN_VALUE,			///< @brief The value for the main accelerator.
 	ALTERNATIVE_MASK,	///< @brief The mask for the alternative accelerator.
@@ -116,16 +117,6 @@
  	// Create description list
  	GtkCellRenderer * text_renderer = gtk_cell_renderer_text_new();
 
- 	/*
-	g_object_set(
-		text_renderer,
-		"alignment", PANGO_ALIGN_LEFT,
-		"wrap-width", 100,
-		"wrap-mode", PANGO_WRAP_WORD_CHAR,
-		NULL
-	);
-	*/
-
  	// Create accelerator render
  	GtkCellRenderer * accel_renderer[] = { gtk_cell_renderer_accel_new(), gtk_cell_renderer_accel_new() };
 
@@ -144,32 +135,43 @@
 	g_signal_connect (G_OBJECT(accel_renderer[0]), "accel_edited", G_CALLBACK (accel_edited), widget);
 	g_signal_connect (G_OBJECT(accel_renderer[1]), "accel_edited", G_CALLBACK (alternative_edited), widget);
 
-	widget->store = GTK_LIST_STORE(gtk_list_store_new(COLUMNS, G_TYPE_POINTER, G_TYPE_STRING, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INT, G_TYPE_UINT));
+	widget->store = GTK_LIST_STORE(gtk_list_store_new(COLUMNS, G_TYPE_POINTER, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT, G_TYPE_UINT, G_TYPE_INT, G_TYPE_UINT));
 
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(widget->store),1,GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID);
 
 	GtkWidget * view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(widget->store));
 	g_signal_connect(G_OBJECT(widget),"realize",G_CALLBACK(realize),view);
 
-	/*
-	g_object_set(
-		view,
-		"horizontal-separator", 50,
-		"vertical-separator", 50,
-		NULL
-	);
-	*/
-
 	gtk_widget_set_tooltip_markup(view,_("Keyboard accelerators"));
 	gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(view),FALSE);
 
-	// Description column
-	GtkTreeViewColumn * column =
+	GtkTreeViewColumn * column;
+
+	// Name columns
+	column =
 		gtk_tree_view_column_new_with_attributes(
-			_("Action"),
+			_("Name"),
 			text_renderer,
 			"text",
-			DESCRIPTION,
+			NAME,
+			NULL
+		);
+
+	gtk_tree_view_column_set_resizable(column, TRUE);
+
+	gtk_tree_view_insert_column(
+		GTK_TREE_VIEW(view),
+		column,
+		-1
+	);
+
+	// Summary column
+	column =
+		gtk_tree_view_column_new_with_attributes(
+			_("Summary"),
+			text_renderer,
+			"text",
+			SUMMARY,
 			NULL
 		);
 
@@ -205,7 +207,7 @@
 
 	for(ix = 1; ix < 3; ix++)
 	{
-		GtkTreeViewColumn * column = gtk_tree_view_get_column(GTK_TREE_VIEW(view), ix);
+		column = gtk_tree_view_get_column(GTK_TREE_VIEW(view), ix);
 		gtk_tree_view_column_set_min_width(column, 200);
 		gtk_tree_view_column_set_resizable(column, TRUE);
 	}
@@ -236,8 +238,6 @@ LIB3270_EXPORT GtkWidget * v3270_accelerator_settings_new()
 
  	settings->title = _("Keyboard accelerators");
  	settings->label = _("Accelerators");
-
- 	debug("*********** [%s] [%s] [%s]",settings->title,gettext(settings->title),g_dgettext(GETTEXT_PACKAGE,settings->title));
 
  	return GTK_WIDGET(settings);
 }
@@ -510,7 +510,8 @@ void load(GtkWidget *widget, GtkWidget *terminal)
 			store,
 			&iter,
 			ACTION,				current,
-			DESCRIPTION,		v3270_accelerator_get_description(current),
+			NAME,				v3270_accelerator_get_name(current),
+			SUMMARY,			v3270_accelerator_get_summary(current),
 			MAIN_MASK,			keymaps[0].mods,
 			MAIN_VALUE,			keymaps[0].key,
 			ALTERNATIVE_MASK,	keymaps[1].mods,

@@ -95,6 +95,7 @@
 	LIB3270_EXPORT gboolean					  v3270_accelerator_compare(const V3270Accelerator * accel, const guint keyval, const GdkModifierType mods);
 	LIB3270_EXPORT const gchar				* v3270_accelerator_get_name(const V3270Accelerator * accel);
 	LIB3270_EXPORT const gchar				* v3270_accelerator_get_description(const V3270Accelerator * accel);
+	LIB3270_EXPORT const gchar				* v3270_accelerator_get_summary(const V3270Accelerator * accel);
 
 	/// @brief Converts the accelerator into a string which can be used to represent the accelerator to the user.
 	/// @return A newly-allocated string representing the accelerator.

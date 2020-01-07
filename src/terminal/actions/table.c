@@ -68,6 +68,8 @@
  		.group = LIB3270_ACTION_GROUP_SELECTION,
 		.icon = "edit-copy",
 		.label = N_( "Copy" ),
+		.summary = N_("Copy selection to clipboard"),
+		.description = N_("Replace current clipboard contents with the selected area"),
 		.key = 'c',
 		.mods = GDK_CONTROL_MASK,
  		.activate = fire_copy_accelerator
@@ -78,6 +80,8 @@
  		.group = LIB3270_ACTION_GROUP_SELECTION,
 		.name = "copy-append",
 		.label = N_( "Add to copy" ),
+		.summary = N_("Append selection to clipboard"),
+		.description = N_("Append selected area to current clipboard contents"),
 		.key = 'c',
 		.mods = GDK_ALT_MASK,
  		.activate = fire_copy_accelerator
@@ -159,6 +163,8 @@
 		.name = "paste",
 		.icon = "edit-paste",
 		.label = N_("Paste"),
+		.summary = N_("Paste clipboard contents"),
+		.description = N_("Input current clipboard contents to screen"),
 		.key = 'v',
 		.mods = GDK_CONTROL_MASK,
  		.activate = fire_paste_accelerator
@@ -193,6 +199,7 @@
  		.name = "zoom-in",
  		.icon = "zoom-in",
  		.label = N_("Zoom in"),
+ 		.summary = N_("Increase the font size"),
  		.key = GDK_KP_Add,
  		.mods = GDK_CONTROL_MASK,
  		.activate = fire_zoom_action
@@ -203,6 +210,7 @@
  		.group = LIB3270_ACTION_GROUP_ONLINE,
  		.name = "zoom-out",
  		.label = N_("Zoom out"),
+ 		.summary = N_("decrease the font size"),
  		.icon = "zoom-out",
  		.key = GDK_KP_Subtract,
  		.mods = GDK_CONTROL_MASK,
@@ -214,7 +222,7 @@
  		.group = LIB3270_ACTION_GROUP_ONLINE,
  		.name = "zoom-fit-best",
  		.label = N_("Fit best"),
- 		.summary = N_("Zoom to best size"),
+ 		.summary = N_("Set the font to the best size for window"),
  		.icon = "zoom-fit-best",
  		.key = '0',
  		.mods = GDK_CONTROL_MASK,
@@ -288,6 +296,7 @@
  		.name = "print-all",
  		.icon = "document-print",
  		.label = N_("Print screen"),
+ 		.summary = N_("Print the entire screen"),
  		.activate = fire_print_action
 
 	},

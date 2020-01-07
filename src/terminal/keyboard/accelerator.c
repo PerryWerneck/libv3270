@@ -33,6 +33,7 @@
  #include <terminal.h>
  #include <lib3270/actions.h>
  #include <v3270/actions.h>
+ #include <lib3270/properties.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -150,50 +151,86 @@
 
  }
 
- const gchar * v3270_accelerator_get_description(const V3270Accelerator * accel)
- {
-	switch(accel->type)
-	{
+ const gchar * v3270_accelerator_get_summary(const V3270Accelerator * accel) {
+
+	const gchar * description = NULL;
+	const LIB3270_PROPERTY * property = (const LIB3270_PROPERTY *) accel->arg;
+
+	switch(accel->type) {
 	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
-
-		if( ((LIB3270_ACTION *) accel->arg)->summary )
-			return gettext(((LIB3270_ACTION *) accel->arg)->summary);
-
-		if( ((LIB3270_ACTION *) accel->arg)->description )
-			return gettext(((LIB3270_ACTION *) accel->arg)->description);
-
-		break;
-
-	case V3270_ACCELERATOR_TYPE_INTERNAL:
-
-		if( ((V3270_ACTION *) accel->arg)->summary )
-			return g_dgettext(PACKAGE_NAME,((V3270_ACTION *) accel->arg)->summary);
-
-		if( ((V3270_ACTION *) accel->arg)->description )
-			return g_dgettext(PACKAGE_NAME,((V3270_ACTION *) accel->arg)->description);
-
+		debug("%s","V3270_ACCELERATOR_TYPE_LIB3270_ACTION");
+		description = lib3270_property_get_summary(property);
 		break;
 
 	case V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE:
+		debug("%s","V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE");
+		description = lib3270_property_get_summary(property);
+		break;
 
-		if(((LIB3270_TOGGLE *) accel->arg)->summary)
-			return gettext(((LIB3270_TOGGLE *) accel->arg)->summary);
-
-		if(((LIB3270_TOGGLE *) accel->arg)->description)
-			return gettext(((LIB3270_TOGGLE *) accel->arg)->description);
-
+	case V3270_ACCELERATOR_TYPE_INTERNAL:
+		debug("%s","V3270_ACCELERATOR_TYPE_INTERNAL");
+		if(property->summary)
+			description = g_dgettext(PACKAGE_NAME,property->summary);
 		break;
 
 	case V3270_ACCELERATOR_TYPE_PFKEY:
+		debug("%s","V3270_ACCELERATOR_TYPE_PFKEY");
 
 		if( ((V3270PFKeyAccelerator *)accel)->description )
-			return g_dgettext(PACKAGE_NAME,((V3270PFKeyAccelerator *)accel)->description);
+			description = g_dgettext(PACKAGE_NAME,((V3270PFKeyAccelerator *)accel)->description);
 
 		break;
 
 	}
 
-	return v3270_accelerator_get_name(accel);
+	debug("%s=%s",__FUNCTION__,description);
+
+	if(description && *description)
+		return description;
+
+	return "";
+ }
+
+ const gchar * v3270_accelerator_get_description(const V3270Accelerator * accel) {
+
+	const gchar * description = NULL;
+	const LIB3270_PROPERTY * property = (const LIB3270_PROPERTY *) accel->arg;
+
+	switch(accel->type) {
+	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
+		debug("%s","V3270_ACCELERATOR_TYPE_LIB3270_ACTION");
+		description = lib3270_property_get_description(property);
+		break;
+
+	case V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE:
+		debug("%s","V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE");
+		description = lib3270_property_get_description(property);
+		break;
+
+	case V3270_ACCELERATOR_TYPE_INTERNAL:
+		debug("%s","V3270_ACCELERATOR_TYPE_INTERNAL");
+		if(property->description)
+			description = g_dgettext(PACKAGE_NAME,property->description);
+		else if(property->summary)
+			description = g_dgettext(PACKAGE_NAME,property->summary);
+		break;
+
+	case V3270_ACCELERATOR_TYPE_PFKEY:
+		debug("%s","V3270_ACCELERATOR_TYPE_PFKEY");
+
+		if( ((V3270PFKeyAccelerator *)accel)->description )
+			description = g_dgettext(PACKAGE_NAME,((V3270PFKeyAccelerator *)accel)->description);
+
+		break;
+
+	}
+
+	debug("%s=%s",__FUNCTION__,description);
+
+	if(description && *description)
+		return description;
+
+	return "";
  }
 
  const gchar * v3270_accelerator_get_name(const V3270Accelerator * accel)
@@ -201,13 +238,9 @@
 	switch(accel->type)
 	{
 	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
-		return ((LIB3270_ACTION *) accel->arg)->name;
-
 	case V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE:
-		return ((LIB3270_TOGGLE *) accel->arg)->name;
-
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
-		return ((V3270_ACTION *) accel->arg)->name;
+		return lib3270_property_get_name((const LIB3270_PROPERTY *) accel->arg);
 
 	case V3270_ACCELERATOR_TYPE_CUSTOM:
 		return ((V3270CustomAccelerator *) accel)->name;

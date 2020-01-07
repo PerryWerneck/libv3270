@@ -100,6 +100,7 @@
 
  void Lib3270Action_init(Lib3270Action *action) {
 	action->parent.activate = activate;
+	action->parent.translation_domain = lib3270_get_translation_domain();
  }
 
  GAction * g_action_new_from_lib3270(const LIB3270_ACTION * definition) {
