@@ -388,7 +388,7 @@ install-conf:
 
 
 install-dev: \
-	$(POTDIR)/$(LIBNAME).pot
+	locale/$(LIBNAME).pot
 
 	@mkdir -p $(DESTDIR)$(includedir)/v3270
 
@@ -405,6 +405,10 @@ install-dev: \
 	@$(INSTALL_DATA) \
 		sdk/libv3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/libv3270.pc
+
+	# Install translation files
+	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
+	@$(INSTALL_DATA) locale/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
 
 install-glade:
