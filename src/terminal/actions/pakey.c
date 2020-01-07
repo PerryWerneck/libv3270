@@ -90,11 +90,13 @@
 
 	static const LIB3270_PROPERTY info = {
 		.name = "pakey",
-		.group = LIB3270_ACTION_GROUP_ONLINE
+		.group = LIB3270_ACTION_GROUP_ONLINE,
+		.summary = N_("Emit a PA Key action")
 	};
 
 	action->parent.activate = activate;
 	action->parent.info		= &info;
+	action->parent.translation_domain = GETTEXT_PACKAGE;
 
  }
 

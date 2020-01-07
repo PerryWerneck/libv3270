@@ -353,6 +353,7 @@
 
 		action->info = (const LIB3270_PROPERTY *) &actions[ix];
 		action->activate = activate_v3270;
+		action->translation_domain = GETTEXT_PACKAGE;
 
 		if(!g_action_get_name(G_ACTION(action))) {
 			g_warning("Action \"%s\" is invalid",actions[ix].name);

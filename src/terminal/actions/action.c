@@ -332,6 +332,8 @@
  const gchar * v3270_action_get_label(GAction *action) {
 	const gchar * label = V3270_ACTION_GET_DESCRIPTOR(action)->label;
 
+	debug("%s(%s): [%s] [%s]",__FUNCTION__,g_action_get_name(action),label,v3270_action_translate(action,label));
+
 	if(label && *label)
 		return v3270_action_translate(action,label);
 
