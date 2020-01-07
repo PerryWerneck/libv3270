@@ -355,6 +355,9 @@
 		<Unit filename="src/terminal/widget.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/windows/init.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/windows/iosource.c">
 			<Option compilerVar="CC" />
 		</Unit>
