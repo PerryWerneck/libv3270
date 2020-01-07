@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-06 13:26-0300\n"
-"PO-Revision-Date: 2020-01-06 14:28-0300\n"
+"POT-Creation-Date: 2020-01-07 14:02-0300\n"
+"PO-Revision-Date: 2020-01-07 14:05-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -58,21 +58,17 @@ msgstr "_Adicionar ao arquivo"
 msgid "About security"
 msgstr "Sobre a segurança"
 
-#: src/dialogs/settings/accelerator.c:189
+#: src/dialogs/settings/accelerator.c:191
 msgid "Accelerator"
 msgstr "Atalho"
 
-#: src/dialogs/settings/accelerator.c:327
+#: src/dialogs/settings/accelerator.c:329
 msgid "Accelerator is in use"
 msgstr "Atalho está em uso"
 
-#: src/dialogs/settings/accelerator.c:238
+#: src/dialogs/settings/accelerator.c:240
 msgid "Accelerators"
 msgstr "Atalhos"
-
-#: src/dialogs/settings/accelerator.c:169
-msgid "Action"
-msgstr "Ação"
 
 #: src/terminal/actions/action.c:100
 msgid "Action Name"
@@ -83,7 +79,7 @@ msgstr "Nome da Ação"
 msgid "Activity already on the queue"
 msgstr "Atividade já está na fila"
 
-#: src/terminal/actions/table.c:80
+#: src/terminal/actions/table.c:82
 msgid "Add to copy"
 msgstr "Adicionar à cópia"
 
@@ -91,7 +87,7 @@ msgstr "Adicionar à cópia"
 msgid "Address or name of the host to connect."
 msgstr "Endereço ou nome do host a conectar."
 
-#: src/dialogs/settings/accelerator.c:199
+#: src/dialogs/settings/accelerator.c:201
 msgid "Alternative"
 msgstr "Alternativa"
 
@@ -111,11 +107,19 @@ msgstr ""
 msgid "An invalid SEND or RECEIVE parameter was sent to the host."
 msgstr "Um parametro de ENVIO/RECEBIMENTO inválido foi enviado para o host."
 
+#: src/terminal/actions/table.c:84
+msgid "Append selected area to current clipboard contents"
+msgstr "Adiciona a área selecionada no conteúdo da área de transferência"
+
+#: src/terminal/actions/table.c:83
+msgid "Append selection to clipboard"
+msgstr "Adiciona seleção na área de transferência"
+
 #: src/filetransfer/tables.c:61
 msgid "Appends the source file to the destination file."
 msgstr "Adiciona conteúdo do arquivo origem ao final do arquivo destino."
 
-#: src/dialogs/settings/accelerator.c:309
+#: src/dialogs/settings/accelerator.c:311
 #, c-format
 msgid "Assign it to action (<b>%s</b>)?"
 msgstr "Associar com a ação (<b>%s</b>)?"
@@ -137,11 +141,11 @@ msgstr "Avblock"
 msgid "B_egin transfer"
 msgstr "Iniciar transferência"
 
-#: src/dialogs/settings/colors.c:156
+#: src/dialogs/settings/colors.c:155
 msgid "Background"
 msgstr "Fundo"
 
-#: src/dialogs/settings/colors.c:164
+#: src/dialogs/settings/colors.c:163
 msgid "Black"
 msgstr "Preto"
 
@@ -149,7 +153,7 @@ msgstr "Preto"
 msgid "Block size"
 msgstr "Tamanho do bloco:"
 
-#: src/dialogs/settings/colors.c:157
+#: src/dialogs/settings/colors.c:156
 msgid "Blue"
 msgstr "Azul"
 
@@ -206,7 +210,7 @@ msgid "Can't paste text"
 msgstr "Não é possível colar texto"
 
 #: src/filetransfer/save.c:117 src/filetransfer/activitylist.c:436
-#: src/trace/trace.c:458 src/dialogs/transfer.c:95 src/dialogs/save/save.c:454
+#: src/trace/trace.c:458 src/dialogs/transfer.c:91 src/dialogs/save/save.c:454
 #, c-format
 msgid "Can't save %s"
 msgstr "Não foi possível salvar arquivo %s"
@@ -223,7 +227,7 @@ msgstr "Não foi possível registrar manipuladores de I/O 3270"
 msgid "Can't start file transfer session"
 msgstr "Não foi possível iniciar transferência de arquivo"
 
-#: src/terminal/callbacks.c:405 src/filetransfer/v3270ftprogress.c:433
+#: src/terminal/callbacks.c:404 src/filetransfer/v3270ftprogress.c:433
 #: src/filetransfer/transfer.c:89 src/dialogs/load.c:111
 #: src/dialogs/save/save.c:136 src/dialogs/settings/host.c:347
 msgid "Cancel"
@@ -257,11 +261,11 @@ msgstr "Clique para salvar arquivo"
 msgid "Clipboard name"
 msgstr "Nome da área de transferência"
 
-#: src/dialogs/settings/colors.c:351
+#: src/dialogs/settings/colors.c:350
 msgid "Color _theme"
 msgstr "Tema de cores"
 
-#: src/dialogs/settings/colors.c:381
+#: src/dialogs/settings/colors.c:380
 msgid "Colors"
 msgstr "Cores"
 
@@ -285,17 +289,25 @@ msgstr "Comando a executar"
 msgid "Connection"
 msgstr "Conexão"
 
-#: src/terminal/callbacks.c:406
+#: src/terminal/callbacks.c:405
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/terminal/actions/table.c:70 src/terminal/actions/table.c:91
+#: src/terminal/actions/table.c:70 src/terminal/actions/table.c:95
 msgid "Copy"
 msgstr "Copiar"
 
-#: src/terminal/actions/table.c:92
+#: src/terminal/actions/table.c:96
 msgid "Copy as plain text"
 msgstr "Copiar como texto puro"
+
+#: src/terminal/actions/table.c:107 src/terminal/actions/table.c:108
+msgid "Copy as table"
+msgstr "Copiar como tabela"
+
+#: src/terminal/actions/table.c:71
+msgid "Copy selection to clipboard"
+msgstr "Salvar seleção para área de transferência"
 
 #: src/filetransfer/tables.c:81
 msgid "Creates a file with fixed-length records."
@@ -310,7 +322,7 @@ msgstr ""
 msgid "Creates a file with variable-length records."
 msgstr "Cria arquivo com registros de tamanho variável."
 
-#: src/dialogs/settings/colors.c:181
+#: src/dialogs/settings/colors.c:180
 msgid "Cross hair cursor"
 msgstr "Cursor mira"
 
@@ -335,18 +347,22 @@ msgstr "Atual:"
 msgid "Custom Remap"
 msgstr "Mapeamento personalizado"
 
-#: src/terminal/actions/table.c:103 src/terminal/actions/table.c:113
-#: src/terminal/actions/table.c:125
+#: src/terminal/actions/table.c:119 src/terminal/actions/table.c:129
+#: src/terminal/actions/table.c:141
 msgid "Cut"
 msgstr "Recortar"
 
-#: src/terminal/actions/table.c:114
+#: src/terminal/actions/table.c:130
 msgid "Cut and append to copy"
 msgstr "Recortar e adicionar à cópia"
 
-#: src/terminal/actions/table.c:126
+#: src/terminal/actions/table.c:142
 msgid "Cut as plain text"
 msgstr "Recortar como texto puro"
+
+#: src/terminal/actions/table.c:153 src/terminal/actions/table.c:154
+msgid "Cut as table"
+msgstr "Recortar como tabela"
 
 #: src/filetransfer/tables.c:112
 msgid "Cylinders"
@@ -356,15 +372,15 @@ msgstr "Cilindros"
 msgid "DFT B_uffer size"
 msgstr "Tamanho do b_uffer DFT:"
 
-#: src/dialogs/settings/colors.c:165
+#: src/dialogs/settings/colors.c:164
 msgid "Dark Blue"
 msgstr "Azul Escuro"
 
-#: src/dialogs/settings/colors.c:168
+#: src/dialogs/settings/colors.c:167
 msgid "Dark Green"
 msgstr "Verde Escuro"
 
-#: src/dialogs/settings/colors.c:169
+#: src/dialogs/settings/colors.c:168
 msgid "Dark Turquoise"
 msgstr "Turquesa Escuro"
 
@@ -400,7 +416,7 @@ msgstr "Erro na operação de impressão"
 msgid "Estimated transfer arrival"
 msgstr "Tempo estimado para a transferência"
 
-#: src/dialogs/settings/colors.c:150
+#: src/dialogs/settings/colors.c:149
 msgid "Field colors"
 msgstr "Cor dos campos"
 
@@ -412,7 +428,7 @@ msgstr "_Formato do arquivo"
 msgid "Files to transfer"
 msgstr "Arquivos a transferir"
 
-#: src/terminal/actions/table.c:192
+#: src/terminal/actions/table.c:224
 msgid "Fit best"
 msgstr "Melhor tamanho"
 
@@ -475,11 +491,11 @@ msgstr "Obtém a fila de transferência de um arquivo XML externo"
 msgid "Get transfer queue from file"
 msgstr "Obtêm a fila de arquivos a transferir de um arquivo"
 
-#: src/dialogs/settings/colors.c:171
+#: src/dialogs/settings/colors.c:170
 msgid "Gray"
 msgstr "Cinza"
 
-#: src/dialogs/settings/colors.c:160
+#: src/dialogs/settings/colors.c:159
 msgid "Green"
 msgstr "Verde"
 
@@ -523,19 +539,27 @@ msgstr "Ignore"
 msgid "Ignore the fail and remove the file from queue."
 msgstr "Ignore the fail and remove the file from queue."
 
+#: src/terminal/actions/table.c:202
+msgid "Increase the font size"
+msgstr "Aumenta o tamanho da fonte"
+
+#: src/terminal/actions/table.c:167
+msgid "Input current clipboard contents to screen"
+msgstr "Insere conteúdo da área de transferência"
+
 #: src/filetransfer/v3270ft.c:388
 msgid "Insert new file in the transfer queue"
 msgstr "Inserir um novo arquivo na fila de transferência"
 
-#: src/dialogs/settings/colors.c:176
+#: src/dialogs/settings/colors.c:175
 msgid "Intensified/Protected"
 msgstr "Intensificado/Protegido"
 
-#: src/dialogs/settings/colors.c:174
+#: src/dialogs/settings/colors.c:173
 msgid "Intensified/Unprotected"
 msgstr "Intensificado/Desprotegido"
 
-#: src/terminal/callbacks.c:433
+#: src/terminal/callbacks.c:432
 msgid "Invalid callback table, possible version mismatch in lib3270"
 msgstr ""
 "Tabela de callbacks inválida, possível divergência de versão na lib3270"
@@ -552,8 +576,8 @@ msgstr "Escopo de mapeamento inválido"
 msgid "Invalid state"
 msgstr "Estado inválido"
 
-#: src/dialogs/settings/accelerator.c:163
-#: src/dialogs/settings/accelerator.c:237
+#: src/dialogs/settings/accelerator.c:145
+#: src/dialogs/settings/accelerator.c:239
 msgid "Keyboard accelerators"
 msgstr "Atalhos de teclado"
 
@@ -581,7 +605,7 @@ msgstr "Local:"
 msgid "Makes the screen larger than the default for the chosen model number."
 msgstr "Usa tamanho maior do que o padrão para o modelo escolhido."
 
-#: src/dialogs/settings/colors.c:151
+#: src/dialogs/settings/colors.c:150
 msgid "Misc colors"
 msgstr "Cores diversas"
 
@@ -605,9 +629,13 @@ msgstr "Modelo 5 - 132x27"
 msgid "Monochrome"
 msgstr "Monocromático"
 
-#: src/dialogs/settings/colors.c:170
+#: src/dialogs/settings/colors.c:169
 msgid "Mustard"
 msgstr "Mostarda"
+
+#: src/dialogs/settings/accelerator.c:153
+msgid "Name"
+msgstr "Nome"
 
 #: src/terminal/keyboard/init.c:203
 msgid "Next page"
@@ -633,11 +661,11 @@ msgstr "Nenhuma transferência em andamento"
 msgid "None of the screens in the clipboard match with the current one."
 msgstr "Nenhuma das telas da área de transferência corresponde à atual."
 
-#: src/dialogs/settings/colors.c:175
+#: src/dialogs/settings/colors.c:174
 msgid "Normal/Protected"
 msgstr "Normal/Protegido"
 
-#: src/dialogs/settings/colors.c:173
+#: src/dialogs/settings/colors.c:172
 msgid "Normal/Unprotected"
 msgstr "Normal/Desprotegido"
 
@@ -645,27 +673,27 @@ msgstr "Normal/Desprotegido"
 msgid "Not the same terminal type"
 msgstr "O tipo de terminal é diferente"
 
-#: src/dialogs/settings/colors.c:188
+#: src/dialogs/settings/colors.c:187
 msgid "OIA Warning"
 msgstr "Alerta na OIA"
 
-#: src/dialogs/settings/colors.c:184
+#: src/dialogs/settings/colors.c:183
 msgid "OIA background"
 msgstr "Fundo da OIA"
 
-#: src/dialogs/settings/colors.c:185
+#: src/dialogs/settings/colors.c:184
 msgid "OIA foreground"
 msgstr "Frente da OIA"
 
-#: src/dialogs/settings/colors.c:186
+#: src/dialogs/settings/colors.c:185
 msgid "OIA separator"
 msgstr "Separador da OIA"
 
-#: src/dialogs/settings/colors.c:189
+#: src/dialogs/settings/colors.c:188
 msgid "OIA status invalid"
 msgstr "Estado inválido na OIA"
 
-#: src/dialogs/settings/colors.c:187
+#: src/dialogs/settings/colors.c:186
 msgid "OIA status ok"
 msgstr "Estado normal na OIA"
 
@@ -685,7 +713,7 @@ msgstr "Operação falhou"
 msgid "Options"
 msgstr "Opções"
 
-#: src/dialogs/settings/colors.c:166
+#: src/dialogs/settings/colors.c:165
 msgid "Orange"
 msgstr "Laranja"
 
@@ -705,15 +733,19 @@ msgstr "Oversize"
 msgid "Parameter Type"
 msgstr "Tipo de parâmetro"
 
-#: src/terminal/actions/table.c:137 src/terminal/actions/table.c:148
+#: src/terminal/actions/table.c:165 src/terminal/actions/table.c:178
 msgid "Paste"
 msgstr "Colar"
 
-#: src/terminal/actions/table.c:149
+#: src/terminal/actions/table.c:179
 msgid "Paste as plain text"
 msgstr "Colar como texto puro"
 
-#: src/terminal/actions/table.c:159
+#: src/terminal/actions/table.c:166
+msgid "Paste clipboard contents"
+msgstr "Colar conteúdo da área de transferência"
+
+#: src/terminal/actions/table.c:189
 msgid "Paste file"
 msgstr "Colar arquivo"
 
@@ -721,7 +753,7 @@ msgstr "Colar arquivo"
 msgid "Paste from file"
 msgstr "Colar de um arquivo"
 
-#: src/terminal/actions/table.c:160
+#: src/terminal/actions/table.c:190
 msgid "Paste from text file"
 msgstr "Colar de um arquivo texto"
 
@@ -737,7 +769,7 @@ msgstr "Caminho do arquivo XML com o mapeamento personalizado de caracteres."
 msgid "Peer certificate"
 msgstr "Certificado apresentado"
 
-#: src/dialogs/settings/colors.c:159
+#: src/dialogs/settings/colors.c:158
 msgid "Pink"
 msgstr "Rosa"
 
@@ -749,7 +781,7 @@ msgstr "Texto puro"
 msgid "Port or service name (empty for \"telnet\")."
 msgstr "Nº da porta ou nome do serviço (em branco para \"telnet\")."
 
-#: src/dialogs/settings/colors.c:355
+#: src/dialogs/settings/colors.c:354
 msgid "Predefined color theme"
 msgstr "Esquemas de cor pré-definido"
 
@@ -773,11 +805,11 @@ msgstr ""
 msgid "Primary space"
 msgstr "Primary space"
 
-#: src/terminal/actions/table.c:255
+#: src/terminal/actions/table.c:287
 msgid "Print"
 msgstr "Imprimir"
 
-#: src/terminal/actions/table.c:287
+#: src/terminal/actions/table.c:320
 msgid "Print Copy"
 msgstr "Imprimir cópia"
 
@@ -789,19 +821,19 @@ msgstr "Operação de impressão falhou"
 msgid "Print operation has failed"
 msgstr "Operação de impressão falhou"
 
-#: src/terminal/actions/table.c:266
+#: src/terminal/actions/table.c:298
 msgid "Print screen"
 msgstr "Imrpimir tela"
 
-#: src/terminal/actions/table.c:256
+#: src/terminal/actions/table.c:288
 msgid "Print screen or selection"
 msgstr "Imrpimir tela ou seleção"
 
-#: src/terminal/actions/table.c:276
+#: src/terminal/actions/table.c:309
 msgid "Print selected"
 msgstr "Imprimir seleção"
 
-#: src/terminal/actions/table.c:277
+#: src/terminal/actions/table.c:310
 msgid "Print selected area"
 msgstr "Imprimir área selecionada"
 
@@ -809,11 +841,15 @@ msgstr "Imprimir área selecionada"
 msgid "Print selection box"
 msgstr "Imprimir marca de seleção"
 
+#: src/terminal/actions/table.c:299
+msgid "Print the entire screen"
+msgstr "Imrpimir toda a tela"
+
 #: src/filetransfer/v3270ftprogress.c:407
 msgid "Progress"
 msgstr "Progresso"
 
-#: src/dialogs/settings/colors.c:167
+#: src/dialogs/settings/colors.c:166
 msgid "Purple"
 msgstr "Púrpura"
 
@@ -829,7 +865,7 @@ msgstr "Receber arquivo"
 msgid "Receive text file"
 msgstr "Receber arquivo texto"
 
-#: src/filetransfer/v3270ftprogress.c:739 src/dialogs/transfer.c:130
+#: src/filetransfer/v3270ftprogress.c:739 src/dialogs/transfer.c:126
 msgid "Receiving file"
 msgstr "Recebendo arquivo"
 
@@ -841,11 +877,11 @@ msgstr "Comprimento de registro:"
 msgid "Record format"
 msgstr "Formato de registro"
 
-#: src/dialogs/settings/colors.c:158
+#: src/dialogs/settings/colors.c:157
 msgid "Red"
 msgstr "Vermelho"
 
-#: src/dialogs/settings/accelerator.c:452
+#: src/dialogs/settings/accelerator.c:454
 msgid "Rejected by action"
 msgstr "Rejeitado pela ação"
 
@@ -874,6 +910,10 @@ msgstr "Remoto:"
 msgid "Remove selected file from the transfer queue"
 msgstr "Remove arquivo selecionado da fila de transferência"
 
+#: src/terminal/actions/table.c:72
+msgid "Replace current clipboard contents with the selected area"
+msgstr "Substituí conteúdo da área de transferência com a seleção"
+
 #: src/filetransfer/transfer.c:83
 msgid "Retry"
 msgstr "Repetir"
@@ -890,13 +930,13 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/terminal/actions/table.c:208 src/filetransfer/v3270ft.c:215
+#: src/terminal/actions/table.c:240 src/filetransfer/v3270ft.c:215
 #: src/filetransfer/activitylist.c:453 src/trace/trace.c:477
-#: src/dialogs/transfer.c:73
+#: src/dialogs/transfer.c:69
 msgid "Save"
 msgstr "Salvar"
 
-#: src/terminal/actions/table.c:242
+#: src/terminal/actions/table.c:274
 msgid "Save Copy"
 msgstr "Salvar cópia"
 
@@ -904,11 +944,11 @@ msgstr "Salvar cópia"
 msgid "Save _As"
 msgstr "Salvar _Como"
 
-#: src/terminal/actions/table.c:218
+#: src/terminal/actions/table.c:250
 msgid "Save all"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:240 src/dialogs/save/save.c:299
+#: src/terminal/actions/table.c:272 src/dialogs/save/save.c:299
 msgid "Save copy"
 msgstr "Salvar cópia"
 
@@ -916,19 +956,19 @@ msgstr "Salvar cópia"
 msgid "Save queue to file"
 msgstr "Salvar a fila para um arquivo"
 
-#: src/terminal/actions/table.c:220
+#: src/terminal/actions/table.c:252
 msgid "Save screen"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:209
+#: src/terminal/actions/table.c:241
 msgid "Save screen or selection"
 msgstr "Salvar tela ou seleção"
 
-#: src/terminal/actions/table.c:229
+#: src/terminal/actions/table.c:261
 msgid "Save selected"
 msgstr "Salvar seleção"
 
-#: src/terminal/actions/table.c:231 src/dialogs/save/save.c:298
+#: src/terminal/actions/table.c:263 src/dialogs/save/save.c:298
 msgid "Save selected area"
 msgstr "Salvar área selecionada"
 
@@ -940,11 +980,11 @@ msgstr "Salvar conteúdo da tela"
 msgid "Save trace to file"
 msgstr "Salvar trace para arquivo"
 
-#: src/dialogs/transfer.c:72
+#: src/dialogs/transfer.c:68
 msgid "Save transfer activity to file"
 msgstr "Salvar atividade de transferência para arquivo"
 
-#: src/dialogs/transfer.c:195
+#: src/dialogs/transfer.c:191
 msgid "Save transfer information to file"
 msgstr "Salvar informações da transferência para arquivo"
 
@@ -1016,11 +1056,11 @@ msgstr "Selecionar próximo arquivo"
 msgid "Select previous file"
 msgstr "Selecionar arquivo anterior"
 
-#: src/dialogs/settings/colors.c:178
+#: src/dialogs/settings/colors.c:177
 msgid "Selection background"
 msgstr "Fundo da seleção"
 
-#: src/dialogs/settings/colors.c:179
+#: src/dialogs/settings/colors.c:178
 msgid "Selection foreground"
 msgstr "Frente da seleção"
 
@@ -1032,9 +1072,13 @@ msgstr "Enviar arquivo"
 msgid "Send text file"
 msgstr "Enviar arquivo texto"
 
-#: src/filetransfer/v3270ftprogress.c:739 src/dialogs/transfer.c:130
+#: src/filetransfer/v3270ftprogress.c:739 src/dialogs/transfer.c:126
 msgid "Sending file"
 msgstr "Enviando arquivo"
+
+#: src/terminal/actions/table.c:225
+msgid "Set the font to the best size for window"
+msgstr "Ajusta a fonte para o melhor tamanho"
 
 #: src/filetransfer/transfer.c:86
 msgid "Skip"
@@ -1044,7 +1088,7 @@ msgstr "Skip"
 msgid "Skip this transfer, keep the file on queue."
 msgstr "Skip this transfer, keep the file on queue."
 
-#: src/filetransfer/v3270ft.c:341 src/filetransfer/settings.c:545
+#: src/filetransfer/v3270ft.c:341 src/filetransfer/settings.c:544
 msgid "Space allocation units"
 msgstr "Unidades de alocação de espaço"
 
@@ -1082,7 +1126,7 @@ msgstr ""
 msgid "Specifies the record format of the data set."
 msgstr "Controla o formato de registro do data set."
 
-#: src/filetransfer/settings.c:546
+#: src/filetransfer/settings.c:545
 msgid ""
 "Specifies the units for the TSO host primary and secondary space options."
 msgstr ""
@@ -1104,7 +1148,7 @@ msgstr "Iniciar transferência"
 msgid "Starting"
 msgstr "Iniciando"
 
-#: src/filetransfer/worker.c:314 src/dialogs/transfer.c:148
+#: src/filetransfer/worker.c:314 src/dialogs/transfer.c:144
 msgid "Starting transfer"
 msgstr "Iniciando transferência"
 
@@ -1119,6 +1163,10 @@ msgstr "Tipo de situação"
 #: src/terminal/properties/init.c:170
 msgid "State of the dynamic font spacing"
 msgstr "Estado do espaçamento dinâmico"
+
+#: src/dialogs/settings/accelerator.c:171
+msgid "Summary"
+msgstr "Sumário"
 
 #: src/dialogs/settings/host.c:102
 msgid "System _type"
@@ -1136,8 +1184,8 @@ msgstr "Código de página TN3270 personalizado"
 msgid "TN3270 Session name"
 msgstr "Nome da sessão TN3270"
 
-#: src/dialogs/settings/colors.c:149 src/dialogs/settings/colors.c:301
-#: src/dialogs/settings/colors.c:380
+#: src/dialogs/settings/colors.c:148 src/dialogs/settings/colors.c:300
+#: src/dialogs/settings/colors.c:379
 msgid "Terminal colors"
 msgstr "Cores do terminal"
 
@@ -1159,7 +1207,7 @@ msgstr ""
 msgid "The EBCDIC host character set. "
 msgstr "A tabela de caracteres EBCDIC."
 
-#: src/dialogs/settings/accelerator.c:448
+#: src/dialogs/settings/accelerator.c:450
 #, c-format
 msgid "The action \"%s\" can't manage alternative keys"
 msgstr "A ação \"%s\" não permite uso de atalho alternativo"
@@ -1180,7 +1228,7 @@ msgstr ""
 "Tabela de callbacks para transferência de arquivos inválida, possível "
 "divergência de versão na lib3270"
 
-#: src/terminal/callbacks.c:400
+#: src/terminal/callbacks.c:399
 #, c-format
 msgid "The error code was %d"
 msgstr "O código de erro foi %d"
@@ -1244,12 +1292,12 @@ msgstr "Operação de impressão está em andamento"
 msgid "The print settings should be stored."
 msgstr "Configuração de impressão deve ser armazenada"
 
-#: src/dialogs/settings/accelerator.c:302
+#: src/dialogs/settings/accelerator.c:304
 #, c-format
 msgid "The selected accelerator is in use by action <b>%s</b> (<b>%s</b>)"
 msgstr "O atalho selecionado está em uso pela ação <b>%s</b> (<b>%s</b>)"
 
-#: src/dialogs/settings/accelerator.c:322
+#: src/dialogs/settings/accelerator.c:324
 msgid "The selected accelerator is in use by the same action"
 msgstr "O atalho selecionado está em uso na mesma ação"
 
@@ -1339,7 +1387,7 @@ msgstr "Verdadeiro se o terminal tiver blocos copiados"
 msgid "Try again with the same file."
 msgstr "Tente de novo com o mesmo arquivo."
 
-#: src/dialogs/settings/colors.c:161
+#: src/dialogs/settings/colors.c:160
 msgid "Turquoise"
 msgstr "Turquesa"
 
@@ -1386,7 +1434,7 @@ msgstr "Variável"
 msgid "Western Europe (ISO 8859-1)"
 msgstr "Europa ocidental (ISO 8859-1)"
 
-#: src/dialogs/settings/colors.c:163
+#: src/dialogs/settings/colors.c:162
 msgid "White"
 msgstr "Branco"
 
@@ -1443,7 +1491,7 @@ msgstr "X Aguarde"
 msgid "XML file with remap table"
 msgstr "Arquivo XML com a tabela para remapeamento de caracteres"
 
-#: src/dialogs/settings/colors.c:162
+#: src/dialogs/settings/colors.c:161
 msgid "Yellow"
 msgstr "Amarelo"
 
@@ -1526,17 +1574,13 @@ msgstr ""
 msgid "You specified an option that is invalid."
 msgstr "Você especificou uma opção inválida."
 
-#: src/terminal/actions/table.c:171
+#: src/terminal/actions/table.c:201
 msgid "Zoom in"
 msgstr "Ampliar"
 
-#: src/terminal/actions/table.c:181
+#: src/terminal/actions/table.c:212
 msgid "Zoom out"
 msgstr "Reduzir"
-
-#: src/terminal/actions/table.c:193
-msgid "Zoom to best size"
-msgstr "Ajustar para o melhor tamanho"
 
 #: src/filetransfer/tables.c:49
 msgid "_ASCII text"
@@ -1558,8 +1602,8 @@ msgstr "_Cancelar"
 msgid "_Charset"
 msgstr "Tabela de _Caracteres"
 
-#: src/trace/tracewindow.c:125 src/dialogs/transfer.c:167
-#: src/dialogs/transfer.c:187 src/dialogs/security.c:231
+#: src/trace/tracewindow.c:125 src/dialogs/transfer.c:163
+#: src/dialogs/transfer.c:183 src/dialogs/security.c:231
 msgid "_Close"
 msgstr "_Close"
 
@@ -1623,6 +1667,10 @@ msgstr "_Serviço"
 #: src/filetransfer/tables.c:43
 msgid "_Text file"
 msgstr "Arquivo _texto"
+
+#: src/terminal/actions/table.c:213
+msgid "decrease the font size"
+msgstr "Diminui o tamanho da fonte"
 
 #~ msgid " and <b>%s</b> for %s."
 #~ msgstr " e <b>%s</b> para %s."
@@ -1789,6 +1837,9 @@ msgstr "Arquivo _texto"
 
 #~ msgid "Ack received, data flowing"
 #~ msgstr "Confirmação recebida, transferindo dados"
+
+#~ msgid "Action"
+#~ msgstr "Ação"
 
 #, fuzzy
 #~ msgid "Add <CR> at end of the line."
@@ -2887,9 +2938,6 @@ msgstr "Arquivo _texto"
 #~ msgid "Paste text file"
 #~ msgstr "Colar arquivo texto"
 
-#~ msgid "Paste text file contents"
-#~ msgstr "Colar conteúdo de arquivo texto"
-
 #~ msgid "Paste with left margin"
 #~ msgstr "Colar com margem esquerda"
 
@@ -3145,9 +3193,6 @@ msgstr "Arquivo _texto"
 #~ msgid "Save selected area."
 #~ msgstr "Salvar área selecionada"
 
-#~ msgid "Save selection to file"
-#~ msgstr "Salvar seleção para arquivo"
-
 #~ msgid "Save trace file"
 #~ msgstr "Salvar arquivo de trace"
 
@@ -3162,9 +3207,6 @@ msgstr "Arquivo _texto"
 
 #~ msgid "Screen oversize if larger than the chosen model"
 #~ msgstr "\"oversize\" maior que o modelo escolhido"
-
-#~ msgid "Screen size"
-#~ msgstr "Tamanho da tela"
 
 #~ msgid "Screens"
 #~ msgstr "Telas"
@@ -3861,6 +3903,9 @@ msgstr "Arquivo _texto"
 
 #~ msgid "XML file"
 #~ msgstr "Arquivo XML"
+
+#~ msgid "Zoom to best size"
+#~ msgstr "Ajustar para o melhor tamanho"
 
 #~ msgid "_Append to destination"
 #~ msgstr "_Adicionar ao arquivo de destino"
