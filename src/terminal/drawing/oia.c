@@ -39,7 +39,7 @@
 
  #include <gtk/gtk.h>
  #include <libintl.h>
- #include <glib/gi18n.h>
+ #include <glib/gi18n-lib.h>
 
  #include <lib3270.h>
  #include <lib3270/session.h>
@@ -489,7 +489,7 @@ static void draw_status_message(cairo_t *cr, LIB3270_MESSAGE id, v3270FontInfo *
 
 	if(msg && *msg)
 	{
-		msg = gettext(msg);
+		msg = g_dgettext(PACKAGE_NAME,msg);
 	}
 
 	if(msg && *msg)

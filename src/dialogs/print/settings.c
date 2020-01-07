@@ -92,7 +92,7 @@ static void V3270PrintSettings_init(V3270PrintSettings *widget)
 
 	for(f=0;f<G_N_ELEMENTS(text);f++)
 	{
-		GtkWidget *label = gtk_label_new_with_mnemonic(gettext(text[f]));
+		GtkWidget *label = gtk_label_new_with_mnemonic(g_dgettext(PACKAGE_NAME,text[f]));
 		gtk_widget_set_halign(label,GTK_ALIGN_START);
 		gtk_grid_attach(GTK_GRID(widget),label,0,f,1,1);
 	}

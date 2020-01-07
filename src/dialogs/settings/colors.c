@@ -32,7 +32,6 @@
   *
   */
 
-// #include "private.h"
  #include <internals.h>
  #include <lib3270.h>
  #include <v3270/colorscheme.h>
@@ -196,7 +195,7 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
 		int 		f;
 
 		gtk_tree_store_append(GTK_TREE_STORE(widget->colors.list),&parent,NULL);
-		gtk_tree_store_set(GTK_TREE_STORE(widget->colors.list), &parent, 0, gettext(node[title++].text), 1, V3270_COLOR_COUNT, -1);
+		gtk_tree_store_set(GTK_TREE_STORE(widget->colors.list), &parent, 0, g_dgettext(PACKAGE_NAME,node[title++].text), 1, V3270_COLOR_COUNT, -1);
 
 		for(f=0;f<V3270_COLOR_COUNT;f++)
 		{
@@ -205,10 +204,10 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
 			if(f == node[title].id)
 			{
 				gtk_tree_store_append(GTK_TREE_STORE(widget->colors.list),&parent,NULL);
-				gtk_tree_store_set(GTK_TREE_STORE(widget->colors.list), &parent, 0, gettext(node[title++].text), 1, V3270_COLOR_COUNT, -1);
+				gtk_tree_store_set(GTK_TREE_STORE(widget->colors.list), &parent, 0, g_dgettext(PACKAGE_NAME,node[title++].text), 1, V3270_COLOR_COUNT, -1);
 			}
 			gtk_tree_store_append(GTK_TREE_STORE(widget->colors.list),&iter,&parent);
-			gtk_tree_store_set(GTK_TREE_STORE(widget->colors.list), &iter, 0, gettext(color_name[f]), 1, f, -1);
+			gtk_tree_store_set(GTK_TREE_STORE(widget->colors.list), &iter, 0, g_dgettext(PACKAGE_NAME,color_name[f]), 1, f, -1);
 		}
 
 		gtk_tree_view_expand_all(GTK_TREE_VIEW(widget->colors.view));

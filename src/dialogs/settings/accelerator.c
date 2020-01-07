@@ -237,6 +237,8 @@ LIB3270_EXPORT GtkWidget * v3270_accelerator_settings_new()
  	settings->title = _("Keyboard accelerators");
  	settings->label = _("Accelerators");
 
+ 	debug("*********** [%s] [%s] [%s]",settings->title,gettext(settings->title),g_dgettext(GETTEXT_PACKAGE,settings->title));
+
  	return GTK_WIDGET(settings);
 }
 

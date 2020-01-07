@@ -30,7 +30,6 @@
  #include <internals.h>
 
  #include <libintl.h>
- #include <glib/gi18n.h>
  #include <gtk/gtk.h>
  #include <lib3270.h>
  #include <v3270.h>

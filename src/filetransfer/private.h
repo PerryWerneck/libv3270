@@ -38,7 +38,7 @@
 	#define GETTEXT_PACKAGE PACKAGE_NAME
 
 	#include <libintl.h>
-	#include <glib/gi18n.h>
+	#include <glib/gi18n-lib.h>
 
 	#include <v3270/filetransfer.h>
 	#include <v3270/ftprogress.h>

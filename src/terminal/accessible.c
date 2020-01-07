@@ -34,7 +34,7 @@
 
  #include <gtk/gtk.h>
  #include <libintl.h>
- #include <glib/gi18n.h>
+ #include <glib/gi18n-lib.h>
 
  #include <lib3270.h>
  #include <lib3270/log.h>

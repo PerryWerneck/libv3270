@@ -392,7 +392,7 @@
 	const gchar * domainname = ((V3270Action *) action)->translation_domain ? ((V3270Action *) action)->translation_domain : G_STRINGIFY(PRODUCT_NAME);
 
 	if (msgid && *msgid)
-		return (const gchar*) g_dgettext (domainname, msgid);
+		return (const gchar*) g_dgettext(domainname, msgid);
 
 	return msgid;
 

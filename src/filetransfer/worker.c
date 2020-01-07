@@ -209,7 +209,7 @@
 
  static void create_field(V3270FTWorker *widget, PROGRESS_FIELD id, GtkWidget *grid, gint top)
  {
-	GtkWidget * label = gtk_label_new(gettext(v3270_ft_worker_fields[id].label));
+	GtkWidget * label = gtk_label_new(g_dgettext(PACKAGE_NAME,v3270_ft_worker_fields[id].label));
 	gtk_widget_set_halign(GTK_WIDGET(label),GTK_ALIGN_END);
 	gtk_grid_attach(GTK_GRID(grid),label,0,top,1,1);
 
@@ -229,8 +229,8 @@
  	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
  	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
 
-	widget->field[PROGRESS_FIELD_LOCAL] = GTK_ENTRY(create_entry(widget,gettext(v3270_ft_worker_fields[PROGRESS_FIELD_LOCAL].label),gtk_entry_new(),0,0,9));
-	widget->field[PROGRESS_FIELD_REMOTE] = GTK_ENTRY(create_entry(widget,gettext(v3270_ft_worker_fields[PROGRESS_FIELD_REMOTE].label),gtk_entry_new(),0,1,9));
+	widget->field[PROGRESS_FIELD_LOCAL] = GTK_ENTRY(create_entry(widget,g_dgettext(PACKAGE_NAME,v3270_ft_worker_fields[PROGRESS_FIELD_LOCAL].label),gtk_entry_new(),0,0,9));
+	widget->field[PROGRESS_FIELD_REMOTE] = GTK_ENTRY(create_entry(widget,g_dgettext(PACKAGE_NAME,v3270_ft_worker_fields[PROGRESS_FIELD_REMOTE].label),gtk_entry_new(),0,1,9));
 
 	// Create status elements
 	GtkWidget * views = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);
@@ -591,12 +591,12 @@ static gboolean do_timer(V3270FTWorker *worker) {
 		if(!message)
 			message = N_("Can't start file transfer session");
 
-		gtk_progress_bar_set_text(worker->pbar,gettext(message));
+		gtk_progress_bar_set_text(worker->pbar,g_dgettext(PACKAGE_NAME,message));
 
 		pulse_stop(worker);
 
 		// Emit "transfer failed"
-		g_signal_emit(GTK_WIDGET(widget),v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL], 0, gettext(message), NULL);
+		g_signal_emit(GTK_WIDGET(widget),v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL], 0, g_dgettext(PACKAGE_NAME,message), NULL);
 
 		// Emit "no transfer"
 		ft_state_changed(worker->hSession, LIB3270_FT_STATE_NONE, _("No transfer in progress"), widget);

@@ -167,10 +167,10 @@
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
 
 		if( ((V3270_ACTION *) accel->arg)->summary )
-			return gettext(((V3270_ACTION *) accel->arg)->summary);
+			return g_dgettext(PACKAGE_NAME,((V3270_ACTION *) accel->arg)->summary);
 
 		if( ((V3270_ACTION *) accel->arg)->description )
-			return gettext(((V3270_ACTION *) accel->arg)->description);
+			return g_dgettext(PACKAGE_NAME,((V3270_ACTION *) accel->arg)->description);
 
 		break;
 
@@ -187,7 +187,7 @@
 	case V3270_ACCELERATOR_TYPE_PFKEY:
 
 		if( ((V3270PFKeyAccelerator *)accel)->description )
-			return gettext(((V3270PFKeyAccelerator *)accel)->description);
+			return g_dgettext(PACKAGE_NAME,((V3270PFKeyAccelerator *)accel)->description);
 
 		break;
 

@@ -32,7 +32,6 @@
 
 	#define V3270FT_H_INCLUDED 1
 
-	#include <glib/gi18n.h>
 	#include <gtk/gtk.h>
 	#include <lib3270.h>
 	#include <lib3270/filetransfer.h>

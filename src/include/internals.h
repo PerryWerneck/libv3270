@@ -37,7 +37,8 @@
  #define GETTEXT_PACKAGE PACKAGE_NAME
 
  #include <glib.h>
- #include <glib/gi18n.h>
+ #include <glib/gi18n-lib.h>
+
  #include <gtk/gtk.h>
  #include <lib3270.h>
  #include <lib3270/log.h>
