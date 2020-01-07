@@ -332,7 +332,7 @@
  const gchar * v3270_action_get_label(GAction *action) {
 	const gchar * label = V3270_ACTION_GET_DESCRIPTOR(action)->label;
 
-	if(label)
+	if(label && *label)
 		return v3270_action_translate(action,label);
 
 	return NULL;
