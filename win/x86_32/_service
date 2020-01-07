@@ -9,11 +9,10 @@
 	</service>
 
 	<!-- https://github.com/openSUSE/obs-service-extract_file -->
-	<!-- service name="extract_file">
+	<service name="extract_file">
 		<param name="archive">*.tar</param>
-		<param name="files">*/win/mingw32/libv3270.spec</param>
-		<param name="outfilename">mingw32-libv3270-5_2.spec</param>
-	</service -->
+		<param name="files">*/win/x86_32/mingw32-libv3270.spec</param>
+	</service>
 
 	<service name="recompress">
 		<param name="file">*.tar</param>

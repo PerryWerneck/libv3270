@@ -78,6 +78,9 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 Summary:	3270 Virtual Terminal for GTK development files
 Group:		Development/Libraries/C and C++
 
+Requires:	%{name} = %{version}
+Requires:	mingw32(pkg:lib3270)
+
 %description devel
 
 3270 Virtual Terminal for GTK development files.
@@ -91,7 +94,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 Summary:	Glade catalog for the TN3270 terminal emulator library
 Group:		Development/Libraries/C and C++
 
-Requires:	mingw32(pkg:lib3270)
+Requires:	%{name}-devel = %{version}
 Requires:	glade
 
 %description -n mingw32-glade-catalog-v3270
@@ -126,19 +129,18 @@ make all
 
 %install
 %{_mingw32_makeinstall}
+%_mingw32_find_lang libv3270 langfiles
 
 %clean
 rm -rf %{buildroot}
 
 #---[ Files ]---------------------------------------------------------------------------------------------------------
 
-%files
+%files -f langfiles
 %defattr(-,root,root)
 %doc AUTHORS LICENSE README.md
 
-%{_mingw32_libdir}/libv3270.dll
-%{_mingw32_libdir}/libv3270.dll.%{MAJOR_VERSION}
-%{_mingw32_libdir}/libv3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_mingw32_bindir}/*.dll
 
 %files devel
 %defattr(-,root,root)
@@ -153,6 +155,8 @@ rm -rf %{buildroot}
 
 %dir %{_mingw32_datadir}/%{_product}/remap
 %{_mingw32_datadir}/%{_product}/remap/*.xml
+
+%{_mingw32_datadir}/%{_product}/def/*.def
 
 %files -n mingw32-glade-catalog-v3270
 %defattr(-,root,root)

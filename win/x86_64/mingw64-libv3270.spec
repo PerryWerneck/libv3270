@@ -28,16 +28,16 @@
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
 Summary:		3270 Virtual Terminal for GTK
-Name:           mingw64-libv3270
-Version:        5.2
+Name:			mingw64-libv3270
+Version:		5.2
 
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 %define _product %(x86_64-w64-mingw32-pkg-config --variable=product_name lib3270)
 
-Release:        0
-License:        GPL-2.0
+Release:		0
+License:		GPL-2.0
 
 Source:			libv3270-%{version}.tar.xz
 
@@ -94,7 +94,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 Summary:	Glade catalog for the TN3270 terminal emulator library
 Group:		Development/Libraries/C and C++
 
-Requires:	libv3270-devel = %{version}
+Requires:	%{name}-devel = %{version}
 Requires:	glade
 
 %description -n mingw64-glade-catalog-v3270
@@ -129,19 +129,18 @@ make all
 
 %install
 %{_mingw64_makeinstall}
+%_mingw64_find_lang libv3270 langfiles
 
 %clean
 rm -rf %{buildroot}
 
 #---[ Files ]---------------------------------------------------------------------------------------------------------
 
-%files
+%files -f langfiles
 %defattr(-,root,root)
 %doc AUTHORS LICENSE README.md
 
-%{_mingw64_libdir}/libv3270.dll
-%{_mingw64_libdir}/libv3270.dll.%{MAJOR_VERSION}
-%{_mingw64_libdir}/libv3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_mingw64_bindir}/*.dll
 
 %files devel
 %defattr(-,root,root)
@@ -150,11 +149,14 @@ rm -rf %{buildroot}
 
 %{_mingw64_libdir}/pkgconfig/*.pc
 %{_mingw64_libdir}/*.a
+
 %{_mingw64_datadir}/%{_product}/pot/*.pot
 %{_mingw64_datadir}/%{_product}/colors.conf
 
 %dir %{_mingw64_datadir}/%{_product}/remap
 %{_mingw64_datadir}/%{_product}/remap/*.xml
+
+%{_mingw64_datadir}/%{_product}/def/*.def
 
 %files -n mingw64-glade-catalog-v3270
 %defattr(-,root,root)
