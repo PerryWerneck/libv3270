@@ -236,6 +236,34 @@
 	v3270 		* terminal	= GTK_V3270(widget);
 	v3270Class	* klass		= GTK_V3270_GET_CLASS(widget);
 
+	// Save session name.
+	{
+		g_autofree gchar * session_name = g_strdup(terminal->session.name ? terminal->session.name : G_STRINGIFY(PRODUCT_NAME));
+
+		gchar *ptr = strrchr(session_name,':');
+		if(ptr)
+			*ptr = 0;
+
+		if(g_ascii_strcasecmp(session_name,G_STRINGIFY(PRODUCT_NAME))) {
+
+			g_key_file_set_string(
+				key_file,
+				group_name,
+				"session-name",
+				session_name
+			);
+
+		} else {
+			g_key_file_remove_key(
+				key_file,
+				group_name,
+				"session-name",
+				NULL
+			);
+		}
+
+	}
+
 	// Save Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
 		save_by_pspec(widget,klass->properties.toggle[ix],key_file,group_name);
@@ -265,6 +293,19 @@
 
 	g_object_freeze_notify(G_OBJECT(widget));
 	terminal->freeze = 1;
+
+	// Load session_name
+	if(g_key_file_has_key(key_file,group_name,"session-name",NULL)) {
+
+		g_autofree gchar * session_name = g_key_file_get_string(key_file,group_name,"session-name",NULL);
+
+		gchar *ptr = strrchr(session_name,':');
+		if(ptr)
+			*ptr = 0;
+
+		v3270_set_session_name(widget, session_name);
+
+	}
 
 	// Load Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)

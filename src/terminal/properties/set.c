@@ -171,20 +171,46 @@ LIB3270_EXPORT void v3270_set_url(GtkWidget *widget, const gchar *uri)
 LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
-	g_return_if_fail(name != NULL);
 
-	if(GTK_V3270(widget)->session.name) {
+	v3270 * terminal = GTK_V3270(widget);
 
-		if(!strcmp(GTK_V3270(widget)->session.name,name)) {
-			// Same session name, keep it.
+	if(!(name && *name))
+		name = G_STRINGIFY(PRODUCT_NAME);
+
+	if(terminal->session.name) {
+
+		// If it's the same name ignore it.
+		if(!strcmp(terminal->session.name,name))
 			return;
-		}
 
-		g_free(GTK_V3270(widget)->session.name);
+		g_free(terminal->session.name);
+		terminal->session.name = NULL;
 
 	}
 
-	GTK_V3270(widget)->session.name = g_strdup(name);
+	g_autofree gchar * new_name = g_strdup(name);
+
+	// Check for session id
+	gchar session_id = 0;
+	{
+		gchar *ptr = strrchr(new_name,':');
+		if(ptr) {
+			*(ptr++) = 0;
+			session_id = *ptr;
+			lib3270_set_session_id(terminal->host,session_id);
+		}
+	}
+
+	if(!session_id)
+		session_id = lib3270_get_session_id(terminal->host);
+
+	if(session_id) {
+		terminal->session.name = g_strdup_printf("%s:%c",new_name,session_id);
+	} else {
+		terminal->session.name = g_strdup(new_name);
+	}
+
+	g_message("Session name changes to \"%s\"",terminal->session.name);
 
 	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_SESSION_CHANGED], 0);
 	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.session_name);

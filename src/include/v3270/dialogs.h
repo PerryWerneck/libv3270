@@ -47,7 +47,6 @@
 
  LIB3270_EXPORT GtkTreeModel	* v3270_font_family_model_new(GtkWidget *widget, const gchar *selected, GtkTreeIter * active);
 
-
  G_END_DECLS
 
 #endif // V3270_DIALOGS_H_INCLUDED
