@@ -85,10 +85,19 @@
  	{
  		.left = 6,
  		.top = 1,
- 		.width = 2,
+ 		.width = 1,
  		.grid = EMULATION,
 		.id = LIB3270_TOGGLE_ALTSCREEN,
+ 	},
+
+ 	{
+ 		.left = 7,
+ 		.top = 1,
+ 		.width = 1,
+ 		.grid = EMULATION,
+		.id = LIB3270_TOGGLE_MONOCASE,
  	}
+
  };
 
  enum _entry
@@ -253,8 +262,8 @@
 
  	{
 		.top = 2,
-		.left = 0,
- 		.width = 8,
+		.left = 3,
+ 		.width = 4,
  		.height = 1,
  		.grid = EMULATION,
 
@@ -291,6 +300,7 @@
 		GtkComboBox			* charset;								///< @brief Charset combo box.
 		GtkToggleButton		* toggles[G_N_ELEMENTS(toggleList)];	///< @brief Toggle checks.
 		GtkSpinButton		* auto_disconnect;						///< @brief Auto disconnect.
+		GtkSpinButton		* unlock_delay;							///< @brief Unlock delay.
 
 	} input;
 
@@ -409,7 +419,7 @@ static void select_remap_file(GtkEditable *editable, G_GNUC_UNUSED GtkEntryIconP
 
 }
 
-static gboolean auto_disconnect_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
+static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
 
 	GtkAdjustment	* adjustment = gtk_spin_button_get_adjustment (spin);
 	guint			  value = (guint) gtk_adjustment_get_value(adjustment);
@@ -497,7 +507,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	// Auto disconnect
 	{
 		GtkWidget *label = gtk_label_new_with_mnemonic(_("Auto _disconnect"));
-
 		gtk_widget_set_halign(label,GTK_ALIGN_END);
 
 		widget->input.auto_disconnect = GTK_SPIN_BUTTON(gtk_spin_button_new_with_range(0,60,1));
@@ -508,7 +517,26 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),label,0,2,1,1);
 		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),GTK_WIDGET(widget->input.auto_disconnect),1,2,1,1);
-		g_signal_connect(G_OBJECT(widget->input.auto_disconnect),"output",G_CALLBACK(auto_disconnect_format),widget);
+		g_signal_connect(G_OBJECT(widget->input.auto_disconnect),"output",G_CALLBACK(spin_format),widget);
+	}
+
+	// Unlock delay
+	{
+		const LIB3270_UINT_PROPERTY * property = lib3270_unsigned_property_get_by_name("unlock_delay");
+
+		GtkWidget *label = gtk_label_new_with_mnemonic(lib3270_property_get_label((const LIB3270_PROPERTY *) property));
+		gtk_widget_set_halign(label,GTK_ALIGN_END);
+
+		widget->input.unlock_delay = GTK_SPIN_BUTTON(gtk_spin_button_new_with_range(property->min,property->max,1));
+		gtk_widget_set_tooltip_markup(GTK_WIDGET(widget->input.unlock_delay),lib3270_property_get_description((const LIB3270_PROPERTY *) property));
+		gtk_label_set_mnemonic_widget(GTK_LABEL(label),GTK_WIDGET(widget->input.unlock_delay));
+
+		gtk_spin_button_set_increments(widget->input.unlock_delay,1,1);
+
+		gtk_grid_attach(GTK_GRID(grids[EMULATION]),label,6,0,1,1);
+		gtk_grid_attach(GTK_GRID(grids[EMULATION]),GTK_WIDGET(widget->input.unlock_delay),7,0,1,1);
+		g_signal_connect(G_OBJECT(widget->input.unlock_delay),"output",G_CALLBACK(spin_format),widget);
+
 	}
 
 	// SSL checkbox
@@ -600,8 +628,8 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 		static const struct v3270_entry_field descriptor =
 		{
-			.top = 0,
-			.left = 6,
+			.top = 2,
+			.left = 0,
 			.width = 2,
 			.height = 1,
 
@@ -891,6 +919,9 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 
 	// Load auto disconnect
 	gtk_spin_button_set_value(widget->input.auto_disconnect, v3270_get_auto_disconnect(terminal));
+
+	// Load unlock delay
+	gtk_spin_button_set_value(widget->input.unlock_delay, lib3270_get_unlock_delay(hSession));
 
 }
 
