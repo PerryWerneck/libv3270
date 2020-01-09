@@ -42,10 +42,19 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
+ enum {
+	CONNECTION,
+	EMULATION,
+
+	GRID_COUNT
+ };
+
  static const struct ToggleList
  {
 	gint left;
 	gint top;
+	gint width;
+	unsigned short grid;
 
 	LIB3270_TOGGLE_ID	id;
  }
@@ -54,19 +63,32 @@
  	{
  		.left = 2,
  		.top = 3,
+ 		.width = 1,
+ 		.grid = CONNECTION,
  		.id = LIB3270_TOGGLE_CONNECT_ON_STARTUP,
  	},
  	{
  		.left = 3,
  		.top = 3,
+ 		.width = 1,
+ 		.grid = CONNECTION,
 		.id = LIB3270_TOGGLE_RECONNECT,
  	},
  	{
  		.left = 4,
  		.top = 3,
+ 		.width = 1,
+ 		.grid = CONNECTION,
 		.id = LIB3270_TOGGLE_KEEP_ALIVE,
- 	}
+ 	},
 
+ 	{
+ 		.left = 6,
+ 		.top = 1,
+ 		.width = 2,
+ 		.grid = EMULATION,
+		.id = LIB3270_TOGGLE_ALTSCREEN,
+ 	}
  };
 
  enum _entry
@@ -185,6 +207,7 @@
  {
  	ENTRY_FIELD_HEAD
 
+ 	unsigned short grid;
  	gint max_length;
  	gint width_chars;
 
@@ -194,6 +217,7 @@
  		.top = 0,
  		.width = 4,
  		.height = 1,
+ 		.grid = CONNECTION,
 
 		.label = N_( "_Host" ),
 		.tooltip = N_("Address or name of the host to connect."),
@@ -206,6 +230,7 @@
  		.top = 1,
  		.width = 1,
  		.height = 1,
+ 		.grid = CONNECTION,
 
  		.label = N_( "_Service" ),
 		.tooltip = N_("Port or service name (empty for \"telnet\")."),
@@ -218,6 +243,7 @@
 		.left = 3,
 		.width = 2,
 		.height = 1,
+ 		.grid = EMULATION,
 
  		.label = N_( "Oversize" ),
 		.tooltip = N_("Makes the screen larger than the default for the chosen model number."),
@@ -230,6 +256,7 @@
 		.left = 0,
  		.width = 8,
  		.height = 1,
+ 		.grid = EMULATION,
 
  		.label = N_( "Custom Remap" ),
 		.tooltip = N_("Path to XML file with custom charset mapping."),
@@ -242,6 +269,7 @@
  		.top = 1,
  		.width = 2,
  		.height = 1,
+ 		.grid = CONNECTION,
 
  		.label = N_( "L_U Names" ),
 		.tooltip = N_("Comma separated list of LU names."),
@@ -398,28 +426,36 @@ static gboolean auto_disconnect_format(GtkSpinButton *spin, G_GNUC_UNUSED gpoint
 
 static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
+	GtkWidget *grids[GRID_COUNT];
+
+	{
+		size_t grid;
+
+		for(grid = 0; grid < G_N_ELEMENTS(grids); grid++)
+			grids[grid] = gtk_grid_new();
+
+	}
+
 	// Cell renderer
 	GtkCellRenderer * text_renderer	= gtk_cell_renderer_text_new();
 
 	// Connection properties
-	GtkWidget * connection = gtk_grid_new();
- 	gtk_grid_set_row_spacing(GTK_GRID(connection),6);
- 	gtk_grid_set_column_spacing(GTK_GRID(connection),12);
+ 	gtk_grid_set_row_spacing(GTK_GRID(grids[CONNECTION]),6);
+ 	gtk_grid_set_column_spacing(GTK_GRID(grids[CONNECTION]),12);
 
 	gtk_grid_attach(
 			GTK_GRID(widget),
-			v3270_dialog_create_frame(connection,_("Connection")),
+			v3270_dialog_create_frame(grids[CONNECTION],_("Connection")),
 			0,0,10,5
 	);
 
 	// Emulation properties
-	GtkWidget * emulation = gtk_grid_new();
- 	gtk_grid_set_row_spacing(GTK_GRID(emulation),6);
- 	gtk_grid_set_column_spacing(GTK_GRID(emulation),12);
+ 	gtk_grid_set_row_spacing(GTK_GRID(grids[EMULATION]),6);
+ 	gtk_grid_set_column_spacing(GTK_GRID(grids[EMULATION]),12);
 
 	gtk_grid_attach(
 			GTK_GRID(widget),
-			v3270_dialog_create_frame(emulation,_("Emulation")),
+			v3270_dialog_create_frame(grids[EMULATION],_("Emulation")),
 			0,6,10,5
 	);
 
@@ -432,6 +468,13 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			widget->input.entry[entry] = GTK_ENTRY(gtk_entry_new());
 			gtk_entry_set_max_length(widget->input.entry[entry],entryfields[entry].max_length);
 			gtk_entry_set_width_chars(widget->input.entry[entry],entryfields[entry].width_chars);
+
+			v3270_grid_attach(
+				GTK_GRID(grids[entryfields[entry].grid]),
+				(struct v3270_entry_field *) & entryfields[entry],
+				GTK_WIDGET(widget->input.entry[entry])
+			);
+
 		}
 
 		// Custom settings
@@ -449,37 +492,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 		g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_OVERSIZE]),"changed",G_CALLBACK(oversize_changed),widget);
 
-		// Add to containers
-		v3270_grid_attach(
-			GTK_GRID(connection),
-			(struct v3270_entry_field *) & entryfields[0],
-			GTK_WIDGET(widget->input.entry[0])
-		);
-
-		v3270_grid_attach(
-			GTK_GRID(connection),
-			(struct v3270_entry_field *) & entryfields[1],
-			GTK_WIDGET(widget->input.entry[1])
-		);
-
-		v3270_grid_attach(
-			GTK_GRID(emulation),
-			(struct v3270_entry_field *) & entryfields[2],
-			GTK_WIDGET(widget->input.entry[2])
-		);
-
-		v3270_grid_attach(
-			GTK_GRID(emulation),
-			(struct v3270_entry_field *) & entryfields[3],
-			GTK_WIDGET(widget->input.entry[3])
-		);
-
-		v3270_grid_attach(
-			GTK_GRID(connection),
-			(struct v3270_entry_field *) & entryfields[4],
-			GTK_WIDGET(widget->input.entry[4])
-		);
-
 	}
 
 	// Auto disconnect
@@ -494,8 +506,8 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 		gtk_spin_button_set_increments(widget->input.auto_disconnect,1,1);
 
-		gtk_grid_attach(GTK_GRID(connection),label,0,2,1,1);
-		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.auto_disconnect),1,2,1,1);
+		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),label,0,2,1,1);
+		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),GTK_WIDGET(widget->input.auto_disconnect),1,2,1,1);
 		g_signal_connect(G_OBJECT(widget->input.auto_disconnect),"output",G_CALLBACK(auto_disconnect_format),widget);
 	}
 
@@ -504,7 +516,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
 		gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
 		gtk_widget_set_halign(GTK_WIDGET(widget->input.ssl),GTK_ALIGN_START);
-		gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.ssl),1,3,1,1);
+		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),GTK_WIDGET(widget->input.ssl),1,3,1,1);
 	}
 
 	// Toggle checkboxes
@@ -525,7 +537,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 					gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.toggles[toggle]),tooltip);
 
 				gtk_widget_set_halign(GTK_WIDGET(widget->input.toggles[toggle]),GTK_ALIGN_START);
-				gtk_grid_attach(GTK_GRID(connection),GTK_WIDGET(widget->input.toggles[toggle]),toggleList[toggle].left,toggleList[toggle].top,1,1);
+				gtk_grid_attach(GTK_GRID(grids[toggleList[toggle].grid]),GTK_WIDGET(widget->input.toggles[toggle]),toggleList[toggle].left,toggleList[toggle].top,toggleList[toggle].width,1);
 
 			}
 
@@ -556,7 +568,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 				gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(PACKAGE_NAME, combos[combo].labels[item]), 1, combos[combo].values[item], -1);
 			}
 
-			v3270_grid_attach(GTK_GRID(emulation), (struct v3270_entry_field *) & combos[combo], GTK_WIDGET(widget->input.combos[combo]));
+			v3270_grid_attach(GTK_GRID(grids[EMULATION]), (struct v3270_entry_field *) & combos[combo], GTK_WIDGET(widget->input.combos[combo]));
 
 		}
 
@@ -598,7 +610,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 		};
 
-		v3270_grid_attach(GTK_GRID(emulation), &descriptor, GTK_WIDGET(widget->input.charset));
+		v3270_grid_attach(GTK_GRID(grids[EMULATION]), &descriptor, GTK_WIDGET(widget->input.charset));
 
 	}
 
