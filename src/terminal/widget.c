@@ -380,6 +380,15 @@ static void v3270_class_init(v3270Class *klass)
 						v3270_BOOLEAN__VOID_BOOLEAN_BOOLEAN_POINTER,
 						G_TYPE_BOOLEAN, 3, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_POINTER);
 
+	v3270_widget_signal[V3270_SIGNAL_OIA_POPUP] =
+		g_signal_new(	I_("oia-popup"),
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_LAST,
+						0,
+						NULL, NULL,
+						v3270_BOOLEAN__VOID_UINT_POINTER,
+						G_TYPE_BOOLEAN, 2, G_TYPE_UINT, G_TYPE_POINTER);
+
 	v3270_widget_signal[V3270_SIGNAL_PASTENEXT] =
 		g_signal_new(	I_("pastenext"),
 						G_OBJECT_CLASS_TYPE (gobject_class),

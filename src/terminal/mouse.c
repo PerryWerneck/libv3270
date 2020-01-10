@@ -40,21 +40,17 @@
 
  #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-/*--[ Globals ]--------------------------------------------------------------------------------------*/
-
-// static GtkAction *action_scroll[] = { NULL, NULL, NULL, NULL };
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-gint v3270_get_offset_at_point(v3270 *widget, gint x, gint y)
-{
+gint v3270_get_offset_at_point(v3270 *widget, gint x, gint y) {
+
 	GdkPoint point;
 	unsigned int r,c;
 
 	g_return_val_if_fail(widget->font.width > 0,-1);
 
-	if(x > 0 && y > 0)
-	{
+	if(x > 0 && y > 0) {
+
 		point.x = ((x-widget->font.margin.left)/widget->font.width);
 		point.y = ((y-widget->font.margin.top)/widget->font.spacing.value);
 
@@ -67,10 +63,9 @@ gint v3270_get_offset_at_point(v3270 *widget, gint x, gint y)
 	return -1;
 }
 
-static void single_click(v3270 *widget, int baddr)
-{
-	switch(lib3270_get_selection_flags(widget->host,baddr))
-	{
+static void single_click(v3270 *widget, int baddr) {
+
+	switch(lib3270_get_selection_flags(widget->host,baddr)) {
 	case 0x00:
 		// Unselected area, move cursor and remove selection
 		v3270_disable_updates(GTK_WIDGET(widget));
@@ -87,7 +82,6 @@ static void single_click(v3270 *widget, int baddr)
 		widget->moving = 1;
 	}
 
-
 }
 
 static void button_1_press(GtkWidget *widget, GdkEventType type, int baddr)
@@ -95,8 +89,7 @@ static void button_1_press(GtkWidget *widget, GdkEventType type, int baddr)
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wswitch"
 
-	switch(type)
-	{
+	switch(type) {
 	case GDK_BUTTON_PRESS: 		// Single click - set mode
 		single_click(GTK_V3270(widget),baddr);
 		break;
@@ -117,8 +110,7 @@ static void button_1_press(GtkWidget *widget, GdkEventType type, int baddr)
 
 }
 
-void v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event)
-{
+void v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event) {
 	unsigned char	  chr = 0;
 	unsigned short	  attr;
 	gboolean		  handled = FALSE;
@@ -137,14 +129,13 @@ void v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event)
 	gdk_display_beep(gtk_widget_get_display(GTK_WIDGET(widget)));
 }
 
-static V3270_OIA_FIELD get_field_from_event(v3270 *widget, GdkEventButton *event)
-{
+static V3270_OIA_FIELD get_field_from_event(v3270 *widget, GdkEventButton *event) {
+
 	if(event->y >= widget->oia.rect->y)
 	{
 		V3270_OIA_FIELD f;
 
-		for(f=0;f<V3270_OIA_FIELD_COUNT;f++)
-		{
+		for(f=0;f<V3270_OIA_FIELD_COUNT;f++) {
 			if(event->x >= widget->oia.rect[f].x && event->x <= (widget->oia.rect[f].x+widget->oia.rect[f].width))
 				return f;
 		}
@@ -157,12 +148,13 @@ gboolean v3270_button_press_event(GtkWidget *widget, GdkEventButton *event)
 {
 	int baddr = v3270_get_offset_at_point(GTK_V3270(widget),event->x,event->y);
 
-	if(baddr >= 0)
-	{
+	if(baddr >= 0) {
+
+		// Click inside the terminal contents.
+
 		GTK_V3270(widget)->oia.selected = V3270_OIA_FIELD_INVALID;
 
-		switch(event->button)
-		{
+		switch(event->button) {
 		case 1:		// Left button
 			button_1_press(widget,event->type,baddr);
 			break;
@@ -173,10 +165,40 @@ gboolean v3270_button_press_event(GtkWidget *widget, GdkEventButton *event)
 			break;
 
 		}
-	}
-	else if(event->button == 1 && event->type == GDK_BUTTON_PRESS)
-	{
-		GTK_V3270(widget)->oia.selected = get_field_from_event(GTK_V3270(widget),event);
+
+	} else if(event->type == GDK_BUTTON_PRESS) {
+
+		V3270_OIA_FIELD field = get_field_from_event(GTK_V3270(widget),event);
+
+		if(field != V3270_OIA_FIELD_INVALID) {
+
+			debug("Button %d pressed on OIA %d",(int) event->button, (int) field);
+
+			switch(event->button) {
+			case 1:		// Left button
+				GTK_V3270(widget)->oia.selected = field;
+				break;
+
+			case 3:		// Right button
+				{
+					gboolean handled = FALSE;
+
+					g_signal_emit(widget, v3270_widget_signal[V3270_SIGNAL_OIA_POPUP],
+									0,
+									(guint) field,
+									event,
+									&handled);
+
+					if(!handled)
+						gdk_display_beep(gtk_widget_get_display(widget));
+
+				}
+				break;
+			}
+
+
+		}
+
 	}
 
 	return FALSE;
@@ -184,9 +206,8 @@ gboolean v3270_button_press_event(GtkWidget *widget, GdkEventButton *event)
 
 gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 {
-	switch(event->button)
-	{
-	case 1:
+	switch(event->button) {
+	case 1: // Left button
 		GTK_V3270(widget)->selecting = 0;
 		GTK_V3270(widget)->moving	 = 0;
 		GTK_V3270(widget)->resizing	 = 0;
