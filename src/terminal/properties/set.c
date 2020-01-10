@@ -170,6 +170,8 @@ LIB3270_EXPORT void v3270_set_url(GtkWidget *widget, const gchar *uri)
 
 LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 {
+	debug("%s(%s)",__FUNCTION__,name);
+
 	g_return_if_fail(GTK_IS_V3270(widget));
 
 	v3270 * terminal = GTK_V3270(widget);
@@ -193,7 +195,7 @@ LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 	// Check for session id
 	gchar session_id = 0;
 	{
-		gchar *ptr = strrchr(new_name,':');
+		gchar *ptr = strchr(new_name,':');
 		if(ptr) {
 			*(ptr++) = 0;
 			session_id = *ptr;
@@ -203,6 +205,8 @@ LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 
 	if(!session_id)
 		session_id = lib3270_get_session_id(terminal->host);
+
+	debug("%s new_name=%s",__FUNCTION__,new_name);
 
 	if(session_id) {
 		terminal->session.name = g_strdup_printf("%s:%c",new_name,session_id);
