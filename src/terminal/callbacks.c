@@ -45,17 +45,6 @@
  #include <lib3270/log.h>
  #include <errno.h>
 
-/**
- * SECTION:	v3270
- * @title:	Virtual 3270 widget
- * @short_description:	The virtual 3270 terminal widget.
- *
- * Manages lib3270 callbacks.
- *
- */
-
-/*--[ Widget definition ]----------------------------------------------------------------------------*/
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
 static void set_timer(H3270 *session, unsigned char on)

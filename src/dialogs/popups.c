@@ -34,8 +34,7 @@
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *title, const gchar *message, const gchar *text)
- {
+ void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *title, const gchar *message, const gchar *text) {
 	GtkWidget		* dialog;
 	GtkWidget		* toplevel	= NULL;
 	GtkMessageType	  msgtype	= GTK_MESSAGE_WARNING;
@@ -47,8 +46,7 @@
 	if(!GTK_IS_WINDOW(toplevel))
 		toplevel = NULL;
 
-	if(type == LIB3270_NOTIFY_CRITICAL)
-	{
+	if(type == LIB3270_NOTIFY_CRITICAL) {
 		msgtype	= GTK_MESSAGE_ERROR;
 		buttons = GTK_BUTTONS_CLOSE;
 	}
@@ -56,18 +54,13 @@
 	if(!title)
 		title = _( "Error" );
 
-	if(message)
-	{
+	if(message) {
 		dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(toplevel),GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,msgtype,buttons,"%s",message);
 		if(text && *text)
 			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"%s",text);
-	}
-	else if(text && *text)
-	{
+	} else if(text && *text) {
 		dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(toplevel),GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,msgtype,buttons,"%s",text);
-	}
-	else
-	{
+	} else {
 		dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(toplevel),GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,msgtype,buttons,"%s",title);
 	}
 
@@ -78,8 +71,7 @@
 
  }
 
- void v3270_error_popup(GtkWidget *widget, const gchar *title, const gchar *summary, const gchar *body)
- {
+ void v3270_error_popup(GtkWidget *widget, const gchar *title, const gchar *summary, const gchar *body) {
 	GtkWidget * dialog =
 					gtk_message_dialog_new_with_markup(
 						GTK_WINDOW(gtk_widget_get_toplevel(widget)),
@@ -101,8 +93,7 @@
 
  }
 
- void v3270_popup_gerror(GtkWidget *widget, GError *error, const gchar *title, const gchar *fmt, ...)
- {
+ void v3270_popup_gerror(GtkWidget *widget, GError *error, const gchar *title, const gchar *fmt, ...) {
 
 	// Format message.
  	va_list arg_ptr;
@@ -133,12 +124,11 @@
 
  }
 
- GtkResponseType v3270_popup_toggleable_dialog(GtkWidget *widget, V3270_TOGGLEABLE_DIALOG id, const gchar *title, const gchar *summary, const gchar *body, const gchar *first_button_text, ...)
- {
+ GtkResponseType v3270_popup_toggleable_dialog(GtkWidget *widget, V3270_TOGGLEABLE_DIALOG id, const gchar *title, const gchar *summary, const gchar *body, const gchar *first_button_text, ...) {
+
 	GtkResponseType response = GTK_V3270(widget)->responses[id];
 
-	if(response == GTK_RESPONSE_NONE)
-	{
+	if(response == GTK_RESPONSE_NONE) {
 		GtkWidget * dialog =
 			gtk_message_dialog_new(
 				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
@@ -174,8 +164,7 @@
 			0
 		);
 
-		if(first_button_text)
-		{
+		if(first_button_text) {
             // From https://github.com/GNOME/gtk/blob/master/gtk/gtkdialog.c
 			va_list args;
 			const gchar* text;
@@ -184,8 +173,7 @@
 			va_start(args, first_button_text);
 
 			text = first_button_text;
-			while(text)
-			{
+			while(text) {
 				response_id = va_arg(args, gint);
 
 				gtk_dialog_add_button(GTK_DIALOG(dialog), text, response_id);
@@ -202,8 +190,8 @@
 		gtk_widget_show_all(dialog);
 		response = gtk_dialog_run(GTK_DIALOG(dialog));
 
-		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dont_ask)))
-		{
+		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dont_ask))) {
+
 			GTK_V3270(widget)->responses[id] = response;
 			g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->responses[id]);
 			v3270_emit_save_settings(widget);

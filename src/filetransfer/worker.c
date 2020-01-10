@@ -367,12 +367,11 @@
 
 	gtk_entry_set_text(cfg->worker->field[PROGRESS_FIELD_ETA],"");
 
-
 	const LIB3270_FT_MESSAGE * ftMessage = lib3270_translate_ft_message(cfg->msg);
 
 	if(ftMessage)
 	{
-		description = ftMessage->description;
+		description = dgettext(lib3270_get_translation_domain(),ftMessage->description);
 		if(ftMessage->failed)
 			cfg->signal = V3270_WORKER_TRANSFER_FAILED_SIGNAL;
 
@@ -589,14 +588,14 @@ static gboolean do_timer(V3270FTWorker *worker) {
 	if(!ft)
 	{
 		if(!message)
-			message = N_("Can't start file transfer session");
+			message = _("Can't start file transfer session");
 
-		gtk_progress_bar_set_text(worker->pbar,g_dgettext(PACKAGE_NAME,message));
+		gtk_progress_bar_set_text(worker->pbar,message);
 
 		pulse_stop(worker);
 
 		// Emit "transfer failed"
-		g_signal_emit(GTK_WIDGET(widget),v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL], 0, g_dgettext(PACKAGE_NAME,message), NULL);
+		g_signal_emit(GTK_WIDGET(widget),v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL], 0, message, NULL);
 
 		// Emit "no transfer"
 		ft_state_changed(worker->hSession, LIB3270_FT_STATE_NONE, _("No transfer in progress"), widget);
