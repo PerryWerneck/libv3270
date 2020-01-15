@@ -138,16 +138,16 @@
 			GParamSpec * enabled;
 		} properties;
 
-		struct {
-			const GVariantType 	* state;		///> @brief State type.
-			const GVariantType 	* parameter;	///> @brief State type.
-		} type;
+		void				  (*change_widget)(GAction *action, GtkWidget *from, GtkWidget *to);
 
-		void (*change_widget)(GAction *action, GtkWidget *from, GtkWidget *to);
+		const gchar			* (*translate)(GAction *action, const gchar *text);
+
+		const GVariantType	* (*get_state_type)(GAction *object);
+		GVariant			* (*get_state)(GAction *action, GtkWidget *terminal);
+
+		const GVariantType	* (*get_parameter_type)(GAction *object);
 
 		gboolean	  		  (*get_enabled)(GAction *action, GtkWidget *terminal);
-		GVariant			* (*get_state)(GAction *action, GtkWidget *terminal);
-		const gchar			* (*translate)(GAction *action, const gchar *text);
 
 		const gchar 		* (*get_name)(GAction *action);
 		const gchar 		* (*get_icon_name)(GAction *action);

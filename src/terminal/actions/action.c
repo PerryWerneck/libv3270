@@ -43,10 +43,12 @@
  static void get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
  static void set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
 
- static const gchar * get_icon_name(GAction *action);
- static const gchar * get_label(GAction *action);
- static const gchar * get_tooltip(GAction *action);
- static const gchar * get_name(GAction *action);
+ static const gchar			* get_icon_name(GAction *action);
+ static const gchar			* get_label(GAction *action);
+ static const gchar			* get_tooltip(GAction *action);
+ static const gchar			* get_name(GAction *action);
+ static const GVariantType	* get_state_type(GAction *action);
+ static	const GVariantType	* get_parameter_type(GAction *object);
 
  static void change_widget(GAction *action, GtkWidget *from, GtkWidget *to);
  static void finalize(GObject *object);
@@ -95,9 +97,8 @@
 	klass->get_icon_name		= get_icon_name;
 	klass->get_label			= get_label;
 	klass->get_tooltip			= get_tooltip;
-
-	klass->type.state 			= NULL;
-	klass->type.parameter		= NULL;
+	klass->get_state_type		= get_state_type;
+	klass->get_parameter_type	= get_parameter_type;
 
  	object_class->finalize		= finalize;
 	object_class->get_property	= get_property;
@@ -267,7 +268,7 @@
  }
 
  void v3270_action_notify_state(GAction *action) {
-	if(V3270_ACTION_GET_CLASS(action)->type.state)
+ 	if(g_action_get_state_type(action))
 		g_idle_add((GSourceFunc) bg_notify_state, G_OBJECT(action));
  }
 
@@ -294,8 +295,7 @@
 
 		g_idle_add((GSourceFunc) bg_notify_enabled, G_OBJECT(action));
 
-		if(V3270_ACTION_GET_CLASS(action)->type.state)
-			g_idle_add((GSourceFunc) bg_notify_state, G_OBJECT(action));
+		v3270_action_notify_state(object);
 
  	}
 
@@ -405,9 +405,9 @@
 
  	GVariant * state = NULL;
 
- 	if(V3270_ACTION_GET_CLASS(object)->type.state) {
+ 	if(g_action_get_state_type(object)) {
 
-		GtkWidget	* terminal = V3270_ACTION(object)->terminal;
+		GtkWidget * terminal = V3270_ACTION(object)->terminal;
 
 		if(terminal) {
 			state = V3270_ACTION_GET_CLASS(object)->get_state(object,terminal);
@@ -424,12 +424,13 @@
 
  }
 
+
  const GVariantType * iface_get_parameter_type(GAction *object) {
-	return V3270_ACTION_GET_CLASS(object)->type.parameter;
+	return V3270_ACTION_GET_CLASS(object)->get_parameter_type(object);
  }
 
  const GVariantType * iface_get_state_type(GAction *object) {
-	return V3270_ACTION_GET_CLASS(object)->type.state;
+	return V3270_ACTION_GET_CLASS(object)->get_state_type(object);
  }
 
  GVariant * iface_get_state_hint(GAction G_GNUC_UNUSED(*object)) {
@@ -515,3 +516,10 @@
  	return V3270_ACTION_GET_CLASS(action)->get_tooltip(action);
  }
 
+ const GVariantType	* get_state_type(GAction G_GNUC_UNUSED(*object)) {
+ 	return NULL;
+ }
+
+ const GVariantType	* get_parameter_type(GAction G_GNUC_UNUSED(*object)) {
+ 	return NULL;
+ }

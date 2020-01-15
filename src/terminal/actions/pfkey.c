@@ -82,8 +82,12 @@
 
  }
 
+ static const GVariantType * get_parameter_type(GAction G_GNUC_UNUSED(*object)) {
+ 	return G_VARIANT_TYPE_UINT32;
+ }
+
  void Lib3270PfAction_class_init(Lib3270PfActionClass *klass) {
- 	klass->parent_class.type.parameter = G_VARIANT_TYPE_UINT32;
+ 	klass->parent_class.get_parameter_type = get_parameter_type;
  }
 
  void Lib3270PfAction_init(Lib3270PfAction *action) {

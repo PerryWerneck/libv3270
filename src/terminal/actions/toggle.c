@@ -107,11 +107,15 @@
 
  }
 
+ static const GVariantType	* get_state_type(GAction G_GNUC_UNUSED(*object)) {
+ 	return G_VARIANT_TYPE_BOOLEAN;
+ }
+
  void Lib3270ToggleAction_class_init(Lib3270ToggleActionClass *klass) {
 
 	klass->parent_class.change_widget	= change_widget;
-	klass->parent_class.type.state		= G_VARIANT_TYPE_BOOLEAN;
 	klass->parent_class.get_state		= get_state;
+	klass->parent_class.get_state_type	= get_state_type;
 
  }
 
