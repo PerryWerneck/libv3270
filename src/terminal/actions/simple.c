@@ -57,6 +57,10 @@
 	return V3270_SIMPLE_ACTION(action)->tooltip;
  }
 
+ static const gchar * get_name(GAction *action) {
+	return V3270_SIMPLE_ACTION(action)->name;
+ }
+
  static void dispose(GObject *object) {
 
 	V3270SimpleAction *action = V3270_SIMPLE_ACTION(object);
@@ -71,6 +75,7 @@
 
  static void V3270SimpleAction_class_init(V3270SimpleActionClass *klass) {
 
+ 	klass->parent_class.get_name		= get_name;
  	klass->parent_class.get_icon_name	= get_icon_name;
  	klass->parent_class.get_label 		= get_label;
  	klass->parent_class.get_tooltip		= get_tooltip;

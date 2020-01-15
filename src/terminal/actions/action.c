@@ -46,6 +46,7 @@
  static const gchar * get_icon_name(GAction *action);
  static const gchar * get_label(GAction *action);
  static const gchar * get_tooltip(GAction *action);
+ static const gchar * get_name(GAction *action);
 
  static void change_widget(GAction *action, GtkWidget *from, GtkWidget *to);
  static void finalize(GObject *object);
@@ -88,6 +89,7 @@
 	klass->change_widget		= change_widget;
 	klass->get_enabled			= get_enabled;
 	klass->get_state			= get_state;
+	klass->get_name				= get_name;
 	klass->translate			= translate;
 
 	klass->get_icon_name		= get_icon_name;
@@ -396,7 +398,7 @@
  }
 
  const gchar * iface_get_name(GAction *action) {
- 	return V3270_ACTION_GET_DESCRIPTOR(action)->name;
+ 	return V3270_ACTION_GET_CLASS(action)->get_name(action);
  }
 
  GVariant * iface_get_state(GAction *object) {
@@ -495,6 +497,10 @@
 
 	return NULL;
 
+ }
+
+ const gchar * get_name(GAction *action) {
+  	return V3270_ACTION_GET_DESCRIPTOR(action)->name;
  }
 
  const gchar * v3270_action_get_icon_name(GAction *action) {

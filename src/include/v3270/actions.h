@@ -149,6 +149,7 @@
 		GVariant			* (*get_state)(GAction *action, GtkWidget *terminal);
 		const gchar			* (*translate)(GAction *action, const gchar *text);
 
+		const gchar 		* (*get_name)(GAction *action);
 		const gchar 		* (*get_icon_name)(GAction *action);
 		const gchar 		* (*get_label)(GAction *action);
 		const gchar 		* (*get_tooltip)(GAction *action);
@@ -198,6 +199,7 @@
 		V3270Action parent;
 
 		// Fixed data
+		const gchar * name;
 		const gchar * icon_name;
 		const gchar	* label;
 		const gchar	* tooltip;
