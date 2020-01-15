@@ -179,8 +179,8 @@ static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNU
 {
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
 
-	debug("%s(%p)",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.model);
-	g_object_notify_by_pspec(G_OBJECT(lib3270_get_user_data(session)), GTK_V3270_GET_CLASS(widget)->properties.model);
+	debug("%s: terminal=%p pspec=%p",__FUNCTION__,widget,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
+	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
 
 	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
 }

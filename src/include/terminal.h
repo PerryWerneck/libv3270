@@ -73,7 +73,6 @@ G_BEGIN_DECLS
 		// Signal related properties
 		GParamSpec * online;
 		GParamSpec * associated_lu;
-		GParamSpec * model;
 		GParamSpec * selection;
 		GParamSpec * session_name;
 		GParamSpec * trace;
