@@ -43,6 +43,10 @@
  static void get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
  static void set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
 
+ static const gchar * get_icon_name(GAction *action);
+ static const gchar * get_label(GAction *action);
+ static const gchar * get_tooltip(GAction *action);
+
  static void change_widget(GAction *action, GtkWidget *from, GtkWidget *to);
  static void finalize(GObject *object);
 
@@ -85,6 +89,10 @@
 	klass->get_enabled			= get_enabled;
 	klass->get_state			= get_state;
 	klass->translate			= translate;
+
+	klass->get_icon_name		= get_icon_name;
+	klass->get_label			= get_label;
+	klass->get_tooltip			= get_tooltip;
 
 	klass->type.state 			= NULL;
 	klass->type.parameter		= NULL;
@@ -321,36 +329,8 @@
 	g_message("Action %s can't be activated",g_action_get_name(action));
  }
 
- const gchar * v3270_action_get_icon_name(GAction *action) {
- 	return V3270_ACTION_GET_DESCRIPTOR(action)->icon;
- }
-
  const gchar * v3270_action_translate(GAction *action, const gchar *text) {
 	return V3270_ACTION_GET_CLASS(action)->translate(action,text);
- }
-
- const gchar * v3270_action_get_label(GAction *action) {
-	const gchar * label = V3270_ACTION_GET_DESCRIPTOR(action)->label;
-
-	debug("%s(%s): [%s] [%s]",__FUNCTION__,g_action_get_name(action),label,v3270_action_translate(action,label));
-
-	if(label && *label)
-		return v3270_action_translate(action,label);
-
-	return NULL;
- }
-
- const gchar * v3270_action_get_tooltip(GAction *action) {
-
-	const gchar * tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->description;
-
-	if(!tooltip)
-		tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->summary;
-
-	if(tooltip)
-		return v3270_action_translate(action,tooltip);
-
-	return NULL;
  }
 
  //
@@ -486,5 +466,46 @@
 		action->activate(object,parameter,action->terminal);
  	}
 
+ }
+
+ const gchar * get_icon_name(GAction *action) {
+ 	return V3270_ACTION_GET_DESCRIPTOR(action)->icon;
+ }
+
+ const gchar * get_label(GAction *action) {
+	const gchar * label = V3270_ACTION_GET_DESCRIPTOR(action)->label;
+
+	debug("%s(%s): [%s] [%s]",__FUNCTION__,g_action_get_name(action),label,v3270_action_translate(action,label));
+
+	if(label && *label)
+		return v3270_action_translate(action,label);
+
+	return NULL;
+ }
+
+ const gchar * get_tooltip(GAction *action) {
+
+	const gchar * tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->description;
+
+	if(!tooltip)
+		tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->summary;
+
+	if(tooltip)
+		return v3270_action_translate(action,tooltip);
+
+	return NULL;
+
+ }
+
+ const gchar * v3270_action_get_icon_name(GAction *action) {
+ 	return V3270_ACTION_GET_CLASS(action)->get_icon_name(action);
+ }
+
+ const gchar * v3270_action_get_label(GAction *action) {
+ 	return V3270_ACTION_GET_CLASS(action)->get_label(action);
+ }
+
+ const gchar * v3270_action_get_tooltip(GAction *action) {
+ 	return V3270_ACTION_GET_CLASS(action)->get_tooltip(action);
  }
 

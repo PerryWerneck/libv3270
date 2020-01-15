@@ -149,6 +149,10 @@
 		GVariant			* (*get_state)(GAction *action, GtkWidget *terminal);
 		const gchar			* (*translate)(GAction *action, const gchar *text);
 
+		const gchar 		* (*get_icon_name)(GAction *action);
+		const gchar 		* (*get_label)(GAction *action);
+		const gchar 		* (*get_tooltip)(GAction *action);
+
 	} V3270ActionClass;
 
 	LIB3270_EXPORT GType		  V3270Action_get_type(void) G_GNUC_CONST;
@@ -179,6 +183,49 @@
 	LIB3270_EXPORT void			  g_action_map_add_lib3270_actions(GActionMap *action_map);
 	LIB3270_EXPORT void			  g_action_map_add_lib3270_toggles(GActionMap *action_map);
 
+	//
+	// "Simple" action
+	//
+	#define V3270_TYPE_SIMPLE_ACTION				(V3270SimpleAction_get_type())
+	#define V3270_SIMPLE_ACTION(inst)				(G_TYPE_CHECK_INSTANCE_CAST ((inst), V3270_TYPE_SIMPLE_ACTION, V3270SimpleAction))
+	#define V3270_SIMPLE_ACTION_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), V3270_TYPE_SIMPLE_ACTION, V3270SimpleActionClass))
+	#define V3270_IS_SIMPLE_ACTION(inst)			(G_TYPE_CHECK_INSTANCE_TYPE ((inst), V3270_TYPE_SIMPLE_ACTION))
+	#define V3270_IS_SIMPLE_ACTION_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((klass), V3270_TYPE_SIMPLE_ACTION))
+	#define V3270_SIMPLE_ACTION_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS ((obj), V3270_TYPE_SIMPLE_ACTION, V3270SimpleActionClass))
+
+	typedef struct _V3270SimpleAction {
+
+		V3270Action parent;
+
+		// Fixed data
+		const gchar * icon_name;
+		const gchar	* label;
+		const gchar	* tooltip;
+
+		// Lib3270 Action group
+		struct {
+			LIB3270_ACTION_GROUP id;
+			const void * listener;
+		} group;
+
+		/// @brief Activation method.
+		void (*activate)(GAction *action, GVariant *parameter, GtkWidget *terminal);
+
+	} V3270SimpleAction;
+
+	typedef struct _V3270SimpleActionClass {
+
+		V3270ActionClass parent_class;
+
+	} V3270SimpleActionClass;
+
+	GType V3270SimpleAction_get_type(void) G_GNUC_CONST;
+
+	/// @brief Create an empty simple action.
+	V3270SimpleAction * v3270_simple_action_new();
+
+	/// @brief Create a dialog action.
+	V3270SimpleAction * v3270_dialog_action_new(GtkWidget * (*factory)(V3270SimpleAction *, GtkWidget *));
 
 	G_END_DECLS
 
