@@ -229,6 +229,12 @@
 	/// @brief Create a dialog action.
 	V3270SimpleAction * v3270_dialog_action_new(GtkWidget * (*factory)(V3270SimpleAction *, GtkWidget *));
 
+	/// @brief Create an action from property name.
+	V3270SimpleAction * v3270_property_action_new(GtkWidget *widget, const gchar *property_name);
+
+	/// @brief Create an action with the "enable" property binded with terminal property.
+	V3270SimpleAction * v3270_conditional_action_new(GtkWidget *widget, const gchar *property_name);
+
 	G_END_DECLS
 
 #endif // V3270_ACTIONS_H_INCLUDED
