@@ -358,6 +358,7 @@ GtkWidget * v3270_settings_get_edit_dialog(GtkWidget *settings, GtkWidget *termi
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
 	gtk_window_set_modal(GTK_WINDOW(dialog),modal);
+	gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 
 	v3270_settings_dialog_set_terminal_widget(dialog, terminal);
 
