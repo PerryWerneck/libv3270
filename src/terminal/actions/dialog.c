@@ -123,6 +123,12 @@
 
 	if(action->dialog) {
 
+		GtkWidget * window = gtk_widget_get_toplevel(terminal);
+		if(window) {
+			gtk_window_set_attached_to(GTK_WINDOW(action->dialog), window);
+			gtk_window_set_transient_for(GTK_WINDOW(action->dialog),GTK_WINDOW(window));
+		}
+
 		g_signal_connect(action->dialog,"destroy",G_CALLBACK(on_destroy),action);
 		g_signal_connect(action->dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
 		gtk_widget_show(GTK_WIDGET(action->dialog));
