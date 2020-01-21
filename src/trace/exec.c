@@ -33,6 +33,7 @@
  #include <lib3270/properties.h>
  #include <lib3270/actions.h>
  #include <internals.h>
+ #include <v3270/selection.h>
 
  static const gchar * get_word(gchar **ptr)
  {

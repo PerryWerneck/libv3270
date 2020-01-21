@@ -42,6 +42,10 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+ static void save_string(HKEY hKey, const gchar *key, const gchar *value) {
+	RegSetValueEx(hKey,key,0,REG_SZ,(const BYTE *) value,strlen(value)+1);
+ }
+
  static void save_by_pspec(GtkWidget *widget, GParamSpec *pspec, HKEY hKey)
  {
  	if(!pspec)
@@ -131,6 +135,24 @@
 	}
 
 	g_value_unset(&value);
+
+ }
+
+ static void load_string(HKEY hKey, const gchar *key, gchar **value) {
+
+	if(*value) {
+		g_free(*value);
+		*value = NULL;
+	}
+
+	BYTE data[4097];
+	unsigned long datatype;
+	unsigned long datalen 	= 4096;
+
+	if(RegQueryValueExA(hKey,key,NULL,&datatype,data,&datalen) != ERROR_SUCCESS)
+		return;
+
+	*value = g_strdup((const gchar *) data);
 
  }
 
@@ -228,6 +250,9 @@
 
 	}
 
+	// Save internal properties
+	save_string(hKey, "selection-font-family", terminal->selection.font_family);
+
 	// Save Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
 		save_by_pspec(widget,klass->properties.toggle[ix],hKey);
@@ -282,6 +307,9 @@
 		}
 
 	}
+
+ 	// Load internal properties.
+	load_string(hKey, "selection-font-family", &terminal->selection.font_family);
 
 	// Load Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)

@@ -37,10 +37,47 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- static void save_by_pspec(GtkWidget *widget, GParamSpec *pspec, GKeyFile *key_file, const gchar *group_name)
- {
- 	if(!pspec)
-	{
+ static void save_string(GKeyFile *key_file, const gchar *group_name, const gchar *key, const gchar *value) {
+
+ 	if(value) {
+
+		g_key_file_set_string(
+			key_file,
+			group_name,
+			key,
+			value
+		);
+
+ 	} else {
+
+		g_key_file_remove_key(
+			key_file,
+			group_name,
+			key,
+			NULL
+		);
+
+
+ 	}
+
+ }
+
+ static void load_string(GKeyFile *key_file, const gchar *group_name, const gchar *key, gchar **value) {
+
+	if(*value) {
+		g_free(*value);
+		*value = NULL;
+	}
+
+ 	if(g_key_file_has_key(key_file,group_name,key,NULL)) {
+		*value = g_key_file_get_string(key_file,group_name,key,NULL);
+ 	}
+
+ }
+
+ static void save_by_pspec(GtkWidget *widget, GParamSpec *pspec, GKeyFile *key_file, const gchar *group_name) {
+
+ 	if(!pspec) {
 		g_warning("Invalid property");
 		return;
 	}
@@ -51,8 +88,7 @@
 	g_value_init(&value, pspec->value_type);
 	g_object_get_property(G_OBJECT(widget),name,&value);
 
-	switch(pspec->value_type)
-	{
+	switch(pspec->value_type) {
 	case G_TYPE_STRING:
 		{
 			const gchar * current = g_value_get_string(&value);
@@ -264,6 +300,9 @@
 
 	}
 
+	// Save internal properties
+	save_string(key_file, group_name, "selection-font-family", terminal->selection.font_family);
+
 	// Save Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
 		save_by_pspec(widget,klass->properties.toggle[ix],key_file,group_name);
@@ -293,6 +332,9 @@
 
 	g_object_freeze_notify(G_OBJECT(widget));
 	terminal->freeze = 1;
+
+	// Load internal properties.
+	load_string(key_file, group_name, "selection-font-family", &terminal->selection.font_family);
 
 	// Load session_name
 	if(g_key_file_has_key(key_file,group_name,"session-name",NULL)) {

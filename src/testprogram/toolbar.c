@@ -34,6 +34,7 @@
  #include <v3270/colorscheme.h>
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
+ #include <v3270/selection.h>
  #include <v3270/trace.h>
  #include <lib3270/log.h>
  #include <stdlib.h>

@@ -161,29 +161,31 @@ static void v3270_toggle_changed(G_GNUC_UNUSED v3270 *widget, G_GNUC_UNUSED LIB3
 {
 }
 
-static void finalize(GObject *object)
- {
+static void finalize(GObject *object) {
+
 	debug("V3270::%s",__FUNCTION__);
 
 	v3270 * terminal = GTK_V3270(object);
 
-	if(terminal->remap_filename)
-	{
+	if(terminal->remap_filename) {
 		g_free(terminal->remap_filename);
 		terminal->remap_filename = NULL;
 	}
 
-	if(terminal->host)
-	{
+	if(terminal->host) {
 		// Release session
 		lib3270_session_free(terminal->host);
 		terminal->host = NULL;
 	}
 
-	if(terminal->accelerators)
-	{
+	if(terminal->accelerators) {
 		g_slist_free_full(terminal->accelerators,g_free);
 		terminal->accelerators = NULL;
+	}
+
+	if(terminal->selection.font_family) {
+		g_free(terminal->selection.font_family);
+		terminal->selection.font_family = NULL;
 	}
 
 	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);

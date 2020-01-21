@@ -45,7 +45,7 @@
  #include <gdk/gdkkeysyms-compat.h>
  #include <locale.h>
  #include <libintl.h>
-
+ #include <v3270/selection.h>
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -146,6 +146,8 @@
 #ifdef _WIN32
 		v3270_set_font_family(terminal,"Lucida Console");
 #endif // _WIN32
+
+		v3270_selection_set_font_family(terminal,"monospace");
 
 		// Load settings before connecting the signals.
 #ifdef _WIN32

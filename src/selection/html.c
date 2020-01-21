@@ -49,8 +49,8 @@ static void get_element_colors(v3270 * terminal, unsigned short attr, gchar **fg
 }
 
 /// @brief Get formatted contents as HTML DIV.
-static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all, const V3270SelectionOption options)
-{
+static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all, const V3270SelectionOption options) {
+
 	const GList	* element	= selection;
 	GString		* string	= g_string_new("");
 	gchar 		* bgColor;
@@ -58,13 +58,11 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 
 	g_string_append(string,"<div style=\"padding:1em;display:inline-block");
 
-	if(options & V3270_SELECTION_FONT_FAMILY)
-	{
-		g_string_append_printf(string,";font-family:%s,monospace",terminal->font.family);
+	if(options & V3270_SELECTION_FONT_FAMILY) {
+		g_string_append_printf(string,";font-family:%s,monospace",(terminal->selection.font_family ? terminal->selection.font_family : terminal->font.family));
 	}
 
-	if(options & V3270_SELECTION_COLORS)
-	{
+	if(options & V3270_SELECTION_COLORS) {
 		bgColor = gdk_rgba_to_string(terminal->color+V3270_COLOR_BACKGROUND);
 		g_string_append_printf(string,";background-color:%s",bgColor);
 		g_free(bgColor);
@@ -72,14 +70,13 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 
 	g_string_append(string,"\">");
 
-	while(element)
-	{
+	while(element) {
 		const lib3270_selection * block = ((const lib3270_selection *) element->data);
 		unsigned int row, col, src = 0;
 		unsigned short flags = block->contents[0].attribute.visual;
 
-		if(options & V3270_SELECTION_COLORS)
-		{
+		if(options & V3270_SELECTION_COLORS) {
+
 			get_element_colors(terminal,flags,&fgColor,&bgColor);
 
 			g_string_append_printf(
@@ -97,16 +94,16 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 		g_string_append_c(string,'\n');
 #endif // DEBUG
 
-		for(row=0; row < block->bounds.height; row++)
-		{
-			for(col=0; col<block->bounds.width; col++)
-			{
-				if(flags != block->contents[src].attribute.visual)
-				{
+		for(row=0; row < block->bounds.height; row++) {
+
+			for(col=0; col<block->bounds.width; col++) {
+
+				if(flags != block->contents[src].attribute.visual) {
+
 					flags = block->contents[src].attribute.visual;
 
-					if(options & V3270_SELECTION_COLORS)
-					{
+					if(options & V3270_SELECTION_COLORS) {
+
 						get_element_colors(terminal,flags,&fgColor,&bgColor);
 
 						g_string_append_printf(
@@ -122,13 +119,14 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 
 				}
 
-				if( (block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED || all) && !isspace(block->contents[src].chr))
-				{
+				if( (block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED || all) && !isspace(block->contents[src].chr)) {
+
 					g_string_append_c(string,block->contents[src].chr);
-				}
-				else
-				{
+
+				} else {
+
 					g_string_append(string,((options & V3270_SELECTION_NON_BREAKABLE_SPACE) ? "&nbsp;" : " "));
+
 				}
 
 				src++;
@@ -140,9 +138,10 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 #endif // DEBUG
 		}
 
-		if(options & V3270_SELECTION_COLORS)
-		{
+		if(options & V3270_SELECTION_COLORS) {
+
 			g_string_append(string,"</span>");
+
 		}
 
 		element = g_list_next(element);
@@ -162,12 +161,20 @@ static gchar * get_as_div(v3270 * terminal, const GList *selection, gboolean all
 static gchar * get_as_table(v3270 * terminal, const GList *selection, gboolean all, const V3270SelectionOption G_GNUC_UNUSED(options)) // TODO: Use options to set colors & font.
 {
 	const GList			* element	= selection;
-	GString				* string	= g_string_new("<table><tbody>");
+	GString				* string	= g_string_new("");
 
 	unsigned int		  width		= lib3270_get_width(terminal->host);
 	g_autofree gchar	* line		= g_malloc0(width+1);
 
 	GList 				* column;
+
+	g_string_append(string,"<table");
+
+	if(options & V3270_SELECTION_FONT_FAMILY) {
+		g_string_append_printf(string," style=\"font-family:%s,monospace\"",(terminal->selection.font_family ? terminal->selection.font_family : terminal->font.family));
+	}
+
+	g_string_append(string,"><tbody>");
 
 	// Get contents
 	GList * columns = v3270_getColumns_from_selection(terminal, selection, all);

@@ -201,45 +201,6 @@
  LIB3270_EXPORT void			  v3270_set_lunames(GtkWidget *widget, const gchar *lunames);
  LIB3270_EXPORT gchar 			* v3270_get_lunames(GtkWidget *widget);
 
- // Clipboard
- typedef enum _v3270_copy_mode
- {
-
- 	V3270_COPY_DEFAULT,			///< @brief Detect format based on lib3270's smart past toggle.
- 	V3270_COPY_FORMATTED,		///< @brief Copy formatted data; keep attributes.
-	V3270_COPY_TEXT,			///< @brief Single text format, ignore attributes.
-	V3270_COPY_TABLE,			///< @brief Copy as table.
-	V3270_COPY_APPEND			///< @brief Append to current contents keeping the stored format.
-
- } V3270_COPY_MODE;
-
- LIB3270_EXPORT void			  v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut);
- LIB3270_EXPORT void			  v3270_clipboard_get_from_url(GtkWidget *widget, const gchar *url);
-
- /// @brief Check if the widget has saved text.
- LIB3270_EXPORT gboolean		  v3270_has_copy(GtkWidget *widget);
-
- LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget) G_GNUC_DEPRECATED;
- LIB3270_EXPORT void 			  v3270_paste_text(GtkWidget *widget) G_GNUC_DEPRECATED;
- LIB3270_EXPORT void			  v3270_paste_from_file(GtkWidget *widget) G_GNUC_DEPRECATED;
- LIB3270_EXPORT void			  v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut) G_GNUC_DEPRECATED;
- LIB3270_EXPORT void			  v3270_append_selection(GtkWidget *widget, gboolean cut) G_GNUC_DEPRECATED;
-
- // Selections
-
- LIB3270_EXPORT gchar			* v3270_get_selected(GtkWidget *widget, gboolean cut);
- LIB3270_EXPORT gchar			* v3270_get_copy(GtkWidget *widget);
-
- LIB3270_EXPORT gchar			* v3270_get_text(GtkWidget *widget,int offset, int len);
- LIB3270_EXPORT gchar			* v3270_get_region(GtkWidget *widget, gint start_pos, gint end_pos, gboolean all);
-
- LIB3270_EXPORT void			  v3270_set_string(GtkWidget *widget, const gchar *str);
-
- LIB3270_EXPORT gboolean		  v3270_get_selection_bounds(GtkWidget *widget, gint *start, gint *end);
- LIB3270_EXPORT void			  v3270_unselect(GtkWidget *widget);
- LIB3270_EXPORT void 			  v3270_select_all(GtkWidget *widget);
- LIB3270_EXPORT void	  		  v3270_select_region(GtkWidget *widget, gint start, gint end);
-
  LIB3270_EXPORT void 			  v3270_input_text(GtkWidget *widget, const gchar *text, const gchar *encoding);
 
  // Colors

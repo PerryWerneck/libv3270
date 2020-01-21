@@ -29,6 +29,7 @@
 
 #include <config.h>
 #include <internals.h>
+#include <v3270/selection.h>
 
 G_BEGIN_DECLS
 
@@ -166,6 +167,7 @@ G_BEGIN_DECLS
 		V3270_COPY_MODE			  format;		///< @brief Copy mode.
 		GList					* blocks;		///< @brief Selection blocks.
 		V3270SelectionOption	  options;		///< @brief Selection options.
+		gchar					* font_family;	///< @brief Font family for HTML paste.
 
 	} selection;
 

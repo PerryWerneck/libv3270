@@ -132,4 +132,28 @@ LIB3270_EXPORT void v3270_select_all(GtkWidget *widget)
 	v3270_enable_updates(widget);
 }
 
+void v3270_selection_set_font_family(GtkWidget *widget, const gchar *name) {
+
+ 	g_return_if_fail(GTK_IS_V3270(widget));
+
+	v3270 * terminal = GTK_V3270(widget);
+
+	if(terminal->selection.font_family) {
+		g_free(terminal->selection.font_family);
+		terminal->selection.font_family = NULL;
+	}
+
+	if(name) {
+		terminal->selection.font_family	= g_strdup(name);
+	}
+
+	v3270_emit_save_settings(widget);
+
+}
+
+const gchar	* v3270_selection_get_font_family(GtkWidget *widget) {
+
+	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
+	return GTK_V3270(widget)->selection.font_family;
+}
 
