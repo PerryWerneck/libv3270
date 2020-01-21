@@ -143,6 +143,9 @@
  /// @brief Create color settings widget.
  LIB3270_EXPORT GtkWidget		* v3270_color_settings_new();
 
+ /// @brief Create cut & paste settings widget.
+ LIB3270_EXPORT GtkWidget		*  v3270_clipboard_settings_new();
+
  G_END_DECLS
 
 #endif // V3270SETTINGS_H_INCLUDED

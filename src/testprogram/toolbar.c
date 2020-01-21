@@ -65,13 +65,22 @@
 
  static void preferences_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
+ 	size_t ix;
  	GtkWidget * dialog = v3270_settings_dialog_new();
 
  	gtk_window_set_title(GTK_WINDOW(dialog),"Session properties");
-	gtk_container_add(GTK_CONTAINER(dialog), v3270_host_settings_new());
-	gtk_container_add(GTK_CONTAINER(dialog), v3270_color_settings_new());
-	gtk_container_add(GTK_CONTAINER(dialog), v3270_font_settings_new());
-	gtk_container_add(GTK_CONTAINER(dialog), v3270_accelerator_settings_new());
+
+ 	GtkWidget * widgets[] = {
+		v3270_host_settings_new(),
+		v3270_color_settings_new(),
+		v3270_font_settings_new(),
+		v3270_accelerator_settings_new(),
+		v3270_clipboard_settings_new()
+ 	};
+
+ 	for(ix = 0; ix < G_N_ELEMENTS(widgets); ix++) {
+		gtk_container_add(GTK_CONTAINER(dialog), widgets[ix]);
+ 	}
 
 	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
 
