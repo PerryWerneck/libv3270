@@ -88,7 +88,7 @@
 		.n_columns = 2,
 		.types = (const GType []) {
 			G_TYPE_STRING,
-			G_TYPE_UINT
+			G_TYPE_STRING
 		}
 
 	},
@@ -105,7 +105,7 @@
 		.n_columns = 2,
 		.types = (const GType []) {
 			G_TYPE_STRING,
-			G_TYPE_UINT
+			G_TYPE_STRING
 		}
 
 	},
@@ -122,7 +122,7 @@
 		.n_columns = 2,
 		.types = (const GType []) {
 			G_TYPE_STRING,
-			G_TYPE_UINT
+			G_TYPE_STRING
 		}
 
 	},
@@ -168,17 +168,8 @@ static void V3270ClipboardSettings_class_init(V3270ClipboardSettingsClass *klass
 
 static void copy_format_changed(GtkComboBox *widget, GtkWidget *grid) {
 
-	GtkTreeIter iter;
-
-	if(gtk_combo_box_get_active_iter(widget,&iter)) {
-
-		GValue value = { 0, };
-		gtk_tree_model_get_value(gtk_combo_box_get_model(widget),&iter,1,&value);
-		guint flag = g_value_get_uint(&value);
-		gtk_widget_set_sensitive(grid,flag == 1);
-		g_value_unset(&value);
-
-	}
+	const gchar * active = gtk_combo_box_get_active_id(widget);
+	gtk_widget_set_sensitive(grid,active && *active == '1');
 
 }
 
@@ -235,12 +226,14 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 		model = GTK_LIST_STORE(gtk_combo_box_get_model(widget->input.combos[1]));
 		for(ix = 0;ix < G_N_ELEMENTS(html_color_options); ix++) {
 
+			gchar id[] = { '0' + ix, 0 };
+
 			gtk_list_store_append(model, &iter);
 			gtk_list_store_set(
 				model,
 				&iter,
 				0, g_dgettext(PACKAGE_NAME, html_color_options[ix]),
-				1, (guint) ix,
+				1, id,
 				-1
 			);
 
@@ -276,7 +269,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 							(GtkListStore *) model,
 							&iter,
 							0, label ? label : group[ix],
-							1, (guint) 99,
+							1, "S",
 							-1
 						);
 
@@ -296,15 +289,21 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			N_("Complete with terminal attributes")
 		};
 
+		gtk_combo_box_set_id_column(widget->input.combos[0],1);
+		gtk_combo_box_set_id_column(widget->input.combos[1],1);
+		gtk_combo_box_set_id_column(widget->input.combos[2],1);
+
 		model = GTK_LIST_STORE(gtk_combo_box_get_model(widget->input.combos[2]));
 		for(ix = 0;ix < G_N_ELEMENTS(copy_formats); ix++) {
+
+			gchar id[] = { '0' + ix, 0 };
 
 			gtk_list_store_append(model, &iter);
 			gtk_list_store_set(
 				model,
 				&iter,
 				0, g_dgettext(PACKAGE_NAME, copy_formats[ix]),
-				1, (guint) ix,
+				1, id,
 				-1
 			);
 
@@ -347,12 +346,14 @@ static void load(GtkWidget *w, GtkWidget *t) {
 		gtk_list_store_clear(model);
 		for(ix = 0;ix < G_N_ELEMENTS(html_font_options); ix++) {
 
+			gchar id[] = { '0' + ix, 0 };
+
 			gtk_list_store_append(model, &iter);
 			gtk_list_store_set(
 				model,
 				&iter,
 				0, g_dgettext(PACKAGE_NAME, html_font_options[ix]),
-				1, (guint) ix,
+				1, id,
 				-1
 			);
 
@@ -371,7 +372,7 @@ static void load(GtkWidget *w, GtkWidget *t) {
 			GtkTreeIter iter;
 
 			gtk_list_store_append((GtkListStore *) model,&iter);
-			gtk_list_store_set((GtkListStore *) model, &iter,0, name, 1, (guint) 99, -1);
+			gtk_list_store_set((GtkListStore *) model, &iter,0, name, 1, "S", -1);
 
 		}
 
@@ -379,15 +380,82 @@ static void load(GtkWidget *w, GtkWidget *t) {
 
 	}
 
-	gtk_combo_box_select_column_uint(widget->input.combos[2],1,((terminal->selection.options & V3270_SELECTION_PLAIN_TEXT) ? 0 : 1));
+	debug("Plain text: %s",((terminal->selection.options & V3270_SELECTION_PLAIN_TEXT) ? "0" : "1"));
+	gtk_combo_box_set_active_id(widget->input.combos[2],(terminal->selection.options & (V3270_SELECTION_ENABLE_HTML|V3270_SELECTION_DIALOG_STATE)) == 0 ? "0" : "1");
 
 }
 
-static void apply(GtkWidget *w, GtkWidget *terminal) {
+static gchar get_active_id(V3270ClipboardSettings *widget, size_t combo) {
+
+	const gchar * id = gtk_combo_box_get_active_id(widget->input.combos[combo]);
+
+	if(id)
+		return id[0];
+
+	return '?';
+}
+
+static void apply(GtkWidget *w, GtkWidget *t) {
 
 	V3270ClipboardSettings *widget = (V3270ClipboardSettings *) w;
+	v3270 *terminal = GTK_V3270(t);
 
-	v3270_settings_apply_toggle_buttons(toggles,G_N_ELEMENTS(toggles),terminal,widget->input.toggles);
+	v3270_settings_apply_toggle_buttons(toggles,G_N_ELEMENTS(toggles),t,widget->input.toggles);
+
+	if(gtk_combo_box_get_active_id(widget->input.combos[2])[0] == '0') {
+
+		terminal->selection.options &= ~(V3270_SELECTION_ENABLE_HTML|V3270_SELECTION_DIALOG_STATE);
+
+	} else {
+
+		terminal->selection.options |= V3270_SELECTION_DIALOG_STATE;
+		terminal->selection.options |= V3270_SELECTION_NON_BREAKABLE_SPACE; // TODO: Use a checkbox to enable-it
+
+		// Get font settings
+		switch(get_active_id(widget,0)) {
+		case '0':
+			// Disable font information
+			debug("%s","Disable font information");
+			terminal->selection.options &= ~V3270_SELECTION_FONT_FAMILY;
+			break;
+
+		case '1':
+			// Use same font of the screen
+			debug("%s","Use same font of the screen");
+			terminal->selection.options |= V3270_SELECTION_FONT_FAMILY;
+			break;
+
+		case 'S':
+			// Use selected font
+			debug("%s","Use selected font");
+			terminal->selection.options |= V3270_SELECTION_FONT_FAMILY;
+			break;
+
+		}
+
+		switch(get_active_id(widget,1)) {
+		case '0':
+
+			// Disable color information
+			debug("%s","Disable color information");
+			terminal->selection.options &= ~V3270_SELECTION_COLORS;
+			break;
+
+		case '1':
+
+			// Use same colors of the screen
+			debug("%s","Use same colors of the screen");
+			terminal->selection.options |= V3270_SELECTION_COLORS;
+			break;
+
+		case 'S':
+			// Use selected color scheme
+			debug("%s","Use selected color scheme");
+			terminal->selection.options |= V3270_SELECTION_COLORS;
+
+		}
+
+	}
 
 }
 
