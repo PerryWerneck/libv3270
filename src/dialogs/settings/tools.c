@@ -58,6 +58,32 @@
 
  }
 
+ void v3270_settings_load_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget *terminal, GtkToggleButton **toggles) {
+
+	size_t toggle;
+
+	for(toggle = 0; toggle < length; toggle++) {
+
+		if(toggles[toggle])
+			gtk_toggle_button_set_active(toggles[toggle],v3270_get_toggle(terminal,definitions[toggle].id));
+
+	}
+
+ }
+
+ void v3270_settings_apply_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget *terminal, GtkToggleButton **toggles) {
+
+ 	size_t toggle;
+
+	for(toggle = 0; toggle < length; toggle++) {
+
+		if(toggles[toggle])
+			v3270_set_toggle(terminal, definitions[toggle].id, gtk_toggle_button_get_active(toggles[toggle]));
+
+	}
+
+ }
+
  void v3270_settings_create_entry_fields(const struct EntryFieldDefinition * definitions, size_t length, GtkWidget **grids, GtkEntry **entries) {
 
 	size_t entry;
@@ -77,4 +103,32 @@
 	}
 
  }
+
+ void v3270_settings_create_combos(const struct ComboBoxDefinition * definitions, size_t length, GtkWidget **grids, GtkComboBox **combos) {
+
+	size_t combo;
+
+	for(combo = 0; combo < length; combo++) {
+
+		if(definitions[combo].n_columns) {
+
+			GtkTreeModel * model = GTK_TREE_MODEL(gtk_list_store_newv(definitions[combo].n_columns,(GType *) definitions[combo].types));
+			combos[combo] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
+
+		} else {
+
+			combos[combo] = GTK_COMBO_BOX(gtk_combo_box_new());
+
+		}
+
+		v3270_grid_attach(
+			GTK_GRID(grids[definitions[combo].grid]),
+			(struct v3270_entry_field *) & definitions[combo],
+			GTK_WIDGET(combos[combo])
+		);
+
+	}
+
+ }
+
 

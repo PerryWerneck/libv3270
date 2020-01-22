@@ -766,13 +766,7 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 	}
 
 	// Apply toggles
-	size_t toggle;
-
-	for(toggle = 0; toggle < G_N_ELEMENTS(toggleList); toggle++)
-	{
-		if(widget->input.toggles[toggle])
-			v3270_set_toggle(terminal, toggleList[toggle].id, gtk_toggle_button_get_active(widget->input.toggles[toggle]));
-	}
+	v3270_settings_apply_toggle_buttons(toggleList,G_N_ELEMENTS(toggleList),terminal,widget->input.toggles);
 
 	// Apply oversize
 	lib3270_set_oversize(hSession,gtk_entry_get_text(widget->input.entry[ENTRY_OVERSIZE]));
@@ -900,13 +894,7 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 	}
 
 	// Load toggles
-	size_t toggle;
-
-	for(toggle = 0; toggle < G_N_ELEMENTS(toggleList); toggle++)
-	{
-		if(widget->input.toggles[toggle])
-			gtk_toggle_button_set_active(widget->input.toggles[toggle],v3270_get_toggle(terminal,toggleList[toggle].id));
-	}
+	v3270_settings_load_toggle_buttons(toggleList, G_N_ELEMENTS(toggleList), terminal, widget->input.toggles);
 
 	// Load oversize
 	const char * oversize = lib3270_get_oversize(hSession);

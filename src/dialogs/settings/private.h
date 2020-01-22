@@ -44,6 +44,8 @@
 	};
 
 	G_GNUC_INTERNAL void v3270_settings_create_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget **grids, GtkToggleButton **toggles);
+	G_GNUC_INTERNAL void v3270_settings_load_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget *terminal, GtkToggleButton **toggles);
+	G_GNUC_INTERNAL void v3270_settings_apply_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget *terminal, GtkToggleButton **toggles);
 
 	/// @brief Entry field factory.
 	struct EntryFieldDefinition {
@@ -57,5 +59,19 @@
 	};
 
 	G_GNUC_INTERNAL void v3270_settings_create_entry_fields(const struct EntryFieldDefinition * definitions, size_t length, GtkWidget **grids, GtkEntry **entries);
+
+	/// @brief Combo Box factory
+	struct ComboBoxDefinition {
+
+		ENTRY_FIELD_HEAD
+
+		unsigned short grid;
+
+		gint n_columns;
+		const GType *types;
+
+	};
+
+	G_GNUC_INTERNAL void v3270_settings_create_combos(const struct ComboBoxDefinition * definitions, size_t length, GtkWidget **grids, GtkComboBox **combos);
 
 #endif // PRIVATE_H_INCLUDED
