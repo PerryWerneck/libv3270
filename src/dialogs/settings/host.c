@@ -32,10 +32,9 @@
   *
   */
 
- #include <internals.h>
+ #include "private.h"
  #include <hostselect.h>
  #include <v3270/dialogs.h>
- #include <v3270/settings.h>
  #include <lib3270/log.h>
  #include <lib3270/toggle.h>
  #include <lib3270/properties.h>
@@ -49,16 +48,7 @@
 	GRID_COUNT
  };
 
- static const struct ToggleList
- {
-	gint left;
-	gint top;
-	gint width;
-	unsigned short grid;
-
-	LIB3270_TOGGLE_ID	id;
- }
- toggleList[] =
+ static const struct ToggleButtonDefinition toggleList[] =
  {
  	{
  		.left = 2,
@@ -96,7 +86,7 @@
  		.width = 1,
  		.grid = EMULATION,
 		.id = LIB3270_TOGGLE_MONOCASE,
- 	}
+ 	},
 
  };
 
@@ -212,15 +202,7 @@
  	}
  };
 
- static const struct Entry
- {
- 	ENTRY_FIELD_HEAD
-
- 	unsigned short grid;
- 	gint max_length;
- 	gint width_chars;
-
- } entryfields[] = {
+ static const struct EntryFieldDefinition entryfields[] = {
  	{
  		.left = 0,
  		.top = 0,
@@ -471,6 +453,9 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	// Entry fields
 	{
+		v3270_settings_create_entry_fields(entryfields, G_N_ELEMENTS(entryfields), grids, widget->input.entry);
+
+		/*
 		size_t entry;
 
 		for(entry = 0; entry < G_N_ELEMENTS(entryfields); entry++)
@@ -486,6 +471,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			);
 
 		}
+		*/
 
 		// Custom settings
 		gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
@@ -548,30 +534,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	}
 
 	// Toggle checkboxes
-	{
-		size_t toggle;
-
-		for(toggle = 0; toggle < G_N_ELEMENTS(toggleList); toggle++)
-		{
-			const LIB3270_TOGGLE * descriptor = lib3270_toggle_get_from_id(toggleList[toggle].id);
-
-			if(descriptor)
-			{
-				widget->input.toggles[toggle] = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(lib3270_toggle_get_label(descriptor)));
-
-				const gchar *tooltip = lib3270_property_get_tooltip((const LIB3270_PROPERTY *) descriptor);
-
-				if(tooltip && *tooltip)
-					gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.toggles[toggle]),tooltip);
-
-				gtk_widget_set_halign(GTK_WIDGET(widget->input.toggles[toggle]),GTK_ALIGN_START);
-				gtk_grid_attach(GTK_GRID(grids[toggleList[toggle].grid]),GTK_WIDGET(widget->input.toggles[toggle]),toggleList[toggle].left,toggleList[toggle].top,toggleList[toggle].width,1);
-
-			}
-
-		}
-
-	}
+	v3270_settings_create_toggle_buttons(toggleList, G_N_ELEMENTS(toggleList), grids, widget->input.toggles);
 
 	// Create combo boxes
 	{
