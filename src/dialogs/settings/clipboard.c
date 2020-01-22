@@ -209,26 +209,6 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combos[ix]), text_renderer, "text", 0, NULL);
 		}
 
-		// HTML Font combo
-		static const gchar * html_font_options[] = {
-			N_("None (Don't export font name)"),
-			N_("Same of the screen")
-		};
-
-		model = GTK_LIST_STORE(gtk_combo_box_get_model(widget->input.combos[0]));
-		for(ix = 0;ix < G_N_ELEMENTS(html_font_options); ix++) {
-
-			gtk_list_store_append(model, &iter);
-			gtk_list_store_set(
-				model,
-				&iter,
-				0, g_dgettext(PACKAGE_NAME, html_font_options[ix]),
-				1, (guint) ix,
-				-1
-			);
-
-		}
-
 		// Color scheme combo
 		static const gchar * html_color_options[] = {
 			N_("None (Don't export color)"),
@@ -247,6 +227,50 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 				-1
 			);
 
+		}
+
+		// Load color schemes
+		{
+			lib3270_autoptr(char) filename = lib3270_build_data_filename("colors.conf",NULL);
+			if(g_file_test(filename,G_FILE_TEST_IS_REGULAR)) {
+
+				GKeyFile * keyfile = g_key_file_new();
+
+				GError * error	= NULL;
+				g_key_file_load_from_file(keyfile,filename,G_KEY_FILE_NONE,&error);
+
+				if(error) {
+
+					g_warning(error->message);
+					g_error_free(error);
+
+				} else {
+
+					gsize len;
+					gchar **group = g_key_file_get_groups(keyfile,&len);
+					GtkTreeIter	  iter;
+
+					for(ix = 0; ix < (size_t) len; ix++) {
+
+						g_autofree gchar * label = g_key_file_get_locale_string(keyfile,group[ix],"label",NULL,NULL);
+
+						gtk_list_store_append((GtkListStore *) model,&iter);
+						gtk_list_store_set(
+							(GtkListStore *) model,
+							&iter,
+							0, label ? label : group[ix],
+							1, (guint) 99,
+							-1
+						);
+
+					}
+
+					g_strfreev(group);
+
+				}
+
+				g_key_file_free(keyfile);
+			}
 		}
 
 		// Copy format combo
@@ -287,9 +311,55 @@ GtkWidget * v3270_clipboard_settings_new() {
 
 static void load(GtkWidget *w, GtkWidget *terminal) {
 
+	size_t ix;
+
 	V3270ClipboardSettings *widget = (V3270ClipboardSettings *) w;
 
 	v3270_settings_load_toggle_buttons(toggles, G_N_ELEMENTS(toggles), terminal, widget->input.toggles);
+
+	// HTML Font combo
+	{
+		static const gchar * html_font_options[] = {
+			N_("None (Don't export font name)"),
+			N_("Same of the screen")
+		};
+
+		GtkListStore * model = GTK_LIST_STORE(gtk_combo_box_get_model(widget->input.combos[0]));
+		GtkTreeIter iter;
+		gtk_list_store_clear(model);
+		for(ix = 0;ix < G_N_ELEMENTS(html_font_options); ix++) {
+
+			gtk_list_store_append(model, &iter);
+			gtk_list_store_set(
+				model,
+				&iter,
+				0, g_dgettext(PACKAGE_NAME, html_font_options[ix]),
+				1, (guint) ix,
+				-1
+			);
+
+		}
+
+		PangoFontFamily **families;
+		gint n_families;
+		pango_context_list_families(gtk_widget_get_pango_context(terminal),&families, &n_families);
+
+		for(ix=0; ((gint) ix) < n_families; ix++) {
+
+			if(!pango_font_family_is_monospace(families[ix]))
+				continue;
+
+			const gchar *name = pango_font_family_get_name (families[ix]);
+			GtkTreeIter iter;
+
+			gtk_list_store_append((GtkListStore *) model,&iter);
+			gtk_list_store_set((GtkListStore *) model, &iter,0, name, 1, (guint) 99, -1);
+
+		}
+
+		g_free(families);
+
+	}
 
 }
 
