@@ -165,6 +165,22 @@ static void V3270ClipboardSettings_class_init(V3270ClipboardSettingsClass *klass
 
 }
 
+static void copy_format_changed(GtkComboBox *widget, GtkWidget *grid) {
+
+	GtkTreeIter iter;
+
+	if(gtk_combo_box_get_active_iter(widget,&iter)) {
+
+		GValue value = { 0, };
+		gtk_tree_model_get_value(gtk_combo_box_get_model(widget),&iter,1,&value);
+		guint flag = g_value_get_uint(&value);
+		gtk_widget_set_sensitive(grid,flag == 1);
+		g_value_unset(&value);
+
+	}
+
+}
+
 static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 
 	size_t ix;
@@ -293,7 +309,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 
 		}
 
-
+		g_signal_connect(widget->input.combos[2],"changed",G_CALLBACK(copy_format_changed),grids[2]);
 
 	}
 
