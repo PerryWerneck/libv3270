@@ -428,9 +428,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	}
 
-	// Cell renderer
-	GtkCellRenderer * text_renderer	= gtk_cell_renderer_text_new();
-
 	// Connection properties
  	gtk_grid_set_row_spacing(GTK_GRID(grids[CONNECTION]),6);
  	gtk_grid_set_column_spacing(GTK_GRID(grids[CONNECTION]),12);
@@ -538,11 +535,84 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	// Create combo boxes
 	{
-		size_t combo, item;
+		// Cell renderer
+		size_t combo;
+		size_t item;
+
+		GtkCellRenderer * text_renderer	= gtk_cell_renderer_text_new();
 
 		for(combo = 0; combo < G_N_ELEMENTS(combos); combo++) {
 
 			GtkTreeModel * model = (GtkTreeModel *) gtk_list_store_new(2,G_TYPE_STRING,G_TYPE_UINT);
+
+			widget->input.combos[combo] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
+
+			if(combos[combo].tooltip)
+				gtk_widget_set_tooltip_markup(GTK_WIDGET(widget->input.combos[combo]),combos[combo].tooltip);
+
+			gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.combos[combo]), text_renderer, TRUE);
+			gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combos[combo]), text_renderer, "text", 0, NULL);
+
+			v3270_grid_attach(GTK_GRID(grids[EMULATION]), (struct v3270_entry_field *) & combos[combo], GTK_WIDGET(widget->input.combos[combo]));
+
+			for(item = 0; combos[combo].labels[item]; item++) {
+				GtkTreeIter iter;
+				gtk_list_store_append((GtkListStore *) model, &iter);
+				gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(PACKAGE_NAME, combos[combo].labels[item]), 1, combos[combo].values[item], -1);
+			}
+
+		}
+
+		// Create Charset Combo
+		{
+			GtkTreeModel * model = (GtkTreeModel *) gtk_list_store_new(1,G_TYPE_STRING);
+
+			widget->input.charset = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
+
+			gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.charset), text_renderer, TRUE);
+			gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.charset), text_renderer, "text", 0, NULL);
+
+			static const gchar * charsets[] =
+			{
+				"us",
+				"bracket",
+				"cp500"
+			};
+
+			size_t charset;
+			for(charset = 0; charset < G_N_ELEMENTS(charsets); charset++)
+			{
+				GtkTreeIter iter;
+				gtk_list_store_append((GtkListStore *) model, &iter);
+				gtk_list_store_set((GtkListStore *) model, &iter, 0, charsets[charset], -1);
+			};
+
+			static const struct v3270_entry_field descriptor =
+			{
+				.top = 2,
+				.left = 0,
+				.width = 2,
+				.height = 1,
+
+				.label = N_("_Charset"),
+				.tooltip = N_("The EBCDIC host character set. "),
+
+			};
+
+			v3270_grid_attach(GTK_GRID(grids[EMULATION]), &descriptor, GTK_WIDGET(widget->input.charset));
+
+		}
+
+	}
+
+
+	/*
+	// Create combo boxes
+	{
+		size_t combo, item;
+
+		for(combo = 0; combo < G_N_ELEMENTS(combos); combo++) {
+
 
 			widget->input.combos[combo] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
 
@@ -565,45 +635,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	}
 
-	// Create Charset Combo
-	{
-		GtkTreeModel * model = (GtkTreeModel *) gtk_list_store_new(1,G_TYPE_STRING);
-
-		widget->input.charset = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
-
-		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.charset), text_renderer, TRUE);
-		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.charset), text_renderer, "text", 0, NULL);
-
-		static const gchar * charsets[] =
-		{
-			"us",
-			"bracket",
-			"cp500"
-		};
-
-		size_t charset;
-		for(charset = 0; charset < G_N_ELEMENTS(charsets); charset++)
-		{
-			GtkTreeIter iter;
-			gtk_list_store_append((GtkListStore *) model, &iter);
-			gtk_list_store_set((GtkListStore *) model, &iter, 0, charsets[charset], -1);
-		};
-
-		static const struct v3270_entry_field descriptor =
-		{
-			.top = 2,
-			.left = 0,
-			.width = 2,
-			.height = 1,
-
-			.label = N_("_Charset"),
-			.tooltip = N_("The EBCDIC host character set. "),
-
-		};
-
-		v3270_grid_attach(GTK_GRID(grids[EMULATION]), &descriptor, GTK_WIDGET(widget->input.charset));
-
-	}
+	*/
 
 	gtk_widget_show_all(GTK_WIDGET(widget));
 
