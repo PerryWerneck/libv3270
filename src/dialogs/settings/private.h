@@ -34,6 +34,8 @@
 	#include <lib3270/toggle.h>
 	#include <v3270/settings.h>
 
+	G_GNUC_INTERNAL void gtk_combo_box_select_column_uint(GtkComboBox * combo_box, gint column, guint value);
+
 	/// @brief Toggle button factory.
 	struct ToggleButtonDefinition {
 		gint left;

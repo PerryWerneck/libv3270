@@ -33,6 +33,7 @@
   */
 
  #include "private.h"
+ #include <terminal.h>
  #include <v3270/settings.h>
  #include <lib3270/log.h>
 
@@ -319,19 +320,20 @@ GtkWidget * v3270_clipboard_settings_new() {
 
  	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(V3270ClipboardSettings_get_type(), NULL));
 
- 	settings->title = _("Cut & Paste settings");
+ 	settings->title = _("Clipboard properties");
  	settings->label = _("Clipboard");
 
  	return GTK_WIDGET(settings);
 }
 
-static void load(GtkWidget *w, GtkWidget *terminal) {
+static void load(GtkWidget *w, GtkWidget *t) {
 
 	size_t ix;
 
 	V3270ClipboardSettings *widget = (V3270ClipboardSettings *) w;
+	v3270 *terminal = GTK_V3270(t);
 
-	v3270_settings_load_toggle_buttons(toggles, G_N_ELEMENTS(toggles), terminal, widget->input.toggles);
+	v3270_settings_load_toggle_buttons(toggles, G_N_ELEMENTS(toggles), t, widget->input.toggles);
 
 	// HTML Font combo
 	{
@@ -358,7 +360,7 @@ static void load(GtkWidget *w, GtkWidget *terminal) {
 
 		PangoFontFamily **families;
 		gint n_families;
-		pango_context_list_families(gtk_widget_get_pango_context(terminal),&families, &n_families);
+		pango_context_list_families(gtk_widget_get_pango_context(t),&families, &n_families);
 
 		for(ix=0; ((gint) ix) < n_families; ix++) {
 
@@ -376,6 +378,8 @@ static void load(GtkWidget *w, GtkWidget *terminal) {
 		g_free(families);
 
 	}
+
+	gtk_combo_box_select_column_uint(widget->input.combos[2],1,((terminal->selection.options & V3270_SELECTION_PLAIN_TEXT) ? 0 : 1));
 
 }
 
