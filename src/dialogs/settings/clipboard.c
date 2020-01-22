@@ -101,9 +101,10 @@
 		.label = N_("Color theme"),
 //		.tooltip =
 
-		.n_columns = 1,
+		.n_columns = 2,
 		.types = (const GType []) {
-			G_TYPE_STRING
+			G_TYPE_STRING,
+			G_TYPE_UINT
 		}
 
 	},
@@ -173,8 +174,8 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 	{
 		static const gchar * labels[GRID_COUNT] = {
 			N_("Copy options"),
-			N_("Common paste options"),
-			N_("HTML Paste options")
+			N_("Paste options"),
+			N_("HTML options")
 		};
 
 		for(ix = 0; ix < G_N_ELEMENTS(labels); ix++) {
@@ -208,6 +209,46 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combos[ix]), text_renderer, "text", 0, NULL);
 		}
 
+		// HTML Font combo
+		static const gchar * html_font_options[] = {
+			N_("None (Don't export font name)"),
+			N_("Same of the screen")
+		};
+
+		model = GTK_LIST_STORE(gtk_combo_box_get_model(widget->input.combos[0]));
+		for(ix = 0;ix < G_N_ELEMENTS(html_font_options); ix++) {
+
+			gtk_list_store_append(model, &iter);
+			gtk_list_store_set(
+				model,
+				&iter,
+				0, g_dgettext(PACKAGE_NAME, html_font_options[ix]),
+				1, (guint) ix,
+				-1
+			);
+
+		}
+
+		// Color scheme combo
+		static const gchar * html_color_options[] = {
+			N_("None (Don't export color)"),
+			N_("Same of the screen")
+		};
+
+		model = GTK_LIST_STORE(gtk_combo_box_get_model(widget->input.combos[1]));
+		for(ix = 0;ix < G_N_ELEMENTS(html_color_options); ix++) {
+
+			gtk_list_store_append(model, &iter);
+			gtk_list_store_set(
+				model,
+				&iter,
+				0, g_dgettext(PACKAGE_NAME, html_color_options[ix]),
+				1, (guint) ix,
+				-1
+			);
+
+		}
+
 		// Copy format combo
 		static const gchar * copy_formats[] = {
 			N_("Plain text only"),
@@ -227,6 +268,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			);
 
 		}
+
 
 
 	}
