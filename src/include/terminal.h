@@ -128,7 +128,7 @@ G_BEGIN_DECLS
 
  } V3270SelectionOption;
 
- #define V3270_SELECTION_DEFAULT		(V3270_SELECTION_FONT_FAMILY|V3270_SELECTION_COLORS|V3270_SELECTION_NON_BREAKABLE_SPACE)
+ #define V3270_SELECTION_DEFAULT		(V3270_SELECTION_FONT_FAMILY|V3270_SELECTION_COLORS|V3270_SELECTION_NON_BREAKABLE_SPACE|V3270_SELECTION_DIALOG_STATE)
  #define V3270_SELECTION_ENABLE_HTML	(V3270_SELECTION_FONT_FAMILY|V3270_SELECTION_COLORS|V3270_SELECTION_NON_BREAKABLE_SPACE)
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
@@ -170,6 +170,10 @@ G_BEGIN_DECLS
 		GList					* blocks;		///< @brief Selection blocks.
 		V3270SelectionOption	  options;		///< @brief Selection options.
 		gchar					* font_family;	///< @brief Font family for HTML paste.
+
+		struct {
+			gchar * scheme;						///< @brief Name of the selection color scheme
+		} color;
 
 	} selection;
 

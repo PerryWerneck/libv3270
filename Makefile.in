@@ -441,6 +441,8 @@ $(POTDIR)/$(LIBNAME).pot: \
 locale: \
 	locale/$(LIBNAME).pot
 
+	@$(MAKE) -C locale all
+
 locale/$(LIBNAME).pot: \
 	$(POTDIR)/$(LIBNAME).pot
 

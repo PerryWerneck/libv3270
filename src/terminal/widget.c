@@ -188,6 +188,11 @@ static void finalize(GObject *object) {
 		terminal->selection.font_family = NULL;
 	}
 
+	if(terminal->selection.color.scheme) {
+		g_free(terminal->selection.color.scheme);
+		terminal->selection.color.scheme = NULL;
+	}
+
 	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);
  }
 

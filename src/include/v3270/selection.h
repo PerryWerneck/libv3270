@@ -77,6 +77,9 @@
 	void			  v3270_selection_set_font_family(GtkWidget *widget, const gchar *name);
 	const gchar		* v3270_selection_get_font_family(GtkWidget *widget);
 
+	void			  v3270_selection_set_color_scheme(GtkWidget *widget, const gchar *name);
+	const gchar		* v3270_selection_get_color_scheme(GtkWidget *widget);
+
 	G_END_DECLS
 
 #endif // V3270_ACTIONS_H_INCLUDED

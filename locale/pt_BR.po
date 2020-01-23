@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-21 16:17-0300\n"
-"PO-Revision-Date: 2020-01-21 16:17-0300\n"
+"POT-Creation-Date: 2020-01-23 09:01-0300\n"
+"PO-Revision-Date: 2020-01-23 09:05-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
-#: src/dialogs/settings/host.c:178
+#: src/dialogs/settings/host.c:168
 msgid "16 colors"
 msgstr "16 cores"
 
@@ -34,7 +34,7 @@ msgstr "Transferência de arquivos 3270"
 msgid "3270 screen"
 msgstr "Tela 3270"
 
-#: src/dialogs/settings/host.c:177
+#: src/dialogs/settings/host.c:167
 msgid "8 colors"
 msgstr "8 cores"
 
@@ -83,7 +83,7 @@ msgstr "Atividade já está na fila"
 msgid "Add to copy"
 msgstr "Adicionar à cópia"
 
-#: src/dialogs/settings/host.c:232
+#: src/dialogs/settings/host.c:214
 msgid "Address or name of the host to connect."
 msgstr "Endereço ou nome do host a conectar."
 
@@ -124,7 +124,7 @@ msgstr "Adiciona conteúdo do arquivo origem ao final do arquivo destino."
 msgid "Assign it to action (<b>%s</b>)?"
 msgstr "Associar com a ação (<b>%s</b>)?"
 
-#: src/dialogs/settings/host.c:509
+#: src/dialogs/settings/host.c:492
 msgid "Auto _disconnect"
 msgstr "Desconexão automática"
 
@@ -229,7 +229,7 @@ msgstr "Não foi possível iniciar transferência de arquivo"
 
 #: src/terminal/callbacks.c:393 src/filetransfer/v3270ftprogress.c:433
 #: src/filetransfer/transfer.c:89 src/dialogs/load.c:111
-#: src/dialogs/save/save.c:136 src/dialogs/settings/host.c:385
+#: src/dialogs/save/save.c:136 src/dialogs/settings/host.c:367
 msgid "Cancel"
 msgstr "_Cancelar"
 
@@ -237,7 +237,7 @@ msgstr "_Cancelar"
 msgid "Cancel transfer operation."
 msgstr "Cancelar transferência"
 
-#: src/dialogs/settings/host.c:545
+#: src/dialogs/settings/host.c:528
 msgid "Check for SSL secure connection."
 msgstr "Marcar para ativar a conexão segura via SSL."
 
@@ -257,12 +257,24 @@ msgstr "Clique para carregar arquivo"
 msgid "Click to save file"
 msgstr "Clique para salvar arquivo"
 
+#: src/dialogs/settings/clipboard.c:349
+msgid "Clipboard"
+msgstr "Área de transferência"
+
 #: src/terminal/properties/init.c:138
 msgid "Clipboard name"
 msgstr "Nome da área de transferência"
 
+#: src/dialogs/settings/clipboard.c:348
+msgid "Clipboard properties"
+msgstr "Configuração da área de transferência"
+
 #: src/dialogs/settings/colors.c:350
 msgid "Color _theme"
+msgstr "Tema de cores"
+
+#: src/dialogs/settings/clipboard.c:102
+msgid "Color theme"
 msgstr "Tema de cores"
 
 #: src/dialogs/settings/colors.c:380
@@ -273,7 +285,7 @@ msgstr "Cores"
 msgid "Comma separated list of LU names"
 msgstr "Lista de LUs separadas por vírgula"
 
-#: src/dialogs/settings/host.c:284
+#: src/dialogs/settings/host.c:266
 msgid "Comma separated list of LU names."
 msgstr "Lista de LUs separadas por vírgula."
 
@@ -285,7 +297,11 @@ msgstr "Arquivo separado por vírgulas (CSV)"
 msgid "Command to execute"
 msgstr "Comando a executar"
 
-#: src/dialogs/settings/host.c:458
+#: src/dialogs/settings/clipboard.c:315
+msgid "Complete with terminal attributes"
+msgstr "Completo incluindo atributos do terminal"
+
+#: src/dialogs/settings/host.c:437
 msgid "Connection"
 msgstr "Conexão"
 
@@ -304,6 +320,10 @@ msgstr "Copiar como texto puro"
 #: src/terminal/actions/table.c:107 src/terminal/actions/table.c:108
 msgid "Copy as table"
 msgstr "Copiar como tabela"
+
+#: src/dialogs/settings/clipboard.c:184
+msgid "Copy options"
+msgstr "Opções da cópia"
 
 #: src/terminal/actions/table.c:71
 msgid "Copy selection to clipboard"
@@ -343,7 +363,7 @@ msgstr "Posição atual da transferência"
 msgid "Current:"
 msgstr "Atual:"
 
-#: src/dialogs/settings/host.c:270
+#: src/dialogs/settings/host.c:252
 msgid "Custom Remap"
 msgstr "Mapeamento personalizado"
 
@@ -400,7 +420,7 @@ msgstr "ETA:"
 msgid "Emit a PA Key action"
 msgstr "Emite uma ação de tecla PA"
 
-#: src/dialogs/settings/host.c:468
+#: src/dialogs/settings/host.c:447
 msgid "Emulation"
 msgstr "Emulação"
 
@@ -461,7 +481,7 @@ msgstr ""
 "Seguindo a convenção para arquivos texto ASCII, LF é usado para terminar "
 "registros no arquivo do PC."
 
-#: src/dialogs/font/chooser.c:329
+#: src/dialogs/font/chooser.c:329 src/dialogs/settings/clipboard.c:85
 msgid "Font"
 msgstr "Fonte"
 
@@ -478,6 +498,10 @@ msgstr "Fonte \"%s\" é válida"
 #: src/terminal/properties/init.c:90
 msgid "Font family for terminal contents"
 msgstr "Familia da fonte usada no terminal"
+
+#: src/dialogs/settings/clipboard.c:119
+msgid "Format"
+msgstr "Formato"
 
 #: src/filetransfer/activity.c:135
 msgid "Full path of local file"
@@ -503,11 +527,15 @@ msgstr "Cinza"
 msgid "Green"
 msgstr "Verde"
 
-#: src/dialogs/settings/host.c:654
+#: src/dialogs/settings/clipboard.c:186
+msgid "HTML options"
+msgstr "Opções HTML"
+
+#: src/dialogs/settings/host.c:649
 msgid "Host"
 msgstr "Servidor"
 
-#: src/dialogs/settings/host.c:653
+#: src/dialogs/settings/host.c:648
 msgid "Host settings"
 msgstr "Configurações do servidor"
 
@@ -515,15 +543,15 @@ msgstr "Configurações do servidor"
 msgid "HyperText Markup Language (HTML)"
 msgstr "Documento HTML"
 
-#: src/dialogs/settings/host.c:148
+#: src/dialogs/settings/host.c:138
 msgid "IBM AS/400"
 msgstr "IBM AS/400"
 
-#: src/dialogs/settings/host.c:147
+#: src/dialogs/settings/host.c:137
 msgid "IBM S/390"
 msgstr "IBM S/390"
 
-#: src/terminal/properties/init.c:121 src/dialogs/settings/host.c:513
+#: src/terminal/properties/init.c:121 src/dialogs/settings/host.c:496
 msgid "IDLE minutes for automatic disconnection"
 msgstr "Minutos para desconexão automática"
 
@@ -585,7 +613,7 @@ msgstr "Estado inválido"
 msgid "Keyboard accelerators"
 msgstr "Atalhos de teclado"
 
-#: src/dialogs/settings/host.c:283
+#: src/dialogs/settings/host.c:265
 msgid "L_U Names"
 msgstr "Nomes de L_U"
 
@@ -605,7 +633,7 @@ msgstr "Arquivo local:"
 msgid "Local:"
 msgstr "Local:"
 
-#: src/dialogs/settings/host.c:258
+#: src/dialogs/settings/host.c:240
 msgid "Makes the screen larger than the default for the chosen model number."
 msgstr "Usa tamanho maior do que o padrão para o modelo escolhido."
 
@@ -613,23 +641,23 @@ msgstr "Usa tamanho maior do que o padrão para o modelo escolhido."
 msgid "Misc colors"
 msgstr "Cores diversas"
 
-#: src/dialogs/settings/host.c:205
+#: src/dialogs/settings/host.c:195
 msgid "Model 2 - 80x24"
 msgstr "Modelo 2 - 80x24"
 
-#: src/dialogs/settings/host.c:206
+#: src/dialogs/settings/host.c:196
 msgid "Model 3 - 80x32"
 msgstr "Modelo 3 - 80x32"
 
-#: src/dialogs/settings/host.c:207
+#: src/dialogs/settings/host.c:197
 msgid "Model 4 - 80x43"
 msgstr "Modelo 4 - 80x43"
 
-#: src/dialogs/settings/host.c:208
+#: src/dialogs/settings/host.c:198
 msgid "Model 5 - 132x27"
 msgstr "Modelo 5 - 132x27"
 
-#: src/dialogs/settings/host.c:176
+#: src/dialogs/settings/host.c:166
 msgid "Monochrome"
 msgstr "Monocromático"
 
@@ -664,6 +692,14 @@ msgstr "Nenhuma transferência"
 #: src/filetransfer/worker.c:601
 msgid "No transfer in progress"
 msgstr "Nenhuma transferência em andamento"
+
+#: src/dialogs/settings/clipboard.c:248
+msgid "None (Don't export color)"
+msgstr "Nenhum (Não exporta cores)"
+
+#: src/dialogs/settings/clipboard.c:366
+msgid "None (Don't export font name)"
+msgstr "Nenhuma (Não exporta fontes)"
 
 #: src/selection/linux/paste.c:117
 msgid "None of the screens in the clipboard match with the current one."
@@ -725,15 +761,15 @@ msgstr "Opções"
 msgid "Orange"
 msgstr "Laranja"
 
-#: src/dialogs/settings/host.c:149
+#: src/dialogs/settings/host.c:139
 msgid "Other (TSO)"
 msgstr "Outro (TSO)"
 
-#: src/dialogs/settings/host.c:150
+#: src/dialogs/settings/host.c:140
 msgid "Other (VM/CMS)"
 msgstr "Outro (VM/CMS)"
 
-#: src/dialogs/settings/host.c:257
+#: src/dialogs/settings/host.c:239
 msgid "Oversize"
 msgstr "Oversize"
 
@@ -765,11 +801,15 @@ msgstr "Colar de um arquivo"
 msgid "Paste from text file"
 msgstr "Colar de um arquivo texto"
 
+#: src/dialogs/settings/clipboard.c:185
+msgid "Paste options"
+msgstr "Opções para colar"
+
 #: src/filetransfer/tables.c:219
 msgid "Path and name of the local file"
 msgstr "Caminho e nome do arquivo local"
 
-#: src/dialogs/settings/host.c:271
+#: src/dialogs/settings/host.c:253
 msgid "Path to XML file with custom charset mapping."
 msgstr "Caminho do arquivo XML com o mapeamento personalizado de caracteres."
 
@@ -785,7 +825,11 @@ msgstr "Rosa"
 msgid "Plain text"
 msgstr "Texto puro"
 
-#: src/dialogs/settings/host.c:245
+#: src/dialogs/settings/clipboard.c:314
+msgid "Plain text only"
+msgstr "Apenas texto puro"
+
+#: src/dialogs/settings/host.c:227
 msgid "Port or service name (empty for \"telnet\")."
 msgstr "Nº da porta ou nome do serviço (em branco para \"telnet\")."
 
@@ -938,6 +982,10 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
+#: src/dialogs/settings/clipboard.c:249 src/dialogs/settings/clipboard.c:367
+msgid "Same of the screen"
+msgstr "Igual ao terminal"
+
 #: src/terminal/actions/table.c:240 src/filetransfer/v3270ft.c:215
 #: src/filetransfer/activitylist.c:453 src/trace/trace.c:477
 #: src/dialogs/transfer.c:69
@@ -1022,15 +1070,15 @@ msgstr "Secondary space"
 
 #: src/filetransfer/v3270ft.c:303 src/filetransfer/settings.c:209
 #: src/dialogs/save/save.c:114 src/dialogs/save/save.c:137
-#: src/dialogs/settings/host.c:386
+#: src/dialogs/settings/host.c:368
 msgid "Select"
 msgstr "Selecionar"
 
-#: src/dialogs/settings/host.c:498
+#: src/dialogs/settings/host.c:481
 msgid "Select charset remap file"
 msgstr "Selecionar arquivo com mapeamento personalizado"
 
-#: src/dialogs/settings/host.c:382
+#: src/dialogs/settings/host.c:364
 msgid "Select custom charset mapping"
 msgstr "Seleciona mapeamento de teclado personalizado"
 
@@ -1176,15 +1224,15 @@ msgstr "Estado do espaçamento dinâmico"
 msgid "Summary"
 msgstr "Sumário"
 
-#: src/dialogs/settings/host.c:133
+#: src/dialogs/settings/host.c:123
 msgid "System _type"
 msgstr "_Tipo de servidor"
 
-#: src/dialogs/settings/host.c:175
+#: src/dialogs/settings/host.c:165
 msgid "System default"
 msgstr "Padrão do sistema"
 
-#: src/dialogs/settings/host.c:395
+#: src/dialogs/settings/host.c:377
 msgid "TN3270 Custom charset"
 msgstr "Código de página TN3270 personalizado"
 
@@ -1211,7 +1259,7 @@ msgstr ""
 "has been reached, or the maximum number of data blocks per file (16060) has "
 "been reached."
 
-#: src/dialogs/settings/host.c:637
+#: src/dialogs/settings/host.c:598
 msgid "The EBCDIC host character set. "
 msgstr "A tabela de caracteres EBCDIC."
 
@@ -1269,7 +1317,7 @@ msgstr "O host detectou um erro no arquivo durante a operação de recebimento."
 msgid "The label for the action"
 msgstr "A etiqueta da ação"
 
-#: src/dialogs/settings/host.c:190
+#: src/dialogs/settings/host.c:180
 msgid "The model of 3270 display to be emulated"
 msgstr "Modelo de tela 3270 a ser emulada"
 
@@ -1606,7 +1654,7 @@ msgstr "_Aplicar"
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: src/dialogs/settings/host.c:636
+#: src/dialogs/settings/host.c:597
 msgid "_Charset"
 msgstr "Tabela de _Caracteres"
 
@@ -1615,7 +1663,7 @@ msgstr "Tabela de _Caracteres"
 msgid "_Close"
 msgstr "_Close"
 
-#: src/dialogs/settings/host.c:161
+#: src/dialogs/settings/host.c:151
 msgid "_Color table"
 msgstr "_Tabela de cores"
 
@@ -1631,7 +1679,7 @@ msgstr "Nome do_Arquivo"
 msgid "_Font:"
 msgstr "_Fonte:"
 
-#: src/dialogs/settings/host.c:231
+#: src/dialogs/settings/host.c:213
 msgid "_Host"
 msgstr "_Servidor"
 
@@ -1643,7 +1691,7 @@ msgstr "_Carregar"
 msgid "_Local file"
 msgstr "Arquivo _local:"
 
-#: src/dialogs/settings/host.c:189
+#: src/dialogs/settings/host.c:179
 msgid "_Model"
 msgstr "_Modelo"
 
@@ -1664,11 +1712,11 @@ msgstr "Arquivo _remoto:"
 msgid "_Save"
 msgstr "_Salvar"
 
-#: src/dialogs/settings/host.c:544
+#: src/dialogs/settings/host.c:527
 msgid "_Secure connection."
 msgstr "Conexão _Segura."
 
-#: src/dialogs/settings/host.c:244
+#: src/dialogs/settings/host.c:226
 msgid "_Service"
 msgstr "_Serviço"
 
@@ -2788,9 +2836,6 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "N/A"
 #~ msgstr "N/A"
-
-#~ msgid "Name of the source file."
-#~ msgstr "Nome do arquivo origem."
 
 #~ msgid "Name of the target file."
 #~ msgstr "Nome do arquivo destino."
@@ -3929,9 +3974,6 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "_Edit"
 #~ msgstr "_Editar"
-
-#~ msgid "_Host options"
-#~ msgstr "Opções do _Servidor"
 
 #~ msgid "_Network"
 #~ msgstr "_Rede"

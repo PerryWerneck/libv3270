@@ -29,6 +29,7 @@
 
  #include "private.h"
  #include <v3270.h>
+ #include <v3270/selection.h>
  #include <lib3270/trace.h>
  #include <lib3270/log.h>
 

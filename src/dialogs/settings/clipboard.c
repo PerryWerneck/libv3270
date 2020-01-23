@@ -49,16 +49,16 @@
 
  static const struct ToggleButtonDefinition toggles[] = {
  	{
- 		.left = 0,
- 		.top = 0,
+ 		.left = 1,
+ 		.top = 1,
  		.width = 1,
  		.grid = COPY_SETTINGS,
  		.id = LIB3270_TOGGLE_RECTANGLE_SELECT,
  	},
 
  	{
- 		.left = 2,
- 		.top = 0,
+ 		.left = 1,
+ 		.top = 2,
  		.width = 1,
  		.grid = COPY_SETTINGS,
  		.id = LIB3270_TOGGLE_MARGINED_PASTE,
@@ -113,8 +113,8 @@
 	{
 		.grid = COPY_SETTINGS,
 		.left = 0,
-		.top = 1,
-		.width = 1,
+		.top = 0,
+		.width = 2,
 		.height = 1,
 		.label = N_("Format"),
 //		.tooltip =
@@ -186,6 +186,31 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			N_("HTML options")
 		};
 
+		static const struct {
+			int left;
+			int top;
+			int width;
+		} positions[GRID_COUNT] = {
+			{
+				.left = 0,
+				.top = 0,
+				.width = 1
+			},
+
+			{
+				.left = 1,
+				.top = 0,
+				.width = 1
+			},
+
+			{
+				.left = 0,
+				.top = 1,
+				.width = 1
+			}
+
+		};
+
 		for(ix = 0; ix < G_N_ELEMENTS(labels); ix++) {
 
 			grids[ix] = gtk_grid_new();
@@ -196,7 +221,8 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			gtk_grid_attach(
 					GTK_GRID(widget),
 					v3270_dialog_create_frame(grids[ix],g_dgettext(PACKAGE_NAME,labels[ix])),
-					0,ix,1,1
+					positions[ix].left, positions[ix].top,
+					positions[ix].width,1
 			);
 
 		}
@@ -383,6 +409,45 @@ static void load(GtkWidget *w, GtkWidget *t) {
 	debug("Plain text: %s",((terminal->selection.options & V3270_SELECTION_PLAIN_TEXT) ? "0" : "1"));
 	gtk_combo_box_set_active_id(widget->input.combos[2],(terminal->selection.options & (V3270_SELECTION_ENABLE_HTML|V3270_SELECTION_DIALOG_STATE)) == 0 ? "0" : "1");
 
+	//
+	// Set font combo-box
+	//
+	if(terminal->selection.options & V3270_SELECTION_FONT_FAMILY) {
+
+		// Has font family settings.
+		if(terminal->selection.font_family) {
+
+			// Has selected font-family
+
+		} else {
+
+			// Use screen font.
+			gtk_combo_box_set_active_id(widget->input.combos[0],"1");
+
+		}
+
+	} else {
+
+		// No font family
+		gtk_combo_box_set_active_id(widget->input.combos[0],"0");
+
+	}
+
+	//
+	// Set color combo box
+	//
+	if(terminal->selection.options & V3270_SELECTION_COLORS) {
+
+		// Has color settings.
+		gtk_combo_box_set_active_id(widget->input.combos[1],"1");
+
+	} else {
+
+		// No color
+		gtk_combo_box_set_active_id(widget->input.combos[1],"0");
+
+	}
+
 }
 
 static gchar get_active_id(V3270ClipboardSettings *widget, size_t combo) {
@@ -417,12 +482,14 @@ static void apply(GtkWidget *w, GtkWidget *t) {
 			// Disable font information
 			debug("%s","Disable font information");
 			terminal->selection.options &= ~V3270_SELECTION_FONT_FAMILY;
+			v3270_selection_set_font_family(t,NULL);
 			break;
 
 		case '1':
 			// Use same font of the screen
 			debug("%s","Use same font of the screen");
 			terminal->selection.options |= V3270_SELECTION_FONT_FAMILY;
+			v3270_selection_set_font_family(t,NULL);
 			break;
 
 		case 'S':
@@ -439,6 +506,7 @@ static void apply(GtkWidget *w, GtkWidget *t) {
 			// Disable color information
 			debug("%s","Disable color information");
 			terminal->selection.options &= ~V3270_SELECTION_COLORS;
+			v3270_selection_set_color_scheme(t,NULL);
 			break;
 
 		case '1':
@@ -446,6 +514,7 @@ static void apply(GtkWidget *w, GtkWidget *t) {
 			// Use same colors of the screen
 			debug("%s","Use same colors of the screen");
 			terminal->selection.options |= V3270_SELECTION_COLORS;
+			v3270_selection_set_color_scheme(t,NULL);
 			break;
 
 		case 'S':
