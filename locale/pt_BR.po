@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-23 09:01-0300\n"
-"PO-Revision-Date: 2020-01-23 09:05-0300\n"
+"POT-Creation-Date: 2020-01-23 09:02-0300\n"
+"PO-Revision-Date: 2020-01-23 09:52-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -257,7 +257,7 @@ msgstr "Clique para carregar arquivo"
 msgid "Click to save file"
 msgstr "Clique para salvar arquivo"
 
-#: src/dialogs/settings/clipboard.c:349
+#: src/dialogs/settings/clipboard.c:365
 msgid "Clipboard"
 msgstr "Área de transferência"
 
@@ -265,7 +265,7 @@ msgstr "Área de transferência"
 msgid "Clipboard name"
 msgstr "Nome da área de transferência"
 
-#: src/dialogs/settings/clipboard.c:348
+#: src/dialogs/settings/clipboard.c:364
 msgid "Clipboard properties"
 msgstr "Configuração da área de transferência"
 
@@ -297,7 +297,7 @@ msgstr "Arquivo separado por vírgulas (CSV)"
 msgid "Command to execute"
 msgstr "Comando a executar"
 
-#: src/dialogs/settings/clipboard.c:315
+#: src/dialogs/settings/clipboard.c:331
 msgid "Complete with terminal attributes"
 msgstr "Completo incluindo atributos do terminal"
 
@@ -321,7 +321,7 @@ msgstr "Copiar como texto puro"
 msgid "Copy as table"
 msgstr "Copiar como tabela"
 
-#: src/dialogs/settings/clipboard.c:184
+#: src/dialogs/settings/clipboard.c:199
 msgid "Copy options"
 msgstr "Opções da cópia"
 
@@ -527,7 +527,7 @@ msgstr "Cinza"
 msgid "Green"
 msgstr "Verde"
 
-#: src/dialogs/settings/clipboard.c:186
+#: src/dialogs/settings/clipboard.c:201
 msgid "HTML options"
 msgstr "Opções HTML"
 
@@ -693,11 +693,11 @@ msgstr "Nenhuma transferência"
 msgid "No transfer in progress"
 msgstr "Nenhuma transferência em andamento"
 
-#: src/dialogs/settings/clipboard.c:248
+#: src/dialogs/settings/clipboard.c:264
 msgid "None (Don't export color)"
 msgstr "Nenhum (Não exporta cores)"
 
-#: src/dialogs/settings/clipboard.c:366
+#: src/dialogs/settings/clipboard.c:382
 msgid "None (Don't export font name)"
 msgstr "Nenhuma (Não exporta fontes)"
 
@@ -801,7 +801,7 @@ msgstr "Colar de um arquivo"
 msgid "Paste from text file"
 msgstr "Colar de um arquivo texto"
 
-#: src/dialogs/settings/clipboard.c:185
+#: src/dialogs/settings/clipboard.c:200
 msgid "Paste options"
 msgstr "Opções para colar"
 
@@ -825,7 +825,7 @@ msgstr "Rosa"
 msgid "Plain text"
 msgstr "Texto puro"
 
-#: src/dialogs/settings/clipboard.c:314
+#: src/dialogs/settings/clipboard.c:330
 msgid "Plain text only"
 msgstr "Apenas texto puro"
 
@@ -982,7 +982,7 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/dialogs/settings/clipboard.c:249 src/dialogs/settings/clipboard.c:367
+#: src/dialogs/settings/clipboard.c:265 src/dialogs/settings/clipboard.c:383
 msgid "Same of the screen"
 msgstr "Igual ao terminal"
 
@@ -1482,6 +1482,11 @@ msgstr "Documento sem título"
 msgid "Use host default record format."
 msgstr "Utilizar o formato de registro padrão do servidor."
 
+# Tradução copiada do libre-office
+#: src/dialogs/settings/clipboard.c:135
+msgid "Use non-breaking Spaces"
+msgstr "Usar espaço inseparável"
+
 #: src/filetransfer/tables.c:86
 msgid "Variable"
 msgstr "Variável"
@@ -1489,6 +1494,14 @@ msgstr "Variável"
 #: src/dialogs/tools.c:138
 msgid "Western Europe (ISO 8859-1)"
 msgstr "Europa ocidental (ISO 8859-1)"
+
+#: src/dialogs/settings/clipboard.c:136
+msgid ""
+"When set the terminal spaces are exported as non-breaking spaces to prevent "
+"line breaks"
+msgstr ""
+"Quando selecionada os espaços do terminal são exportados como inseparáveis "
+"para prevenir quebras de linha"
 
 #: src/dialogs/settings/colors.c:162
 msgid "White"

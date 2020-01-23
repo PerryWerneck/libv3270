@@ -131,4 +131,21 @@
 
  }
 
+ void v3270_settings_create_checkboxes(const struct CheckBoxDefinition * definitions, size_t length, GtkWidget **grids, GtkToggleButton **buttons) {
+
+ 	size_t checkbox;
+
+ 	for(checkbox = 0; checkbox < length; checkbox++) {
+
+		buttons[checkbox] = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(definitions[checkbox].label));
+
+		if(definitions[checkbox].tooltip)
+			gtk_widget_set_tooltip_text(GTK_WIDGET(buttons[checkbox]),definitions[checkbox].tooltip);
+
+		gtk_widget_set_halign(GTK_WIDGET(buttons[checkbox]),GTK_ALIGN_START);
+		gtk_grid_attach(GTK_GRID(grids[definitions[checkbox].grid]),GTK_WIDGET(buttons[checkbox]),definitions[checkbox].left,definitions[checkbox].top,definitions[checkbox].width,1);
+
+ 	}
+
+ }
 

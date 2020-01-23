@@ -74,4 +74,13 @@
 
 	G_GNUC_INTERNAL void v3270_settings_create_combos(const struct ComboBoxDefinition * definitions, size_t length, GtkWidget **grids, GtkComboBox **combos);
 
+	/// @brief Checkbox factory
+	struct CheckBoxDefinition {
+		ENTRY_FIELD_HEAD
+
+		unsigned short grid;
+	};
+
+	G_GNUC_INTERNAL void v3270_settings_create_checkboxes(const struct CheckBoxDefinition * definitions, size_t length, GtkWidget **grids, GtkToggleButton **buttons);
+
 #endif // PRIVATE_H_INCLUDED

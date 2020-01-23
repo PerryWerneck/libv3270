@@ -129,6 +129,20 @@
 
  };
 
+ static const struct CheckBoxDefinition checkboxes[] = {
+
+	{
+		.label = N_("Use non-breaking Spaces"),
+		.tooltip = N_("When set the terminal spaces are exported as non-breaking spaces to prevent line breaks"),
+		.left = 1,
+		.top = 2,
+		.width = 1,
+		.height = 1,
+		.grid = 2
+	}
+
+ };
+
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
  typedef struct _V3270ClipboardSettings {
@@ -136,8 +150,9 @@
  	V3270Settings parent;
 
  	struct {
-		GtkToggleButton	* toggles[G_N_ELEMENTS(toggles)];	///< @brief Toggle checks.
-		GtkComboBox		* combos[G_N_ELEMENTS(combos)];		///< @brief Combo-boxes.
+		GtkToggleButton	* toggles[G_N_ELEMENTS(toggles)];			///< @brief Toggle checks.
+		GtkComboBox		* combos[G_N_ELEMENTS(combos)];				///< @brief Combo-boxes.
+		GtkToggleButton	* checkboxes[G_N_ELEMENTS(checkboxes)];		///< @brief Checkboxes.
  	} input;
 
 
@@ -231,6 +246,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 
 	v3270_settings_create_toggle_buttons(toggles, G_N_ELEMENTS(toggles), grids, widget->input.toggles);
 	v3270_settings_create_combos(combos, G_N_ELEMENTS(combos), grids, widget->input.combos);
+	v3270_settings_create_checkboxes(checkboxes, G_N_ELEMENTS(checkboxes), grids, widget->input.checkboxes);
 
 	// Setup combos
 	{
@@ -409,6 +425,8 @@ static void load(GtkWidget *w, GtkWidget *t) {
 	debug("Plain text: %s",((terminal->selection.options & V3270_SELECTION_PLAIN_TEXT) ? "0" : "1"));
 	gtk_combo_box_set_active_id(widget->input.combos[2],(terminal->selection.options & (V3270_SELECTION_ENABLE_HTML|V3270_SELECTION_DIALOG_STATE)) == 0 ? "0" : "1");
 
+	gtk_toggle_button_set_active(widget->input.checkboxes[0],(terminal->selection.options & V3270_SELECTION_NON_BREAKABLE_SPACE) != 0);
+
 	//
 	// Set font combo-box
 	//
@@ -474,7 +492,12 @@ static void apply(GtkWidget *w, GtkWidget *t) {
 	} else {
 
 		terminal->selection.options |= V3270_SELECTION_DIALOG_STATE;
-		terminal->selection.options |= V3270_SELECTION_NON_BREAKABLE_SPACE; // TODO: Use a checkbox to enable-it
+
+		if(gtk_toggle_button_get_active(widget->input.checkboxes[0])) {
+			terminal->selection.options |= V3270_SELECTION_NON_BREAKABLE_SPACE;
+		} else {
+			terminal->selection.options &= ~V3270_SELECTION_NON_BREAKABLE_SPACE;
+		}
 
 		// Get font settings
 		switch(get_active_id(widget,0)) {
