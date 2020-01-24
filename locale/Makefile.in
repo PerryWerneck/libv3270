@@ -63,7 +63,7 @@ $(BINDIR)/%/LC_MESSAGES/$(PACKAGE_NAME).mo: \
 	@$(MKDIR) `dirname $@`
 	@$(MSGFMT) -c -v -o $@ $^
 
-$(DESTDIR)/$(localedir)/%/LC_MESSAGES/$(PACKAGE_NAME).mo: \
+$(DESTDIR)$(localedir)/%/LC_MESSAGES/$(PACKAGE_NAME).mo: \
 	$(BINDIR)/%/LC_MESSAGES/$(PACKAGE_NAME).mo
 
 	@echo $< ...
@@ -76,7 +76,7 @@ all: \
 	$(foreach SRC, $(basename $(wildcard *.po)), $(BINDIR)/$(SRC)/LC_MESSAGES/$(PACKAGE_NAME).mo)
 
 install: \
-	$(foreach SRC, $(basename $(wildcard *.po)), $(DESTDIR)/$(localedir)/$(SRC)/LC_MESSAGES/$(PACKAGE_NAME).mo)
+	$(foreach SRC, $(basename $(wildcard *.po)), $(DESTDIR)$(localedir)/$(SRC)/LC_MESSAGES/$(PACKAGE_NAME).mo)
 
 
 

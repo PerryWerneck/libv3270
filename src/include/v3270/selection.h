@@ -47,38 +47,38 @@
 
 	} V3270_COPY_MODE;
 
-	void			  v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut);
-	void			  v3270_clipboard_get_from_url(GtkWidget *widget, const gchar *url);
+	LIB3270_EXPORT void				  v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut);
+	LIB3270_EXPORT void				  v3270_clipboard_get_from_url(GtkWidget *widget, const gchar *url);
 
 	/// @brief Check if the widget has saved text.
-	gboolean		  v3270_has_copy(GtkWidget *widget);
+	LIB3270_EXPORT gboolean			  v3270_has_copy(GtkWidget *widget);
 
-	void 			  v3270_paste(GtkWidget *widget) G_GNUC_DEPRECATED;
-	void 			  v3270_paste_text(GtkWidget *widget) G_GNUC_DEPRECATED;
-	void			  v3270_paste_from_file(GtkWidget *widget) G_GNUC_DEPRECATED;
-	void			  v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut) G_GNUC_DEPRECATED;
-	void			  v3270_append_selection(GtkWidget *widget, gboolean cut) G_GNUC_DEPRECATED;
+	LIB3270_EXPORT void 			  v3270_paste(GtkWidget *widget) G_GNUC_DEPRECATED;
+	LIB3270_EXPORT void 			  v3270_paste_text(GtkWidget *widget) G_GNUC_DEPRECATED;
+	LIB3270_EXPORT void				  v3270_paste_from_file(GtkWidget *widget) G_GNUC_DEPRECATED;
+	LIB3270_EXPORT void				  v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut) G_GNUC_DEPRECATED;
+	LIB3270_EXPORT void				  v3270_append_selection(GtkWidget *widget, gboolean cut) G_GNUC_DEPRECATED;
 
 	// Selections
 
-	gchar			* v3270_get_selected(GtkWidget *widget, gboolean cut);
-	gchar			* v3270_get_copy(GtkWidget *widget);
+	LIB3270_EXPORT gchar			* v3270_get_selected(GtkWidget *widget, gboolean cut);
+	LIB3270_EXPORT gchar			* v3270_get_copy(GtkWidget *widget);
 
-	gchar			* v3270_get_text(GtkWidget *widget,int offset, int len);
-	gchar			* v3270_get_region(GtkWidget *widget, gint start_pos, gint end_pos, gboolean all);
+	LIB3270_EXPORT gchar			* v3270_get_text(GtkWidget *widget,int offset, int len);
+	LIB3270_EXPORT gchar			* v3270_get_region(GtkWidget *widget, gint start_pos, gint end_pos, gboolean all);
 
-	void			  v3270_set_string(GtkWidget *widget, const gchar *str);
+	LIB3270_EXPORT void				  v3270_set_string(GtkWidget *widget, const gchar *str);
 
-	gboolean		  v3270_get_selection_bounds(GtkWidget *widget, gint *start, gint *end);
-	void			  v3270_unselect(GtkWidget *widget);
-	void 			  v3270_select_all(GtkWidget *widget);
-	void	  		  v3270_select_region(GtkWidget *widget, gint start, gint end);
+	LIB3270_EXPORT gboolean			  v3270_get_selection_bounds(GtkWidget *widget, gint *start, gint *end);
+	LIB3270_EXPORT void				  v3270_unselect(GtkWidget *widget);
+	LIB3270_EXPORT void 			  v3270_select_all(GtkWidget *widget);
+	LIB3270_EXPORT void	  			  v3270_select_region(GtkWidget *widget, gint start, gint end);
 
-	void			  v3270_selection_set_font_family(GtkWidget *widget, const gchar *name);
-	const gchar		* v3270_selection_get_font_family(GtkWidget *widget);
+	LIB3270_EXPORT void				  v3270_selection_set_font_family(GtkWidget *widget, const gchar *name);
+	LIB3270_EXPORT const gchar		* v3270_selection_get_font_family(GtkWidget *widget);
 
-	void			  v3270_selection_set_color_scheme(GtkWidget *widget, const gchar *name);
-	const gchar		* v3270_selection_get_color_scheme(GtkWidget *widget);
+	LIB3270_EXPORT void				  v3270_selection_set_color_scheme(GtkWidget *widget, const gchar *name);
+	LIB3270_EXPORT const gchar		* v3270_selection_get_color_scheme(GtkWidget *widget);
 
 	G_END_DECLS
 

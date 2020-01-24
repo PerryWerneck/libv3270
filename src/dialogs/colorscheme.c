@@ -264,7 +264,11 @@
 
  	if(!g_file_test(filename,G_FILE_TEST_IS_REGULAR))
 	{
+#ifdef DEBUG
+		g_message("Unable to load color schemes in \"%s\"",filename);
+#else
 		g_warning("Unable to load color schemes in \"%s\"",filename);
+#endif 		
 		gtk_widget_set_sensitive(widget,FALSE);
 		return widget;
 	}

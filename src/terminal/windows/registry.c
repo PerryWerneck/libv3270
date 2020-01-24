@@ -43,7 +43,12 @@
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  static void save_string(HKEY hKey, const gchar *key, const gchar *value) {
-	RegSetValueEx(hKey,key,0,REG_SZ,(const BYTE *) value,strlen(value)+1);
+
+	 if(value) {
+		RegSetValueEx(hKey,key,0,REG_SZ,(const BYTE *) value,strlen(value)+1);
+	 } else {
+		RegDeleteValue(hKey,key);
+	 }
  }
 
  static void save_by_pspec(GtkWidget *widget, GParamSpec *pspec, HKEY hKey)
