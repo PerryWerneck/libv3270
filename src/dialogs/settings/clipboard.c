@@ -151,7 +151,7 @@
 
 	{
 		.label = N_("Paste formatted screen"),
-		.tooltip = N_("If enabled search clipboard for a similar screen, if found paste unprotected fields and restore cursor position"),
+		.tooltip = N_("When set search clipboard for a similar screen, if found paste unprotected fields and restore cursor position"),
 		.left = 0,
 		.top = 2,
 		.width = 1,
