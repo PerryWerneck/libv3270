@@ -485,6 +485,10 @@ static void load(GtkWidget *w, GtkWidget *t) {
 
 	}
 
+#ifndef DEBUG
+	gtk_widget_set_sensitive(GTK_WIDGET(widget->input.combos[1]),FALSE);
+#endif // DEBUG
+
 }
 
 static gchar get_active_id(V3270ClipboardSettings *widget, size_t combo) {
