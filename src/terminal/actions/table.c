@@ -193,6 +193,17 @@
  		.activate = fire_paste_accelerator
 	},
 
+	{
+		.flags = 3,
+ 		.group = LIB3270_ACTION_GROUP_ONLINE,
+		.name = "paste-screen",
+		.label = N_("Paste formatted screen"),
+		.summary = N_("Search clipboard for a similar screen, if found paste unprotected fields and restore cursor position"),
+		.key = 'v',
+		.mods = GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK,
+ 		.activate = fire_paste_accelerator
+	},
+
  	{
  		.flags = 0,
  		.group = LIB3270_ACTION_GROUP_ONLINE,

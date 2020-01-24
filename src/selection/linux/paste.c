@@ -176,13 +176,15 @@ static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *select
 
 }
 
-static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, GtkWidget *widget)
-{
+static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, GtkWidget *widget) {
 
 	// If smart paste is enabled try to get formatted clipboard.
-	debug("%s: Smart paste is %s", __FUNCTION__, (lib3270_get_toggle(GTK_V3270(widget)->host,LIB3270_TOGGLE_SMART_PASTE) ? "enabled" : "disabled"));
-	if(lib3270_get_toggle(GTK_V3270(widget)->host,LIB3270_TOGGLE_SMART_PASTE) && has_target(GTK_V3270_GET_CLASS(widget)->clipboard_formatted,atoms,n_atoms))
-	{
+	gboolean screen_paste = ((GTK_V3270(widget)->selection.options & V3270_SELECTION_SCREEN_PASTE) != 0);
+
+	debug("%s: Screen paste is %s", __FUNCTION__, screen_paste ? "enabled" : "disabled");
+
+	if(screen_paste && has_target(GTK_V3270_GET_CLASS(widget)->clipboard_formatted,atoms,n_atoms)) {
+
 		debug("Clipboard as TN3270 \"%s\" data",gdk_atom_name(GTK_V3270_GET_CLASS(widget)->clipboard_formatted));
 
 		gtk_clipboard_request_contents(
@@ -225,7 +227,6 @@ LIB3270_EXPORT void v3270_clipboard_get_from_url(GtkWidget *widget, const gchar 
 			(GtkClipboardTextReceivedFunc) text_received,
 			(gpointer) widget
 		);
-
 	}
 	else if(g_str_has_prefix(url,"file://"))
 	{
@@ -233,6 +234,15 @@ LIB3270_EXPORT void v3270_clipboard_get_from_url(GtkWidget *widget, const gchar 
 		gtk_widget_show_all(dialog);
 		v3270_load_dialog_run(dialog);
 		gtk_widget_destroy(dialog);
+	}
+	else if(g_str_has_prefix(url,"screen://"))
+	{
+		gtk_clipboard_request_contents(
+			clipboard,
+			GTK_V3270_GET_CLASS(widget)->clipboard_formatted,
+			(GtkClipboardReceivedFunc) formatted_received,
+			(gpointer) widget
+		);
 	}
 
 }

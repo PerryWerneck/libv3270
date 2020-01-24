@@ -125,6 +125,7 @@ G_BEGIN_DECLS
  	V3270_SELECTION_COLORS				= 0x0002,	///< @brief Inform terminal colors.
  	V3270_SELECTION_NON_BREAKABLE_SPACE	= 0x0004,	///< @brief Use non breakable spaces.
  	V3270_SELECTION_DIALOG_STATE		= 0x0010,	///< @brief Used for settings dialog.
+ 	V3270_SELECTION_SCREEN_PASTE		= 0x0020,	///< @brief Enable screen paste.
 
  } V3270SelectionOption;
 

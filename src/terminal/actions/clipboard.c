@@ -50,7 +50,6 @@
 
  int fire_paste_accelerator(GtkWidget *widget, const V3270_ACTION * action) {
 
-
 	switch((int) action->flags)
 	{
 	case 0:	// Default paste.
@@ -63,6 +62,10 @@
 
 	case 2: // File paste.
 		v3270_clipboard_get_from_url(widget,"file://");
+		break;
+
+	case 3: // screen paste.
+		v3270_clipboard_get_from_url(widget,"screen://");
 		break;
 
 	default:

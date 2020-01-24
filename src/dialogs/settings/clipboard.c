@@ -146,7 +146,17 @@
 		.top = 2,
 		.width = 1,
 		.height = 1,
-		.grid = 2
+		.grid = HTML_SETTINGS
+	},
+
+	{
+		.label = N_("Paste formatted screen"),
+		.tooltip = N_("If enabled search clipboard for a similar screen, if found paste unprotected fields and restore cursor position"),
+		.left = 0,
+		.top = 2,
+		.width = 1,
+		.height = 1,
+		.grid = PASTE_SETTINGS
 	}
 
  };
@@ -336,7 +346,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 		// Copy format combo
 		static const gchar * copy_formats[] = {
 			N_("Plain text only"),
-			N_("Complete with terminal attributes")
+			N_("Screen with terminal attributes")
 		};
 
 		gtk_combo_box_set_id_column(widget->input.combos[0],1);
@@ -434,6 +444,7 @@ static void load(GtkWidget *w, GtkWidget *t) {
 	gtk_combo_box_set_active_id(widget->input.combos[2],(terminal->selection.options & (V3270_SELECTION_ENABLE_HTML|V3270_SELECTION_DIALOG_STATE)) == 0 ? "0" : "1");
 
 	gtk_toggle_button_set_active(widget->input.checkboxes[0],(terminal->selection.options & V3270_SELECTION_NON_BREAKABLE_SPACE) != 0);
+	gtk_toggle_button_set_active(widget->input.checkboxes[1],(terminal->selection.options & V3270_SELECTION_SCREEN_PASTE) != 0);
 
 	//
 	// Set font combo-box
@@ -505,6 +516,12 @@ static void apply(GtkWidget *w, GtkWidget *t) {
 			terminal->selection.options |= V3270_SELECTION_NON_BREAKABLE_SPACE;
 		} else {
 			terminal->selection.options &= ~V3270_SELECTION_NON_BREAKABLE_SPACE;
+		}
+
+		if(gtk_toggle_button_get_active(widget->input.checkboxes[0])) {
+			terminal->selection.options |= V3270_SELECTION_SCREEN_PASTE;
+		} else {
+			terminal->selection.options &= ~V3270_SELECTION_SCREEN_PASTE;
 		}
 
 		// Get font settings
