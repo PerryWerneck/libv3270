@@ -61,12 +61,20 @@
  		.top = 2,
  		.width = 1,
  		.grid = COPY_SETTINGS,
- 		.id = LIB3270_TOGGLE_MARGINED_PASTE,
+ 		.id = LIB3270_TOGGLE_KEEP_SELECTED,
  	},
 
  	{
  		.left = 0,
  		.top = 0,
+ 		.width = 1,
+ 		.grid = PASTE_SETTINGS,
+ 		.id = LIB3270_TOGGLE_MARGINED_PASTE,
+ 	},
+
+ 	{
+ 		.left = 0,
+ 		.top = 1,
  		.width = 1,
  		.grid = PASTE_SETTINGS,
  		.id = LIB3270_TOGGLE_SMART_PASTE,
