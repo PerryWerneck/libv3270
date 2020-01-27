@@ -163,9 +163,14 @@ void v3270_selection_set_color_scheme(GtkWidget *widget, const gchar *name) {
 
 	v3270 * terminal = GTK_V3270(widget);
 
-	if(terminal->selection.font_family) {
+	if(terminal->selection.color.scheme) {
 		g_free(terminal->selection.color.scheme);
 		terminal->selection.color.scheme = NULL;
+	}
+
+	if(terminal->selection.color.scheme) {
+		g_free(terminal->selection.color.value);
+		terminal->selection.color.value = NULL;
 	}
 
 	if(name) {

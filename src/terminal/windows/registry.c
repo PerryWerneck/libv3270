@@ -257,6 +257,7 @@
 
 	// Save internal properties
 	save_string(hKey, "selection-font-family", terminal->selection.font_family);
+	save_string(hKey, "selection-color-scheme", &terminal->selection.color.scheme);
 
 	// Save Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
@@ -315,6 +316,13 @@
 
  	// Load internal properties.
 	load_string(hKey, "selection-font-family", &terminal->selection.font_family);
+	load_string(hKey, "selection-color-scheme", &terminal->selection.color.scheme);
+
+	if(terminal->selection.color.value) {
+		g_free(terminal->selection.color.value);
+		terminal->selection.color.value = NULL;
+	}
+
 
 	// Load Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)

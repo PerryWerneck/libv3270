@@ -300,6 +300,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 		}
 
 		// Load color schemes
+#ifdef DEBUG
 		{
 			lib3270_autoptr(char) filename = lib3270_build_data_filename("colors.conf",NULL);
 			if(g_file_test(filename,G_FILE_TEST_IS_REGULAR)) {
@@ -342,6 +343,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 				g_key_file_free(keyfile);
 			}
 		}
+#endif // DEBUG
 
 		// Copy format combo
 		static const gchar * copy_formats[] = {
@@ -484,10 +486,6 @@ static void load(GtkWidget *w, GtkWidget *t) {
 		gtk_combo_box_set_active_id(widget->input.combos[1],"0");
 
 	}
-
-#ifndef DEBUG
-	gtk_widget_set_sensitive(GTK_WIDGET(widget->input.combos[1]),FALSE);
-#endif // DEBUG
 
 }
 

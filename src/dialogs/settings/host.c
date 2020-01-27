@@ -75,18 +75,20 @@
  	{
  		.left = 6,
  		.top = 1,
- 		.width = 1,
+ 		.width = 2,
  		.grid = EMULATION,
 		.id = LIB3270_TOGGLE_ALTSCREEN,
  	},
 
+ 	/*
  	{
- 		.left = 7,
- 		.top = 1,
+ 		.left = 1,
+ 		.top = 3,
  		.width = 1,
  		.grid = EMULATION,
 		.id = LIB3270_TOGGLE_MONOCASE,
  	},
+ 	*/
 
  };
 

@@ -193,6 +193,11 @@ static void finalize(GObject *object) {
 		terminal->selection.color.scheme = NULL;
 	}
 
+	if(terminal->selection.color.value) {
+		g_free(terminal->selection.color.value);
+		terminal->selection.color.value = NULL;
+	}
+
 	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);
  }
 

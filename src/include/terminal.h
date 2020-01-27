@@ -174,6 +174,7 @@ G_BEGIN_DECLS
 
 		struct {
 			gchar * scheme;						///< @brief Name of the selection color scheme
+			gchar * value;						///< @brief List of colors for selection.
 		} color;
 
 	} selection;

@@ -302,6 +302,7 @@
 
 	// Save internal properties
 	save_string(key_file, group_name, "selection-font-family", terminal->selection.font_family);
+	save_string(key_file, group_name, "selection-color-scheme", terminal->selection.color.scheme);
 
 	// Save Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
@@ -335,6 +336,12 @@
 
 	// Load internal properties.
 	load_string(key_file, group_name, "selection-font-family", &terminal->selection.font_family);
+	load_string(key_file, group_name, "selection-color-scheme", &terminal->selection.color.scheme);
+
+	if(terminal->selection.color.value) {
+		g_free(terminal->selection.color.value);
+		terminal->selection.color.value = NULL;
+	}
 
 	// Load session_name
 	if(g_key_file_has_key(key_file,group_name,"session-name",NULL)) {
