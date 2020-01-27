@@ -270,8 +270,9 @@
 
 	v3270PropertyAction * action = V3270_PROPERTY_ACTION(object);
 
+	// Boolean actions should act as toggles.
 	if(action->pspec->value_type == G_TYPE_BOOLEAN)
-		return G_VARIANT_TYPE_BOOLEAN;
+		return NULL;
 
 	return G_VARIANT_TYPE_STRING;
 
