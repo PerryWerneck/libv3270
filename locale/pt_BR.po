@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-23 09:02-0300\n"
-"PO-Revision-Date: 2020-01-23 09:52-0300\n"
+"POT-Creation-Date: 2020-01-27 11:29-0300\n"
+"PO-Revision-Date: 2020-01-27 11:31-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
-#: src/dialogs/settings/host.c:168
+#: src/dialogs/settings/host.c:170
 msgid "16 colors"
 msgstr "16 cores"
 
@@ -34,7 +34,7 @@ msgstr "Transferência de arquivos 3270"
 msgid "3270 screen"
 msgstr "Tela 3270"
 
-#: src/dialogs/settings/host.c:167
+#: src/dialogs/settings/host.c:169
 msgid "8 colors"
 msgstr "8 cores"
 
@@ -83,7 +83,7 @@ msgstr "Atividade já está na fila"
 msgid "Add to copy"
 msgstr "Adicionar à cópia"
 
-#: src/dialogs/settings/host.c:214
+#: src/dialogs/settings/host.c:216
 msgid "Address or name of the host to connect."
 msgstr "Endereço ou nome do host a conectar."
 
@@ -124,7 +124,7 @@ msgstr "Adiciona conteúdo do arquivo origem ao final do arquivo destino."
 msgid "Assign it to action (<b>%s</b>)?"
 msgstr "Associar com a ação (<b>%s</b>)?"
 
-#: src/dialogs/settings/host.c:492
+#: src/dialogs/settings/host.c:494
 msgid "Auto _disconnect"
 msgstr "Desconexão automática"
 
@@ -229,7 +229,7 @@ msgstr "Não foi possível iniciar transferência de arquivo"
 
 #: src/terminal/callbacks.c:393 src/filetransfer/v3270ftprogress.c:433
 #: src/filetransfer/transfer.c:89 src/dialogs/load.c:111
-#: src/dialogs/save/save.c:136 src/dialogs/settings/host.c:367
+#: src/dialogs/save/save.c:136 src/dialogs/settings/host.c:369
 msgid "Cancel"
 msgstr "_Cancelar"
 
@@ -237,7 +237,7 @@ msgstr "_Cancelar"
 msgid "Cancel transfer operation."
 msgstr "Cancelar transferência"
 
-#: src/dialogs/settings/host.c:528
+#: src/dialogs/settings/host.c:530
 msgid "Check for SSL secure connection."
 msgstr "Marcar para ativar a conexão segura via SSL."
 
@@ -257,7 +257,7 @@ msgstr "Clique para carregar arquivo"
 msgid "Click to save file"
 msgstr "Clique para salvar arquivo"
 
-#: src/dialogs/settings/clipboard.c:365
+#: src/dialogs/settings/clipboard.c:385
 msgid "Clipboard"
 msgstr "Área de transferência"
 
@@ -265,7 +265,7 @@ msgstr "Área de transferência"
 msgid "Clipboard name"
 msgstr "Nome da área de transferência"
 
-#: src/dialogs/settings/clipboard.c:364
+#: src/dialogs/settings/clipboard.c:384
 msgid "Clipboard properties"
 msgstr "Configuração da área de transferência"
 
@@ -273,7 +273,7 @@ msgstr "Configuração da área de transferência"
 msgid "Color _theme"
 msgstr "Tema de cores"
 
-#: src/dialogs/settings/clipboard.c:102
+#: src/dialogs/settings/clipboard.c:110
 msgid "Color theme"
 msgstr "Tema de cores"
 
@@ -285,7 +285,7 @@ msgstr "Cores"
 msgid "Comma separated list of LU names"
 msgstr "Lista de LUs separadas por vírgula"
 
-#: src/dialogs/settings/host.c:266
+#: src/dialogs/settings/host.c:268
 msgid "Comma separated list of LU names."
 msgstr "Lista de LUs separadas por vírgula."
 
@@ -297,11 +297,7 @@ msgstr "Arquivo separado por vírgulas (CSV)"
 msgid "Command to execute"
 msgstr "Comando a executar"
 
-#: src/dialogs/settings/clipboard.c:331
-msgid "Complete with terminal attributes"
-msgstr "Completo incluindo atributos do terminal"
-
-#: src/dialogs/settings/host.c:437
+#: src/dialogs/settings/host.c:439
 msgid "Connection"
 msgstr "Conexão"
 
@@ -321,7 +317,7 @@ msgstr "Copiar como texto puro"
 msgid "Copy as table"
 msgstr "Copiar como tabela"
 
-#: src/dialogs/settings/clipboard.c:199
+#: src/dialogs/settings/clipboard.c:217
 msgid "Copy options"
 msgstr "Opções da cópia"
 
@@ -363,7 +359,7 @@ msgstr "Posição atual da transferência"
 msgid "Current:"
 msgstr "Atual:"
 
-#: src/dialogs/settings/host.c:252
+#: src/dialogs/settings/host.c:254
 msgid "Custom Remap"
 msgstr "Mapeamento personalizado"
 
@@ -420,7 +416,7 @@ msgstr "ETA:"
 msgid "Emit a PA Key action"
 msgstr "Emite uma ação de tecla PA"
 
-#: src/dialogs/settings/host.c:447
+#: src/dialogs/settings/host.c:449
 msgid "Emulation"
 msgstr "Emulação"
 
@@ -452,7 +448,7 @@ msgstr "_Formato do arquivo"
 msgid "Files to transfer"
 msgstr "Arquivos a transferir"
 
-#: src/terminal/actions/table.c:224
+#: src/terminal/actions/table.c:235
 msgid "Fit best"
 msgstr "Melhor tamanho"
 
@@ -481,7 +477,7 @@ msgstr ""
 "Seguindo a convenção para arquivos texto ASCII, LF é usado para terminar "
 "registros no arquivo do PC."
 
-#: src/dialogs/font/chooser.c:329 src/dialogs/settings/clipboard.c:85
+#: src/dialogs/font/chooser.c:329 src/dialogs/settings/clipboard.c:93
 msgid "Font"
 msgstr "Fonte"
 
@@ -499,7 +495,7 @@ msgstr "Fonte \"%s\" é válida"
 msgid "Font family for terminal contents"
 msgstr "Familia da fonte usada no terminal"
 
-#: src/dialogs/settings/clipboard.c:119
+#: src/dialogs/settings/clipboard.c:127
 msgid "Format"
 msgstr "Formato"
 
@@ -527,15 +523,15 @@ msgstr "Cinza"
 msgid "Green"
 msgstr "Verde"
 
-#: src/dialogs/settings/clipboard.c:201
+#: src/dialogs/settings/clipboard.c:219
 msgid "HTML options"
 msgstr "Opções HTML"
 
-#: src/dialogs/settings/host.c:649
+#: src/dialogs/settings/host.c:651
 msgid "Host"
 msgstr "Servidor"
 
-#: src/dialogs/settings/host.c:648
+#: src/dialogs/settings/host.c:650
 msgid "Host settings"
 msgstr "Configurações do servidor"
 
@@ -543,15 +539,15 @@ msgstr "Configurações do servidor"
 msgid "HyperText Markup Language (HTML)"
 msgstr "Documento HTML"
 
-#: src/dialogs/settings/host.c:138
+#: src/dialogs/settings/host.c:140
 msgid "IBM AS/400"
 msgstr "IBM AS/400"
 
-#: src/dialogs/settings/host.c:137
+#: src/dialogs/settings/host.c:139
 msgid "IBM S/390"
 msgstr "IBM S/390"
 
-#: src/terminal/properties/init.c:121 src/dialogs/settings/host.c:496
+#: src/terminal/properties/init.c:121 src/dialogs/settings/host.c:498
 msgid "IDLE minutes for automatic disconnection"
 msgstr "Minutos para desconexão automática"
 
@@ -571,7 +567,7 @@ msgstr "Ignore"
 msgid "Ignore the fail and remove the file from queue."
 msgstr "Ignore the fail and remove the file from queue."
 
-#: src/terminal/actions/table.c:202
+#: src/terminal/actions/table.c:213
 msgid "Increase the font size"
 msgstr "Aumenta o tamanho da fonte"
 
@@ -613,7 +609,7 @@ msgstr "Estado inválido"
 msgid "Keyboard accelerators"
 msgstr "Atalhos de teclado"
 
-#: src/dialogs/settings/host.c:265
+#: src/dialogs/settings/host.c:267
 msgid "L_U Names"
 msgstr "Nomes de L_U"
 
@@ -633,7 +629,7 @@ msgstr "Arquivo local:"
 msgid "Local:"
 msgstr "Local:"
 
-#: src/dialogs/settings/host.c:240
+#: src/dialogs/settings/host.c:242
 msgid "Makes the screen larger than the default for the chosen model number."
 msgstr "Usa tamanho maior do que o padrão para o modelo escolhido."
 
@@ -641,23 +637,23 @@ msgstr "Usa tamanho maior do que o padrão para o modelo escolhido."
 msgid "Misc colors"
 msgstr "Cores diversas"
 
-#: src/dialogs/settings/host.c:195
+#: src/dialogs/settings/host.c:197
 msgid "Model 2 - 80x24"
 msgstr "Modelo 2 - 80x24"
 
-#: src/dialogs/settings/host.c:196
+#: src/dialogs/settings/host.c:198
 msgid "Model 3 - 80x32"
 msgstr "Modelo 3 - 80x32"
 
-#: src/dialogs/settings/host.c:197
+#: src/dialogs/settings/host.c:199
 msgid "Model 4 - 80x43"
 msgstr "Modelo 4 - 80x43"
 
-#: src/dialogs/settings/host.c:198
+#: src/dialogs/settings/host.c:200
 msgid "Model 5 - 132x27"
 msgstr "Modelo 5 - 132x27"
 
-#: src/dialogs/settings/host.c:166
+#: src/dialogs/settings/host.c:168
 msgid "Monochrome"
 msgstr "Monocromático"
 
@@ -693,11 +689,11 @@ msgstr "Nenhuma transferência"
 msgid "No transfer in progress"
 msgstr "Nenhuma transferência em andamento"
 
-#: src/dialogs/settings/clipboard.c:264
+#: src/dialogs/settings/clipboard.c:282
 msgid "None (Don't export color)"
 msgstr "Nenhum (Não exporta cores)"
 
-#: src/dialogs/settings/clipboard.c:382
+#: src/dialogs/settings/clipboard.c:402
 msgid "None (Don't export font name)"
 msgstr "Nenhuma (Não exporta fontes)"
 
@@ -761,15 +757,15 @@ msgstr "Opções"
 msgid "Orange"
 msgstr "Laranja"
 
-#: src/dialogs/settings/host.c:139
+#: src/dialogs/settings/host.c:141
 msgid "Other (TSO)"
 msgstr "Outro (TSO)"
 
-#: src/dialogs/settings/host.c:140
+#: src/dialogs/settings/host.c:142
 msgid "Other (VM/CMS)"
 msgstr "Outro (VM/CMS)"
 
-#: src/dialogs/settings/host.c:239
+#: src/dialogs/settings/host.c:241
 msgid "Oversize"
 msgstr "Oversize"
 
@@ -793,6 +789,10 @@ msgstr "Colar conteúdo da área de transferência"
 msgid "Paste file"
 msgstr "Colar arquivo"
 
+#: src/terminal/actions/table.c:200 src/dialogs/settings/clipboard.c:153
+msgid "Paste formatted screen"
+msgstr "Colar tela formatada"
+
 #: src/dialogs/load.c:246
 msgid "Paste from file"
 msgstr "Colar de um arquivo"
@@ -801,7 +801,7 @@ msgstr "Colar de um arquivo"
 msgid "Paste from text file"
 msgstr "Colar de um arquivo texto"
 
-#: src/dialogs/settings/clipboard.c:200
+#: src/dialogs/settings/clipboard.c:218
 msgid "Paste options"
 msgstr "Opções para colar"
 
@@ -809,7 +809,7 @@ msgstr "Opções para colar"
 msgid "Path and name of the local file"
 msgstr "Caminho e nome do arquivo local"
 
-#: src/dialogs/settings/host.c:253
+#: src/dialogs/settings/host.c:255
 msgid "Path to XML file with custom charset mapping."
 msgstr "Caminho do arquivo XML com o mapeamento personalizado de caracteres."
 
@@ -825,11 +825,11 @@ msgstr "Rosa"
 msgid "Plain text"
 msgstr "Texto puro"
 
-#: src/dialogs/settings/clipboard.c:330
+#: src/dialogs/settings/clipboard.c:350
 msgid "Plain text only"
 msgstr "Apenas texto puro"
 
-#: src/dialogs/settings/host.c:227
+#: src/dialogs/settings/host.c:229
 msgid "Port or service name (empty for \"telnet\")."
 msgstr "Nº da porta ou nome do serviço (em branco para \"telnet\")."
 
@@ -857,11 +857,11 @@ msgstr ""
 msgid "Primary space"
 msgstr "Primary space"
 
-#: src/terminal/actions/table.c:287
+#: src/terminal/actions/table.c:298
 msgid "Print"
 msgstr "Imprimir"
 
-#: src/terminal/actions/table.c:320
+#: src/terminal/actions/table.c:331
 msgid "Print Copy"
 msgstr "Imprimir cópia"
 
@@ -873,19 +873,19 @@ msgstr "Operação de impressão falhou"
 msgid "Print operation has failed"
 msgstr "Operação de impressão falhou"
 
-#: src/terminal/actions/table.c:298
+#: src/terminal/actions/table.c:309
 msgid "Print screen"
 msgstr "Imrpimir tela"
 
-#: src/terminal/actions/table.c:288
+#: src/terminal/actions/table.c:299
 msgid "Print screen or selection"
 msgstr "Imrpimir tela ou seleção"
 
-#: src/terminal/actions/table.c:309
+#: src/terminal/actions/table.c:320
 msgid "Print selected"
 msgstr "Imprimir seleção"
 
-#: src/terminal/actions/table.c:310
+#: src/terminal/actions/table.c:321
 msgid "Print selected area"
 msgstr "Imprimir área selecionada"
 
@@ -893,7 +893,7 @@ msgstr "Imprimir área selecionada"
 msgid "Print selection box"
 msgstr "Imprimir marca de seleção"
 
-#: src/terminal/actions/table.c:299
+#: src/terminal/actions/table.c:310
 msgid "Print the entire screen"
 msgstr "Imrpimir toda a tela"
 
@@ -982,17 +982,17 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/dialogs/settings/clipboard.c:265 src/dialogs/settings/clipboard.c:383
+#: src/dialogs/settings/clipboard.c:283 src/dialogs/settings/clipboard.c:403
 msgid "Same of the screen"
 msgstr "Igual ao terminal"
 
-#: src/terminal/actions/table.c:240 src/filetransfer/v3270ft.c:215
+#: src/terminal/actions/table.c:251 src/filetransfer/v3270ft.c:215
 #: src/filetransfer/activitylist.c:453 src/trace/trace.c:477
 #: src/dialogs/transfer.c:69
 msgid "Save"
 msgstr "Salvar"
 
-#: src/terminal/actions/table.c:274
+#: src/terminal/actions/table.c:285
 msgid "Save Copy"
 msgstr "Salvar cópia"
 
@@ -1000,11 +1000,11 @@ msgstr "Salvar cópia"
 msgid "Save _As"
 msgstr "Salvar _Como"
 
-#: src/terminal/actions/table.c:250
+#: src/terminal/actions/table.c:261
 msgid "Save all"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:272 src/dialogs/save/save.c:299
+#: src/terminal/actions/table.c:283 src/dialogs/save/save.c:299
 msgid "Save copy"
 msgstr "Salvar cópia"
 
@@ -1012,19 +1012,19 @@ msgstr "Salvar cópia"
 msgid "Save queue to file"
 msgstr "Salvar a fila para um arquivo"
 
-#: src/terminal/actions/table.c:252
+#: src/terminal/actions/table.c:263
 msgid "Save screen"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:241
+#: src/terminal/actions/table.c:252
 msgid "Save screen or selection"
 msgstr "Salvar tela ou seleção"
 
-#: src/terminal/actions/table.c:261
+#: src/terminal/actions/table.c:272
 msgid "Save selected"
 msgstr "Salvar seleção"
 
-#: src/terminal/actions/table.c:263 src/dialogs/save/save.c:298
+#: src/terminal/actions/table.c:274 src/dialogs/save/save.c:298
 msgid "Save selected area"
 msgstr "Salvar área selecionada"
 
@@ -1056,6 +1056,18 @@ msgstr "Guarda fila de transferência num arquivo XML externo"
 msgid "Save transfer queue to file"
 msgstr "Salvar fila de transferências para arquivo"
 
+#: src/dialogs/settings/clipboard.c:351
+msgid "Screen with terminal attributes"
+msgstr "Completa incluindo atributos do terminal"
+
+#: src/terminal/actions/table.c:201
+msgid ""
+"Search clipboard for a similar screen, if found paste unprotected fields and "
+"restore cursor position"
+msgstr ""
+"Pesquisa área de transferência por uma tela similar, se encontrar colca os "
+"campos não protegidos e restaura a posição do cursor"
+
 #: src/filetransfer/tables.c:187
 msgid ""
 "Secondary allocation for a file created on a TSO host.\n"
@@ -1070,15 +1082,15 @@ msgstr "Secondary space"
 
 #: src/filetransfer/v3270ft.c:303 src/filetransfer/settings.c:209
 #: src/dialogs/save/save.c:114 src/dialogs/save/save.c:137
-#: src/dialogs/settings/host.c:368
+#: src/dialogs/settings/host.c:370
 msgid "Select"
 msgstr "Selecionar"
 
-#: src/dialogs/settings/host.c:481
+#: src/dialogs/settings/host.c:483
 msgid "Select charset remap file"
 msgstr "Selecionar arquivo com mapeamento personalizado"
 
-#: src/dialogs/settings/host.c:364
+#: src/dialogs/settings/host.c:366
 msgid "Select custom charset mapping"
 msgstr "Seleciona mapeamento de teclado personalizado"
 
@@ -1132,7 +1144,7 @@ msgstr "Enviar arquivo texto"
 msgid "Sending file"
 msgstr "Enviando arquivo"
 
-#: src/terminal/actions/table.c:225
+#: src/terminal/actions/table.c:236
 msgid "Set the font to the best size for window"
 msgstr "Ajusta a fonte para o melhor tamanho"
 
@@ -1224,15 +1236,15 @@ msgstr "Estado do espaçamento dinâmico"
 msgid "Summary"
 msgstr "Sumário"
 
-#: src/dialogs/settings/host.c:123
+#: src/dialogs/settings/host.c:125
 msgid "System _type"
 msgstr "_Tipo de servidor"
 
-#: src/dialogs/settings/host.c:165
+#: src/dialogs/settings/host.c:167
 msgid "System default"
 msgstr "Padrão do sistema"
 
-#: src/dialogs/settings/host.c:377
+#: src/dialogs/settings/host.c:379
 msgid "TN3270 Custom charset"
 msgstr "Código de página TN3270 personalizado"
 
@@ -1259,7 +1271,7 @@ msgstr ""
 "has been reached, or the maximum number of data blocks per file (16060) has "
 "been reached."
 
-#: src/dialogs/settings/host.c:598
+#: src/dialogs/settings/host.c:600
 msgid "The EBCDIC host character set. "
 msgstr "A tabela de caracteres EBCDIC."
 
@@ -1317,7 +1329,7 @@ msgstr "O host detectou um erro no arquivo durante a operação de recebimento."
 msgid "The label for the action"
 msgstr "A etiqueta da ação"
 
-#: src/dialogs/settings/host.c:180
+#: src/dialogs/settings/host.c:182
 msgid "The model of 3270 display to be emulated"
 msgstr "Modelo de tela 3270 a ser emulada"
 
@@ -1483,7 +1495,7 @@ msgid "Use host default record format."
 msgstr "Utilizar o formato de registro padrão do servidor."
 
 # Tradução copiada do libre-office
-#: src/dialogs/settings/clipboard.c:135
+#: src/dialogs/settings/clipboard.c:143
 msgid "Use non-breaking Spaces"
 msgstr "Usar espaço inseparável"
 
@@ -1495,7 +1507,15 @@ msgstr "Variável"
 msgid "Western Europe (ISO 8859-1)"
 msgstr "Europa ocidental (ISO 8859-1)"
 
-#: src/dialogs/settings/clipboard.c:136
+#: src/dialogs/settings/clipboard.c:154
+msgid ""
+"When set search clipboard for a similar screen, if found paste unprotected "
+"fields and restore cursor position"
+msgstr ""
+"Quando ativo pesquisa a área de transferência por uma tela similar, se "
+"encontrar coloca os campos desprotegidos e restaura a posição do cursor"
+
+#: src/dialogs/settings/clipboard.c:144
 msgid ""
 "When set the terminal spaces are exported as non-breaking spaces to prevent "
 "line breaks"
@@ -1643,11 +1663,11 @@ msgstr ""
 msgid "You specified an option that is invalid."
 msgstr "Você especificou uma opção inválida."
 
-#: src/terminal/actions/table.c:201
+#: src/terminal/actions/table.c:212
 msgid "Zoom in"
 msgstr "Ampliar"
 
-#: src/terminal/actions/table.c:212
+#: src/terminal/actions/table.c:223
 msgid "Zoom out"
 msgstr "Reduzir"
 
@@ -1667,7 +1687,7 @@ msgstr "_Aplicar"
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: src/dialogs/settings/host.c:597
+#: src/dialogs/settings/host.c:599
 msgid "_Charset"
 msgstr "Tabela de _Caracteres"
 
@@ -1676,7 +1696,7 @@ msgstr "Tabela de _Caracteres"
 msgid "_Close"
 msgstr "_Close"
 
-#: src/dialogs/settings/host.c:151
+#: src/dialogs/settings/host.c:153
 msgid "_Color table"
 msgstr "_Tabela de cores"
 
@@ -1692,7 +1712,7 @@ msgstr "Nome do_Arquivo"
 msgid "_Font:"
 msgstr "_Fonte:"
 
-#: src/dialogs/settings/host.c:213
+#: src/dialogs/settings/host.c:215
 msgid "_Host"
 msgstr "_Servidor"
 
@@ -1704,7 +1724,7 @@ msgstr "_Carregar"
 msgid "_Local file"
 msgstr "Arquivo _local:"
 
-#: src/dialogs/settings/host.c:179
+#: src/dialogs/settings/host.c:181
 msgid "_Model"
 msgstr "_Modelo"
 
@@ -1725,11 +1745,11 @@ msgstr "Arquivo _remoto:"
 msgid "_Save"
 msgstr "_Salvar"
 
-#: src/dialogs/settings/host.c:527
+#: src/dialogs/settings/host.c:529
 msgid "_Secure connection."
 msgstr "Conexão _Segura."
 
-#: src/dialogs/settings/host.c:226
+#: src/dialogs/settings/host.c:228
 msgid "_Service"
 msgstr "_Serviço"
 
@@ -1737,7 +1757,7 @@ msgstr "_Serviço"
 msgid "_Text file"
 msgstr "Arquivo _texto"
 
-#: src/terminal/actions/table.c:213
+#: src/terminal/actions/table.c:224
 msgid "decrease the font size"
 msgstr "Diminui o tamanho da fonte"
 
@@ -2539,9 +2559,6 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "Format error in certificate's notBefore field"
 #~ msgstr "Erro de formato no campo \"notBefore\" do certificado"
-
-#~ msgid "Formatted screen"
-#~ msgstr "Tela formatada"
 
 #~ msgid "From"
 #~ msgstr "De"
