@@ -560,7 +560,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			for(item = 0; combos[combo].labels[item]; item++) {
 				GtkTreeIter iter;
 				gtk_list_store_append((GtkListStore *) model, &iter);
-				gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(PACKAGE_NAME, combos[combo].labels[item]), 1, combos[combo].values[item], -1);
+				gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(GETTEXT_PACKAGE, combos[combo].labels[item]), 1, combos[combo].values[item], -1);
 			}
 
 		}
@@ -628,7 +628,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 			{
 				GtkTreeIter iter;
 				gtk_list_store_append((GtkListStore *) model, &iter);
-				gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(PACKAGE_NAME, combos[combo].labels[item]), 1, combos[combo].values[item], -1);
+				gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(GETTEXT_PACKAGE, combos[combo].labels[item]), 1, combos[combo].values[item], -1);
 			}
 
 			v3270_grid_attach(GTK_GRID(grids[EMULATION]), (struct v3270_entry_field *) & combos[combo], GTK_WIDGET(widget->input.combos[combo]));

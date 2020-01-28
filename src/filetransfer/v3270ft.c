@@ -482,7 +482,7 @@ static void v3270ft_init(v3270ft *dialog) {
 
 		GtkWidget *button = gtk_button_new_from_icon_name(action[f].name,GTK_ICON_SIZE_BUTTON);
 
-		gtk_widget_set_tooltip_markup(button,g_dgettext(PACKAGE_NAME,action[f].tooltip));
+		gtk_widget_set_tooltip_markup(button,g_dgettext(GETTEXT_PACKAGE,action[f].tooltip));
 
 		if(action[f].start) {
 			gtk_header_bar_pack_start(GTK_HEADER_BAR(widget),button);
@@ -508,7 +508,7 @@ static void v3270ft_init(v3270ft *dialog) {
 
 		GtkWidget *button = GTK_WIDGET(gtk_tool_button_new(gtk_image_new_from_icon_name(action[f].name,GTK_ICON_SIZE_SMALL_TOOLBAR),NULL));
 
-		gtk_widget_set_tooltip_markup(button,g_dgettext(PACKAGE_NAME,action[f].tooltip));
+		gtk_widget_set_tooltip_markup(button,g_dgettext(GETTEXT_PACKAGE,action[f].tooltip));
 
 		gtk_toolbar_insert(GTK_TOOLBAR(widget),GTK_TOOL_ITEM(button),-1);
 
@@ -547,7 +547,7 @@ static void v3270ft_init(v3270ft *dialog) {
 			GtkTreeIter iter;
 
 			gtk_list_store_append((GtkListStore *) model,&iter);
-			gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(PACKAGE_NAME,ft_type[f].label),-1);
+			gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(GETTEXT_PACKAGE,ft_type[f].label),-1);
 
 			if(!f) {
 				gtk_combo_box_set_active_iter(GTK_COMBO_BOX(widget),&iter);
@@ -590,7 +590,7 @@ static void v3270ft_init(v3270ft *dialog) {
 	gtk_grid_attach(grid,GTK_WIDGET(dialog->remote),1,2,1,1);
 
 	for(f=0;f< (int) G_N_ELEMENTS(label);f++) {
-		GtkWidget * widget = gtk_label_new_with_mnemonic(g_dgettext(PACKAGE_NAME,label[f]));
+		GtkWidget * widget = gtk_label_new_with_mnemonic(g_dgettext(GETTEXT_PACKAGE,label[f]));
         gtk_widget_set_halign(widget,GTK_ALIGN_END);
         gtk_widget_set_valign(widget,GTK_ALIGN_CENTER);
 		gtk_grid_attach(grid,GTK_WIDGET(widget),0,f,1,1);
@@ -598,7 +598,7 @@ static void v3270ft_init(v3270ft *dialog) {
 	}
 
 	// Transfer options
-	widget = gtk_frame_new(g_dgettext(PACKAGE_NAME,frame[0]));
+	widget = gtk_frame_new(g_dgettext(GETTEXT_PACKAGE,frame[0]));
 	g_object_set(G_OBJECT(widget),"margin-top",18,NULL);
 
 	grid = v3270ft_new_grid();
@@ -609,8 +609,8 @@ static void v3270ft_init(v3270ft *dialog) {
 
 	for(f=0;f<4;f++) {
 
-		dialog->opt[f] = widget = gtk_check_button_new_with_mnemonic(g_dgettext(PACKAGE_NAME,ft_option[f].label));
-        gtk_widget_set_tooltip_markup(widget,g_dgettext(PACKAGE_NAME,ft_option[f].tooltip));
+		dialog->opt[f] = widget = gtk_check_button_new_with_mnemonic(g_dgettext(GETTEXT_PACKAGE,ft_option[f].label));
+        gtk_widget_set_tooltip_markup(widget,g_dgettext(GETTEXT_PACKAGE,ft_option[f].tooltip));
 		gtk_grid_attach(grid,widget,f&1,f/2,1,1);
 		g_signal_connect(G_OBJECT(widget),"toggled",G_CALLBACK(option_toggled),dialog);
 
@@ -629,7 +629,7 @@ static void v3270ft_init(v3270ft *dialog) {
 		GSList * group = NULL;
 
 		gtk_container_set_border_width(GTK_CONTAINER(box),6);
-		dialog->radio[f] = gtk_frame_new(g_dgettext(PACKAGE_NAME,frame[f+1]));
+		dialog->radio[f] = gtk_frame_new(g_dgettext(GETTEXT_PACKAGE,frame[f+1]));
 
 		gtk_container_add(GTK_CONTAINER(dialog->radio[f]),GTK_WIDGET(box));
 		gtk_container_add(GTK_CONTAINER(grid),dialog->radio[f]);
@@ -638,10 +638,10 @@ static void v3270ft_init(v3270ft *dialog) {
 
 			int ix = ((f+1)*4)+i;
 
-			dialog->opt[ix] = widget = gtk_radio_button_new_with_label(group,g_dgettext(PACKAGE_NAME,ft_option[ix].label));
+			dialog->opt[ix] = widget = gtk_radio_button_new_with_label(group,g_dgettext(GETTEXT_PACKAGE,ft_option[ix].label));
 
 			g_signal_connect(G_OBJECT(widget),"toggled",G_CALLBACK(option_toggled),dialog);
-			gtk_widget_set_tooltip_markup(widget,g_dgettext(PACKAGE_NAME,ft_option[ix].tooltip));
+			gtk_widget_set_tooltip_markup(widget,g_dgettext(GETTEXT_PACKAGE,ft_option[ix].tooltip));
 			gtk_box_pack_start(box,widget,FALSE,FALSE,2);
 			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(widget));
 
@@ -657,7 +657,7 @@ static void v3270ft_init(v3270ft *dialog) {
 
 	for(f=0;f < LIB3270_FT_VALUE_COUNT;f++) {
 
-		GtkWidget * label = gtk_label_new_with_mnemonic(g_dgettext(PACKAGE_NAME,ft_value[f].label));
+		GtkWidget * label = gtk_label_new_with_mnemonic(g_dgettext(GETTEXT_PACKAGE,ft_value[f].label));
         gtk_widget_set_halign(label,GTK_ALIGN_END);
         gtk_widget_set_valign(label,GTK_ALIGN_CENTER);
 
@@ -665,8 +665,8 @@ static void v3270ft_init(v3270ft *dialog) {
 		g_signal_connect(G_OBJECT(widget),"value-changed",G_CALLBACK(spin_changed),dialog);
 		g_signal_connect(G_OBJECT(widget),"output",G_CALLBACK(spin_format),dialog);
 
-		gtk_widget_set_tooltip_markup(widget,g_dgettext(PACKAGE_NAME,ft_value[f].tooltip));
-		gtk_widget_set_tooltip_markup(label,g_dgettext(PACKAGE_NAME,ft_value[f].tooltip));
+		gtk_widget_set_tooltip_markup(widget,g_dgettext(GETTEXT_PACKAGE,ft_value[f].tooltip));
+		gtk_widget_set_tooltip_markup(label,g_dgettext(GETTEXT_PACKAGE,ft_value[f].tooltip));
 
 		gtk_label_set_mnemonic_widget(GTK_LABEL(label),widget);
 

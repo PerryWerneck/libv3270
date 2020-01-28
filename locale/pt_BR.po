@@ -1517,7 +1517,7 @@ msgid ""
 "fields and restore cursor position"
 msgstr ""
 "Quando ativo pesquisa a área de transferência por uma tela similar, se "
-"encontrar coloca os campos desprotegidos e restaura a posição do cursor"
+"encontrar cola os campos desprotegidos e restaura a posição do cursor"
 
 #: src/dialogs/settings/clipboard.c:164
 msgid ""
@@ -1526,7 +1526,7 @@ msgid ""
 msgstr ""
 "Quando selecionado a primeira operação de cópia após a seleção definirá o "
 "conteúdo da área de transferência enquanto as operações subsequentes "
-"acrescentaram conteúdo"
+"adicionam conteúdo"
 
 #: src/dialogs/settings/clipboard.c:144
 msgid ""

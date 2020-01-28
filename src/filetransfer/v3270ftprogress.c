@@ -352,7 +352,7 @@ static GtkWidget * create_text(guint width) {
 
 static GtkWidget * create_label(int id, GtkWidget *entry) {
 
-	GtkWidget * widget = gtk_label_new(g_dgettext(PACKAGE_NAME,v3270_ft_worker_fields[id].label));
+	GtkWidget * widget = gtk_label_new(g_dgettext(GETTEXT_PACKAGE,v3270_ft_worker_fields[id].label));
 
 	gtk_widget_set_tooltip_markup(widget,v3270_ft_worker_fields[id].tooltip);
 	gtk_widget_set_tooltip_markup(entry,v3270_ft_worker_fields[id].tooltip);
@@ -602,7 +602,7 @@ static void ft_failed(H3270 *hSession, unsigned long length,double kbytes_sec,co
 				while(*text && g_ascii_isspace(*text))
 					text++;
 
-				delay_signal(hSession, V3270FTPROGRESS_SIGNAL_FAILED, text, g_dgettext(PACKAGE_NAME,ftmsg[f].text));
+				delay_signal(hSession, V3270FTPROGRESS_SIGNAL_FAILED, text, g_dgettext(GETTEXT_PACKAGE,ftmsg[f].text));
 
 				return;
 
@@ -645,7 +645,7 @@ static void ft_complete(H3270 *hSession, unsigned long length,double kbytes_sec,
 				while(*text && g_ascii_isspace(*text))
 					text++;
 
-				delay_signal(hSession, ftmsg[f].failed ? V3270FTPROGRESS_SIGNAL_FAILED : V3270FTPROGRESS_SIGNAL_SUCCESS, text,  g_dgettext(PACKAGE_NAME,ftmsg[f].text));
+				delay_signal(hSession, ftmsg[f].failed ? V3270FTPROGRESS_SIGNAL_FAILED : V3270FTPROGRESS_SIGNAL_SUCCESS, text,  g_dgettext(GETTEXT_PACKAGE,ftmsg[f].text));
 
 				return;
 

@@ -209,7 +209,7 @@
 
  static void create_field(V3270FTWorker *widget, PROGRESS_FIELD id, GtkWidget *grid, gint top)
  {
-	GtkWidget * label = gtk_label_new(g_dgettext(PACKAGE_NAME,v3270_ft_worker_fields[id].label));
+	GtkWidget * label = gtk_label_new(g_dgettext(GETTEXT_PACKAGE,v3270_ft_worker_fields[id].label));
 	gtk_widget_set_halign(GTK_WIDGET(label),GTK_ALIGN_END);
 	gtk_grid_attach(GTK_GRID(grid),label,0,top,1,1);
 
@@ -229,8 +229,8 @@
  	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
  	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
 
-	widget->field[PROGRESS_FIELD_LOCAL] = GTK_ENTRY(create_entry(widget,g_dgettext(PACKAGE_NAME,v3270_ft_worker_fields[PROGRESS_FIELD_LOCAL].label),gtk_entry_new(),0,0,9));
-	widget->field[PROGRESS_FIELD_REMOTE] = GTK_ENTRY(create_entry(widget,g_dgettext(PACKAGE_NAME,v3270_ft_worker_fields[PROGRESS_FIELD_REMOTE].label),gtk_entry_new(),0,1,9));
+	widget->field[PROGRESS_FIELD_LOCAL] = GTK_ENTRY(create_entry(widget,g_dgettext(GETTEXT_PACKAGE,v3270_ft_worker_fields[PROGRESS_FIELD_LOCAL].label),gtk_entry_new(),0,0,9));
+	widget->field[PROGRESS_FIELD_REMOTE] = GTK_ENTRY(create_entry(widget,g_dgettext(GETTEXT_PACKAGE,v3270_ft_worker_fields[PROGRESS_FIELD_REMOTE].label),gtk_entry_new(),0,1,9));
 
 	// Create status elements
 	GtkWidget * views = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,6);

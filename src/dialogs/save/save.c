@@ -239,7 +239,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 				GTK_COMBO_BOX_TEXT(dialog->format),
 				ix,
 				formats[ix].extension,
-				g_dgettext(PACKAGE_NAME,formats[ix].name)
+				g_dgettext(GETTEXT_PACKAGE,formats[ix].name)
 			);
 		}
 
@@ -315,7 +315,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	if( (size_t) mode < G_N_ELEMENTS(titles))
 	{
-		gtk_window_set_title(GTK_WINDOW(dialog),g_dgettext(PACKAGE_NAME,titles[(size_t) mode]));
+		gtk_window_set_title(GTK_WINDOW(dialog),g_dgettext(GETTEXT_PACKAGE,titles[(size_t) mode]));
 	}
 
 	if(filename)

@@ -178,7 +178,7 @@ static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
 
  GtkWidget * create_spin_button(V3270FTSettings *widget, GtkWidget *grid, size_t row, LIB3270_FT_VALUE id)
  {
-	GtkWidget * label = gtk_label_new_with_mnemonic(g_dgettext(PACKAGE_NAME,ft_value[id].label));
+	GtkWidget * label = gtk_label_new_with_mnemonic(g_dgettext(GETTEXT_PACKAGE,ft_value[id].label));
 	gtk_widget_set_halign(label,GTK_ALIGN_END);
 
 	gtk_grid_attach(GTK_GRID(grid),label,0,row,1,1);
@@ -187,8 +187,8 @@ static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
 	// g_signal_connect(G_OBJECT(button),"value-changed",G_CALLBACK(spin_changed),dialog);
 	g_signal_connect(G_OBJECT(button),"output",G_CALLBACK(spin_format),widget);
 
-	gtk_widget_set_tooltip_markup(button,g_dgettext(PACKAGE_NAME,ft_value[id].tooltip));
-	gtk_widget_set_tooltip_markup(label,g_dgettext(PACKAGE_NAME,ft_value[id].tooltip));
+	gtk_widget_set_tooltip_markup(button,g_dgettext(GETTEXT_PACKAGE,ft_value[id].tooltip));
+	gtk_widget_set_tooltip_markup(label,g_dgettext(GETTEXT_PACKAGE,ft_value[id].tooltip));
 
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label),button);
 
@@ -452,7 +452,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 		{
 			GtkTreeIter iter;
 			gtk_list_store_append((GtkListStore *) model,&iter);
-			gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(PACKAGE_NAME,ft_type[ix].label), -1);
+			gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(GETTEXT_PACKAGE,ft_type[ix].label), -1);
 		}
 
 
@@ -499,8 +499,8 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 		for(ix=0;ix<4;ix++)
 		{
-			widget->options[ix] = gtk_check_button_new_with_mnemonic(g_dgettext(PACKAGE_NAME,ft_option[ix].label));
-			gtk_widget_set_tooltip_markup(widget->options[ix],g_dgettext(PACKAGE_NAME,ft_option[ix].tooltip));
+			widget->options[ix] = gtk_check_button_new_with_mnemonic(g_dgettext(GETTEXT_PACKAGE,ft_option[ix].label));
+			gtk_widget_set_tooltip_markup(widget->options[ix],g_dgettext(GETTEXT_PACKAGE,ft_option[ix].tooltip));
 			// g_signal_connect(G_OBJECT(widget->options[ix]),"toggled",G_CALLBACK(option_toggled),widget);
 			gtk_box_pack_start(GTK_BOX(box),widget->options[ix],FALSE,TRUE,0);
 		}
@@ -526,8 +526,8 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 		for(ix=4;ix<8;ix++)
 		{
-			widget->options[ix] = gtk_radio_button_new_with_label(group,g_dgettext(PACKAGE_NAME,ft_option[ix].label));
-			gtk_widget_set_tooltip_markup(widget->options[ix],g_dgettext(PACKAGE_NAME,ft_option[ix].tooltip));
+			widget->options[ix] = gtk_radio_button_new_with_label(group,g_dgettext(GETTEXT_PACKAGE,ft_option[ix].label));
+			gtk_widget_set_tooltip_markup(widget->options[ix],g_dgettext(GETTEXT_PACKAGE,ft_option[ix].tooltip));
 			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(widget->options[ix]));
 			gtk_box_pack_start(GTK_BOX(widget->recordFormatBox),widget->options[ix],FALSE,TRUE,0);
 
@@ -551,8 +551,8 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 
 		for(ix=8;ix<12;ix++)
 		{
-			widget->options[ix] = gtk_radio_button_new_with_label(group,g_dgettext(PACKAGE_NAME,ft_option[ix].label));
-			gtk_widget_set_tooltip_markup(widget->options[ix],g_dgettext(PACKAGE_NAME,ft_option[ix].tooltip));
+			widget->options[ix] = gtk_radio_button_new_with_label(group,g_dgettext(GETTEXT_PACKAGE,ft_option[ix].label));
+			gtk_widget_set_tooltip_markup(widget->options[ix],g_dgettext(GETTEXT_PACKAGE,ft_option[ix].tooltip));
 			group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(widget->options[ix]));
 			gtk_box_pack_start(GTK_BOX(widget->spaceAllocationBox),widget->options[ix],FALSE,TRUE,0);
 

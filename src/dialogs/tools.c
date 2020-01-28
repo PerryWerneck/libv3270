@@ -163,7 +163,7 @@
 				GTK_COMBO_BOX_TEXT(widget),
 				ix+1,
 				charsets[ix].name,
-				g_dgettext(PACKAGE_NAME,charsets[ix].description)
+				g_dgettext(GETTEXT_PACKAGE,charsets[ix].description)
 			);
 		}
 	}
@@ -174,7 +174,7 @@
 
  void v3270_grid_attach(GtkGrid *grid, const struct v3270_entry_field * description, GtkWidget *widget)
  {
-	GtkWidget *label = gtk_label_new_with_mnemonic(g_dgettext(PACKAGE_NAME,description->label));
+	GtkWidget *label = gtk_label_new_with_mnemonic(g_dgettext(GETTEXT_PACKAGE,description->label));
 	gtk_label_set_mnemonic_widget(GTK_LABEL(label),widget);
 
 	gtk_widget_set_halign(label,GTK_ALIGN_END);
@@ -182,7 +182,7 @@
 	gtk_grid_attach(grid,widget,description->left+1,description->top,description->width,description->height);
 
 	if(description->tooltip)
-		gtk_widget_set_tooltip_markup(widget,g_dgettext(PACKAGE_NAME,description->tooltip));
+		gtk_widget_set_tooltip_markup(widget,g_dgettext(GETTEXT_PACKAGE,description->tooltip));
 
  }
 

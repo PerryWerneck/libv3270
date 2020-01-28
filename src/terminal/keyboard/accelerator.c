@@ -170,14 +170,14 @@
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
 		debug("%s","V3270_ACCELERATOR_TYPE_INTERNAL");
 		if(property->summary)
-			description = g_dgettext(PACKAGE_NAME,property->summary);
+			description = g_dgettext(GETTEXT_PACKAGE,property->summary);
 		break;
 
 	case V3270_ACCELERATOR_TYPE_PFKEY:
 		debug("%s","V3270_ACCELERATOR_TYPE_PFKEY");
 
 		if( ((V3270PFKeyAccelerator *)accel)->description )
-			description = g_dgettext(PACKAGE_NAME,((V3270PFKeyAccelerator *)accel)->description);
+			description = g_dgettext(GETTEXT_PACKAGE,((V3270PFKeyAccelerator *)accel)->description);
 
 		break;
 
@@ -210,16 +210,16 @@
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
 		debug("%s","V3270_ACCELERATOR_TYPE_INTERNAL");
 		if(property->description)
-			description = g_dgettext(PACKAGE_NAME,property->description);
+			description = g_dgettext(GETTEXT_PACKAGE,property->description);
 		else if(property->summary)
-			description = g_dgettext(PACKAGE_NAME,property->summary);
+			description = g_dgettext(GETTEXT_PACKAGE,property->summary);
 		break;
 
 	case V3270_ACCELERATOR_TYPE_PFKEY:
 		debug("%s","V3270_ACCELERATOR_TYPE_PFKEY");
 
 		if( ((V3270PFKeyAccelerator *)accel)->description )
-			description = g_dgettext(PACKAGE_NAME,((V3270PFKeyAccelerator *)accel)->description);
+			description = g_dgettext(GETTEXT_PACKAGE,((V3270PFKeyAccelerator *)accel)->description);
 
 		break;
 

@@ -201,9 +201,9 @@ int main (int argc, char **argv) {
 	setlocale( LC_ALL, "" );
 #endif
 
-	textdomain("pw3270");
+	textdomain("libv3270");
 
-	app = gtk_application_new ("br.com.bb.pw3270",G_APPLICATION_FLAGS_NONE);
+	app = gtk_application_new ("br.com.bb.libv3270",G_APPLICATION_FLAGS_NONE);
 
 	g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
 

@@ -489,7 +489,7 @@ static void draw_status_message(cairo_t *cr, LIB3270_MESSAGE id, v3270FontInfo *
 
 	if(msg && *msg)
 	{
-		msg = g_dgettext(PACKAGE_NAME,msg);
+		msg = g_dgettext(GETTEXT_PACKAGE,msg);
 	}
 
 	if(msg && *msg)

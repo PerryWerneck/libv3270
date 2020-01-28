@@ -275,7 +275,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 
 			gtk_grid_attach(
 					GTK_GRID(widget),
-					v3270_dialog_create_frame(grids[ix],g_dgettext(PACKAGE_NAME,labels[ix])),
+					v3270_dialog_create_frame(grids[ix],g_dgettext(GETTEXT_PACKAGE,labels[ix])),
 					positions[ix].left, positions[ix].top,
 					positions[ix].width,1
 			);
@@ -316,7 +316,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			gtk_list_store_set(
 				model,
 				&iter,
-				0, g_dgettext(PACKAGE_NAME, html_color_options[ix]),
+				0, g_dgettext(GETTEXT_PACKAGE, html_color_options[ix]),
 				1, id,
 				-1
 			);
@@ -388,7 +388,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			gtk_list_store_set(
 				model,
 				&iter,
-				0, g_dgettext(PACKAGE_NAME, copy_formats[ix]),
+				0, g_dgettext(GETTEXT_PACKAGE, copy_formats[ix]),
 				1, id,
 				-1
 			);
@@ -438,7 +438,7 @@ static void load(GtkWidget *w, GtkWidget *t) {
 			gtk_list_store_set(
 				model,
 				&iter,
-				0, g_dgettext(PACKAGE_NAME, html_font_options[ix]),
+				0, g_dgettext(GETTEXT_PACKAGE, html_font_options[ix]),
 				1, id,
 				-1
 			);
