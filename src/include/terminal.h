@@ -120,12 +120,13 @@ G_BEGIN_DECLS
 
  typedef enum _V3270SelectionOption {
 
- 	V3270_SELECTION_PLAIN_TEXT			= 0x0000,	///< @brief Uses only plain text.
- 	V3270_SELECTION_FONT_FAMILY			= 0x0001,	///< @brief Inform font-family.
- 	V3270_SELECTION_COLORS				= 0x0002,	///< @brief Inform terminal colors.
- 	V3270_SELECTION_NON_BREAKABLE_SPACE	= 0x0004,	///< @brief Use non breakable spaces.
- 	V3270_SELECTION_DIALOG_STATE		= 0x0010,	///< @brief Used for settings dialog.
- 	V3270_SELECTION_SCREEN_PASTE		= 0x0020,	///< @brief Enable screen paste.
+ 	V3270_SELECTION_PLAIN_TEXT			= 0x00,	///< @brief Uses only plain text.
+ 	V3270_SELECTION_FONT_FAMILY			= 0x01,	///< @brief Inform font-family.
+ 	V3270_SELECTION_COLORS				= 0x02,	///< @brief Inform terminal colors.
+ 	V3270_SELECTION_NON_BREAKABLE_SPACE	= 0x04,	///< @brief Use non breakable spaces.
+ 	V3270_SELECTION_SCREEN_PASTE		= 0x08,	///< @brief Enable screen paste.
+ 	V3270_SELECTION_SMART_COPY			= 0x10,	///< @brief Enable copy/append based on current selection state.
+ 	V3270_SELECTION_DIALOG_STATE		= 0x20,	///< @brief Used for settings dialog.
 
  } V3270SelectionOption;
 
@@ -155,6 +156,7 @@ G_BEGIN_DECLS
 	int scaled_fonts	: 1;	/// @brief Use scaled fonts
 	int drawing			: 1;	/// @brief Draw widget?
 	int freeze			: 1;	/// @brief Truee when the "save settings" signal is disabled.
+	int append			: 1;	/// @brief Next smart-copy operation will be append.
 
     /// @brief Action properties.
    	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];

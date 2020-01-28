@@ -157,8 +157,17 @@
 		.width = 1,
 		.height = 1,
 		.grid = PASTE_SETTINGS
-	}
+	},
 
+	{
+		.label = N_("Smart copy"),
+		.tooltip = N_("When set the first copy operation after the selection will set the clipboard contents and the next ones will append"),
+		.left = 1,
+		.top = 3,
+		.width = 1,
+		.height = 1,
+		.grid = COPY_SETTINGS
+	}
  };
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
@@ -203,6 +212,19 @@ static void copy_format_changed(GtkComboBox *widget, GtkWidget *grid) {
 
 	const gchar * active = gtk_combo_box_get_active_id(widget);
 	gtk_widget_set_sensitive(grid,active && *active == '1');
+
+}
+
+static void keep_selected_toggled(GtkToggleButton *togglebutton, V3270ClipboardSettings *settings) {
+
+	debug("%s",__FUNCTION__);
+
+	if(!gtk_toggle_button_get_active(togglebutton)) {
+		gtk_toggle_button_set_active(settings->input.checkboxes[2],FALSE);
+		gtk_widget_set_sensitive(GTK_WIDGET(settings->input.checkboxes[2]),FALSE);
+	} else {
+		gtk_widget_set_sensitive(GTK_WIDGET(settings->input.checkboxes[2]),TRUE);
+	}
 
 }
 
@@ -263,6 +285,8 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 	}
 
 	v3270_settings_create_toggle_buttons(toggles, G_N_ELEMENTS(toggles), grids, widget->input.toggles);
+	g_signal_connect(G_OBJECT(widget->input.toggles[1]),"toggled",G_CALLBACK(keep_selected_toggled),widget);
+
 	v3270_settings_create_combos(combos, G_N_ELEMENTS(combos), grids, widget->input.combos);
 	v3270_settings_create_checkboxes(checkboxes, G_N_ELEMENTS(checkboxes), grids, widget->input.checkboxes);
 
@@ -447,6 +471,7 @@ static void load(GtkWidget *w, GtkWidget *t) {
 
 	gtk_toggle_button_set_active(widget->input.checkboxes[0],(terminal->selection.options & V3270_SELECTION_NON_BREAKABLE_SPACE) != 0);
 	gtk_toggle_button_set_active(widget->input.checkboxes[1],(terminal->selection.options & V3270_SELECTION_SCREEN_PASTE) != 0);
+	gtk_toggle_button_set_active(widget->input.checkboxes[2],(terminal->selection.options & V3270_SELECTION_SMART_COPY) != 0);
 
 	//
 	// Set font combo-box
@@ -520,10 +545,16 @@ static void apply(GtkWidget *w, GtkWidget *t) {
 			terminal->selection.options &= ~V3270_SELECTION_NON_BREAKABLE_SPACE;
 		}
 
-		if(gtk_toggle_button_get_active(widget->input.checkboxes[0])) {
+		if(gtk_toggle_button_get_active(widget->input.checkboxes[1])) {
 			terminal->selection.options |= V3270_SELECTION_SCREEN_PASTE;
 		} else {
 			terminal->selection.options &= ~V3270_SELECTION_SCREEN_PASTE;
+		}
+
+		if(gtk_toggle_button_get_active(widget->input.checkboxes[2])) {
+			terminal->selection.options |= V3270_SELECTION_SMART_COPY;
+		} else {
+			terminal->selection.options &= ~V3270_SELECTION_SMART_COPY;
 		}
 
 		// Get font settings

@@ -109,6 +109,7 @@ LIB3270_EXPORT void v3270_unselect(GtkWidget *widget)
 {
 	v3270_disable_updates(widget);
 	lib3270_unselect(v3270_get_session(widget));
+	GTK_V3270(widget)->append = 0; // Reset smart-copy.
 	v3270_enable_updates(widget);
 }
 
@@ -122,6 +123,7 @@ LIB3270_EXPORT  void v3270_select_region(GtkWidget *widget, gint start, gint end
 {
  	g_return_if_fail(GTK_IS_V3270(widget));
  	lib3270_select_region(GTK_V3270(widget)->host,start,end);
+	GTK_V3270(widget)->append = 0; // Reset smart-copy.
 }
 
 LIB3270_EXPORT void v3270_select_all(GtkWidget *widget)
@@ -130,6 +132,7 @@ LIB3270_EXPORT void v3270_select_all(GtkWidget *widget)
 	v3270_disable_updates(widget);
 	lib3270_select_all(v3270_get_session(widget));
 	v3270_enable_updates(widget);
+	GTK_V3270(widget)->append = 0; // Reset smart-copy.
 }
 
 void v3270_selection_set_font_family(GtkWidget *widget, const gchar *name) {

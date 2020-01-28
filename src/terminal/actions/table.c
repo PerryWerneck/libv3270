@@ -63,7 +63,7 @@
 
 	// Standard Clipboard actions
 	{
-		.flags = 0,
+		.flags = V3270_COPY_SMART,
 		.name = "copy",
  		.group = LIB3270_ACTION_GROUP_SELECTION,
 		.icon = "edit-copy",
@@ -112,7 +112,7 @@
 	},
 
 	{
-		.flags = V3270_ACTION_FLAG_CUT|V3270_COPY_DEFAULT,
+		.flags = V3270_ACTION_FLAG_CUT|V3270_COPY_SMART,
  		.group = LIB3270_ACTION_GROUP_SELECTION,
 		.name = "cut",
 		.icon = "edit-cut",

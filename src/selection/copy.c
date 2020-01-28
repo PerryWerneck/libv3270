@@ -30,33 +30,31 @@
  #include <clipboard.h>
  #include <lib3270/selection.h>
 
- static void do_copy(v3270 *terminal, gboolean cut)
- {
+ static void do_copy(v3270 *terminal, gboolean cut) {
+
  	lib3270_selection * selection = lib3270_selection_new(terminal->host,cut,0);
 
- 	if(selection)
-	{
+ 	if(selection) {
 		terminal->selection.blocks = g_list_append(terminal->selection.blocks,selection);
+		terminal->append = ((terminal->selection.options & V3270_SELECTION_SMART_COPY) != 0) ? 1 : 0 ; // Define next smart option.
 	}
 
  }
 
- LIB3270_EXPORT void v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut)
- {
+ LIB3270_EXPORT void v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut) {
+
 	g_return_if_fail(GTK_IS_V3270(widget));
 
 	v3270 * terminal = GTK_V3270(widget);
+
+	if(mode == V3270_COPY_SMART) {
+		mode = (terminal->append ? V3270_COPY_APPEND : V3270_COPY_FORMATTED);
+	}
 
 	if(mode != V3270_COPY_APPEND) {
 
 		// It's not append, clear current contents ...
 		v3270_clear_selection(terminal);
-
-		// ... and set the new mode.
-		if(mode == V3270_COPY_DEFAULT) {
-//			mode = (lib3270_get_toggle(v3270_get_session(widget),LIB3270_TOGGLE_SMART_PASTE) ? V3270_COPY_FORMATTED : V3270_COPY_TEXT);
-			mode = V3270_COPY_FORMATTED;
-		}
 
 		terminal->selection.format = mode;
 
@@ -67,13 +65,11 @@
 	v3270_update_system_clipboard(widget);
  }
 
- LIB3270_EXPORT void v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE format, gboolean cut)
- {
+ LIB3270_EXPORT void v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE format, gboolean cut) {
 	v3270_clipboard_set(widget,format,cut);
  }
 
- LIB3270_EXPORT void v3270_append_selection(GtkWidget *widget, gboolean cut)
- {
+ LIB3270_EXPORT void v3270_append_selection(GtkWidget *widget, gboolean cut) {
 	v3270_clipboard_set(widget,V3270_COPY_APPEND,cut);
  }
 

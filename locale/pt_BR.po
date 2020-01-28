@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-27 11:29-0300\n"
-"PO-Revision-Date: 2020-01-27 11:31-0300\n"
+"POT-Creation-Date: 2020-01-28 08:48-0300\n"
+"PO-Revision-Date: 2020-01-28 10:09-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -257,7 +257,7 @@ msgstr "Clique para carregar arquivo"
 msgid "Click to save file"
 msgstr "Clique para salvar arquivo"
 
-#: src/dialogs/settings/clipboard.c:385
+#: src/dialogs/settings/clipboard.c:409
 msgid "Clipboard"
 msgstr "Área de transferência"
 
@@ -265,7 +265,7 @@ msgstr "Área de transferência"
 msgid "Clipboard name"
 msgstr "Nome da área de transferência"
 
-#: src/dialogs/settings/clipboard.c:384
+#: src/dialogs/settings/clipboard.c:408
 msgid "Clipboard properties"
 msgstr "Configuração da área de transferência"
 
@@ -317,7 +317,7 @@ msgstr "Copiar como texto puro"
 msgid "Copy as table"
 msgstr "Copiar como tabela"
 
-#: src/dialogs/settings/clipboard.c:217
+#: src/dialogs/settings/clipboard.c:239
 msgid "Copy options"
 msgstr "Opções da cópia"
 
@@ -523,7 +523,7 @@ msgstr "Cinza"
 msgid "Green"
 msgstr "Verde"
 
-#: src/dialogs/settings/clipboard.c:219
+#: src/dialogs/settings/clipboard.c:241
 msgid "HTML options"
 msgstr "Opções HTML"
 
@@ -689,11 +689,11 @@ msgstr "Nenhuma transferência"
 msgid "No transfer in progress"
 msgstr "Nenhuma transferência em andamento"
 
-#: src/dialogs/settings/clipboard.c:282
+#: src/dialogs/settings/clipboard.c:306
 msgid "None (Don't export color)"
 msgstr "Nenhum (Não exporta cores)"
 
-#: src/dialogs/settings/clipboard.c:402
+#: src/dialogs/settings/clipboard.c:426
 msgid "None (Don't export font name)"
 msgstr "Nenhuma (Não exporta fontes)"
 
@@ -801,7 +801,7 @@ msgstr "Colar de um arquivo"
 msgid "Paste from text file"
 msgstr "Colar de um arquivo texto"
 
-#: src/dialogs/settings/clipboard.c:218
+#: src/dialogs/settings/clipboard.c:240
 msgid "Paste options"
 msgstr "Opções para colar"
 
@@ -825,7 +825,7 @@ msgstr "Rosa"
 msgid "Plain text"
 msgstr "Texto puro"
 
-#: src/dialogs/settings/clipboard.c:350
+#: src/dialogs/settings/clipboard.c:374
 msgid "Plain text only"
 msgstr "Apenas texto puro"
 
@@ -982,7 +982,7 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/dialogs/settings/clipboard.c:283 src/dialogs/settings/clipboard.c:403
+#: src/dialogs/settings/clipboard.c:307 src/dialogs/settings/clipboard.c:427
 msgid "Same of the screen"
 msgstr "Igual ao terminal"
 
@@ -1056,7 +1056,7 @@ msgstr "Guarda fila de transferência num arquivo XML externo"
 msgid "Save transfer queue to file"
 msgstr "Salvar fila de transferências para arquivo"
 
-#: src/dialogs/settings/clipboard.c:351
+#: src/dialogs/settings/clipboard.c:375
 msgid "Screen with terminal attributes"
 msgstr "Completa incluindo atributos do terminal"
 
@@ -1155,6 +1155,10 @@ msgstr "Skip"
 #: src/filetransfer/transfer.c:87
 msgid "Skip this transfer, keep the file on queue."
 msgstr "Skip this transfer, keep the file on queue."
+
+#: src/dialogs/settings/clipboard.c:163
+msgid "Smart copy"
+msgstr "Cópia inteligente"
 
 #: src/filetransfer/v3270ft.c:341 src/filetransfer/settings.c:544
 msgid "Space allocation units"
@@ -1514,6 +1518,15 @@ msgid ""
 msgstr ""
 "Quando ativo pesquisa a área de transferência por uma tela similar, se "
 "encontrar coloca os campos desprotegidos e restaura a posição do cursor"
+
+#: src/dialogs/settings/clipboard.c:164
+msgid ""
+"When set the first copy operation after the selection will set the clipboard "
+"contents and the next ones will append"
+msgstr ""
+"Quando selecionado a primeira operação de cópia após a seleção definirá o "
+"conteúdo da área de transferência enquanto as operações subsequentes "
+"acrescentaram conteúdo"
 
 #: src/dialogs/settings/clipboard.c:144
 msgid ""
