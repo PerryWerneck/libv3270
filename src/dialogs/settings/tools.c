@@ -137,10 +137,10 @@
 
  	for(checkbox = 0; checkbox < length; checkbox++) {
 
-		buttons[checkbox] = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(definitions[checkbox].label));
+		buttons[checkbox] = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(g_dgettext(PACKAGE_NAME,definitions[checkbox].label)));
 
 		if(definitions[checkbox].tooltip)
-			gtk_widget_set_tooltip_text(GTK_WIDGET(buttons[checkbox]),definitions[checkbox].tooltip);
+			gtk_widget_set_tooltip_text(GTK_WIDGET(buttons[checkbox]),g_dgettext(PACKAGE_NAME,definitions[checkbox].tooltip));
 
 		gtk_widget_set_halign(GTK_WIDGET(buttons[checkbox]),GTK_ALIGN_START);
 		gtk_grid_attach(GTK_GRID(grids[definitions[checkbox].grid]),GTK_WIDGET(buttons[checkbox]),definitions[checkbox].left,definitions[checkbox].top,definitions[checkbox].width,1);

@@ -285,10 +285,10 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 	}
 
 	v3270_settings_create_toggle_buttons(toggles, G_N_ELEMENTS(toggles), grids, widget->input.toggles);
-	g_signal_connect(G_OBJECT(widget->input.toggles[1]),"toggled",G_CALLBACK(keep_selected_toggled),widget);
-
 	v3270_settings_create_combos(combos, G_N_ELEMENTS(combos), grids, widget->input.combos);
 	v3270_settings_create_checkboxes(checkboxes, G_N_ELEMENTS(checkboxes), grids, widget->input.checkboxes);
+
+	g_signal_connect(G_OBJECT(widget->input.toggles[1]),"toggled",G_CALLBACK(keep_selected_toggled),widget);
 
 	// Setup combos
 	{
@@ -511,6 +511,8 @@ static void load(GtkWidget *w, GtkWidget *t) {
 		gtk_combo_box_set_active_id(widget->input.combos[1],"0");
 
 	}
+
+	keep_selected_toggled(widget->input.toggles[1],widget);
 
 }
 
