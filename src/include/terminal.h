@@ -157,6 +157,7 @@ G_BEGIN_DECLS
 	int drawing			: 1;	/// @brief Draw widget?
 	int freeze			: 1;	/// @brief Truee when the "save settings" signal is disabled.
 	int append			: 1;	/// @brief Next smart-copy operation will be append.
+	int copying			: 1;	/// @brief Copy with center mouse button
 
     /// @brief Action properties.
    	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];

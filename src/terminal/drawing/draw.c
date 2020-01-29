@@ -118,22 +118,40 @@ gboolean v3270_expose(GtkWidget *widget, GdkEventExpose *event)
 #endif // GTk3
 
 
-static void get_element_colors(unsigned short attr, GdkRGBA **fg, GdkRGBA **bg, GdkRGBA *color)
-{
-	if(attr & LIB3270_ATTR_SELECTED)
-	{
-		*fg = color+V3270_COLOR_SELECTED_FG;
-		*bg = color+V3270_COLOR_SELECTED_BG;
-	}
-	else
-	{
+static void get_element_colors(unsigned short attr, GdkRGBA **fg, GdkRGBA **bg, GdkRGBA *color) {
+
+	int index[2];
+
+	if(attr & LIB3270_ATTR_SELECTED) {
+
+		index[0] = V3270_COLOR_SELECTED_FG;
+		index[1] = V3270_COLOR_SELECTED_BG;
+
+//		*fg = color+V3270_COLOR_SELECTED_FG;
+//		*bg = color+V3270_COLOR_SELECTED_BG;
+
+	} else {
+
+		if(attr & LIB3270_ATTR_FIELD)
+			index[0] = (attr & 0x0003)+V3270_COLOR_FIELD;
+		else
+			index[0] = (attr & 0x000F);
+
+		index[1] = ((attr & 0x00F0) >> 4);
+
+		/*
 		*bg = color+((attr & 0x00F0) >> 4);
 
 		if(attr & LIB3270_ATTR_FIELD)
 			*fg = color+(attr & 0x0003)+V3270_COLOR_FIELD;
 		else
 			*fg = color+(attr & 0x000F);
+		*/
 	}
+
+	*fg = color+index[0];
+	*bg = color+index[1];
+
 }
 
 void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned short attr, H3270 *session, v3270FontInfo *fontInfo, GdkRectangle *rect, GdkRGBA *color)

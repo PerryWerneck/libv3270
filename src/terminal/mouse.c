@@ -84,30 +84,56 @@ static void single_click(v3270 *widget, int baddr) {
 
 }
 
-static void button_1_press(GtkWidget *widget, GdkEventType type, int baddr)
-{
+static void button_1_press(v3270 *terminal, GdkEventType type, int baddr) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wswitch"
 
 	switch(type) {
 	case GDK_BUTTON_PRESS: 		// Single click - set mode
-		single_click(GTK_V3270(widget),baddr);
+		single_click(terminal,baddr);
 		break;
 
 	case GDK_2BUTTON_PRESS:		// Double click - Select word
-		if(lib3270_select_word_at(GTK_V3270(widget)->host,baddr))
-			lib3270_ring_bell(GTK_V3270(widget)->host);
+		if(lib3270_select_word_at(terminal->host,baddr))
+			lib3270_ring_bell(terminal->host);
 		break;
 
 	case GDK_3BUTTON_PRESS:		// Triple clock - Select field
-		if(lib3270_select_field_at(GTK_V3270(widget)->host,baddr))
-			lib3270_ring_bell(GTK_V3270(widget)->host);
+		if(lib3270_select_field_at(terminal->host,baddr))
+			lib3270_ring_bell(terminal->host);
 		break;
 
 	}
 
 	#pragma GCC diagnostic pop
 
+}
+
+static void button_2_press(v3270 *terminal, GdkEventType type, int baddr) {
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wswitch"
+
+	switch(type) {
+	case GDK_BUTTON_PRESS: 		// Single click - set mode
+		if(lib3270_get_selection_flags(terminal->host,baddr)) {
+
+			debug("%s: Center button press over selected area.", __FUNCTION__);
+			terminal->copying = 1;
+
+		}
+		break;
+
+	case GDK_2BUTTON_PRESS:		// Double click - Select word
+		terminal->copying = 0;
+		lib3270_unselect(terminal->host);
+		break;
+
+	default:
+		terminal->copying = 0;
+
+	}
+
+	#pragma GCC diagnostic pop
 }
 
 void v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event) {
@@ -147,19 +173,26 @@ static V3270_OIA_FIELD get_field_from_event(v3270 *widget, GdkEventButton *event
 gboolean v3270_button_press_event(GtkWidget *widget, GdkEventButton *event)
 {
 	int baddr = v3270_get_offset_at_point(GTK_V3270(widget),event->x,event->y);
+	v3270 * terminal = GTK_V3270(widget);
 
 	if(baddr >= 0) {
 
 		// Click inside the terminal contents.
+		debug("Button %d pressed on terminal addr %d",(int) event->button,baddr);
 
-		GTK_V3270(widget)->oia.selected = V3270_OIA_FIELD_INVALID;
+		terminal->oia.selected = V3270_OIA_FIELD_INVALID;
 
 		switch(event->button) {
 		case 1:		// Left button
-			button_1_press(widget,event->type,baddr);
+			button_1_press(terminal,event->type,baddr);
+			break;
+
+		case 2:		// Center button
+			button_2_press(terminal,event->type,baddr);
 			break;
 
 		case 3:		// Right button
+
 			if(event->type == GDK_BUTTON_PRESS)
 				v3270_emit_popup(GTK_V3270(widget),baddr,event);
 			break;
@@ -204,19 +237,23 @@ gboolean v3270_button_press_event(GtkWidget *widget, GdkEventButton *event)
 	return FALSE;
 }
 
-gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
-{
+gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event) {
+
+	v3270 * terminal = GTK_V3270(widget);
+
+	debug("%s(%d)",__FUNCTION__,(int) event->button);
+
 	switch(event->button) {
 	case 1: // Left button
-		GTK_V3270(widget)->selecting = 0;
-		GTK_V3270(widget)->moving	 = 0;
-		GTK_V3270(widget)->resizing	 = 0;
+		terminal->selecting	= 0;
+		terminal->moving	= 0;
+		terminal->resizing	= 0;
 
-		if(GTK_V3270(widget)->oia.selected != V3270_OIA_FIELD_INVALID && GTK_V3270(widget)->oia.selected == get_field_from_event(GTK_V3270(widget),event))
+		if(terminal->oia.selected != V3270_OIA_FIELD_INVALID && terminal->oia.selected == get_field_from_event(terminal,event))
 		{
 			gboolean handled = FALSE;
-			gboolean connected = lib3270_is_connected(GTK_V3270(widget)->host) ? TRUE : FALSE;
-			V3270_OIA_FIELD field = GTK_V3270(widget)->oia.selected;
+			gboolean connected = lib3270_is_connected(terminal->host) ? TRUE : FALSE;
+			V3270_OIA_FIELD field = terminal->oia.selected;
 
 			g_signal_emit(widget,	v3270_widget_signal[V3270_SIGNAL_FIELD], 0,
 									connected,
@@ -243,11 +280,22 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event)
 
 		}
 
-		GTK_V3270(widget)->oia.selected = V3270_OIA_FIELD_INVALID;
+		terminal->oia.selected = V3270_OIA_FIELD_INVALID;
+
+		break;
+
+	case 2:		// Center button
+
+		if(lib3270_has_selection(terminal->host)) {
+			debug("%s: Copy with center button",__FUNCTION__);
+			v3270_clipboard_set(widget,V3270_COPY_SMART,FALSE);
+		}
 
 		break;
 
 	}
+
+	terminal->copying = 0;
 
 	return FALSE;
 }
