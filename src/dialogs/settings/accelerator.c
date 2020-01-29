@@ -554,18 +554,44 @@ static gboolean add_accel(GtkTreeModel *model, GtkTreePath G_GNUC_UNUSED(*path),
 
 	// Allways create the "main" accelerator to keep the action active.
 	V3270Accelerator * acc = v3270_accelerator_clone(accel);
-	acc->key	= keymap[0].key;
-	acc->mods	= keymap[0].mods;
-	*accelerators = g_slist_prepend(*accelerators,acc);
 
-	// The alternative one is created only when set.
-	if(keymap[1].key)
-	{
-		acc = v3270_accelerator_clone(accel);
-		acc->key	= keymap[1].key;
-		acc->mods	= keymap[1].mods;
+	if(acc->type == V3270_ACCELERATOR_TYPE_PFKEY) {
+
+		if(keymap[0].mods) {
+			g_warning("PFKey accelerator can't manage modifiers");
+		}
+
+		int pfkey = (keymap[0].key - GDK_F1) + 1;
+
+		if(pfkey < 0 || pfkey > 22) {
+
+			g_warning("Invalid pfkey code: %d",pfkey);
+
+		} else {
+
+			((V3270PFKeyAccelerator *) acc)->keycode = (unsigned short) pfkey;
+
+		}
+
 		*accelerators = g_slist_prepend(*accelerators,acc);
+
+	} else {
+
+		acc->key	= keymap[0].key;
+		acc->mods	= keymap[0].mods;
+		*accelerators = g_slist_prepend(*accelerators,acc);
+
+		// The alternative one is created only when set.
+		if(keymap[1].key)
+		{
+			acc = v3270_accelerator_clone(accel);
+			acc->key	= keymap[1].key;
+			acc->mods	= keymap[1].mods;
+			*accelerators = g_slist_prepend(*accelerators,acc);
+		}
+
 	}
+
 
 	return FALSE;
 }

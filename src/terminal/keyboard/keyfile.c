@@ -156,6 +156,8 @@
 				((V3270PFKeyAccelerator *) acc)->keycode = (unsigned short) pfkey;
 				terminal->accelerators = g_slist_prepend(terminal->accelerators,acc);
 
+				debug("****[%s]***",v3270_accelerator_get_name(accel));
+
 			}
 			else
 			{

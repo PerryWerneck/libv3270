@@ -104,7 +104,7 @@ gboolean v3270_scroll_event(GtkWidget *widget, GdkEventScroll *event)
 			const V3270Accelerator * accel = v3270_get_accelerator(widget, fallbacks[ix].keyval, fallbacks[ix].state);
 			if(accel)
 			{
-				debug("Activating fallback mouse action \"%s\"\n",v3270_accelerator_get_name(accel));
+				debug("Activating accelerator \"%s\"\n",v3270_accelerator_get_name(accel));
 //				lib3270_write_event_trace(terminal->hSession,"Activating fallback mouse action \"%s\"\n",v3270_accelerator_get_name(accel));
 				v3270_accelerator_activate(accel,widget);
 				return TRUE;
