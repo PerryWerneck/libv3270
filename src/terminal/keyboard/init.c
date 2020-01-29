@@ -89,6 +89,14 @@
 
  }
 
+ static int fire_pfkey_action(GtkWidget *widget, V3270PFKeyAccelerator *accel)
+ {
+ 	debug("%s accel=%p",__FUNCTION__,accel);
+	debug("%s Accelerator(%s)=%p pfkey=%d",__FUNCTION__,accel->name,accel,accel->keycode);
+
+ 	return lib3270_pfkey(v3270_get_session(widget),(int) accel->keycode);
+ }
+
  void v3270_init_accelerators(v3270 *widget)
  {
  	size_t ix;
@@ -217,6 +225,8 @@
 			accelerator->parent.mods		= accels[ix].mods;
 			accelerator->parent.arg			= (gconstpointer) accelerator;
 			accelerator->parent.activate	= G_CALLBACK(fire_pfkey_action);
+
+			debug("%s Accelerator(%s)=%p pfkey=%d",__FUNCTION__,accelerator->name,accelerator,accelerator->keycode);
 
 			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
 

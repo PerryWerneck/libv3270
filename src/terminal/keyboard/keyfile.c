@@ -89,11 +89,6 @@
 
  }
 
- int fire_pfkey_action(GtkWidget *widget, V3270PFKeyAccelerator *accel)
- {
- 	return lib3270_pfkey(v3270_get_session(widget),(int) accel->keycode);
- }
-
  void v3270_accelerator_map_set_entry(v3270 *terminal, const gchar *name, const gchar *keys)
  {
 	V3270Accelerator * accel = NULL;

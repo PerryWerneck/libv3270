@@ -46,7 +46,6 @@
 	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
  #endif
 
- G_GNUC_INTERNAL int fire_pfkey_action(GtkWidget *widget, V3270PFKeyAccelerator *accel);
 
 
 

@@ -55,6 +55,7 @@
 		{
 			V3270PFKeyAccelerator * customAccel = g_new0(V3270PFKeyAccelerator,1);
 			*customAccel = *((V3270PFKeyAccelerator *) accel);
+			customAccel->parent.arg = (gconstpointer) customAccel;
 			rc = (V3270Accelerator *) customAccel;
 		}
 		break;
@@ -104,6 +105,8 @@
  void v3270_accelerator_activate(const V3270Accelerator * acel, GtkWidget *terminal)
  {
  	int rc = ((int (*)(GtkWidget *, gconstpointer)) acel->activate)(terminal, acel->arg);
+
+ 	debug("%s(%s)=%d (%s)",__FUNCTION__,v3270_accelerator_get_name(acel),rc,strerror(rc));
 
  	if(rc)
 		gdk_display_beep(gtk_widget_get_display(terminal));
