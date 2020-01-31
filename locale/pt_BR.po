@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-28 08:48-0300\n"
-"PO-Revision-Date: 2020-01-28 10:09-0300\n"
+"PO-Revision-Date: 2020-01-31 11:02-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -1719,7 +1719,7 @@ msgstr "_Arquivo"
 
 #: src/dialogs/load.c:160 src/dialogs/save/save.c:189
 msgid "_Filename"
-msgstr "Nome do_Arquivo"
+msgstr "Nome do _Arquivo"
 
 #: src/dialogs/print/settings.c:77
 msgid "_Font:"
