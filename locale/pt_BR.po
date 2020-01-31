@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 08:48-0300\n"
-"PO-Revision-Date: 2020-01-31 11:02-0300\n"
+"POT-Creation-Date: 2020-01-31 11:36-0300\n"
+"PO-Revision-Date: 2020-01-31 11:36-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -448,7 +448,7 @@ msgstr "_Formato do arquivo"
 msgid "Files to transfer"
 msgstr "Arquivos a transferir"
 
-#: src/terminal/actions/table.c:235
+#: src/terminal/actions/table.c:236
 msgid "Fit best"
 msgstr "Melhor tamanho"
 
@@ -567,7 +567,7 @@ msgstr "Ignore"
 msgid "Ignore the fail and remove the file from queue."
 msgstr "Ignore the fail and remove the file from queue."
 
-#: src/terminal/actions/table.c:213
+#: src/terminal/actions/table.c:214
 msgid "Increase the font size"
 msgstr "Aumenta o tamanho da fonte"
 
@@ -665,7 +665,7 @@ msgstr "Mostarda"
 msgid "Name"
 msgstr "Nome"
 
-#: src/terminal/keyboard/init.c:203
+#: src/terminal/keyboard/init.c:211
 msgid "Next page"
 msgstr "Próxima página"
 
@@ -805,6 +805,10 @@ msgstr "Colar de um arquivo texto"
 msgid "Paste options"
 msgstr "Opções para colar"
 
+#: src/terminal/actions/table.c:201
+msgid "Paste similar screen from clipboard"
+msgstr "Colar tela semelhante"
+
 #: src/filetransfer/tables.c:219
 msgid "Path and name of the local file"
 msgstr "Caminho e nome do arquivo local"
@@ -841,7 +845,7 @@ msgstr "Esquemas de cor pré-definido"
 msgid "Preparing"
 msgstr "Preparando"
 
-#: src/terminal/keyboard/init.c:197
+#: src/terminal/keyboard/init.c:205
 msgid "Previous page"
 msgstr "Página anterior"
 
@@ -857,11 +861,11 @@ msgstr ""
 msgid "Primary space"
 msgstr "Primary space"
 
-#: src/terminal/actions/table.c:298
+#: src/terminal/actions/table.c:299
 msgid "Print"
 msgstr "Imprimir"
 
-#: src/terminal/actions/table.c:331
+#: src/terminal/actions/table.c:332
 msgid "Print Copy"
 msgstr "Imprimir cópia"
 
@@ -873,19 +877,19 @@ msgstr "Operação de impressão falhou"
 msgid "Print operation has failed"
 msgstr "Operação de impressão falhou"
 
-#: src/terminal/actions/table.c:309
+#: src/terminal/actions/table.c:310
 msgid "Print screen"
 msgstr "Imrpimir tela"
 
-#: src/terminal/actions/table.c:299
+#: src/terminal/actions/table.c:300
 msgid "Print screen or selection"
 msgstr "Imrpimir tela ou seleção"
 
-#: src/terminal/actions/table.c:320
+#: src/terminal/actions/table.c:321
 msgid "Print selected"
 msgstr "Imprimir seleção"
 
-#: src/terminal/actions/table.c:321
+#: src/terminal/actions/table.c:322
 msgid "Print selected area"
 msgstr "Imprimir área selecionada"
 
@@ -893,7 +897,7 @@ msgstr "Imprimir área selecionada"
 msgid "Print selection box"
 msgstr "Imprimir marca de seleção"
 
-#: src/terminal/actions/table.c:310
+#: src/terminal/actions/table.c:311
 msgid "Print the entire screen"
 msgstr "Imrpimir toda a tela"
 
@@ -986,13 +990,13 @@ msgstr ""
 msgid "Same of the screen"
 msgstr "Igual ao terminal"
 
-#: src/terminal/actions/table.c:251 src/filetransfer/v3270ft.c:215
+#: src/terminal/actions/table.c:252 src/filetransfer/v3270ft.c:215
 #: src/filetransfer/activitylist.c:453 src/trace/trace.c:477
 #: src/dialogs/transfer.c:69
 msgid "Save"
 msgstr "Salvar"
 
-#: src/terminal/actions/table.c:285
+#: src/terminal/actions/table.c:286
 msgid "Save Copy"
 msgstr "Salvar cópia"
 
@@ -1000,11 +1004,11 @@ msgstr "Salvar cópia"
 msgid "Save _As"
 msgstr "Salvar _Como"
 
-#: src/terminal/actions/table.c:261
+#: src/terminal/actions/table.c:262
 msgid "Save all"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:283 src/dialogs/save/save.c:299
+#: src/terminal/actions/table.c:284 src/dialogs/save/save.c:299
 msgid "Save copy"
 msgstr "Salvar cópia"
 
@@ -1012,19 +1016,19 @@ msgstr "Salvar cópia"
 msgid "Save queue to file"
 msgstr "Salvar a fila para um arquivo"
 
-#: src/terminal/actions/table.c:263
+#: src/terminal/actions/table.c:264
 msgid "Save screen"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:252
+#: src/terminal/actions/table.c:253
 msgid "Save screen or selection"
 msgstr "Salvar tela ou seleção"
 
-#: src/terminal/actions/table.c:272
+#: src/terminal/actions/table.c:273
 msgid "Save selected"
 msgstr "Salvar seleção"
 
-#: src/terminal/actions/table.c:274 src/dialogs/save/save.c:298
+#: src/terminal/actions/table.c:275 src/dialogs/save/save.c:298
 msgid "Save selected area"
 msgstr "Salvar área selecionada"
 
@@ -1060,7 +1064,7 @@ msgstr "Salvar fila de transferências para arquivo"
 msgid "Screen with terminal attributes"
 msgstr "Completa incluindo atributos do terminal"
 
-#: src/terminal/actions/table.c:201
+#: src/terminal/actions/table.c:202
 msgid ""
 "Search clipboard for a similar screen, if found paste unprotected fields and "
 "restore cursor position"
@@ -1144,7 +1148,7 @@ msgstr "Enviar arquivo texto"
 msgid "Sending file"
 msgstr "Enviando arquivo"
 
-#: src/terminal/actions/table.c:236
+#: src/terminal/actions/table.c:237
 msgid "Set the font to the best size for window"
 msgstr "Ajusta a fonte para o melhor tamanho"
 
@@ -1676,11 +1680,11 @@ msgstr ""
 msgid "You specified an option that is invalid."
 msgstr "Você especificou uma opção inválida."
 
-#: src/terminal/actions/table.c:212
+#: src/terminal/actions/table.c:213
 msgid "Zoom in"
 msgstr "Ampliar"
 
-#: src/terminal/actions/table.c:223
+#: src/terminal/actions/table.c:224
 msgid "Zoom out"
 msgstr "Reduzir"
 
@@ -1770,7 +1774,7 @@ msgstr "_Serviço"
 msgid "_Text file"
 msgstr "Arquivo _texto"
 
-#: src/terminal/actions/table.c:224
+#: src/terminal/actions/table.c:225
 msgid "decrease the font size"
 msgstr "Diminui o tamanho da fonte"
 
