@@ -115,7 +115,16 @@
 
  static void ft_clicked(GtkButton *button, GtkWidget *terminal)
  {
- 	v3270_error_popup(terminal,"title","summary","body");
+ 	// v3270_error_popup(terminal,"title","summary","body");
+
+ 	{
+		GtkWidget * dialog = v3270_dialog_new_with_buttons("Testing dialog", terminal, "Ok", GTK_RESPONSE_OK, "Cancel", GTK_RESPONSE_CANCEL, NULL);
+
+		g_signal_connect(dialog,"response",G_CALLBACK(gtk_widget_destroy),NULL);
+		gtk_widget_show_all(dialog);
+
+ 	}
+
 
 	/*
 	//

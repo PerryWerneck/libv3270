@@ -35,6 +35,8 @@
 
  G_BEGIN_DECLS
 
+ LIB3270_EXPORT GtkWidget		* v3270_dialog_new_with_buttons(const gchar *title, GtkWidget *widget, const gchar *first_button_text, ...) G_GNUC_NULL_TERMINATED;
+
  LIB3270_EXPORT void			  v3270_error_popup(GtkWidget *widget, const gchar *title, const gchar *summary, const gchar *body);
 
  LIB3270_EXPORT GtkWidget		* v3270_save_dialog_new(GtkWidget *widget, LIB3270_CONTENT_OPTION mode, const gchar *filename);
