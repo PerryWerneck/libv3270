@@ -115,6 +115,12 @@
  }
 
  GtkWidget * v3270_dialog_set_content_area(GtkWidget *dialog, GtkWidget *content_area) {
+
+	if(GTK_IS_GRID(content_area)) {
+		gtk_grid_set_row_spacing(GTK_GRID(content_area),6);
+		gtk_grid_set_column_spacing(GTK_GRID(content_area),12);
+	}
+
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),content_area,TRUE,TRUE,0);
 	return content_area;
  }

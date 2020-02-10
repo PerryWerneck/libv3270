@@ -23,7 +23,7 @@ msgstr ""
 msgid "16 colors"
 msgstr "16 cores"
 
-#: src/filetransfer/v3270ftprogress.c:386 src/filetransfer/v3270ft.c:353
+#: src/filetransfer/v3270ft.c:353 src/filetransfer/v3270ftprogress.c:386
 #: src/dialogs/print/settingsdialog.c:284
 #: src/dialogs/print/settingsdialog.c:286
 #: src/dialogs/print/settingsdialog.c:288
@@ -161,7 +161,7 @@ msgstr "Azul"
 msgid "Bold"
 msgstr "Negrito"
 
-#: src/dialogs/load.c:178 src/dialogs/save/save.c:213
+#: src/dialogs/load.c:181 src/dialogs/save/save.c:216
 msgid "C_haracter Coding"
 msgstr "C_odificação de caracteres"
 
@@ -183,7 +183,7 @@ msgstr "Não encontrei uma fonte válida com o nome \"%s\""
 msgid "Can't load %s"
 msgstr "Não foi possível carregar %s"
 
-#: src/dialogs/load.c:321
+#: src/dialogs/load.c:324
 #, c-format
 msgid "Can't open %s"
 msgstr "Não foi possível abrir %s"
@@ -209,13 +209,13 @@ msgstr "Não é possivel colar"
 msgid "Can't paste text"
 msgstr "Não é possível colar texto"
 
-#: src/filetransfer/save.c:117 src/filetransfer/activitylist.c:436
-#: src/trace/trace.c:458 src/dialogs/transfer.c:91 src/dialogs/save/save.c:454
+#: src/filetransfer/activitylist.c:436 src/filetransfer/save.c:117
+#: src/trace/trace.c:458 src/dialogs/transfer.c:91 src/dialogs/save/save.c:457
 #, c-format
 msgid "Can't save %s"
 msgstr "Não foi possível salvar arquivo %s"
 
-#: src/filetransfer/worker.c:610 src/filetransfer/v3270ftprogress.c:773
+#: src/filetransfer/v3270ftprogress.c:773 src/filetransfer/worker.c:610
 msgid "Can't set callback table"
 msgstr "Não foi possível setar a tabela de retornos"
 
@@ -223,7 +223,7 @@ msgstr "Não foi possível setar a tabela de retornos"
 msgid "Can't set lib3270 I/O controller"
 msgstr "Não foi possível registrar manipuladores de I/O 3270"
 
-#: src/filetransfer/worker.c:591 src/filetransfer/v3270ftprogress.c:760
+#: src/filetransfer/v3270ftprogress.c:760 src/filetransfer/worker.c:591
 msgid "Can't start file transfer session"
 msgstr "Não foi possível iniciar transferência de arquivo"
 
@@ -245,15 +245,15 @@ msgstr "Marcar para ativar a conexão segura via SSL."
 msgid "Check this if the file consists of character data only."
 msgstr "Marque se o arquivo contem apenas texto."
 
-#: src/dialogs/load.c:203 src/dialogs/save/save.c:265
+#: src/dialogs/load.c:206 src/dialogs/save/save.c:268
 msgid "Click to cancel operation"
 msgstr "Clique para cancelar operação"
 
-#: src/dialogs/load.c:208
+#: src/dialogs/load.c:211
 msgid "Click to load file"
 msgstr "Clique para carregar arquivo"
 
-#: src/dialogs/save/save.c:270
+#: src/dialogs/save/save.c:273
 msgid "Click to save file"
 msgstr "Clique para salvar arquivo"
 
@@ -440,7 +440,7 @@ msgstr "Tempo estimado para a transferência"
 msgid "Field colors"
 msgstr "Cor dos campos"
 
-#: src/dialogs/save/save.c:227
+#: src/dialogs/save/save.c:230
 msgid "File _Format"
 msgstr "_Formato do arquivo"
 
@@ -789,7 +789,7 @@ msgstr "Colar arquivo"
 msgid "Paste formatted screen"
 msgstr "Colar tela formatada"
 
-#: src/dialogs/load.c:246
+#: src/dialogs/load.c:249
 msgid "Paste from file"
 msgstr "Colar de um arquivo"
 
@@ -925,7 +925,7 @@ msgstr "Recebendo arquivo"
 msgid "Record Length"
 msgstr "Comprimento de registro:"
 
-#: src/filetransfer/v3270ft.c:340 src/filetransfer/settings.c:519
+#: src/filetransfer/settings.c:519 src/filetransfer/v3270ft.c:340
 msgid "Record format"
 msgstr "Formato de registro"
 
@@ -1004,7 +1004,7 @@ msgstr "Salvar _Como"
 msgid "Save all"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:284 src/dialogs/save/save.c:299
+#: src/terminal/actions/table.c:284 src/dialogs/save/save.c:302
 msgid "Save copy"
 msgstr "Salvar cópia"
 
@@ -1024,11 +1024,11 @@ msgstr "Salvar tela ou seleção"
 msgid "Save selected"
 msgstr "Salvar seleção"
 
-#: src/terminal/actions/table.c:275 src/dialogs/save/save.c:298
+#: src/terminal/actions/table.c:275 src/dialogs/save/save.c:301
 msgid "Save selected area"
 msgstr "Salvar área selecionada"
 
-#: src/dialogs/save/save.c:297
+#: src/dialogs/save/save.c:300
 msgid "Save terminal contents"
 msgstr "Salvar conteúdo da tela"
 
@@ -1080,7 +1080,7 @@ msgstr ""
 msgid "Secondary space"
 msgstr "Secondary space"
 
-#: src/filetransfer/v3270ft.c:303 src/filetransfer/settings.c:209
+#: src/filetransfer/settings.c:209 src/filetransfer/v3270ft.c:303
 #: src/dialogs/save/save.c:114 src/dialogs/save/save.c:137
 #: src/dialogs/settings/host.c:370
 msgid "Select"
@@ -1098,9 +1098,9 @@ msgstr "Seleciona mapeamento de teclado personalizado"
 msgid "Select destination file"
 msgstr "Selecionar arquivo destino"
 
-#: src/filetransfer/v3270ft.c:570 src/filetransfer/settings.c:467
-#: src/dialogs/load.c:92 src/dialogs/load.c:108 src/dialogs/load.c:168
-#: src/dialogs/save/save.c:202
+#: src/filetransfer/settings.c:467 src/filetransfer/v3270ft.c:570
+#: src/dialogs/load.c:92 src/dialogs/load.c:108 src/dialogs/load.c:171
+#: src/dialogs/save/save.c:205
 msgid "Select file"
 msgstr "Selecionar arquivo"
 
@@ -1112,7 +1112,7 @@ msgstr "Selecionar primeiro arquivo"
 msgid "Select last file"
 msgstr "Selecionar último arquivo"
 
-#: src/filetransfer/v3270ft.c:302 src/filetransfer/settings.c:208
+#: src/filetransfer/settings.c:208 src/filetransfer/v3270ft.c:302
 msgid "Select local file"
 msgstr "Selecionar arquivo local"
 
@@ -1160,7 +1160,7 @@ msgstr "Skip this transfer, keep the file on queue."
 msgid "Smart copy"
 msgstr "Cópia inteligente"
 
-#: src/filetransfer/v3270ft.c:341 src/filetransfer/settings.c:544
+#: src/filetransfer/settings.c:544 src/filetransfer/v3270ft.c:341
 msgid "Space allocation units"
 msgstr "Unidades de alocação de espaço"
 
@@ -1305,7 +1305,7 @@ msgstr ""
 msgid "The error code was %d"
 msgstr "O código de erro foi %d"
 
-#: src/dialogs/save/save.c:408
+#: src/dialogs/save/save.c:411
 #, c-format
 msgid "The file \"%s\" already exists. Replace it?"
 msgstr "O arquivo \"%s\" já existe, substituir?"
@@ -1429,7 +1429,7 @@ msgstr "Janela de trace"
 msgid "Tracks"
 msgstr "Trilhas"
 
-#: src/filetransfer/worker.c:568 src/filetransfer/v3270ftprogress.c:721
+#: src/filetransfer/v3270ftprogress.c:721 src/filetransfer/worker.c:568
 msgid "Transfer failed"
 msgstr "Transferência falhou"
 
@@ -1437,7 +1437,7 @@ msgstr "Transferência falhou"
 msgid "Transfer operation has timed out"
 msgstr "Operação de transferência esgotou o tempo de espera"
 
-#: src/filetransfer/v3270ft.c:339 src/filetransfer/settings.c:492
+#: src/filetransfer/settings.c:492 src/filetransfer/v3270ft.c:339
 msgid "Transfer options"
 msgstr "Opções de transferência"
 
@@ -1476,12 +1476,12 @@ msgstr "Incapaz de colar texto formatado."
 msgid "Undefined"
 msgstr "Indefinido"
 
-#: src/dialogs/save/save.c:393
+#: src/dialogs/save/save.c:396
 #, c-format
 msgid "Unexpected format %d"
 msgstr "Formato inesperado %d"
 
-#: src/dialogs/save/save.c:363
+#: src/dialogs/save/save.c:366
 #, c-format
 msgid "Unexpected mode %d"
 msgstr "Modo inesperado %d"
@@ -1689,15 +1689,15 @@ msgstr "Reduzir"
 msgid "_ASCII text"
 msgstr "Texto _ASCII"
 
-#: src/dialogs/settings/dialog.c:230
+#: src/dialogs/settings/dialog.c:232
 msgid "_Apply"
 msgstr "_Aplicar"
 
 #: src/selection/windows/paste.c:83 src/selection/windows/paste.c:123
-#: src/dialogs/load.c:202 src/dialogs/load.c:221
+#: src/dialogs/load.c:205 src/dialogs/load.c:224
 #: src/dialogs/windows/select.c:158 src/dialogs/print/settingsdialog.c:410
-#: src/dialogs/print/settingsdialog.c:429 src/dialogs/save/save.c:264
-#: src/dialogs/save/save.c:283 src/dialogs/settings/dialog.c:229
+#: src/dialogs/print/settingsdialog.c:429 src/dialogs/save/save.c:267
+#: src/dialogs/save/save.c:286 src/dialogs/settings/dialog.c:231
 msgid "_Cancel"
 msgstr "_Cancelar"
 
@@ -1705,8 +1705,8 @@ msgstr "_Cancelar"
 msgid "_Charset"
 msgstr "Tabela de _Caracteres"
 
-#: src/trace/tracewindow.c:125 src/dialogs/transfer.c:163
-#: src/dialogs/transfer.c:183 src/dialogs/security.c:231
+#: src/trace/tracewindow.c:125 src/dialogs/security.c:231
+#: src/dialogs/transfer.c:163 src/dialogs/transfer.c:183
 msgid "_Close"
 msgstr "_Close"
 
@@ -1718,7 +1718,7 @@ msgstr "_Tabela de cores"
 msgid "_File"
 msgstr "_Arquivo"
 
-#: src/dialogs/load.c:160 src/dialogs/save/save.c:189
+#: src/dialogs/load.c:163 src/dialogs/save/save.c:192
 msgid "_Filename"
 msgstr "Nome do _Arquivo"
 
@@ -1730,7 +1730,7 @@ msgstr "_Fonte:"
 msgid "_Host"
 msgstr "_Servidor"
 
-#: src/dialogs/load.c:207 src/dialogs/load.c:222
+#: src/dialogs/load.c:210 src/dialogs/load.c:225
 msgid "_Load"
 msgstr "_Carregar"
 
@@ -1754,8 +1754,8 @@ msgstr "_Colar como texto"
 msgid "_Remote file"
 msgstr "Arquivo _remoto:"
 
-#: src/trace/tracewindow.c:123 src/dialogs/save/save.c:269
-#: src/dialogs/save/save.c:284
+#: src/trace/tracewindow.c:123 src/dialogs/save/save.c:272
+#: src/dialogs/save/save.c:287
 msgid "_Save"
 msgstr "_Salvar"
 

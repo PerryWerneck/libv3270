@@ -120,6 +120,8 @@
  	{
 		GtkWidget * dialog = v3270_dialog_new_with_buttons("Testing dialog", terminal, "Ok", GTK_RESPONSE_OK, "Cancel", GTK_RESPONSE_CANCEL, NULL);
 
+		v3270_dialog_set_content_area(dialog,gtk_label_new("test label"));
+
 		g_signal_connect(dialog,"response",G_CALLBACK(gtk_widget_destroy),NULL);
 		gtk_widget_show_all(dialog);
 
