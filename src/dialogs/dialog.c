@@ -76,6 +76,8 @@
 
 #ifdef G_OS_UNIX
 	gtk_container_set_border_width(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),18);
+#else
+	gtk_box_set_spacing(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),3);
 #endif // UNIX
 
 	// Setup window
@@ -83,6 +85,7 @@
     gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
 	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
+
 
 	g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
 
@@ -97,15 +100,7 @@
 	response_id = va_arg (args, gint);
 	while(text != NULL) {
 
-#ifdef G_OS_UNIX
-
 		gtk_dialog_add_button(GTK_DIALOG(dialog), text, response_id);
-#else
-
-		GtkWidget * button = gtk_dialog_add_button(GTK_DIALOG(dialog), text, response_id);
-		gtk_widget_set_margin_top(button,3);
-
-#endif // G_OS_UNIX
 
 		text = va_arg (args, gchar*);
 		if (text == NULL)
@@ -119,5 +114,9 @@
 
  }
 
+ GtkWidget * v3270_dialog_set_content_area(GtkWidget *dialog, GtkWidget *content_area) {
+	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),content_area,TRUE,TRUE,0);
+	return content_area;
+ }
 
 
