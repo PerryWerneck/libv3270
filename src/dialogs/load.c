@@ -146,7 +146,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	GtkBox * box = GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
 	gtk_window_set_resizable(GTK_WINDOW(dialog),FALSE);
 
-#if G_OS_UNIX
+#ifdef G_OS_UNIX
 	gtk_container_set_border_width(GTK_CONTAINER(box),18);
 #endif // UNIX
 
