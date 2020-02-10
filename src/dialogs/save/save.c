@@ -165,7 +165,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	dialog->mode = LIB3270_CONTENT_ALL;
 
-	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
+	// gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
 
 	// Setup visual elements
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
@@ -174,7 +174,10 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	GtkBox * box = GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
 	gtk_window_set_resizable(GTK_WINDOW(dialog),FALSE);
+
+#if G_OS_UNIX
 	gtk_container_set_border_width(GTK_CONTAINER(box),18);
+#endif // LINUX
 
 	GtkGrid * grid = GTK_GRID(gtk_grid_new());
 	gtk_grid_set_row_spacing(GTK_GRID(grid),6);

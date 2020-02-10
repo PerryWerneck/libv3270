@@ -201,6 +201,11 @@ int main (int argc, char **argv) {
 	setlocale( LC_ALL, "" );
 #endif
 
+#ifdef _WIN32
+	// https://stackoverflow.com/questions/37035936/how-to-get-native-windows-decorations-on-gtk3-on-windows-7-and-msys2
+	putenv("GTK_CSD=0");
+#endif // _WIN32
+
 	textdomain("libv3270");
 
 	app = gtk_application_new ("br.com.bb.libv3270",G_APPLICATION_FLAGS_NONE);
