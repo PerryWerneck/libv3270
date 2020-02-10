@@ -215,13 +215,15 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 	GtkWidget * content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
 	// Get use of header bar.
+#ifndef _WIN32
 	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &dialog->has_subtitle, NULL);
+#endif // _WIN32
 
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 	//gtk_box_set_spacing(GTK_BOX(content_area),18);
 	//gtk_container_set_border_width(GTK_CONTAINER(content_area),18);
 
-	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
+//	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
     gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 
 	gtk_dialog_add_buttons(
@@ -234,9 +236,13 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 	// Create notebook for settings widgets
 	dialog->tabs = GTK_NOTEBOOK(gtk_notebook_new());
 
+#ifdef _WIN32
+	gtk_widget_set_margin_bottom(GTK_WIDGET(dialog->tabs),3);
+//	gtk_notebook_set_show_border(dialog->tabs, TRUE);
+#endif // _WIN32
+
 	gtk_notebook_set_scrollable(dialog->tabs,TRUE);
 	gtk_notebook_set_show_tabs(dialog->tabs,FALSE);
-	// gtk_notebook_set_show_border(dialog->tabs, TRUE);
 	g_signal_connect(G_OBJECT(dialog->tabs), "page-added", G_CALLBACK(on_page_changed), dialog);
 	g_signal_connect(G_OBJECT(dialog->tabs), "page-removed", G_CALLBACK(on_page_changed), dialog);
 	g_signal_connect(G_OBJECT(dialog->tabs), "switch-page", G_CALLBACK(on_switch_page), dialog);
@@ -247,7 +253,16 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 
 GtkWidget * v3270_settings_dialog_new()
 {
-#if GTK_CHECK_VERSION(3,12,0)
+#ifdef _WIN32
+
+	GtkWidget * dialog =
+		GTK_WIDGET(g_object_new(
+			GTK_TYPE_V3270_SETTINGS_DIALOG,
+			"use-header-bar", FALSE,
+			NULL
+		));
+
+#elif GTK_CHECK_VERSION(3,12,0)
 
 	gboolean use_header;
 	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
