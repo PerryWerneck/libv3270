@@ -81,7 +81,11 @@
  LIB3270_EXPORT GtkWidget * v3270_security_dialog_new(GtkWidget *widget)
  {
 	GtkGrid * grid = GTK_GRID(gtk_grid_new());
+
+#ifdef G_OS_UNIX
  	gtk_container_set_border_width(GTK_CONTAINER(grid),10);
+#endif // UNIX
+
  	gtk_grid_set_row_spacing(grid,5);
  	gtk_grid_set_column_spacing(grid,5);
 
