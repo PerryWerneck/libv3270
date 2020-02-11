@@ -44,27 +44,60 @@
 	return grid;
  }
 
- GtkWidget * v3270_dialog_create_frame(GtkWidget * child, const gchar *title)
- {
-	GtkFrame			* frame		= GTK_FRAME(gtk_frame_new(""));
-	g_autofree gchar	* markup	= g_strdup_printf("<b>%s</b>",title);
-	GtkWidget			* label		= gtk_label_new(NULL);
+ GtkWidget * v3270_dialog_section_new(const gchar * title, const gchar *tooltip, GtkWidget *child) {
 
-	gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_NONE);
-	gtk_label_set_markup(GTK_LABEL(label),markup);
+ 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
+
+	GtkFrame 	* frame		= GTK_FRAME(gtk_frame_new(""));
+	GtkWidget	* label		= gtk_label_new(NULL);
+
+#ifdef G_OS_UNIX
+	{
+		// Unix/Linux version, follow gnome guidelines
+		g_autofree gchar * markup = g_strdup_printf("<b>%s</b>",title);
+		gtk_label_set_markup(GTK_LABEL(label),markup);
+
+		g_object_set(G_OBJECT(frame),"margin-top",6,NULL);
+
+		gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_NONE);
+
+	}
+#else
+	{
+		// Non Unix/Linux, use the windows style.
+		gtk_label_set_text(GTK_LABEL(label),title);
+	}
+#endif // G_OS_UNIX
+
 	gtk_frame_set_label_widget(GTK_FRAME(frame),label);
- 	gtk_container_set_border_width(GTK_CONTAINER(child),12);
 
-	gtk_container_add(GTK_CONTAINER(frame),GTK_WIDGET(child));
+	if(child) {
+		gtk_container_set_border_width(GTK_CONTAINER(child),12);
+		gtk_container_add(GTK_CONTAINER(frame),GTK_WIDGET(child));
 
-	g_object_set(G_OBJECT(frame),"margin-top",6,NULL);
+		if(GTK_IS_GRID(child)) {
+			gtk_grid_set_row_spacing(GTK_GRID(child),6);
+			gtk_grid_set_column_spacing(GTK_GRID(child),12);
+		}
+
+	}
+
+	if(tooltip) {
+		gtk_widget_set_tooltip_markup(label,tooltip);
+	}
 
 	return GTK_WIDGET(frame);
+
+ }
+
+
+ GtkWidget * v3270_dialog_create_frame(GtkWidget * child, const gchar *title) {
+ 	return v3270_dialog_section_new(title,NULL,child);
  }
 
  GtkWidget * v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, const gchar *tooltip, GtkAlign align, gboolean expand, gboolean fill, guint padding)
  {
-	GtkWidget * frame = v3270_dialog_create_frame(child,title);
+	GtkWidget * frame = v3270_dialog_section_new(title,NULL,child);
 	gtk_widget_set_halign(GTK_WIDGET(frame),align);
 	gtk_box_pack_start(GTK_BOX(box),frame,expand,fill,padding);
 

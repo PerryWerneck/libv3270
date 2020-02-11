@@ -436,7 +436,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	gtk_grid_attach(
 			GTK_GRID(widget),
-			v3270_dialog_create_frame(grids[CONNECTION],_("Connection")),
+			v3270_dialog_section_new(_("Connection"),_("Network connection settings"),grids[CONNECTION]),
 			0,0,10,5
 	);
 
@@ -446,7 +446,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	gtk_grid_attach(
 			GTK_GRID(widget),
-			v3270_dialog_create_frame(grids[EMULATION],_("Emulation")),
+			v3270_dialog_section_new(_("Emulation"),_("TN3270 Emulation settings"),grids[EMULATION]),
 			0,6,10,5
 	);
 
