@@ -75,7 +75,6 @@
  static void					  change_widget(GAction *object, GtkWidget *from, GtkWidget *to);
  static void					  activate(GAction *object, GVariant *parameter, GtkWidget *terminal);
 
-
  G_DEFINE_TYPE(v3270PropertyAction, v3270PropertyAction, V3270_TYPE_SIMPLE_ACTION);
 
  void v3270PropertyAction_class_init(v3270PropertyActionClass *klass) {
@@ -243,7 +242,6 @@
 	if(lProperty) {
 		action->parent.label	= lib3270_property_get_label(lProperty);
 		action->parent.tooltip 	= lib3270_property_get_summary(lProperty);
-//		action->group.id		= lProperty->group;
 	}
 
  	if(!action->parent.tooltip)

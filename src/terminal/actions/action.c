@@ -246,7 +246,7 @@
  }
 
  static gboolean bg_notify_enabled(GObject *action) {
- 	debug("%s(%s,%s)",__FUNCTION__,g_action_get_name(G_ACTION(action)),(g_action_get_enabled(G_ACTION(action)) ? "enabled" : "disabled"));
+ 	debug("%s(%s,%s,%d)",__FUNCTION__,g_action_get_name(G_ACTION(action)),(g_action_get_enabled(G_ACTION(action)) ? "enabled" : "disabled"),(int) v3270_action_get_group(G_ACTION(action)));
 	g_object_notify(action, "enabled");
 	return FALSE;
  }

@@ -57,6 +57,10 @@
 	return V3270_SIMPLE_ACTION(action)->name;
  }
 
+ static LIB3270_ACTION_GROUP get_action_group(GAction *action) {
+	return V3270_SIMPLE_ACTION(action)->group.id;
+ }
+
  static void dispose(GObject *object) {
 
 	V3270SimpleAction *action = V3270_SIMPLE_ACTION(object);
@@ -75,11 +79,12 @@
 
  static void V3270SimpleAction_class_init(V3270SimpleActionClass *klass) {
 
- 	klass->parent_class.get_name		= get_name;
- 	klass->parent_class.get_icon_name	= get_icon_name;
- 	klass->parent_class.get_label 		= get_label;
- 	klass->parent_class.get_tooltip		= get_tooltip;
- 	klass->parent_class.activate		= klass_activate;
+ 	klass->parent_class.get_name			= get_name;
+ 	klass->parent_class.get_icon_name		= get_icon_name;
+ 	klass->parent_class.get_label 			= get_label;
+ 	klass->parent_class.get_tooltip			= get_tooltip;
+ 	klass->parent_class.activate			= klass_activate;
+ 	klass->parent_class.get_action_group	= get_action_group;
 
 	G_OBJECT_CLASS(klass)->dispose = dispose;
 
