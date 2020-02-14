@@ -77,13 +77,13 @@
  }
 
  static void V3270DialogAction_class_init(V3270DialogActionClass *klass) {
- 	klass->parent_class.parent_class.get_enabled = get_enabled;
+ 	klass->parent_class.parent_class.get_enabled	= get_enabled;
+ 	klass->parent_class.parent_class.activate		= activate;
  }
 
  static void V3270DialogAction_init(V3270DialogAction *action) {
 
  	action->dialog = NULL;
-	action->parent.parent.activate = activate;
 
  }
 

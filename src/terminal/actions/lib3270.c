@@ -36,23 +36,12 @@
  #include <lib3270/actions.h>
  #include <v3270.h>
  #include <v3270/actions.h>
-
- #define LIB3270_TYPE_ACTION		(Lib3270Action_get_type())
- #define LIB3270_ACTION(inst)		(G_TYPE_CHECK_INSTANCE_CAST ((inst), LIB3270_TYPE_ACTION, Lib3270Action))
- #define LIB3270_IS_ACTION(inst)	(G_TYPE_CHECK_INSTANCE_TYPE ((inst), LIB3270_TYPE_ACTION))
-
- typedef struct _Lib3270ActionClass {
- 	V3270ActionClass parent_class;
- } Lib3270ActionClass;
-
- typedef struct _Lib3270Action {
- 	V3270Action parent;
- } Lib3270Action;
+ #include "private.h"
 
  static void Lib3270Action_class_init(Lib3270ActionClass *klass);
  static void Lib3270Action_init(Lib3270Action *action);
 
- #define LIB3270_ACTION_GET_DESCRIPTOR(obj) ((LIB3270_ACTION *) ((V3270Action *) obj)->info)
+ #define LIB3270_ACTION_GET_DESCRIPTOR(obj) ((const LIB3270_ACTION *) LIB3270_ACTION(obj)->definition)
 
  G_DEFINE_TYPE(Lib3270Action, Lib3270Action, V3270_TYPE_ACTION);
 
@@ -85,21 +74,47 @@
 
  static void dispose(GObject *object) {
 
-	//Lib3270Action *action = LIB3270_ACTION(object);
+//	Lib3270Action *action = LIB3270_ACTION(object);
 
 
 	G_OBJECT_CLASS(Lib3270Action_parent_class)->dispose(object);
  }
 
+ static const gchar * get_name(GAction *action) {
+ 	return LIB3270_ACTION_GET_DESCRIPTOR(action)->name;
+ }
+
+ static const gchar * get_icon_name(GAction *action) {
+ 	return LIB3270_ACTION_GET_DESCRIPTOR(action)->icon;
+ }
+
+ static const gchar * get_label(GAction *action) {
+ 	return LIB3270_ACTION_GET_DESCRIPTOR(action)->label;
+ }
+
+ static const gchar * get_tooltip(GAction *action) {
+ 	return LIB3270_ACTION_GET_DESCRIPTOR(action)->summary;
+ }
+
+ static LIB3270_ACTION_GROUP get_action_group(GAction *action) {
+ 	return LIB3270_ACTION_GET_DESCRIPTOR(action)->group;
+ }
+
  void Lib3270Action_class_init(Lib3270ActionClass *klass) {
 
-	V3270_ACTION_CLASS(klass)->get_enabled = get_enabled;
+ 	klass->parent_class.get_name			= get_name;
+	klass->parent_class.get_icon_name		= get_icon_name;
+	klass->parent_class.get_label			= get_label;
+	klass->parent_class.get_tooltip			= get_tooltip;
+	klass->parent_class.get_action_group	= get_action_group;
+	klass->parent_class.get_enabled			= get_enabled;
+	klass->parent_class.activate 			= activate;
+
 	G_OBJECT_CLASS(klass)->dispose = dispose;
 
  }
 
  void Lib3270Action_init(Lib3270Action *action) {
-	action->parent.activate = activate;
 	action->parent.translation_domain = lib3270_get_translation_domain();
  }
 
@@ -108,7 +123,7 @@
  	Lib3270Action * action = (Lib3270Action *) g_object_new(LIB3270_TYPE_ACTION, NULL);
 
 	// Setup hooks.
-	action->parent.info = (const LIB3270_PROPERTY *) definition;
+	action->definition = definition;
 
  	return G_ACTION(action);
  }
@@ -123,7 +138,7 @@
 		GAction *action = g_action_new_from_lib3270(&actions[ix]);
 
 		if(!g_action_get_name(action)) {
-			g_warning("Action \"%s\" is invalid",actions[ix].name);
+			g_warning("Action \"%s\" is invalid (no name)",actions[ix].name);
 		} else {
 			g_action_map_add_action(action_map,action);
 		}

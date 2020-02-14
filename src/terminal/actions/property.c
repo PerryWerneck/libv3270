@@ -73,14 +73,17 @@
  static const GVariantType      * get_state_type(GAction *object);
  static const GVariantType      * get_parameter_type(GAction *object);
  static void					  change_widget(GAction *object, GtkWidget *from, GtkWidget *to);
+ static void					  activate(GAction *object, GVariant *parameter, GtkWidget *terminal);
+
 
  G_DEFINE_TYPE(v3270PropertyAction, v3270PropertyAction, V3270_TYPE_SIMPLE_ACTION);
 
  void v3270PropertyAction_class_init(v3270PropertyActionClass *klass) {
-	klass->parent_class.parent_class.change_widget = change_widget;
-	klass->parent_class.parent_class.get_parameter_type = get_parameter_type;
-	klass->parent_class.parent_class.get_state = get_state;
-	klass->parent_class.parent_class.get_state_type = get_state_type;
+	klass->parent_class.parent_class.change_widget		= change_widget;
+	klass->parent_class.parent_class.get_parameter_type	= get_parameter_type;
+	klass->parent_class.parent_class.get_state			= get_state;
+	klass->parent_class.parent_class.get_state_type		= get_state_type;
+	klass->parent_class.parent_class.activate			= activate;
  }
 
  static void v3270PropertyAction_init(v3270PropertyAction G_GNUC_UNUSED(*action)) {
@@ -134,7 +137,7 @@
 
  }
 
- static void activate(GAction *object, GVariant *parameter, GtkWidget *terminal) {
+ void activate(GAction *object, GVariant *parameter, GtkWidget *terminal) {
 
 	v3270PropertyAction * action = V3270_PROPERTY_ACTION(object);
 
@@ -246,7 +249,6 @@
  	if(!action->parent.tooltip)
 		action->parent.tooltip = g_param_spec_get_blurb(pspec);
 
-	action->parent.parent.activate			= activate;
  	action->pspec							= pspec;
  	action->parent.group.id					= action_group;
 

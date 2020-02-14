@@ -348,8 +348,10 @@
  {
  	debug("Activating action \"%s\"",g_action_get_name(action));
 
+ 	/*
  	V3270_ACTION * descriptor = (V3270_ACTION *) ((V3270Action *) action)->info;
 	descriptor->activate(terminal,descriptor);
+	*/
 
  }
 
@@ -359,6 +361,7 @@
 	const V3270_ACTION * actions = v3270_get_actions();
 	size_t ix;
 
+	/*
 	for(ix = 0; actions[ix].name; ix++) {
 
 		V3270Action * action = V3270_ACTION(g_object_new(V3270_TYPE_ACTION, NULL));
@@ -374,6 +377,7 @@
 		}
 
 	}
+	*/
 
  }
 

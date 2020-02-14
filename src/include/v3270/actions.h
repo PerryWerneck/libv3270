@@ -32,6 +32,7 @@
     #define V3270_ACTIONS_H_INCLUDED 1
 
     #include <gtk/gtk.h>
+    #include <lib3270.h>
     #include <lib3270/actions.h>
     #include <lib3270/toggle.h>
 
@@ -119,13 +120,9 @@
 		GObject parent;
 
 		GtkWidget				* terminal;				///> @brief The active terminal widget.
-		const LIB3270_PROPERTY	* info;					///> @brief Action info.
 		const void 				* listener;				///> @brief Signal listener for the action group.
 
 		const gchar				* translation_domain;	///> @brief The translation domain for the action.
-
-		/// @brief Activation method.
-		void (*activate)(GAction *action, GVariant *parameter, GtkWidget *terminal);
 
 	} V3270Action;
 
@@ -138,21 +135,24 @@
 			GParamSpec * enabled;
 		} properties;
 
-		void				  (*change_widget)(GAction *action, GtkWidget *from, GtkWidget *to);
+		void						  (*activate)(GAction *action, GVariant *parameter, GtkWidget *terminal);
 
-		const gchar			* (*translate)(GAction *action, const gchar *text);
+		void						  (*change_widget)(GAction *action, GtkWidget *from, GtkWidget *to);
 
-		const GVariantType	* (*get_state_type)(GAction *object);
-		GVariant			* (*get_state)(GAction *action, GtkWidget *terminal);
+		const gchar					* (*translate)(GAction *action, const gchar *text);
 
-		const GVariantType	* (*get_parameter_type)(GAction *object);
+		const GVariantType			* (*get_state_type)(GAction *object);
+		GVariant					* (*get_state)(GAction *action, GtkWidget *terminal);
 
-		gboolean	  		  (*get_enabled)(GAction *action, GtkWidget *terminal);
+		const GVariantType			* (*get_parameter_type)(GAction *object);
 
-		const gchar 		* (*get_name)(GAction *action);
-		const gchar 		* (*get_icon_name)(GAction *action);
-		const gchar 		* (*get_label)(GAction *action);
-		const gchar 		* (*get_tooltip)(GAction *action);
+		gboolean	 		 		  (*get_enabled)(GAction *action, GtkWidget *terminal);
+
+		const gchar 				* (*get_name)(GAction *action);
+		const gchar 				* (*get_icon_name)(GAction *action);
+		const gchar 				* (*get_label)(GAction *action);
+		const gchar 				* (*get_tooltip)(GAction *action);
+		LIB3270_ACTION_GROUP		  (*get_action_group)(GAction *action);
 
 	} V3270ActionClass;
 
@@ -161,6 +161,8 @@
 
 	LIB3270_EXPORT void			  v3270_action_set_terminal_widget(GAction *object, GtkWidget *widget);
 	LIB3270_EXPORT GtkWidget	* v3270_action_get_terminal_widget(GAction *object);
+
+	LIB3270_EXPORT LIB3270_ACTION_GROUP v3270_action_get_group(GAction *action);
 
 	LIB3270_EXPORT void			  v3270_action_notify_state(GAction *action);
 	LIB3270_EXPORT void			  v3270_action_notify_enabled(GAction *action);
@@ -212,6 +214,7 @@
 
 		/// @brief Activation method.
 		void (*activate)(GAction *action, GVariant *parameter, GtkWidget *terminal);
+
 
 	} V3270SimpleAction;
 

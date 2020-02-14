@@ -28,10 +28,33 @@
  */
 
  #include <config.h>
+
+ #include <glib.h>
+ #include <gtk/gtk.h>
+
  #include <v3270.h>
  #include <v3270/actions.h>
  #include <internals.h>
 
+ // Lib3270 action
+
+ G_GNUC_INTERNAL GType Lib3270Action_get_type(void) G_GNUC_CONST;
+
+ #define LIB3270_TYPE_ACTION		(Lib3270Action_get_type())
+ #define LIB3270_ACTION(inst)		(G_TYPE_CHECK_INSTANCE_CAST ((inst), LIB3270_TYPE_ACTION, Lib3270Action))
+ #define LIB3270_IS_ACTION(inst)	(G_TYPE_CHECK_INSTANCE_TYPE ((inst), LIB3270_TYPE_ACTION))
+
+ typedef struct _Lib3270ActionClass {
+ 	V3270ActionClass parent_class;
+ } Lib3270ActionClass;
+
+ typedef struct _Lib3270Action {
+ 	V3270Action parent;
+ 	const LIB3270_PROPERTY * definition;
+ } Lib3270Action;
+
+
+ // Internal methods
  G_GNUC_INTERNAL int fire_copy_accelerator(GtkWidget *widget, const V3270_ACTION *action);
  G_GNUC_INTERNAL int fire_paste_accelerator(GtkWidget *widget, const V3270_ACTION *action);
  G_GNUC_INTERNAL int fire_zoom_action(GtkWidget *widget, const V3270_ACTION *action);

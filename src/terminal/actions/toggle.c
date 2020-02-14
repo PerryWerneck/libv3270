@@ -35,26 +35,27 @@
  #include <internals.h>
  #include <v3270.h>
  #include <v3270/actions.h>
+ #include "private.h"
 
  #define LIB3270_TYPE_TOGGLE_ACTION		(Lib3270ToggleAction_get_type())
  #define LIB3270_TOGGLE_ACTION(inst)	(G_TYPE_CHECK_INSTANCE_CAST ((inst), LIB3270_TYPE_TOGGLE_ACTION, Lib3270ToggleAction))
  #define LIB3270_IS_TOGGLE_ACTION(inst)	(G_TYPE_CHECK_INSTANCE_TYPE ((inst), LIB3270_TYPE_TOGGLE_ACTION))
 
- #define GET_DESCRIPTOR(obj)  ((const LIB3270_TOGGLE *) ((V3270Action *) obj)->info)
+ #define GET_DESCRIPTOR(obj)  ((const LIB3270_TOGGLE *) LIB3270_ACTION(obj)->definition)
 
  typedef struct _Lib3270ToggleActionClass {
- 	V3270ActionClass parent_class;
+ 	Lib3270ActionClass parent_class;
  } Lib3270ToggleActionClass;
 
  typedef struct _Lib3270ToggleAction {
- 	V3270Action parent;
-	const void * listener;
+ 	Lib3270Action parent;
+	const void 				* listener;				///> @brief Signal listener for the toggle.
  } Lib3270ToggleAction;
 
  static void Lib3270ToggleAction_class_init(Lib3270ToggleActionClass *klass);
  static void Lib3270ToggleAction_init(Lib3270ToggleAction *action);
 
- G_DEFINE_TYPE(Lib3270ToggleAction, Lib3270ToggleAction, V3270_TYPE_ACTION);
+ G_DEFINE_TYPE(Lib3270ToggleAction, Lib3270ToggleAction, LIB3270_TYPE_ACTION);
 
  static void change_state(H3270 G_GNUC_UNUSED(*hSession), LIB3270_TOGGLE_ID G_GNUC_UNUSED(id), char G_GNUC_UNUSED(state), void G_GNUC_UNUSED(*action)) {
  	v3270_action_notify_state(G_ACTION(action));
@@ -111,24 +112,27 @@
  	return G_VARIANT_TYPE_BOOLEAN;
  }
 
+ static gboolean get_enabled(GAction *action, GtkWidget *terminal) {
+ 	return V3270_ACTION_GET_CLASS(action)->get_enabled(action,terminal);
+ }
+
  void Lib3270ToggleAction_class_init(Lib3270ToggleActionClass *klass) {
 
-	klass->parent_class.change_widget	= change_widget;
-	klass->parent_class.get_state		= get_state;
-	klass->parent_class.get_state_type	= get_state_type;
+	klass->parent_class.parent_class.change_widget	= change_widget;
+	klass->parent_class.parent_class.get_state		= get_state;
+	klass->parent_class.parent_class.get_state_type	= get_state_type;
+	klass->parent_class.parent_class.activate		= activate;
+	klass->parent_class.parent_class.get_enabled	= get_enabled;
 
  }
 
  void Lib3270ToggleAction_init(Lib3270ToggleAction *action) {
-	action->parent.activate	= activate;
-	action->parent.translation_domain = lib3270_get_translation_domain();
  }
 
  GAction * g_action_new_from_toggle(const LIB3270_TOGGLE * definition) {
 
  	Lib3270ToggleAction	* action = (Lib3270ToggleAction *) g_object_new(LIB3270_TYPE_TOGGLE_ACTION, NULL);
- 	action->parent.info = (const LIB3270_PROPERTY *) definition;
-
+ 	action->parent.definition = (const LIB3270_PROPERTY *) definition;
  	return G_ACTION(action);
 
  }

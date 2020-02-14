@@ -34,8 +34,6 @@
  #include <lib3270.h>
  #include <lib3270/log.h>
 
- #define V3270_ACTION_GET_DESCRIPTOR(obj) ((V3270Action *) obj)->info
-
  static void V3270_action_iface_init(GActionInterface *iface);
  static void V3270Action_class_init(V3270ActionClass *klass);
  static void V3270Action_init(V3270Action *action);
@@ -43,12 +41,10 @@
  static void get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
  static void set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
 
- static const gchar			* get_icon_name(GAction *action);
- static const gchar			* get_label(GAction *action);
- static const gchar			* get_tooltip(GAction *action);
- static const gchar			* get_name(GAction *action);
+ static const gchar			* get_null(GAction *action);
  static const GVariantType	* get_state_type(GAction *action);
  static	const GVariantType	* get_parameter_type(GAction *object);
+ static LIB3270_ACTION_GROUP get_action_group(GAction *action);
 
  static void change_widget(GAction *action, GtkWidget *from, GtkWidget *to);
  static void finalize(GObject *object);
@@ -88,15 +84,18 @@
 
 	debug("%s",__FUNCTION__);
 
+	klass->get_name				= get_null;
+	klass->get_icon_name		= get_null;
+	klass->get_label			= get_null;
+	klass->get_tooltip			= get_null;
+	klass->get_action_group		= get_action_group;
+
 	klass->change_widget		= change_widget;
 	klass->get_enabled			= get_enabled;
 	klass->get_state			= get_state;
-	klass->get_name				= get_name;
 	klass->translate			= translate;
+	klass->activate				= activate;
 
-	klass->get_icon_name		= get_icon_name;
-	klass->get_label			= get_label;
-	klass->get_tooltip			= get_tooltip;
 	klass->get_state_type		= get_state_type;
 	klass->get_parameter_type	= get_parameter_type;
 
@@ -180,13 +179,7 @@
 
  void V3270Action_init(V3270Action *action) {
 
-	static const LIB3270_PROPERTY default_info = {
-		.name = NULL
-	};
-
-	action->terminal			= NULL;
-	action->info				= &default_info;
-	action->activate			= activate;
+	action->terminal	= NULL;
 
  }
 
@@ -280,17 +273,18 @@
 
  	if(from != to) {
 
-		V3270Action *action = V3270_ACTION(object);
+		V3270Action *action			= V3270_ACTION(object);
+		LIB3270_ACTION_GROUP group	= v3270_action_get_group(object);
 
 		if(action->listener) {
-			lib3270_unregister_action_group_listener(v3270_action_get_session(object),action->info->group,action->listener);
+			lib3270_unregister_action_group_listener(v3270_action_get_session(object),group,action->listener);
 			action->listener = NULL;
 		}
 
 		action->terminal = to;
 
-		if(action->info->group != LIB3270_ACTION_GROUP_NONE && to) {
-			action->listener = lib3270_register_action_group_listener(v3270_action_get_session(object),action->info->group,event_listener,object);
+		if(group != LIB3270_ACTION_GROUP_NONE && to) {
+			action->listener = lib3270_register_action_group_listener(v3270_action_get_session(object),group,event_listener,object);
 		}
 
 		g_idle_add((GSourceFunc) bg_notify_enabled, G_OBJECT(action));
@@ -323,16 +317,27 @@
 	return V3270_ACTION(object)->terminal;
  }
 
- gboolean get_enabled(GAction G_GNUC_UNUSED(*object), GtkWidget *terminal) {
- 	return terminal != NULL;
+ gboolean get_enabled(GAction *object, GtkWidget *terminal) {
+
+ 	if(terminal == NULL)
+		return FALSE;
+
+	LIB3270_ACTION_GROUP group = v3270_action_get_group(object);
+
+	debug("**************** %s(%d %d)",g_action_get_name(object),(int) group, (int) LIB3270_ACTION_GROUP_NONE);
+
+	if(group != LIB3270_ACTION_GROUP_NONE) {
+
+		debug("**************** %s",g_action_get_name(object));
+
+		return FALSE;
+	}
+
+ 	return TRUE;
  }
 
  void activate(GAction *action, GVariant G_GNUC_UNUSED(*parameter), GtkWidget G_GNUC_UNUSED(*terminal)) {
 	g_message("Action %s can't be activated",g_action_get_name(action));
- }
-
- const gchar * v3270_action_translate(GAction *action, const gchar *text) {
-	return V3270_ACTION_GET_CLASS(action)->translate(action,text);
  }
 
  //
@@ -447,9 +452,11 @@
 
  	if(action && action->terminal) {
 
-		if(action->info->group != LIB3270_ACTION_GROUP_NONE) {
+		LIB3270_ACTION_GROUP group = v3270_action_get_group(object);
 
-			if(!lib3270_action_group_get_activatable(v3270_get_session(action->terminal),action->info->group))
+		if(group != LIB3270_ACTION_GROUP_NONE) {
+
+			if(!lib3270_action_group_get_activatable(v3270_get_session(action->terminal),group))
 				return FALSE;
 
 		}
@@ -466,42 +473,33 @@
  	V3270Action * action = V3270_ACTION(object);
 
  	if(action && action->terminal) {
-		action->activate(object,parameter,action->terminal);
+		V3270_ACTION_GET_CLASS(object)->activate(object,parameter,action->terminal);
  	}
 
  }
 
- const gchar * get_icon_name(GAction *action) {
- 	return V3270_ACTION_GET_DESCRIPTOR(action)->icon;
+ LIB3270_ACTION_GROUP get_action_group(GAction G_GNUC_UNUSED(*action)) {
+ 	return LIB3270_ACTION_GROUP_NONE;
  }
 
- const gchar * get_label(GAction *action) {
-	const gchar * label = V3270_ACTION_GET_DESCRIPTOR(action)->label;
-
-	debug("%s(%s): [%s] [%s]",__FUNCTION__,g_action_get_name(action),label,v3270_action_translate(action,label));
-
-	if(label && *label)
-		return v3270_action_translate(action,label);
-
+ const gchar * get_null(GAction G_GNUC_UNUSED(*action)) {
 	return NULL;
  }
 
- const gchar * get_tooltip(GAction *action) {
-
-	const gchar * tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->description;
-
-	if(!tooltip)
-		tooltip = V3270_ACTION_GET_DESCRIPTOR(action)->summary;
-
-	if(tooltip)
-		return v3270_action_translate(action,tooltip);
-
-	return NULL;
-
+  const GVariantType	* get_state_type(GAction G_GNUC_UNUSED(*object)) {
+ 	return NULL;
  }
 
- const gchar * get_name(GAction *action) {
-  	return V3270_ACTION_GET_DESCRIPTOR(action)->name;
+ const GVariantType	* get_parameter_type(GAction G_GNUC_UNUSED(*object)) {
+ 	return NULL;
+ }
+
+ const gchar * v3270_action_translate(GAction *action, const gchar *text) {
+	return V3270_ACTION_GET_CLASS(action)->translate(action,text);
+ }
+
+ LIB3270_ACTION_GROUP v3270_action_get_group(GAction *action) {
+ 	return V3270_ACTION_GET_CLASS(action)->get_action_group(action);
  }
 
  const gchar * v3270_action_get_icon_name(GAction *action) {
@@ -509,17 +507,9 @@
  }
 
  const gchar * v3270_action_get_label(GAction *action) {
- 	return V3270_ACTION_GET_CLASS(action)->get_label(action);
+ 	return v3270_action_translate(action,V3270_ACTION_GET_CLASS(action)->get_label(action));
  }
 
  const gchar * v3270_action_get_tooltip(GAction *action) {
- 	return V3270_ACTION_GET_CLASS(action)->get_tooltip(action);
- }
-
- const GVariantType	* get_state_type(GAction G_GNUC_UNUSED(*object)) {
- 	return NULL;
- }
-
- const GVariantType	* get_parameter_type(GAction G_GNUC_UNUSED(*object)) {
- 	return NULL;
+ 	return v3270_action_translate(action,v3270_action_translate(action,V3270_ACTION_GET_CLASS(action)->get_tooltip(action)));
  }

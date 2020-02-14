@@ -35,24 +35,25 @@
  #include <internals.h>
  #include <v3270.h>
  #include <v3270/actions.h>
+ #include "private.h"
 
  #define LIB3270_TYPE_PF_ACTION		(Lib3270PfAction_get_type())
  #define LIB3270_PF_ACTION(inst)	(G_TYPE_CHECK_INSTANCE_CAST ((inst), LIB3270_TYPE_PF_ACTION, Lib3270PfAction))
  #define LIB3270_IS_PF_ACTION(inst)	(G_TYPE_CHECK_INSTANCE_TYPE ((inst), LIB3270_TYPE_PF_ACTION))
 
  typedef struct _Lib3270PfActionClass {
- 	V3270ActionClass parent_class;
+ 	Lib3270ActionClass parent_class;
 
  } Lib3270PfActionClass;
 
  typedef struct _Lib3270PfAction {
- 	V3270Action parent;
+ 	Lib3270Action parent;
  } Lib3270PfAction;
 
  static void Lib3270PfAction_class_init(Lib3270PfActionClass *klass);
  static void Lib3270PfAction_init(Lib3270PfAction *action);
 
- G_DEFINE_TYPE(Lib3270PfAction, Lib3270PfAction, V3270_TYPE_ACTION);
+ G_DEFINE_TYPE(Lib3270PfAction, Lib3270PfAction, LIB3270_TYPE_ACTION);
 
  static void activate(GAction *action, GVariant *parameter, GtkWidget *terminal) {
 
@@ -86,8 +87,15 @@
  	return G_VARIANT_TYPE_UINT32;
  }
 
+ static gboolean get_enabled(GAction *action, GtkWidget *terminal) {
+ 	return V3270_ACTION_GET_CLASS(action)->get_enabled(action,terminal);
+ }
+
  void Lib3270PfAction_class_init(Lib3270PfActionClass *klass) {
- 	klass->parent_class.get_parameter_type = get_parameter_type;
+ 	klass->parent_class.parent_class.get_parameter_type = get_parameter_type;
+ 	klass->parent_class.parent_class.activate			= activate;
+	klass->parent_class.parent_class.get_enabled		= get_enabled;
+
  }
 
  void Lib3270PfAction_init(Lib3270PfAction *action) {
@@ -99,9 +107,8 @@
 
 	};
 
-	action->parent.activate = activate;
-	action->parent.info		= &info;
-	action->parent.translation_domain = GETTEXT_PACKAGE;
+	action->parent.definition					= &info;
+	action->parent.parent.translation_domain	= GETTEXT_PACKAGE;
 
  }
 

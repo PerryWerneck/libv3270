@@ -41,10 +41,6 @@
 
  G_DEFINE_TYPE(V3270SimpleAction, V3270SimpleAction, V3270_TYPE_ACTION);
 
- static void activate(GAction *action, GVariant G_GNUC_UNUSED(*parameter), GtkWidget G_GNUC_UNUSED(*terminal)) {
- 	g_warning("Action %s activation method is invalid",g_action_get_name(action));
- }
-
  static const gchar * get_icon_name(GAction *action) {
 	return V3270_SIMPLE_ACTION(action)->icon_name;
  }
@@ -73,25 +69,34 @@
 	G_OBJECT_CLASS(V3270SimpleAction_parent_class)->dispose(object);
  }
 
+ static void klass_activate(GAction *action, GVariant *parameter, GtkWidget *terminal) {
+ 	V3270_SIMPLE_ACTION(action)->activate(action,parameter,terminal);
+ }
+
  static void V3270SimpleAction_class_init(V3270SimpleActionClass *klass) {
 
  	klass->parent_class.get_name		= get_name;
  	klass->parent_class.get_icon_name	= get_icon_name;
  	klass->parent_class.get_label 		= get_label;
  	klass->parent_class.get_tooltip		= get_tooltip;
+ 	klass->parent_class.activate		= klass_activate;
 
 	G_OBJECT_CLASS(klass)->dispose = dispose;
 
  }
 
+ static void activate(GAction *action, GVariant G_GNUC_UNUSED(*parameter), GtkWidget G_GNUC_UNUSED(*terminal)) {
+ 	g_warning("Action %s activation method is invalid",g_action_get_name(action));
+ }
+
  static void V3270SimpleAction_init(V3270SimpleAction *action) {
 
-	action->icon_name = NULL;
-	action->label = _( "No label" );
-	action->tooltip = NULL;
-	action->activate = activate;
-	action->group.id = LIB3270_ACTION_GROUP_NONE;
-	action->group.listener = NULL;
+	action->icon_name		= NULL;
+	action->label			= _( "No label" );
+	action->tooltip			= NULL;
+	action->activate		= activate;
+	action->group.id		= LIB3270_ACTION_GROUP_NONE;
+	action->group.listener	= NULL;
 
  }
 
