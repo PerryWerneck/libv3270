@@ -88,14 +88,13 @@
  }
 
  static gboolean get_enabled(GAction *action, GtkWidget *terminal) {
- 	return V3270_ACTION_GET_CLASS(action)->get_enabled(action,terminal);
+ 	return TRUE;
  }
 
  void Lib3270PfAction_class_init(Lib3270PfActionClass *klass) {
  	klass->parent_class.parent_class.get_parameter_type = get_parameter_type;
  	klass->parent_class.parent_class.activate			= activate;
 	klass->parent_class.parent_class.get_enabled		= get_enabled;
-
  }
 
  void Lib3270PfAction_init(Lib3270PfAction *action) {

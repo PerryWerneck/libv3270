@@ -113,7 +113,7 @@
  }
 
  static gboolean get_enabled(GAction *action, GtkWidget *terminal) {
- 	return V3270_ACTION_GET_CLASS(action)->get_enabled(action,terminal);
+ 	return TRUE;
  }
 
  void Lib3270ToggleAction_class_init(Lib3270ToggleActionClass *klass) {

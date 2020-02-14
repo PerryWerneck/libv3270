@@ -45,15 +45,18 @@
  */
 void v3270_reconfigure(v3270 * terminal)
 {
+	GtkWidget *	widget = GTK_WIDGET(terminal);
+	GdkWindow * window = gtk_widget_get_window(widget);
+
+	// If the widget isn't realized just return.
+	if(!window)
+		return;
+
 	GtkAllocation allocation;
-	GtkWidget *widget;
-	GdkEvent *event = gdk_event_new(GDK_CONFIGURE);
-
-	widget = GTK_WIDGET(terminal);
-
 	gtk_widget_get_allocation(widget, &allocation);
 
-	event->configure.window = g_object_ref(gtk_widget_get_window(widget));
+	GdkEvent *event = gdk_event_new(GDK_CONFIGURE);
+	event->configure.window = g_object_ref(window);
 	event->configure.send_event = TRUE;
 	event->configure.x = allocation.x;
 	event->configure.y = allocation.y;
@@ -63,7 +66,7 @@ void v3270_reconfigure(v3270 * terminal)
 	if(terminal->surface)
 		cairo_surface_destroy(terminal->surface);
 
-	terminal->surface = (cairo_surface_t *) gdk_window_create_similar_surface(gtk_widget_get_window(widget),CAIRO_CONTENT_COLOR,allocation.width,allocation.height);
+	terminal->surface = (cairo_surface_t *) gdk_window_create_similar_surface(window,CAIRO_CONTENT_COLOR,allocation.width,allocation.height);
 
 	// Update the created image
 	cairo_t * cr = cairo_create(terminal->surface);
@@ -80,7 +83,9 @@ void v3270_reconfigure(v3270 * terminal)
 #endif
 
 	gtk_widget_event(widget, event);
+
 	gdk_event_free(event);
 }
+
 
 

@@ -42,6 +42,25 @@
 	#define GDK_ALT_MASK GDK_MOD1_MASK
  #endif
 
+ #define LIB3270_TYPE_V3270_INTERNAL_ACTION		(V270InternalAction_get_type())
+ #define V3270_INTERNAL_ACTION(inst)			(G_TYPE_CHECK_INSTANCE_CAST ((inst), LIB3270_TYPE_V3270_INTERNAL_ACTION, V270InternalAction))
+
+ #define GET_DESCRIPTOR(obj)  ((const V3270_ACTION *) V3270_INTERNAL_ACTION(obj)->definition)
+
+ typedef struct _V270InternalActionClass {
+ 	V3270ActionClass parent_class;
+ } V270InternalActionClass;
+
+ typedef struct _V270InternalAction {
+ 	V3270Action			  parent;
+ 	const V3270_ACTION	* definition;
+ } V270InternalAction;
+
+ static void V270InternalAction_class_init(V270InternalActionClass *klass);
+ static void V270InternalAction_init(V270InternalAction *action);
+
+ G_DEFINE_TYPE(V270InternalAction, V270InternalAction, V3270_TYPE_ACTION);
+
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
  static const V3270_ACTION actions[] =
@@ -344,31 +363,56 @@
 	return actions;
  }
 
- static void activate_v3270(GAction *action, GVariant G_GNUC_UNUSED(*parameter), GtkWidget *terminal)
- {
+ static const gchar * get_icon_name(GAction *action) {
+	return GET_DESCRIPTOR(action)->icon;
+ }
+
+ static const gchar * get_label(GAction *action) {
+	return GET_DESCRIPTOR(action)->label;
+ }
+
+ static const gchar * get_tooltip(GAction *action) {
+	return GET_DESCRIPTOR(action)->summary;
+ }
+
+ static const gchar * get_name(GAction *action) {
+	return GET_DESCRIPTOR(action)->name;
+ }
+
+ static void activate(GAction *action, GVariant G_GNUC_UNUSED(*parameter), GtkWidget *terminal) {
+
  	debug("Activating action \"%s\"",g_action_get_name(action));
 
- 	/*
- 	V3270_ACTION * descriptor = (V3270_ACTION *) ((V3270Action *) action)->info;
-	descriptor->activate(terminal,descriptor);
-	*/
+ 	const V3270_ACTION *descriptor = GET_DESCRIPTOR(action);
+
+ 	descriptor->activate(terminal,descriptor);
 
  }
 
- void g_action_map_add_v3270_actions(GActionMap *action_map)
- {
+ static void V270InternalAction_class_init(V270InternalActionClass *klass) {
+
+ 	klass->parent_class.get_name		= get_name;
+ 	klass->parent_class.get_icon_name	= get_icon_name;
+ 	klass->parent_class.get_label 		= get_label;
+ 	klass->parent_class.get_tooltip		= get_tooltip;
+ 	klass->parent_class.activate		= activate;
+
+ }
+
+ static void V270InternalAction_init(V270InternalAction G_GNUC_UNUSED(*action)) {
+ }
+
+ void g_action_map_add_v3270_actions(GActionMap *action_map) {
 
 	const V3270_ACTION * actions = v3270_get_actions();
 	size_t ix;
 
-	/*
 	for(ix = 0; actions[ix].name; ix++) {
 
-		V3270Action * action = V3270_ACTION(g_object_new(V3270_TYPE_ACTION, NULL));
+		V270InternalAction * action = V3270_INTERNAL_ACTION(g_object_new(LIB3270_TYPE_V3270_INTERNAL_ACTION, NULL));
 
-		action->info = (const LIB3270_PROPERTY *) &actions[ix];
-		action->activate = activate_v3270;
-		action->translation_domain = GETTEXT_PACKAGE;
+		action->definition = &actions[ix];
+		action->parent.translation_domain = GETTEXT_PACKAGE;
 
 		if(!g_action_get_name(G_ACTION(action))) {
 			g_warning("Action \"%s\" is invalid",actions[ix].name);
@@ -377,7 +421,6 @@
 		}
 
 	}
-	*/
 
  }
 

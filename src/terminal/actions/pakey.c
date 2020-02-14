@@ -88,7 +88,7 @@
  }
 
  static gboolean get_enabled(GAction *action, GtkWidget *terminal) {
- 	return V3270_ACTION_GET_CLASS(action)->get_enabled(action,terminal);
+ 	return TRUE;
  }
 
  void Lib3270PaAction_class_init(Lib3270PaActionClass *klass) {
