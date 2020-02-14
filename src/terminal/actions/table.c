@@ -389,13 +389,18 @@
 
  }
 
+ static LIB3270_ACTION_GROUP get_action_group(GAction *action) {
+	return GET_DESCRIPTOR(action)->group;
+ }
+
  static void V270InternalAction_class_init(V270InternalActionClass *klass) {
 
- 	klass->parent_class.get_name		= get_name;
- 	klass->parent_class.get_icon_name	= get_icon_name;
- 	klass->parent_class.get_label 		= get_label;
- 	klass->parent_class.get_tooltip		= get_tooltip;
- 	klass->parent_class.activate		= activate;
+ 	klass->parent_class.get_name			= get_name;
+ 	klass->parent_class.get_icon_name		= get_icon_name;
+ 	klass->parent_class.get_label 			= get_label;
+ 	klass->parent_class.get_tooltip			= get_tooltip;
+ 	klass->parent_class.activate			= activate;
+ 	klass->parent_class.get_action_group	= get_action_group;
 
  }
 

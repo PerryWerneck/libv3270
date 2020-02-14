@@ -323,14 +323,8 @@
 		return FALSE;
 
 	LIB3270_ACTION_GROUP group = v3270_action_get_group(object);
-
-	debug("**************** %s(%d %d)",g_action_get_name(object),(int) group, (int) LIB3270_ACTION_GROUP_NONE);
-
 	if(group != LIB3270_ACTION_GROUP_NONE) {
-
-		debug("**************** %s",g_action_get_name(object));
-
-		return FALSE;
+		return lib3270_action_group_get_activatable(v3270_get_session(terminal),group) ? TRUE : FALSE;
 	}
 
  	return TRUE;
