@@ -72,7 +72,6 @@
  static GVariant				* get_state(GAction *action, GtkWidget *terminal);
  static const GVariantType      * get_state_type(GAction *object);
  static const GVariantType      * get_parameter_type(GAction *object);
-
  static void					  change_widget(GAction *object, GtkWidget *from, GtkWidget *to);
 
  G_DEFINE_TYPE(v3270PropertyAction, v3270PropertyAction, V3270_TYPE_SIMPLE_ACTION);
@@ -204,7 +203,7 @@
 
  }
 
- V3270SimpleAction * v3270_property_action_new(GtkWidget *widget, const gchar *property_name) {
+ V3270SimpleAction * v3270_property_action_new(GtkWidget *widget, const gchar *property_name, const LIB3270_ACTION_GROUP action_group) {
 
 	GParamSpec *pspec = g_object_class_find_property(G_OBJECT_GET_CLASS(widget), property_name);
 
@@ -249,6 +248,7 @@
 
 	action->parent.parent.activate			= activate;
  	action->pspec							= pspec;
+ 	action->parent.group.id					= action_group;
 
  	v3270_action_set_terminal_widget(G_ACTION(action), widget);
 

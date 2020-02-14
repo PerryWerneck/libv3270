@@ -230,7 +230,7 @@
 	LIB3270_EXPORT V3270SimpleAction * v3270_dialog_action_new(GtkWidget * (*factory)(V3270SimpleAction *, GtkWidget *));
 
 	/// @brief Create an action from property name.
-	LIB3270_EXPORT V3270SimpleAction * v3270_property_action_new(GtkWidget *widget, const gchar *property_name);
+	LIB3270_EXPORT V3270SimpleAction * v3270_property_action_new(GtkWidget *widget, const gchar *property_name, const LIB3270_ACTION_GROUP action_group);
 
 	/// @brief Create an action with the "enable" property binded with terminal property.
 	LIB3270_EXPORT V3270SimpleAction * v3270_conditional_action_new(GtkWidget *widget, const gchar *property_name);
