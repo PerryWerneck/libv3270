@@ -123,7 +123,7 @@
  	Lib3270Action * action = (Lib3270Action *) g_object_new(LIB3270_TYPE_ACTION, NULL);
 
 	// Setup hooks.
-	action->definition = definition;
+	action->definition = (const LIB3270_PROPERTY *) definition;
 
  	return G_ACTION(action);
  }
