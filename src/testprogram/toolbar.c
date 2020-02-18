@@ -117,6 +117,7 @@
  {
  	// v3270_error_popup(terminal,"title","summary","body");
 
+ 	/*
  	{
 		GtkWidget * dialog = v3270_dialog_new_with_buttons("Testing dialog", terminal, "Ok", GTK_RESPONSE_OK, "Cancel", GTK_RESPONSE_CANCEL, NULL);
 
@@ -126,6 +127,7 @@
 		gtk_widget_show_all(dialog);
 
  	}
+ 	*/
 
 
 	/*
@@ -156,24 +158,25 @@
 	v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP);
 	*/
 
-	/*
- 	//
- 	// Test settings dialog
- 	//
-	// GtkWidget * dialog = v3270_ft_settings_dialog_new(terminal);
-	// v3270_ft_settings_dialog_append_activity(dialog,activity,NULL);
 
-	//
-	// V5.1 dialog
-	//
-	GtkWidget *dialog = v3270ft_new(GTK_WIDGET(button));
-	*/
+	{
+		//
+		// Test V3270 FT Dialog
+		//
+		//
+		// GtkWidget * dialog = v3270_ft_settings_dialog_new(terminal);
+		// v3270_ft_settings_dialog_append_activity(dialog,activity,NULL);
 
-	/*
-	gtk_widget_show_all(dialog);
-	gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
-	*/
+		//
+		// V5.1 dialog
+		//
+		GtkWidget *dialog = v3270ft_new(GTK_WIDGET(button));
+
+		g_signal_connect(dialog,"response",G_CALLBACK(gtk_widget_destroy),NULL);
+		gtk_widget_show_all(dialog);
+
+	}
+
 
  }
 

@@ -352,7 +352,6 @@ static void v3270ft_init(v3270ft *dialog) {
 	// Initialize
 	gtk_window_set_title(GTK_WINDOW(dialog),_( "3270 File transfer"));
 	gtk_window_set_resizable(GTK_WINDOW(dialog),FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(box),18);
 	dialog->files = dialog->active = g_list_append(NULL,v3270ft_create_entry());
 
 	// Buttons
@@ -476,50 +475,72 @@ static void v3270ft_init(v3270ft *dialog) {
 	};
 
 #if HAVE_GTK_HEADER_BAR
-	widget = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
+	{
+		gboolean use_header;
+		g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
 
-	for(f=0;f< (int) G_N_ELEMENTS(action);f++) {
-
-		GtkWidget *button = gtk_button_new_from_icon_name(action[f].name,GTK_ICON_SIZE_BUTTON);
-
-		gtk_widget_set_tooltip_markup(button,g_dgettext(GETTEXT_PACKAGE,action[f].tooltip));
-
-		if(action[f].start) {
-			gtk_header_bar_pack_start(GTK_HEADER_BAR(widget),button);
+		if(use_header) {
+			widget = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
 		} else {
-			gtk_header_bar_pack_end(GTK_HEADER_BAR(widget),button);
+			widget = NULL;
 		}
 
-		g_signal_connect(button,"clicked",action[f].callback,dialog);
-
-		dialog->button[action[f].id] = button;
-		gtk_widget_set_sensitive(button,FALSE);
-
 	}
-
 #else
+	widget = NULL;
+#endif // HAVE_GTK_HEADER_BAR
 
-	widget = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size(GTK_TOOLBAR(widget),GTK_ICON_SIZE_SMALL_TOOLBAR);
+	if(widget) {
 
-	gtk_box_pack_start(box,GTK_WIDGET(widget),FALSE,FALSE,2);
+		gtk_container_set_border_width(GTK_CONTAINER(box),18);
 
-	for(f=0;f<G_N_ELEMENTS(action);f++) {
+		for(f=0;f< (int) G_N_ELEMENTS(action);f++) {
 
-		GtkWidget *button = GTK_WIDGET(gtk_tool_button_new(gtk_image_new_from_icon_name(action[f].name,GTK_ICON_SIZE_SMALL_TOOLBAR),NULL));
+			GtkWidget *button = gtk_button_new_from_icon_name(action[f].name,GTK_ICON_SIZE_BUTTON);
 
-		gtk_widget_set_tooltip_markup(button,g_dgettext(GETTEXT_PACKAGE,action[f].tooltip));
+			gtk_widget_set_tooltip_markup(button,g_dgettext(GETTEXT_PACKAGE,action[f].tooltip));
 
-		gtk_toolbar_insert(GTK_TOOLBAR(widget),GTK_TOOL_ITEM(button),-1);
+			if(action[f].start) {
+				gtk_header_bar_pack_start(GTK_HEADER_BAR(widget),button);
+			} else {
+				gtk_header_bar_pack_end(GTK_HEADER_BAR(widget),button);
+			}
 
-		g_signal_connect(button,"clicked",action[f].callback,dialog);
+			g_signal_connect(button,"clicked",action[f].callback,dialog);
 
-		dialog->button[action[f].id] = button;
-		gtk_widget_set_sensitive(button,FALSE);
+			dialog->button[action[f].id] = button;
+			gtk_widget_set_sensitive(button,FALSE);
+
+		}
+
+	} else {
+
+		widget = gtk_toolbar_new();
+		gtk_toolbar_set_icon_size(GTK_TOOLBAR(widget),GTK_ICON_SIZE_SMALL_TOOLBAR);
+
+		gtk_box_pack_start(box,GTK_WIDGET(widget),FALSE,FALSE,0);
+
+		for(f=0;f< (int) G_N_ELEMENTS(action);f++) {
+
+			GtkWidget *button = GTK_WIDGET(gtk_tool_button_new(gtk_image_new_from_icon_name(action[f].name,GTK_ICON_SIZE_SMALL_TOOLBAR),NULL));
+
+			gtk_widget_set_tooltip_markup(button,g_dgettext(GETTEXT_PACKAGE,action[f].tooltip));
+
+			gtk_toolbar_insert(GTK_TOOLBAR(widget),GTK_TOOL_ITEM(button),-1);
+
+			g_signal_connect(button,"clicked",action[f].callback,dialog);
+
+			dialog->button[action[f].id] = button;
+			gtk_widget_set_sensitive(button,FALSE);
+		}
+
+		// Create inner box
+		widget = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+		gtk_box_pack_start(box,widget,TRUE,TRUE,0);
+		gtk_container_set_border_width(GTK_CONTAINER(widget),18);
+		box = GTK_BOX(widget);
 
 	}
-
-#endif
 
 	gtk_widget_set_sensitive(dialog->button[FT_BUTTON_LOAD_LIST],TRUE);
 	gtk_widget_set_sensitive(dialog->button[FT_BUTTON_REMOVE_FILE],TRUE);
@@ -703,7 +724,28 @@ static void v3270ft_init(v3270ft *dialog) {
  */
 LIB3270_EXPORT GtkWidget * v3270ft_new(GtkWidget *parent) {
 
-	GtkWidget * dialog = GTK_WIDGET(g_object_new(GTK_TYPE_V3270FT, "use-header-bar", (gint) 1, NULL));
+#if GTK_CHECK_VERSION(3,12,0)
+
+	gboolean use_header;
+	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
+
+	GtkWidget * dialog =
+		GTK_WIDGET(g_object_new(
+			GTK_TYPE_V3270FT,
+			"use-header-bar", (use_header ? 1 : 0),
+			NULL
+		));
+
+#else
+
+	GtkWidget * dialog =
+		GTK_WIDGET(g_object_new(
+			GTK_TYPE_V3270FT,
+			NULL
+		));
+
+#endif
+
 	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(parent)));
 
 	return dialog;
