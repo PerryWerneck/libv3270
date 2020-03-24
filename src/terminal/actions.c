@@ -30,6 +30,7 @@
  #include <config.h>
  #include <terminal.h>
  #include <lib3270/actions.h>
+ #include <v3270/settings.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -53,17 +54,30 @@ LIB3270_EXPORT int v3270_reconnect(GtkWidget *widget)
 	return lib3270_reconnect(GTK_V3270(widget)->host,0);
 }
 
-void v3270_activate(GtkWidget *widget)
-{
+void v3270_activate(GtkWidget *widget) {
+
 	v3270 * terminal = GTK_V3270(widget);
 
 	terminal->activity.timestamp = time(0);
 
-	if(lib3270_is_connected(terminal->host))
+	if(lib3270_is_connected(terminal->host)) {
 		lib3270_enter(terminal->host);
-	else if(lib3270_get_url(terminal->host))
+	} else if(lib3270_get_url(terminal->host)) {
 		v3270_reconnect(widget);
-	else
-		g_warning("Terminal widget %p activated without connection or valid url",terminal);
+	} else {
+		g_message("Terminal widget activated without connection or valid url");
+
+        GtkWidget * dialog = v3270_settings_dialog_new();
+		gtk_container_add(GTK_CONTAINER(dialog), v3270_host_settings_new());
+        gtk_window_set_title(GTK_WINDOW(dialog),_("Setup host properties"));
+
+        gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+
+        v3270_settings_dialog_set_terminal_widget(dialog, widget);
+        g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
+        g_signal_connect(dialog,"response",G_CALLBACK(v3270_setttings_dialog_response),NULL);
+
+        gtk_widget_show_all(dialog);
+	}
 }
 
