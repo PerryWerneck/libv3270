@@ -45,7 +45,7 @@
 
  G_BEGIN_DECLS
 
-/*--[ Progress widget ]------------------------------------------------------------------------------*/
+/*--[ Host selection dialog ]------------------------------------------------------------------------*/
 
  #define GTK_TYPE_V3270HostSelectWidget				(V3270HostSelectWidget_get_type ())
  #define GTK_V3270HostSelectWidget(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270HostSelectWidget, V3270HostSelectWidget))

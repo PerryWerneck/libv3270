@@ -317,28 +317,60 @@ static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidget
 
 }
 
-static void oversize_changed(GtkEditable *editable, GtkWidget *settings)
-{
-	const gchar * chars = gtk_editable_get_chars(editable,0,-1);
-	gboolean	  valid = TRUE;
-	char		  junk;
-	unsigned int ovc = 0, ovr = 0;
+static gboolean oversize_validate(GtkEditable *editable) {
 
-	if(*chars)
-	{
+	const gchar * chars = gtk_editable_get_chars(editable,0,-1);
+
+	if(*chars) {
+        char		  junk;
+        unsigned int ovc = 0, ovr = 0;
+
 		if(sscanf(chars, "%ux%u%c", &ovc, &ovr, &junk) != 2)
-		{
-			valid = FALSE;
-			debug("Can't parse \"%s\"",chars);
-		}
-		else if( (ovc * ovr) > 0x4000)
-		{
-			valid = FALSE;
-			debug("Invalid values on \"%s\"",chars);
-		}
+			return FALSE;
+
+		if( (ovc * ovr) > 0x4000)
+			return FALSE;
+
 	}
 
-	v3270_settings_set_valid(settings,valid);
+	return TRUE;
+}
+
+static void update_valid(V3270HostSelectWidget *settings, gboolean valid) {
+
+    if(valid) {
+
+        // Check required inputs.
+
+        static const int required[] = { ENTRY_HOSTNAME, ENTRY_SRVCNAME };
+        size_t ix;
+
+        for(ix = 0; ix < G_N_ELEMENTS(required); ix++) {
+            const gchar * chars = gtk_editable_get_chars(GTK_EDITABLE(settings->input.entry[required[ix]]),0,-1);
+            if(!*chars) {
+                valid = FALSE;
+                break;
+            }
+        }
+    }
+
+    if(valid) {
+        valid = oversize_validate(GTK_EDITABLE(settings->input.entry[ENTRY_OVERSIZE]));
+    }
+
+	v3270_settings_set_valid(GTK_WIDGET(settings),valid);
+
+}
+
+static void required_changed(GtkEditable *editable, GtkWidget *settings) {
+
+    const gchar * chars = gtk_editable_get_chars(editable,0,-1);
+    update_valid(GTK_V3270HostSelectWidget(settings),(*chars ? TRUE : FALSE));
+
+}
+
+static void oversize_changed(GtkEditable *editable, GtkWidget *settings) {
+    update_valid(GTK_V3270HostSelectWidget(settings), oversize_validate(editable));
 }
 
 static void remap_file_changed(GtkEditable *editable, V3270HostSelectWidget *settings)
@@ -454,24 +486,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	{
 		v3270_settings_create_entry_fields(entryfields, G_N_ELEMENTS(entryfields), grids, widget->input.entry);
 
-		/*
-		size_t entry;
-
-		for(entry = 0; entry < G_N_ELEMENTS(entryfields); entry++)
-		{
-			widget->input.entry[entry] = GTK_ENTRY(gtk_entry_new());
-			gtk_entry_set_max_length(widget->input.entry[entry],entryfields[entry].max_length);
-			gtk_entry_set_width_chars(widget->input.entry[entry],entryfields[entry].width_chars);
-
-			v3270_grid_attach(
-				GTK_GRID(grids[entryfields[entry].grid]),
-				(struct v3270_entry_field *) & entryfields[entry],
-				GTK_WIDGET(widget->input.entry[entry])
-			);
-
-		}
-		*/
-
 		// Custom settings
 		gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
 
@@ -486,6 +500,8 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_REMAP_FILE]),"changed",G_CALLBACK(remap_file_changed),widget);
 
 		g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_OVERSIZE]),"changed",G_CALLBACK(oversize_changed),widget);
+        g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_HOSTNAME]),"changed",G_CALLBACK(required_changed),widget);
+        g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_SRVCNAME]),"changed",G_CALLBACK(required_changed),widget);
 
 	}
 
@@ -606,38 +622,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		}
 
 	}
-
-
-	/*
-	// Create combo boxes
-	{
-		size_t combo, item;
-
-		for(combo = 0; combo < G_N_ELEMENTS(combos); combo++) {
-
-
-			widget->input.combos[combo] = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
-
-			if(combos[combo].tooltip)
-				gtk_widget_set_tooltip_markup(GTK_WIDGET(widget->input.combos[combo]),combos[combo].tooltip);
-
-			gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.combos[combo]), text_renderer, TRUE);
-			gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.combos[combo]), text_renderer, "text", 0, NULL);
-
-			for(item = 0; combos[combo].labels[item]; item++)
-			{
-				GtkTreeIter iter;
-				gtk_list_store_append((GtkListStore *) model, &iter);
-				gtk_list_store_set((GtkListStore *) model, &iter, 0, g_dgettext(GETTEXT_PACKAGE, combos[combo].labels[item]), 1, combos[combo].values[item], -1);
-			}
-
-			v3270_grid_attach(GTK_GRID(grids[EMULATION]), (struct v3270_entry_field *) & combos[combo], GTK_WIDGET(widget->input.combos[combo]));
-
-		}
-
-	}
-
-	*/
 
 	gtk_widget_show_all(GTK_WIDGET(widget));
 
@@ -907,6 +891,8 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 
 	// Load unlock delay
 	gtk_spin_button_set_value(widget->input.unlock_delay, lib3270_get_unlock_delay(hSession));
+
+	update_valid(widget,TRUE);
 
 }
 
