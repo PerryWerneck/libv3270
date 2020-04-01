@@ -8,7 +8,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 Installation repositories
 =========================
 
-The latest version packaged for many linux distributions can be found in SuSE Build Service (https://build.opensuse.org/project/show/home:PerryWerneck:pw3270)
+ * https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=pw3270
 
 Requirements
 ============
