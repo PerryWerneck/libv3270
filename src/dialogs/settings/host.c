@@ -226,7 +226,7 @@
  		.grid = CONNECTION,
 
  		.label = N_( "_Service" ),
-		.tooltip = N_("Port or service name (empty for \"telnet\")."),
+		.tooltip = N_("Port or service name."),
 		.max_length = 6,
 		.width_chars = 7,
  	},
@@ -487,7 +487,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		v3270_settings_create_entry_fields(entryfields, G_N_ELEMENTS(entryfields), grids, widget->input.entry);
 
 		// Custom settings
-		gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
+		// gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
 
 		gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
 		gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_REMAP_FILE]),TRUE);
@@ -796,7 +796,7 @@ static void load(GtkWidget *w, GtkWidget *terminal)
             }
             else
             {
-                srvcname = "telnet";
+                srvcname = "23";
             }
 
             gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],hostname);
