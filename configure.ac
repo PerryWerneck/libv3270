@@ -100,6 +100,19 @@ case "$host" in
 		AC_CONFIG_FILES(src/terminal/windows/resources.rc)
 		;;
 
+	*-apple-darwin*)
+		CFLAGS="$CFLAGS -pthread"
+		LDFLAGS="$LDFLAGS -pthread"
+		app_cv_osname="linux"
+		LOGDIR="/var/log"
+		DLLEXT=".so"
+		DLL_LDFLAGS="-shared -Wl,-install_name,\$(@F)"
+
+		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
+
+		app_cv_static='yes'
+		;;
+
  	*)
 		CFLAGS="$CFLAGS -pthread"
 		LDFLAGS="$LDFLAGS -pthread"
@@ -229,6 +242,10 @@ AC_CHECK_HEADER(libintl.h, [
 
 	case "$host" in
 	*-mingw32)
+		INTL_LIBS="-lintl"
+		;;
+
+	*-apple-darwin*)
 		INTL_LIBS="-lintl"
 		;;
 
