@@ -132,20 +132,21 @@
 
  }
 
- static void finalize(GObject *object)
- {
+ static void finalize(GObject *object) {
+
 	debug("V3270Trace::%s",__FUNCTION__);
 
  	V3270Trace *trace = GTK_V3270_TRACE(object);
 
- 	if(trace->filename)
-	{
+ 	if(trace->filename) {
 		g_free(trace->filename);
 		trace->filename = NULL;
 	}
 
-	if(trace->log_handler)
-	{
+	if(trace->log_handler) {
+
+		// Remove glib log handler
+
 		g_log_remove_handler(NULL,trace->log_handler);
 		trace->log_handler = 0;
 	}
@@ -153,6 +154,7 @@
 	if(trace->terminal && GTK_V3270(trace->terminal)->trace == GTK_WIDGET(object))
 	{
 		debug("V3270Trace::%s - Removing trace widget association",__FUNCTION__);
+
 
 		g_object_notify_by_pspec(
 			G_OBJECT(trace->terminal),
@@ -164,12 +166,15 @@
 
 	if(trace->hSession) {
 
+		g_message("Disabling lib3270 traces");
+
 		size_t ix;
 		for(ix=0;ix < G_N_ELEMENTS(toggles); ix++)
 			lib3270_set_toggle(trace->hSession, toggles[ix],0);
 
 		lib3270_set_trace_handler(trace->hSession,trace->trace.handler,trace->trace.userdata);
 		trace->hSession = NULL;
+
 	}
 
 	g_clear_object(&trace->terminal);
