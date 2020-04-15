@@ -45,8 +45,10 @@ static const gchar * invalid_font_messages[] = {
 
 const gchar * v3270_get_default_font_name()
 {
-#ifdef _WIN32
+#if defined(_WIN32)
 	return "Lucida Console";
+#elif defined(__APPLE__)
+	return "Courier New";
 #else
 	return "monospace";
 #endif // _WIN32

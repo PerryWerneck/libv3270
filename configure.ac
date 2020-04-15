@@ -110,7 +110,7 @@ case "$host" in
 
 		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
 
-		app_cv_static='yes'
+		app_cv_static='no'
 		;;
 
  	*)
