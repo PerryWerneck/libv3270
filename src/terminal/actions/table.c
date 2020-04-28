@@ -188,7 +188,7 @@
 
 		{
 			.name = "zoom-in",
-			.keys = "<Primary><Shift><Alt>v",
+			.keys = "<Primary>KP_Add",
 			.flags = 0,
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.icon = "zoom-in",

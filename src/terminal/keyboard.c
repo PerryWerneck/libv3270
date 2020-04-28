@@ -129,12 +129,18 @@
 		event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_MOD1_MASK),
 		&handled
 	);
-	debug("Keyboard action was %s",handled ? "Handled" : "Not handled");
+
+#ifdef DEBUG
+	{
+		g_autofree gchar * key_name = gtk_accelerator_name(event->keyval,event->state);
+		debug("Keyboard action \"%s\" was %s",key_name,handled ? "Handled" : "Not handled");
+	}
+#endif // DEBUG
 	if(handled)
 		return TRUE;
 
 
-	// Check for accelerator
+	// Check for s
 	const V3270Accelerator * accelerator = v3270_accelerator_map_lookup_entry(widget, event->keyval, event->state);
 	if(accelerator)
 	{
