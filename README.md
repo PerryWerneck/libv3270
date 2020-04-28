@@ -75,3 +75,32 @@ Compiling for Windows (With MSYS2)
 	* make all
 
 
+Building for macOS (using homebrew)
+===================================
+
+1. Build and install [lib3270](lib3270/tree/master)
+
+2. Install dependencies
+
+	* gtk+3
+
+	```shell
+	$ brew install gtk+3
+	```
+3. Configure, build and install
+
+	```shell
+	$ ./autogen.sh --prefix="$(brew --cellar)/libv3270/5.3"
+	$ make all && make install
+	$ brew link libv3270
+	```
+
+Uninstalling
+------------
+
+1. To uninstall
+
+	```shell
+	$ brew unlink libv3270
+	$ rm -fr "$(brew --cellar)/libv3270"
+	```
