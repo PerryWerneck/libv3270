@@ -80,7 +80,7 @@ Building for macOS (using homebrew)
 
 1. Build and install [lib3270](../../../lib3270)
 
-2. Install dependencies
+2. Install additional dependencies
 
 	```shell
 	$ brew install gtk+3
