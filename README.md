@@ -82,11 +82,10 @@ Building for macOS (using homebrew)
 
 2. Install dependencies
 
-	* gtk+3
-
 	```shell
 	$ brew install gtk+3
 	```
+
 3. Configure, build and install
 
 	```shell
