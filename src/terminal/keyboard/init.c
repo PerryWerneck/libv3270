@@ -68,27 +68,6 @@
  	return lib3270_toggle(v3270_get_session(widget),action->id);
  }
 
- int fire_keypad_action(GtkWidget *widget, const struct _v3270_action * action)
- {
- 	int rc = 0;
- 	debug("%s",__FUNCTION__);
-
-	if(v3270_get_toggle(widget,LIB3270_TOGGLE_KP_ALTERNATIVE))
-	{
-		if(action->key == GDK_KP_Add)
-			rc = lib3270_nextfield(GTK_V3270(widget)->host);
-		else
-			rc = lib3270_previousfield(GTK_V3270(widget)->host);
-	}
-	else
-	{
-		v3270_set_string(widget, action->key == GDK_KP_Add ? "+" : "-");
-	}
-
-	return rc;
-
- }
-
  static int fire_pfkey_action(GtkWidget *widget, V3270PFKeyAccelerator *accel)
  {
  	debug("%s accel=%p",__FUNCTION__,accel);
@@ -175,17 +154,42 @@
 
         for(ix = 0 ; actions[ix].name; ix++)
 		{
-			V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
+			if(actions[ix].keys && *actions[ix].keys)
+			{
+				size_t key;
 
-			accelerator->type = V3270_ACCELERATOR_TYPE_INTERNAL;
-			accelerator->arg = (gconstpointer) &actions[ix];
-			accelerator->activate = G_CALLBACK(actions[ix].activate);
-			accelerator->key = actions[ix].key;
-			accelerator->mods = actions[ix].mods;
+				gchar ** keys = g_strsplit(actions[ix].keys,",",-1);
 
-			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+				for(key = 0; keys[key]; key++)
+				{
+					V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
 
+					accelerator->type = V3270_ACCELERATOR_TYPE_INTERNAL;
+					accelerator->arg = (gconstpointer) &actions[ix];
+					accelerator->activate = G_CALLBACK(actions[ix].activate);
+
+					gtk_accelerator_parse(keys[key],&accelerator->key,&accelerator->mods);
+
+					widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+
+				}
+
+				g_strfreev(keys);
+
+			}
+			else
+			{
+				V3270Accelerator * accelerator = g_new0(V3270Accelerator,1);
+
+				accelerator->type = V3270_ACCELERATOR_TYPE_INTERNAL;
+				accelerator->arg = (gconstpointer) &actions[ix];
+				accelerator->activate = G_CALLBACK(actions[ix].activate);
+
+				widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+
+			}
 		}
+
 	}
 
 	// Create PF-Key accelerators

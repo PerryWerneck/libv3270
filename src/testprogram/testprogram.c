@@ -40,6 +40,7 @@
  #include <v3270/settings.h>
  #include <v3270/trace.h>
  #include <lib3270/log.h>
+ #include <lib3270/properties.h>
  #include <v3270/actions.h>
  #include <stdlib.h>
  #include <gdk/gdkkeysyms-compat.h>
@@ -129,6 +130,9 @@
 	GtkWidget	* terminal	= v3270_new();
 	GtkWidget	* vBox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
 	GtkWidget	* notebook	= gtk_notebook_new();
+
+	// Hack to speed up the tests.
+//	lib3270_disable_crl_download(v3270_get_session(terminal));
 
 	gtk_box_pack_start(GTK_BOX(vBox),create_toolbar(terminal),FALSE,TRUE,0);
 	gtk_box_pack_start(GTK_BOX(vBox),notebook,TRUE,TRUE,0);

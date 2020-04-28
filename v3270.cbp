@@ -250,6 +250,9 @@
 		<Unit filename="src/terminal/actions/dialog.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/actions/internal.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/terminal/actions/lib3270.c">
 			<Option compilerVar="CC" />
 		</Unit>

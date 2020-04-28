@@ -54,10 +54,9 @@
 
 		V3270_ACTION_FLAGS	  flags;	///< @brief (The flags for activation).
 
-		guint           	  key;
-		GdkModifierType 	  mods;
-
 		int (*activate)(GtkWidget *widget, const V3270_ACTION *action);
+
+		const char *keys;				///< @brief Default accelerators (or NULL if no default).
 
 	};
 
