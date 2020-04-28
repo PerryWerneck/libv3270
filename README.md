@@ -78,7 +78,7 @@ Compiling for Windows (With MSYS2)
 Building for macOS (using homebrew)
 ===================================
 
-1. Build and install [lib3270](../lib3270)
+1. Build and install [lib3270](../../../lib3270)
 
 2. Install dependencies
 
