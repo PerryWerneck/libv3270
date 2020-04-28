@@ -132,7 +132,7 @@
 	GtkWidget	* notebook	= gtk_notebook_new();
 
 	// Hack to speed up the tests.
-//	lib3270_disable_crl_download(v3270_get_session(terminal));
+	lib3270_disable_crl_download(v3270_get_session(terminal));
 
 	gtk_box_pack_start(GTK_BOX(vBox),create_toolbar(terminal),FALSE,TRUE,0);
 	gtk_box_pack_start(GTK_BOX(vBox),notebook,TRUE,TRUE,0);

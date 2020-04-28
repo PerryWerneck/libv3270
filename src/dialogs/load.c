@@ -247,6 +247,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	dialog->terminal	= widget;
 
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Paste from file"));
+	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
 
 	if(filename && *filename)
 		gtk_entry_set_text(GTK_ENTRY(dialog->filename),filename);
