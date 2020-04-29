@@ -88,7 +88,7 @@
 	LIB3270_EXPORT void						  v3270_accelerator_map_foreach(GtkWidget *widget,void (*call)(const V3270Accelerator * accel, const char *keys, gpointer ptr), gpointer ptr);
 	LIB3270_EXPORT void						  v3270_accelerator_map_to_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name);
 	LIB3270_EXPORT gboolean					  v3270_accelerator_map_load_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name);
-	LIB3270_EXPORT V3270Accelerator *		  v3270_accelerator_map_add_entry(GtkWidget *widget, const gchar *name, guint accel_key, GdkModifierType accel_mods, GCallback callback, gpointer data);
+	LIB3270_EXPORT V3270Accelerator *		  v3270_accelerator_map_add_entry(GtkWidget *widget, const gchar *name, const gchar *accelerator, GCallback callback, gpointer data);
 
 	LIB3270_EXPORT const V3270Accelerator	* v3270_get_accelerator(GtkWidget *widget, guint keyval, GdkModifierType state);
 	LIB3270_EXPORT void						  v3270_accelerator_activate(const V3270Accelerator * accel, GtkWidget *terminal);
@@ -96,6 +96,7 @@
 	LIB3270_EXPORT const gchar				* v3270_accelerator_get_name(const V3270Accelerator * accel);
 	LIB3270_EXPORT const gchar				* v3270_accelerator_get_description(const V3270Accelerator * accel);
 	LIB3270_EXPORT const gchar				* v3270_accelerator_get_summary(const V3270Accelerator * accel);
+	LIB3270_EXPORT void						  v3270_accelerator_parse(V3270Accelerator * accel, const char *key);
 
 	/// @brief Converts the accelerator into a string which can be used to represent the accelerator to the user.
 	/// @return A newly-allocated string representing the accelerator.

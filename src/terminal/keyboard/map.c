@@ -101,7 +101,7 @@
 
  }
 
- V3270Accelerator * v3270_accelerator_map_add_entry(GtkWidget *widget, const gchar *name, guint accel_key, GdkModifierType accel_mods, GCallback callback, gpointer data)
+ V3270Accelerator * v3270_accelerator_map_add_entry(GtkWidget *widget, const gchar *name, const gchar *accelerator, GCallback callback, gpointer data)
  {
 	GSList				* ix;
  	v3270 				* terminal = GTK_V3270(widget);
@@ -135,21 +135,24 @@
 
 	accel->arg 		= data;
 	accel->activate	= callback;
-	accel->key		= accel_key;
-	accel->mods		= accel_mods;
 
-	// Any other accell in the same key? If yes, clear it.
-	for(ix = terminal->accelerators; ix; ix = g_slist_next(ix))
+	v3270_accelerator_parse(accel, accelerator);
+
+	if(accel->key)
 	{
-		V3270Accelerator * acc = (V3270Accelerator *) ix->data;
-		if((acc == accel) || !(acc->key == accel->key && acc->mods == accel->mods))
-			continue;
+		// Any other accell in the same key and modifier? If yes, clear it.
+		for(ix = terminal->accelerators; ix; ix = g_slist_next(ix))
+		{
+			V3270Accelerator * acc = (V3270Accelerator *) ix->data;
+			if((acc == accel) || !(acc->key == accel->key && acc->mods == accel->mods))
+				continue;
 
-		debug("Resetting accelerator \"%s\"",v3270_accelerator_get_name(acc));
+			debug("Resetting accelerator \"%s\"",v3270_accelerator_get_name(acc));
 
-		acc->key 	= 0;
-		acc->mods	= 0;
+			acc->key 	= 0;
+			acc->mods	= 0;
 
+		}
 	}
 
 	// Sort!
@@ -167,7 +170,7 @@
 	keyval = gdk_keyval_to_lower(keyval);
 
 	// Remove unnecessary modifiers
-	state &= (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK);
+	state &= gtk_accelerator_get_default_mod_mask(); // (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_ALT_MASK);
 
 	GSList * ix;
 	for(ix = GTK_V3270(widget)->accelerators; ix; ix = g_slist_next(ix))

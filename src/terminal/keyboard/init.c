@@ -103,7 +103,7 @@
 
 //					debug("%s=%s",actions[ix].name,keys[key]);
 
-					gtk_accelerator_parse(keys[key],&accelerator->key,&accelerator->mods);
+					v3270_accelerator_parse(accelerator,keys[key]);
 
 					widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
 
@@ -139,8 +139,7 @@
 			accelerator->arg = (gconstpointer) &toggles[ix];
 			accelerator->activate = G_CALLBACK(fire_lib3270_toggle);
 
-			if(toggles[ix].key)
-				gtk_accelerator_parse(toggles[ix].key,&accelerator->key,&accelerator->mods);
+			v3270_accelerator_parse(accelerator,toggles[ix].key);
 
 			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
 
@@ -168,7 +167,7 @@
 					accelerator->arg = (gconstpointer) &actions[ix];
 					accelerator->activate = G_CALLBACK(actions[ix].activate);
 
-					gtk_accelerator_parse(keys[key],&accelerator->key,&accelerator->mods);
+					v3270_accelerator_parse(accelerator,keys[key]);
 
 					widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
 

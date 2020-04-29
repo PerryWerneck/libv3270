@@ -236,6 +236,57 @@
 	return "";
  }
 
+ void v3270_accelerator_parse(V3270Accelerator * accel, const char *key)
+ {
+ 	if(!key)
+		return;
+
+	guint accelerator_key;
+	GdkModifierType accelerator_mods;
+
+    gtk_accelerator_parse(key, &accelerator_key, &accelerator_mods);
+
+	accel->key	= gdk_keyval_to_lower(accelerator_key);
+	accel->mods = accelerator_mods & gtk_accelerator_get_default_mod_mask();
+
+	/*
+	if(!gtk_accelerator_valid(accel->key,accel->mods))
+	{
+		g_warning("Accelerator \"%s\" is not valid",key);
+	}
+	*/
+
+#ifdef DEBUG
+	{
+		g_autofree gchar * keyname = gtk_accelerator_name(accel->key,accel->mods);
+		debug("%s Name: %s Keyval: %d (%s) State: %04x %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+				__FUNCTION__,
+				v3270_accelerator_get_name(accel),
+				accel->key,
+				gdk_keyval_name(accel->key),
+				accel->mods,
+				accel->mods & GDK_SHIFT_MASK		? " GDK_SHIFT_MASK"		: "",
+				accel->mods & GDK_LOCK_MASK			? " GDK_LOCK_MASK"		: "",
+				accel->mods & GDK_CONTROL_MASK		? " GDK_CONTROL_MASK"	: "",
+				accel->mods & GDK_MOD1_MASK			? " GDK_MOD1_MASK"		: "",
+				accel->mods & GDK_MOD2_MASK			? " GDK_MOD2_MASK"		: "",
+				accel->mods & GDK_MOD3_MASK			? " GDK_MOD3_MASK"		: "",
+				accel->mods & GDK_MOD4_MASK			? " GDK_MOD4_MASK"		: "",
+				accel->mods & GDK_MOD5_MASK			? " GDK_MOD5_MASK"		: "",
+				accel->mods & GDK_BUTTON1_MASK		? " GDK_BUTTON1_MASK"	: "",
+				accel->mods & GDK_BUTTON2_MASK		? " GDK_BUTTON2_MASK"	: "",
+				accel->mods & GDK_BUTTON3_MASK		? " GDK_BUTTON3_MASK"	: "",
+				accel->mods & GDK_BUTTON4_MASK		? " GDK_BUTTON4_MASK"	: "",
+				accel->mods & GDK_BUTTON5_MASK		? " GDK_BUTTON5_MASK"	: "",
+				accel->mods & GDK_RELEASE_MASK		? " GDK_RELEASE_MASK"	: "",
+				accel->mods & GDK_MODIFIER_MASK	? " GDK_MODIFIER_MASK"	: ""
+			);
+
+	}
+#endif // DEBUG
+
+ }
+
  const gchar * v3270_accelerator_get_name(const V3270Accelerator * accel)
  {
 	switch(accel->type)
