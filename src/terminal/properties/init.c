@@ -214,7 +214,7 @@
 			"colors",
 			"colors",
 			_("The terminal colors"),
-			v3270_default_colors,
+			v3270_get_default_colors(),
 			G_PARAM_READABLE|G_PARAM_WRITABLE
 		);
 

@@ -33,45 +33,44 @@
  #include <lib3270.h>
  #include <lib3270/log.h>
 
-/*--[ Globals ]--------------------------------------------------------------------------------------*/
-
-const gchar * v3270_default_colors =
-		"#000000,"			// V3270_COLOR_BACKGROUND
-		"#7890F0,"			// V3270_COLOR_BLUE
-		"#FF0000,"			// V3270_COLOR_RED
-		"#FF00FF,"			// V3270_COLOR_PINK
-		"#00FF00,"			// V3270_COLOR_GREEN
-		"#00FFFF,"			// V3270_COLOR_TURQUOISE
-		"#FFFF00,"			// V3270_COLOR_YELLOW
-		"#FFFFFF,"			// V3270_COLOR_WHITE
-		"#000000,"			// V3270_COLOR_BLACK
-		"#000080,"			// V3270_COLOR_DARK_BLUE
-		"#FFA200,"			// V3270_COLOR_ORANGE
-		"#800080,"			// V3270_COLOR_PURPLE
-		"#008000,"			// V3270_COLOR_DARK_GREEN
-		"#008080,"			// V3270_COLOR_DARK_TURQUOISE
-		"#A0A000,"			// V3270_COLOR_MUSTARD
-		"#C0C0C0,"			// V3270_COLOR_GRAY
-
-		"#00FF00,"			// V3270_COLOR_FIELD_DEFAULT
-		"#FF0000,"			// V3270_COLOR_FIELD_INTENSIFIED
-		"#00FFFF,"			// V3270_COLOR_FIELD_PROTECTED
-		"#FFFFFF,"			// V3270_COLOR_FIELD_PROTECTED_INTENSIFIED
-
-		"#404040,"			// V3270_COLOR_SELECTED_BG
-		"#FFFFFF,"			// V3270_COLOR_SELECTED_FG,
-
-		"#00FF00," 			// V3270_COLOR_CROSS_HAIR
-
-		"#000000,"	 		// V3270_COLOR_OIA_BACKGROUND
-		"#00FF00,"			// V3270_COLOR_OIA
-		"#7890F0,"			// V3270_COLOR_OIA_SEPARATOR
-		"#FFFFFF,"			// V3270_COLOR_OIA_STATUS_OK
-		"#FFFF00,"			// V3270_COLOR_OIA_STATUS_WARNING
-		"#FFFF00";			// V3270_COLOR_OIA_STATUS_INVALID
-
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
+
+const gchar * v3270_get_default_colors() {
+
+	return	"#000000,"			// V3270_COLOR_BACKGROUND
+			"#7890F0,"			// V3270_COLOR_BLUE
+			"#FF0000,"			// V3270_COLOR_RED
+			"#FF00FF,"			// V3270_COLOR_PINK
+			"#00FF00,"			// V3270_COLOR_GREEN
+			"#00FFFF,"			// V3270_COLOR_TURQUOISE
+			"#FFFF00,"			// V3270_COLOR_YELLOW
+			"#FFFFFF,"			// V3270_COLOR_WHITE
+			"#000000,"			// V3270_COLOR_BLACK
+			"#000080,"			// V3270_COLOR_DARK_BLUE
+			"#FFA200,"			// V3270_COLOR_ORANGE
+			"#800080,"			// V3270_COLOR_PURPLE
+			"#008000,"			// V3270_COLOR_DARK_GREEN
+			"#008080,"			// V3270_COLOR_DARK_TURQUOISE
+			"#A0A000,"			// V3270_COLOR_MUSTARD
+			"#C0C0C0,"			// V3270_COLOR_GRAY
+
+			"#00FF00,"			// V3270_COLOR_FIELD_DEFAULT
+			"#FF0000,"			// V3270_COLOR_FIELD_INTENSIFIED
+			"#00FFFF,"			// V3270_COLOR_FIELD_PROTECTED
+			"#FFFFFF,"			// V3270_COLOR_FIELD_PROTECTED_INTENSIFIED
+
+			"#404040,"			// V3270_COLOR_SELECTED_BG
+			"#FFFFFF,"			// V3270_COLOR_SELECTED_FG,
+
+			"#00FF00," 			// V3270_COLOR_CROSS_HAIR
+
+			"#000000,"	 		// V3270_COLOR_OIA_BACKGROUND
+			"#00FF00,"			// V3270_COLOR_OIA
+			"#7890F0,"			// V3270_COLOR_OIA_SEPARATOR
+			"#FFFFFF,"			// V3270_COLOR_OIA_STATUS_OK
+			"#FFFF00,"			// V3270_COLOR_OIA_STATUS_WARNING
+			"#FFFF00";			// V3270_COLOR_OIA_STATUS_INVALID
+}
 
 LIB3270_EXPORT void v3270_set_colors(GtkWidget *widget, const gchar *colors)
 {
@@ -79,7 +78,7 @@ LIB3270_EXPORT void v3270_set_colors(GtkWidget *widget, const gchar *colors)
 
 	if(!colors)
 	{
-		colors = v3270_default_colors;
+		colors = v3270_get_default_colors();
 	}
 
 	v3270_set_color_table(GTK_V3270(widget)->color,colors);
