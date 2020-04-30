@@ -123,7 +123,7 @@
 
 /*--[ Constants ]------------------------------------------------------------------------------------*/
 
- G_GNUC_INTERNAL const gchar	* v3270_default_colors;
+ G_GNUC_INTERNAL const gchar	* v3270_get_default_colors();
 
 /*--[ Internal methods ]-----------------------------------------------------------------------------*/
 
