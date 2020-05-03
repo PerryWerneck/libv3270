@@ -79,7 +79,11 @@ static void V3270PrintSettings_init(V3270PrintSettings *widget)
 	};
 
 	size_t f;
-	widget->font 		= v3270_font_selection_new("monospace");
+	#ifdef __APPLE__
+		widget->font 		= v3270_font_selection_new("Courier New");
+	#else
+		widget->font 		= v3270_font_selection_new("monospace");
+	#endif
 	widget->color 		= v3270_color_scheme_new();
 	widget->selected 	= gtk_check_button_new_with_label( _("Print selection box") );
 
