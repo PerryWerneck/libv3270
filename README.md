@@ -1,35 +1,38 @@
-3270 Virtual Terminal for GTK.
-==============================
+## 3270 Virtual Terminal for GTK.
 
 Created originally as part of PW3270 application.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
-Installation repositories
-=========================
+## Instalation
 
- * https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=pw3270
+### Linux
 
-Requirements
-============
+For the supported distributions get the install repositories and instructions from https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=libv3270
+
+### Windows
+
+
+## Requirements
 
  * GTK-3 (https://www.gtk.org/)
  * lib3270 (https://softwarepublico.gov.br/social/pw3270/)
 
 
-Building for Linux
-==================
+## Building for Linux
 
 
-Cross-compiling for Windows
-===========================
+## Building for windows
 
-Cross-compiling on SuSE Linux (Native or WSL)
----------------------------------------------
+### Cross-compiling on SuSE Linux (Native or WSL) - The easier way!
 
-1. First add the MinGW Repositories for your SuSE version from:
+1. Add the MinGW Repositories
 
-	* https://build.opensuse.org/project/show/home:PerryWerneck:pw3270 
+```
+sudo zypper ar obs://windows:mingw:win32 mingw32
+sudo zypper ar obs://windows:mingw:win64 mingw64
+sudo zypper ref
+```
 
 2. Get libv3270 sources from git
 
@@ -53,8 +56,7 @@ Cross-compiling on SuSE Linux (Native or WSL)
 	* make all
 
 
-Compiling for Windows (With MSYS2)
-----------------------------------
+### Compiling for Windows (With MSYS2)
 
 1. Build and install lib3270 
 
@@ -75,8 +77,7 @@ Compiling for Windows (With MSYS2)
 	* make all
 
 
-Building for macOS (using homebrew)
-===================================
+## Building for macOS (using homebrew)
 
 1. Build and install [lib3270](../../../lib3270)
 
@@ -94,8 +95,7 @@ Building for macOS (using homebrew)
 	$ brew link libv3270
 	```
 
-Uninstalling
-------------
+### Uninstalling
 
 1. To uninstall
 
@@ -103,3 +103,4 @@ Uninstalling
 	$ brew unlink libv3270
 	$ rm -fr "$(brew --cellar)/libv3270"
 	```
+
