@@ -21,6 +21,7 @@ For the supported distributions get the install repositories and instructions fr
 
 ## Building for Linux
 
+	* TODO
 
 ## Building for windows
 
@@ -56,7 +57,7 @@ sudo zypper ref
 	* make all
 
 
-### Compiling for Windows (With MSYS2)
+### Compiling on Windows (With MSYS2)
 
 1. Build and install lib3270 
 
