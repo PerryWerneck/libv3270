@@ -12,16 +12,19 @@ For the supported distributions get the install repositories and instructions fr
 
 ### Windows
 
+ * TODO
 
-## Requirements
+## Building for Linux
+
+### Requirements
 
  * GTK-3 (https://www.gtk.org/)
  * lib3270 (https://softwarepublico.gov.br/social/pw3270/)
 
+### Building
 
-## Building for Linux
+ * TODO
 
-	* TODO
 
 ## Building for windows
 
