@@ -432,19 +432,29 @@
 			GTK_V3270_GET_CLASS(terminal)->properties.trace
 		);
 
-		const gchar * lib3270_release = lib3270_get_build_rpq_timestamp();
-		const gchar * libv3270_release = G_STRINGIFY(RPQ_TIMESTAMP);
+	}
 
-		g_autofree gchar * test = g_strdup(lib3270_release);
+	{
+		// Set header
+	 	GtkTextBuffer * buffer = v3270_trace_get_text_buffer(GTK_WIDGET(widget));
 
-		g_autofree gchar * release =
-			g_strconcat(	G_STRINGIFY(PRODUCT_NAME) " Revisions ",
-							lib3270_release,
-							" ", libv3270_release, "\n\n",
-							NULL
-						);
+	 	const gchar * text[] = {
+			G_STRINGIFY(PRODUCT_NAME),
+			" Revisions ",
+			lib3270_get_build_rpq_timestamp(),
+			" ",
+			G_STRINGIFY(RPQ_TIMESTAMP),
+			"\n\n"
+	 	};
 
-		v3270_trace_append_text(GTK_WIDGET(widget),release);
+	 	size_t ix;
+		GtkTextIter	itr;
+		gtk_text_buffer_get_end_iter(buffer,&itr);
+
+	 	for(ix = 0; ix < G_N_ELEMENTS(text); ix++)
+		{
+			gtk_text_buffer_insert(buffer,&itr,text[ix],-1);
+		}
 
 	}
 
