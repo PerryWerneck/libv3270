@@ -123,10 +123,6 @@
 	if(hSession) {
 		lib3270_get_trace_handler(hSession,&widget->trace.handler,&widget->trace.userdata);
 		lib3270_set_trace_handler(hSession,trace_handler,(void *) widget);
-
-		g_autofree gchar * release = g_strdup_printf("Protocol library release is %s\n",lib3270_get_build_rpq_timestamp());
-		v3270_trace_append_text(GTK_WIDGET(widget),release);
-
 	}
 
 	// v3270_toggle_button_set_session
@@ -423,15 +419,21 @@
 
 		set_session(widget, v3270_get_session(widget->terminal));
 
-		g_autofree gchar * release = g_strdup_printf("Terminal library release is %s\n\n",G_STRINGIFY(RPQ_TIMESTAMP));
-		v3270_trace_append_text(GTK_WIDGET(widget),release);
-
 		GTK_V3270(terminal)->trace = GTK_WIDGET(widget);
 
 		g_object_notify_by_pspec(
 			G_OBJECT(terminal),
 			GTK_V3270_GET_CLASS(terminal)->properties.trace
 		);
+
+		g_autofree gchar * release =
+			g_strconcat(	G_STRINGIFY(PRODUCT_NAME) " Revisions ",
+							lib3270_get_build_rpq_timestamp(),
+							" " G_STRINGIFY(RPQ_TIMESTAMP) "\n\n",
+							NULL
+						);
+
+		v3270_trace_append_text(GTK_WIDGET(widget),release);
 
 	}
 
