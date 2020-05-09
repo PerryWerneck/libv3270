@@ -435,6 +435,8 @@
 		const gchar * lib3270_release = lib3270_get_build_rpq_timestamp();
 		const gchar * libv3270_release = G_STRINGIFY(RPQ_TIMESTAMP);
 
+		g_autofree gchar * test = g_strdup(lib3270_release);
+
 		g_autofree gchar * release =
 			g_strconcat(	G_STRINGIFY(PRODUCT_NAME) " Revisions ",
 							lib3270_release,
