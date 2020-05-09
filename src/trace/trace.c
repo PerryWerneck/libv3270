@@ -115,7 +115,14 @@
 	debug("%s: Session changes %p -> %p", __FUNCTION__, widget->hSession, hSession);
 
 	if(widget->hSession) {
+
+		debug("Disconnecting from session %p",widget->hSession);
+
 		lib3270_set_trace_handler(widget->hSession,widget->trace.handler,widget->trace.userdata);
+
+		size_t ix;
+		for(ix=0;ix < G_N_ELEMENTS(toggles); ix++)
+			lib3270_set_toggle(widget->hSession, toggles[ix],0);
 	}
 
 	widget->hSession = hSession;
@@ -128,7 +135,10 @@
 	// v3270_toggle_button_set_session
 	size_t ix;
 	for(ix = 0; ix < G_N_ELEMENTS(toggles); ix++)
-		v3270_toggle_button_set_session(widget->buttons.widgets[ix],hSession);
+	{
+		if(widget->buttons.widgets[ix])
+			v3270_toggle_button_set_session(widget->buttons.widgets[ix],hSession);
+	}
 
 
  }
@@ -138,6 +148,13 @@
 	debug("V3270Trace::%s",__FUNCTION__);
 
  	V3270Trace *trace = GTK_V3270_TRACE(object);
+
+ 	size_t ix;
+	for(ix = 0; ix < G_N_ELEMENTS(toggles); ix++)
+	{
+		// TODO: Use button "destroy" signal to cleanup.
+		trace->buttons.widgets[ix] = NULL;
+	}
 
  	if(trace->filename) {
 		g_free(trace->filename);
@@ -165,18 +182,7 @@
 		GTK_V3270(trace->terminal)->trace = NULL;
 	}
 
-	if(trace->hSession) {
-
-		g_message("Disabling lib3270 traces");
-
-		size_t ix;
-		for(ix=0;ix < G_N_ELEMENTS(toggles); ix++)
-			lib3270_set_toggle(trace->hSession, toggles[ix],0);
-
-		lib3270_set_trace_handler(trace->hSession,trace->trace.handler,trace->trace.userdata);
-		trace->hSession = NULL;
-
-	}
+	set_session(trace,NULL);
 
 	g_clear_object(&trace->terminal);
 
@@ -426,10 +432,13 @@
 			GTK_V3270_GET_CLASS(terminal)->properties.trace
 		);
 
+		const gchar * lib3270_release = lib3270_get_build_rpq_timestamp();
+		const gchar * libv3270_release = G_STRINGIFY(RPQ_TIMESTAMP);
+
 		g_autofree gchar * release =
 			g_strconcat(	G_STRINGIFY(PRODUCT_NAME) " Revisions ",
-							lib3270_get_build_rpq_timestamp(),
-							" " G_STRINGIFY(RPQ_TIMESTAMP) "\n\n",
+							lib3270_release,
+							" ", libv3270_release, "\n\n",
 							NULL
 						);
 
