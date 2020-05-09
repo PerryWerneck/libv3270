@@ -438,7 +438,7 @@
 		// Set header
 	 	GtkTextBuffer * buffer = v3270_trace_get_text_buffer(GTK_WIDGET(widget));
 
-	 	const gchar * text[] = {
+	 	const char * text[] = {
 			G_STRINGIFY(PRODUCT_NAME),
 			" Revisions ",
 			lib3270_get_build_rpq_timestamp(),
