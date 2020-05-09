@@ -174,18 +174,20 @@ AC_SUBST(PACKAGE_RELEASE,$app_cv_release)
 AC_SUBST(PACKAGE_MAJOR_RELEASE,$app_rls_major)
 AC_SUBST(PACKAGE_MINOR_RELEASE,$app_rls_minor)
 
-rpq_build_date=`LANG=C date`
-rpq_timestamp=`date +%Y%m%d%H%M%S`
-rpq_revision=`date +"%Y%m%d"`
-sccs_date=`date +%Y/%m/%d`
+date="date"
+test -z "$SOURCE_DATE_EPOCH" || date="$date -u -d@$SOURCE_DATE_EPOCH"
+rpq_build_date=`LANG=C $date`
+rpq_timestamp=`$date +%Y%m%d%H%M%S`
+rpq_revision=`$date +"%Y%m%d"`
+sccs_date=`$date +%Y/%m/%d`
 sccs_user=$USER
 
-AC_SUBST(RPQ_BUILD_DATE,$rpq_build_date)
-AC_SUBST(RPQ_TIMESTAMP,$rpq_timestamp)
-AC_SUBST(RPQ_REVISION,$rpq_revision)
+AC_DEFINE_UNQUOTED(RPQ_BUILD_DATE,$rpq_build_date)
+AC_DEFINE_UNQUOTED(RPQ_TIMESTAMP,$rpq_timestamp)
+AC_DEFINE_UNQUOTED(RPQ_REVISION,$rpq_revision)
 
-AC_SUBST(SCCS_USER,$USER)
-AC_SUBST(SCCS_DATE,$sccs_date)
+AC_DEFINE_UNQUOTED(SCCS_USER,$USER)
+AC_DEFINE_UNQUOTED(SCCS_DATE,$sccs_date)
 
 case "$host" in
 	*-mingw32|*-pc-msys)

@@ -37,7 +37,12 @@
 	#undef PRODUCT_NAME
 
 	#undef HAVE_LIBM
-	#undef HAVE_GNOME
-	#undef HAVE_GTKMAC
+
+	#undef RPQ_BUILD_DATE
+	#undef RPQ_TIMESTAMP
+	#undef RPQ_REVISION
+	#undef SCCS_USER
+	#undef SCCS_DATE
+
 
 #endif /* LIBV3270_CONFIG_INCLUDED */
