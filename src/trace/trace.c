@@ -438,23 +438,13 @@
 		// Set header
 	 	GtkTextBuffer * buffer = v3270_trace_get_text_buffer(GTK_WIDGET(widget));
 
-	 	const char * text[] = {
-			G_STRINGIFY(PRODUCT_NAME),
-			" Revisions ",
-			lib3270_get_build_rpq_timestamp(),
-			" ",
-			G_STRINGIFY(RPQ_TIMESTAMP),
-			"\n\n"
-	 	};
-
-	 	size_t ix;
 		GtkTextIter	itr;
 		gtk_text_buffer_get_end_iter(buffer,&itr);
 
-	 	for(ix = 0; ix < G_N_ELEMENTS(text); ix++)
-		{
-			gtk_text_buffer_insert(buffer,&itr,text[ix],-1);
-		}
+		lib3270_autoptr(char) lib3270_version = lib3270_get_version_info();
+		gtk_text_buffer_insert(buffer,&itr,lib3270_version,-1);
+		gtk_text_buffer_insert(buffer,&itr,"\n" PACKAGE_NAME " version " PACKAGE_VERSION "-" G_STRINGIFY(PACKAGE_RELEASE) " build " G_STRINGIFY(RPQ_TIMESTAMP) "\n\n",-1);
+
 
 	}
 
