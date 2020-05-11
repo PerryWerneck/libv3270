@@ -443,7 +443,7 @@
 
 		lib3270_autoptr(char) lib3270_version = lib3270_get_version_info();
 		gtk_text_buffer_insert(buffer,&itr,lib3270_version,-1);
-		gtk_text_buffer_insert(buffer,&itr,"\n" PACKAGE_NAME " version " PACKAGE_VERSION "-" G_STRINGIFY(PACKAGE_RELEASE) " build " G_STRINGIFY(RPQ_TIMESTAMP) "\n\n",-1);
+		gtk_text_buffer_insert(buffer,&itr,"\n" PACKAGE_NAME " version " PACKAGE_VERSION "-" PACKAGE_RELEASE " build " G_STRINGIFY(RPQ_TIMESTAMP) "\n\n",-1);
 
 
 	}
