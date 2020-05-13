@@ -96,7 +96,8 @@ NOCONFIGURE=1 ./autogen.sh
 
 %configure \
 	--disable-static \
-	--enable-pic
+	--enable-pic \
+	--with-release=%{release}
 
 %build
 make %{?_smp_mflags}

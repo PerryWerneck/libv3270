@@ -29,7 +29,7 @@ Description: Glade files for v3270 library.
 
 Package: libv3270-dbg
 Architecture: any
-Depends: ${misc:Depends}, libv3270 (= ${binary:Version})
+Depends: libv3270 (= ${binary:Version})
 Description: Debugging symbols for GTK 3270 virtual terminal
  This package contains the debugging symbols for libv3270.
 
