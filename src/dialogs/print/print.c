@@ -93,7 +93,7 @@
 
 		}
 
-		g_signal_emit(GTK_WIDGET(operation->widget), v3270_widget_signal[V3270_SIGNAL_PRINT_DONE], 0, prt, (guint) result);
+		v3270_signal_emit(GTK_WIDGET(operation->widget), V3270_SIGNAL_PRINT_DONE, prt, (guint) result);
 	}
 
  }
@@ -244,7 +244,7 @@
 		g_object_ref(G_OBJECT(opr->widget));
 	}
 
-	g_signal_emit(GTK_WIDGET(opr->widget), v3270_widget_signal[V3270_SIGNAL_PRINT_SETUP], 0, operation);
+	v3270_signal_emit(GTK_WIDGET(opr->widget), V3270_SIGNAL_PRINT_SETUP, operation);
 
  }
 

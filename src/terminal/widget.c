@@ -64,7 +64,7 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
- guint		  		  v3270_widget_signal[V3270_SIGNAL_LAST]	= { 0 };
+static guint v3270_widget_signal[V3270_SIGNAL_LAST] = { 0 };
 
 /*--[ Prototipes ]-----------------------------------------------------------------------------------*/
 
@@ -823,4 +823,15 @@ void v3270_emit_save_settings(GtkWidget *widget)
 		g_idle_add((GSourceFunc) bg_emit_save_settings, G_OBJECT(widget));
 	}
 }
+
+void v3270_signal_emit(gpointer instance, enum V3270_SIGNAL signal_id, ...)
+{
+  va_list var_args;
+
+  va_start (var_args, signal_id);
+  g_signal_emit_valist(instance, (guint) signal_id, 0, var_args);
+  va_end (var_args);
+
+}
+
 

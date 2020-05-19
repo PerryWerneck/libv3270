@@ -143,11 +143,13 @@ void v3270_emit_popup(v3270 *widget, int baddr, GdkEventButton *event) {
 
 	lib3270_get_contents(widget->host,baddr,baddr,&chr,&attr);
 
-	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_POPUP], 0,
-									(attr & LIB3270_ATTR_SELECTED) ? TRUE : FALSE,
-									lib3270_is_connected(widget->host) ? TRUE : FALSE,
-									event,
-									&handled);
+	v3270_signal_emit(	GTK_WIDGET(widget),
+						V3270_SIGNAL_POPUP,
+						(attr & LIB3270_ATTR_SELECTED) ? TRUE : FALSE,
+						lib3270_is_connected(widget->host) ? TRUE : FALSE,
+						event,
+						&handled
+					);
 
 	if(handled)
 		return;
@@ -216,11 +218,12 @@ gboolean v3270_button_press_event(GtkWidget *widget, GdkEventButton *event)
 				{
 					gboolean handled = FALSE;
 
-					g_signal_emit(widget, v3270_widget_signal[V3270_SIGNAL_OIA_POPUP],
-									0,
-									(guint) field,
-									event,
-									&handled);
+					v3270_signal_emit(
+						widget, V3270_SIGNAL_OIA_POPUP,
+						(guint) field,
+						event,
+						&handled
+					);
 
 					if(!handled)
 						gdk_display_beep(gtk_widget_get_display(widget));
@@ -255,11 +258,14 @@ gboolean v3270_button_release_event(GtkWidget *widget, GdkEventButton*event) {
 			gboolean connected = lib3270_is_connected(terminal->host) ? TRUE : FALSE;
 			V3270_OIA_FIELD field = terminal->oia.selected;
 
-			g_signal_emit(widget,	v3270_widget_signal[V3270_SIGNAL_FIELD], 0,
-									connected,
-									field,
-									event,
-									&handled);
+			v3270_signal_emit(
+				widget,
+				V3270_SIGNAL_FIELD,
+				connected,
+				field,
+				event,
+				&handled
+			);
 
 			debug("Field click was %s", handled ? "Handled" : "Not handled");
 

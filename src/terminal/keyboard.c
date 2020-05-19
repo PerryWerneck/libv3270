@@ -121,10 +121,9 @@
 
 	// Signal to the application.
 	gboolean handled = FALSE;
-	g_signal_emit(
+	v3270_signal_emit(
 		GTK_WIDGET(widget),
-		v3270_widget_signal[V3270_SIGNAL_KEYPRESS],
-		0,
+		V3270_SIGNAL_KEYPRESS,
 		event->keyval,
 		event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_MOD1_MASK),
 		&handled

@@ -75,7 +75,7 @@
 //--[ Globals ]--------------------------------------------------------------------------------------
 
  /// @brief V3270 Signal list
- enum
+ enum V3270_SIGNAL
  {
  	V3270_SIGNAL_TOGGLE_CHANGED,
  	V3270_SIGNAL_MESSAGE_CHANGED,
@@ -119,8 +119,6 @@
  	V3270_SIGNAL_LAST
  };
 
- G_GNUC_INTERNAL guint v3270_widget_signal[V3270_SIGNAL_LAST];
-
 /*--[ Constants ]------------------------------------------------------------------------------------*/
 
  G_GNUC_INTERNAL const gchar	* v3270_get_default_colors();
@@ -134,6 +132,8 @@
  G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, const gchar *tooltip, GtkAlign align, gboolean expand, gboolean fill, guint padding);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_grid(GtkAlign align);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
+
+ G_GNUC_INTERNAL void			  v3270_signal_emit(gpointer instance, enum V3270_SIGNAL signal_id, ...);
 
  G_GNUC_INTERNAL void			  v3270_dialog_close(GtkDialog *dialog, gpointer user_data);
 
