@@ -47,7 +47,7 @@
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
-guint v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_COUNT] = { 0 };
+static guint signals[V3270FTPROGRESS_SIGNAL_COUNT] = { 0 };
 
 // http://www3.rocketsoftware.com/bluezone/help/v42/en/bz/DISPLAY/IND$FILE/IND$FILE_Technical_Reference.htm
 
@@ -316,7 +316,7 @@ static void v3270ftprogress_class_init(v3270ftprogressClass *klass) {
 	dialog_class->response	= dialog_response;
 	dialog_class->close		= dialog_close;
 
-	v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_SUCCESS] =
+	signals[V3270FTPROGRESS_SIGNAL_SUCCESS] =
 		g_signal_new(	I_("success"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
@@ -325,7 +325,7 @@ static void v3270ftprogress_class_init(v3270ftprogressClass *klass) {
 						v3270ft_VOID__POINTER_POINTER,
 						G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER);
 
-	v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED] =
+	signals[V3270FTPROGRESS_SIGNAL_FAILED] =
 		g_signal_new(	I_("failed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
@@ -544,7 +544,7 @@ gboolean send_delayed_signal(struct delayed_signal *sig) {
 	lib3270_ft_destroy(sig->hSession,NULL);
 
 	if(userdata) {
-		g_signal_emit(GTK_WIDGET(userdata),v3270ftprogress_signal[sig->signal], 0, sig->msg, sig->text);
+		v3270ftprogress_signal_emit(GTK_WIDGET(userdata),sig->signal, sig->msg, sig->text);
 	}
 
 	return FALSE;
@@ -718,7 +718,7 @@ static gboolean do_timer(v3270ftprogress *dialog) {
 			lib3270_ft_destroy(dialog->session,NULL);
 		}
 
-		g_signal_emit(GTK_WIDGET(dialog),v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED], 0, _( "Transfer failed" ), strerror(ETIMEDOUT));
+		v3270ftprogress_signal_emit(GTK_WIDGET(dialog),V3270FTPROGRESS_SIGNAL_FAILED, _( "Transfer failed" ), strerror(ETIMEDOUT));
 	}
 
 	return TRUE;
@@ -753,11 +753,11 @@ void v3270ftprogress_start_transfer(GtkWidget *widget) {
 
         if(message && *message) {
 
-			g_signal_emit(GTK_WIDGET(widget),v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED], 0, message, NULL);
+			v3270ftprogress_signal_emit(GTK_WIDGET(widget),V3270FTPROGRESS_SIGNAL_FAILED, message, NULL);
 
         } else {
 
-			g_signal_emit(GTK_WIDGET(widget),v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED], 0, _( "Can't start file transfer session" ), NULL);
+			v3270ftprogress_signal_emit(GTK_WIDGET(widget),V3270FTPROGRESS_SIGNAL_FAILED, _( "Can't start file transfer session" ), NULL);
 
         }
 
@@ -770,7 +770,7 @@ void v3270ftprogress_start_transfer(GtkWidget *widget) {
 	if(!cbk) {
 
 		lib3270_ft_destroy(dialog->session,NULL);
-		g_signal_emit(GTK_WIDGET(widget),v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_FAILED], 0, _( "Can't set callback table" ), NULL);
+		v3270ftprogress_signal_emit(GTK_WIDGET(widget),V3270FTPROGRESS_SIGNAL_FAILED, _( "Can't set callback table" ), NULL);
 
 		return;
 	}
@@ -800,5 +800,15 @@ void v3270ftprogress_start_transfer(GtkWidget *widget) {
 	g_source_attach(dialog->timer,NULL);
 
 	lib3270_ft_start(dialog->session);
+
+}
+
+void v3270ftprogress_signal_emit(gpointer instance, enum V3270FTPROGRESS_SIGNAL signal_id, ...)
+{
+  va_list var_args;
+
+  va_start (var_args, signal_id);
+  g_signal_emit_valist(instance, signals[signal_id], 0, var_args);
+  va_end (var_args);
 
 }

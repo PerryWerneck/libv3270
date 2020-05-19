@@ -66,7 +66,7 @@
 
  G_DEFINE_TYPE(V3270FTActivityList, V3270FTActivityList, GTK_TYPE_TREE_VIEW);
 
- static guint v3270_activity_list_signals[V3270_ACTIVITY_LIST_LAST_SIGNAL] = { 0 };
+ static guint signals[V3270_ACTIVITY_LIST_LAST_SIGNAL] = { 0 };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -121,7 +121,7 @@
 		if(activity)
 		{
 			debug("%s: activity is %p",__FUNCTION__,activity);
-			g_signal_emit(view, v3270_activity_list_signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL], 0, activity);
+			g_signal_emit(view, signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL], 0, activity);
 		}
 
 	}
@@ -138,7 +138,7 @@
 
 	klass->signal.has_file = V3270FTActivityList_has_file;
 
-	v3270_activity_list_signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL] =
+	signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL] =
 		g_signal_new(	I_("has-file"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
@@ -147,7 +147,7 @@
 						v3270ft_VOID__VOID_BOOLEAN,
 						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
-	v3270_activity_list_signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL] =
+	signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL] =
 		g_signal_new(	I_("changed"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
@@ -286,7 +286,7 @@
 	{
 		debug("%s: Selecting inserted activity",__FUNCTION__);
 		gtk_tree_selection_select_iter(gtk_tree_view_get_selection(GTK_TREE_VIEW(widget)),&iter);
-		g_signal_emit(widget, v3270_activity_list_signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL], 0, activity);
+		g_signal_emit(widget, signals[V3270_ACTIVITY_LIST_SELECTED_SIGNAL], 0, activity);
 	}
 
  }
@@ -391,7 +391,7 @@
 
 	reload(widget);
 
-	g_signal_emit(widget, v3270_activity_list_signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL], 0, (list->filename == NULL ? FALSE : TRUE));
+	g_signal_emit(widget, signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL], 0, (list->filename == NULL ? FALSE : TRUE));
 
 
  }
@@ -460,7 +460,7 @@
 		v3270_activity_list_save(widget);
 	}
 
-	g_signal_emit(widget, v3270_activity_list_signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL], 0, (list->filename == NULL ? FALSE : TRUE));
+	g_signal_emit(widget, signals[V3270_ACTIVITY_LIST_HAS_FILE_SIGNAL], 0, (list->filename == NULL ? FALSE : TRUE));
 
  }
 

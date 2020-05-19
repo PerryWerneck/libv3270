@@ -76,7 +76,7 @@
 
  G_DEFINE_TYPE(V3270FTWorker, V3270FTWorker, GTK_TYPE_GRID);
 
- static guint v3270_worker_signals[V3270_WORKER_LAST_SIGNAL] = { 0 };
+ static guint signals[V3270_WORKER_LAST_SIGNAL] = { 0 };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -143,7 +143,7 @@
 
 	gobject_class->finalize = finalize;
 
-	v3270_worker_signals[V3270_WORKER_ACTIVITY_SIGNAL] =
+	signals[V3270_WORKER_ACTIVITY_SIGNAL] =
 		g_signal_new(
 			I_("activity"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
@@ -154,7 +154,7 @@
 			G_TYPE_NONE, 1, G_TYPE_OBJECT
 		);
 
- 	v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL] =
+ 	signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL] =
 		g_signal_new(
 			I_("failed"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
@@ -165,7 +165,7 @@
 			G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER
 	);
 
- 	v3270_worker_signals[V3270_WORKER_TRANSFER_SUCCESS_SIGNAL] =
+ 	signals[V3270_WORKER_TRANSFER_SUCCESS_SIGNAL] =
 		g_signal_new(
 			I_("success"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
@@ -176,7 +176,7 @@
 			G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER
 	);
 
- 	v3270_worker_signals[V3270_WORKER_TRANSFER_STATE_SIGNAL] =
+ 	signals[V3270_WORKER_TRANSFER_STATE_SIGNAL] =
 		g_signal_new(
 			I_("ft-state-changed"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
@@ -328,7 +328,7 @@
 		gtk_entry_set_text(worker->field[ix],"");
 	}
 
-	g_signal_emit(widget, v3270_worker_signals[V3270_WORKER_ACTIVITY_SIGNAL], 0, worker->activity);
+	g_signal_emit(widget, signals[V3270_WORKER_ACTIVITY_SIGNAL], 0, worker->activity);
 
  }
 
@@ -381,7 +381,7 @@
 
 	g_signal_emit(
 		GTK_WIDGET(cfg->worker),
-		v3270_worker_signals[cfg->signal],
+		signals[cfg->signal],
 		0,
 		cfg->msg,
 		description
@@ -522,7 +522,7 @@
 
  static gboolean bg_emit_state_changed(struct bg_state_changed * cfg)
  {
-	g_signal_emit(cfg->worker, v3270_worker_signals[V3270_WORKER_TRANSFER_STATE_SIGNAL], 0, (guint) cfg->st, cfg->msg);
+	g_signal_emit(cfg->worker, signals[V3270_WORKER_TRANSFER_STATE_SIGNAL], 0, (guint) cfg->st, cfg->msg);
 	return FALSE;
  }
 
@@ -563,7 +563,7 @@ static gboolean do_timer(V3270FTWorker *worker) {
 
 			g_signal_emit(
 				GTK_WIDGET(worker),
-				v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL],
+				signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL],
 				0,
 				_( "Transfer failed" ),
 				message
@@ -595,7 +595,7 @@ static gboolean do_timer(V3270FTWorker *worker) {
 		pulse_stop(worker);
 
 		// Emit "transfer failed"
-		g_signal_emit(GTK_WIDGET(widget),v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL], 0, message, NULL);
+		g_signal_emit(GTK_WIDGET(widget),signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL], 0, message, NULL);
 
 		// Emit "no transfer"
 		ft_state_changed(worker->hSession, LIB3270_FT_STATE_NONE, _("No transfer in progress"), widget);
@@ -616,7 +616,7 @@ static gboolean do_timer(V3270FTWorker *worker) {
 
 		g_signal_emit(
 			GTK_WIDGET(widget),
-			v3270_worker_signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL],
+			signals[V3270_WORKER_TRANSFER_FAILED_SIGNAL],
 			0,
 			message,
 			_("The callback table for file transfer was rejected, possible version mismatch on lib3270")
