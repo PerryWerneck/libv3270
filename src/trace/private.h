@@ -47,19 +47,18 @@
 	#include <lib3270/trace.h>
 
 	/// @brief V3270 Trace Signal list
-	enum
+	enum V3270_TRACE_SIGNAL
 	{
 		V3270_TRACE_SIGNAL_COMMAND,
 
 		V3270_TRACE_SIGNAL_LAST
 	};
 
-	G_GNUC_INTERNAL guint v3270_trace_signal[V3270_TRACE_SIGNAL_LAST];
-
 	G_GNUC_INTERNAL H3270				* v3270_trace_get_session(GtkWidget *widget);
 	G_GNUC_INTERNAL GtkWidget			* v3270_trace_get_terminal(GtkWidget *widget);
 	G_GNUC_INTERNAL GtkTextBuffer		* v3270_trace_get_text_buffer(GtkWidget *widget);
 	G_GNUC_INTERNAL GtkScrolledWindow	* v3270_trace_get_scrolled_window(GtkWidget *widget);
+	G_GNUC_INTERNAL void				  v3270_trace_signal_emit(gpointer instance, enum V3270_TRACE_SIGNAL signal_id, ...);
 
 	G_BEGIN_DECLS
 

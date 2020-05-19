@@ -829,7 +829,7 @@ void v3270_signal_emit(gpointer instance, enum V3270_SIGNAL signal_id, ...)
   va_list var_args;
 
   va_start (var_args, signal_id);
-  g_signal_emit_valist(instance, (guint) signal_id, 0, var_args);
+  g_signal_emit_valist(instance, v3270_widget_signal[signal_id], 0, var_args);
   va_end (var_args);
 
 }
