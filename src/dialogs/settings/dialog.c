@@ -176,7 +176,7 @@ void v3270_settings_dialog_apply(GtkWidget *dialog)
 
 	// Don't delay save settings signal!
 	GTK_V3270(terminal)->freeze = 0;
-	g_signal_emit(terminal,v3270_widget_signal[V3270_SIGNAL_SAVE_SETTINGS], 0, FALSE);
+	v3270_signal_emit(terminal,V3270_SIGNAL_SAVE_SETTINGS, FALSE);
 
 	gdk_window_set_cursor(
 		window,

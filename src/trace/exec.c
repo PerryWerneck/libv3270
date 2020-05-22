@@ -317,7 +317,7 @@
 	if(*args)
 		*(args++) = 0;
 
-	g_signal_emit(GTK_WIDGET(t), v3270_trace_signal[V3270_TRACE_SIGNAL_COMMAND], 0, cmdline, args, &handled);
+	v3270_trace_signal_emit(GTK_WIDGET(t), V3270_TRACE_SIGNAL_COMMAND, cmdline, args, &handled);
 
 	if(handled)
 		return 0;

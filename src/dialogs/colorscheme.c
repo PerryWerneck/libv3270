@@ -60,7 +60,7 @@
  	LAST_SIGNAL
  };
 
- static guint color_signal[LAST_SIGNAL]		= { 0 };
+ static guint signals[LAST_SIGNAL]		= { 0 };
 
  G_DEFINE_TYPE(V3270ColorScheme, V3270ColorScheme, GTK_TYPE_COMBO_BOX);
 
@@ -79,7 +79,7 @@
 	clr = g_value_get_pointer(&value);
 
 	debug("%s=%p",__FUNCTION__,clr);
-	g_signal_emit(widget, color_signal[CHANGED], 0, clr);
+	g_signal_emit(widget, signals[CHANGED], 0, clr);
 
 	g_value_unset(&value);
 
@@ -91,7 +91,7 @@
 
 	klass->parent_class.changed = changed;
 
-	color_signal[CHANGED] =
+	signals[CHANGED] =
 		g_signal_new(
 			I_("update-colors"),
 			G_OBJECT_CLASS_TYPE (gobject_class),
@@ -102,7 +102,7 @@
 			G_TYPE_NONE, 1, G_TYPE_POINTER, 0
 		);
 
-	debug("changed_signal=%d",(int) color_signal[CHANGED]);
+	debug("changed_signal=%d",(int) signals[CHANGED]);
 
  }
 
@@ -268,7 +268,7 @@
 		g_message("Unable to load color schemes in \"%s\"",filename);
 #else
 		g_warning("Unable to load color schemes in \"%s\"",filename);
-#endif 		
+#endif
 		gtk_widget_set_sensitive(widget,FALSE);
 		return widget;
 	}

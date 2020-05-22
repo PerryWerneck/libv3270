@@ -123,7 +123,7 @@ void v3270_update_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID id, unsigned char 
 
 	debug("%s: pspec=%p",__FUNCTION__,klass->properties.toggle[id]);
 	g_object_notify_by_pspec(G_OBJECT(widget), klass->properties.toggle[id]);
-	g_signal_emit(widget, v3270_widget_signal[V3270_SIGNAL_TOGGLE_CHANGED], 0, (guint) id, (gboolean) (value != 0), (gchar *) name);
+	v3270_signal_emit(widget, V3270_SIGNAL_TOGGLE_CHANGED, (guint) id, (gboolean) (value != 0), (gchar *) name);
 
 	// Can't emit the signal on every toggle change because, sometimes, the saving of the settings file takes time.
 //	v3270_emit_save_settings(widget);

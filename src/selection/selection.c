@@ -73,7 +73,7 @@ void v3270_emit_copy_state(GtkWidget *widget)
 
 	debug("%s(%s)",__FUNCTION__,has_copy ? "TRUE" : "FALSE");
 
-	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_CLIPBOARD], 0, has_copy);
+	v3270_signal_emit(widget,V3270_SIGNAL_CLIPBOARD, has_copy);
 	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.has_copy);
 
 	lib3270_set_has_copy(GTK_V3270(widget)->host, has_copy ? 1 : 0);

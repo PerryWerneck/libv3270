@@ -95,7 +95,7 @@
  	V3270_FT_SETTINGS_LAST_SIGNAL
  };
 
- static guint v3270_ft_settings_signals[V3270_FT_SETTINGS_LAST_SIGNAL] = { 0 };
+ static guint signals[V3270_FT_SETTINGS_LAST_SIGNAL] = { 0 };
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -116,7 +116,7 @@ static void V3270FTSettings_has_activity(GtkWidget G_GNUC_UNUSED(*widget), gbool
 	klass->signal.validity = V3270FTSettings_validity;
 	klass->signal.has_activity = V3270FTSettings_has_activity;
 
-	v3270_ft_settings_signals[V3270_FT_SETTINGS_VALIDITY_SIGNAL] =
+	signals[V3270_FT_SETTINGS_VALIDITY_SIGNAL] =
 		g_signal_new(	I_("validity"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
@@ -126,7 +126,7 @@ static void V3270FTSettings_has_activity(GtkWidget G_GNUC_UNUSED(*widget), gbool
 						G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
 
-	v3270_ft_settings_signals[V3270_FT_SETTINGS_HAS_ACTIVITY_SIGNAL] =
+	signals[V3270_FT_SETTINGS_HAS_ACTIVITY_SIGNAL] =
 		g_signal_new(	I_("has-activity"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
 						G_SIGNAL_RUN_FIRST,
@@ -272,7 +272,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
 	widget->transfer.is_valid = is_valid;
 
 	debug("Transfer is now \"%s\"", is_valid ? "valid" : "invalid");
-	g_signal_emit(widget, v3270_ft_settings_signals[V3270_FT_SETTINGS_VALIDITY_SIGNAL], 0, widget->transfer.is_valid);
+	g_signal_emit(widget, signals[V3270_FT_SETTINGS_VALIDITY_SIGNAL], 0, widget->transfer.is_valid);
 
  }
 
@@ -607,7 +607,7 @@ static void open_select_file_dialog(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconP
  {
  	GTK_V3270_FT_SETTINGS(widget)->activity = activity;
  	v3270_ft_settings_reset(widget);
-	g_signal_emit(widget, v3270_ft_settings_signals[V3270_FT_SETTINGS_HAS_ACTIVITY_SIGNAL], 0, (activity == NULL ? FALSE : TRUE));
+	g_signal_emit(widget, signals[V3270_FT_SETTINGS_HAS_ACTIVITY_SIGNAL], 0, (activity == NULL ? FALSE : TRUE));
  }
 
  LIB3270_EXPORT GObject * v3270_ft_settings_get_activity(GtkWidget *widget)

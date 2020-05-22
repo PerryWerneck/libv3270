@@ -67,10 +67,9 @@ static gboolean bg_update_message(H3270 *session)
 {
 	v3270 *terminal = (v3270 *) lib3270_get_user_data(session);
 
-	g_signal_emit(
+	v3270_signal_emit(
 		terminal,
-		v3270_widget_signal[V3270_SIGNAL_MESSAGE_CHANGED],
-		0,
+		V3270_SIGNAL_MESSAGE_CHANGED,
 		(gint) lib3270_get_program_message(session)
 	);
 
@@ -93,7 +92,7 @@ static gboolean	v3270_update_url(v3270 *terminal)
 	GtkWidget * widget = GTK_WIDGET(terminal);
 	debug("url=%s",v3270_get_url(widget));
 	v3270_notify_setting(widget,V3270_SETTING_URL);
-	g_signal_emit(widget, v3270_widget_signal[V3270_SIGNAL_SESSION_CHANGED], 0);
+	v3270_signal_emit(widget, V3270_SIGNAL_SESSION_CHANGED);
 	return FALSE;
 }
 
@@ -151,12 +150,12 @@ static void update_connect(H3270 *session, unsigned char connected)
 	if(connected)
 	{
 		widget->cursor.show |= 2;
-		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_CONNECTED], 0, lib3270_get_url(session));
+		v3270_signal_emit(GTK_WIDGET(widget), V3270_SIGNAL_CONNECTED, lib3270_get_url(session));
 	}
 	else
 	{
 		widget->cursor.show &= ~2;
-		g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_DISCONNECTED], 0);
+		v3270_signal_emit(GTK_WIDGET(widget), V3270_SIGNAL_DISCONNECTED);
 	}
 
 	debug("%s(%p)",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.online);
@@ -184,7 +183,7 @@ static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNU
 	debug("%s: terminal=%p pspec=%p",__FUNCTION__,widget,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
 	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
 
-	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_MODEL_CHANGED], 0, (guint) model, name);
+	v3270_signal_emit(widget,V3270_SIGNAL_MODEL_CHANGED, (guint) model, name);
 }
 
 static void changed(H3270 *session, int offset, int len)
@@ -231,7 +230,7 @@ static void changed(H3270 *session, int offset, int len)
 	gtk_widget_queue_draw(widget);
 #endif // WIN32
 
-	g_signal_emit(GTK_WIDGET(widget),v3270_widget_signal[V3270_SIGNAL_CHANGED], 0, (guint) offset, (guint) len);
+	v3270_signal_emit(GTK_WIDGET(widget),V3270_SIGNAL_CHANGED, (guint) offset, (guint) len);
 }
 
 static void set_selection(H3270 *session, unsigned char status)
@@ -241,7 +240,7 @@ static void set_selection(H3270 *session, unsigned char status)
 	debug("%s(%p)",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.selection);
 	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.selection);
 
-	g_signal_emit(widget,v3270_widget_signal[V3270_SIGNAL_SELECTING], 0, status ? TRUE : FALSE);
+	v3270_signal_emit(widget,V3270_SIGNAL_SELECTING, status ? TRUE : FALSE);
 
 }
 
@@ -258,14 +257,16 @@ static void update_selection(H3270 *session, G_GNUC_UNUSED int start, G_GNUC_UNU
 
 static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text)
 {
-	g_signal_emit(	GTK_WIDGET(lib3270_get_user_data(session)), v3270_widget_signal[V3270_SIGNAL_MESSAGE], 0,
-							(int) id,
-							(gchar *) title,
-							(gchar *) message,
-							(gchar *) text );
+	v3270_signal_emit(
+		GTK_WIDGET(lib3270_get_user_data(session)),
+		V3270_SIGNAL_MESSAGE,
+		(int) id,
+		(gchar *) title,
+		(gchar *) message,
+		(gchar *) text
+	);
 
 }
-
 
 static int print(H3270 *session, LIB3270_CONTENT_OPTION mode)
 {

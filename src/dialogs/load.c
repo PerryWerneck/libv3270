@@ -299,10 +299,9 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	debug("next=%s",remains > 0 ? "YES" : "NO");
 
-	g_signal_emit(
+	v3270_signal_emit(
 		dialog->terminal,
-		v3270_widget_signal[V3270_SIGNAL_PASTENEXT],
-		0,
+		V3270_SIGNAL_PASTENEXT,
 		remains > 0
 	);
 

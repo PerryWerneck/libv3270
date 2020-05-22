@@ -198,8 +198,6 @@
 
 	};
 
-	G_GNUC_INTERNAL guint	  v3270ftprogress_signal[V3270FTPROGRESS_SIGNAL_COUNT];
-
 
 	G_GNUC_INTERNAL void	  v3270ft_update_actions(v3270ft *dialog);
 	G_GNUC_INTERNAL void	  v3270ft_update_state(struct v3270ft_entry *entry);
@@ -216,6 +214,7 @@
 	G_GNUC_INTERNAL struct v3270ft_entry * v3270ft_get_selected(v3270ft *dialog);
 	G_GNUC_INTERNAL struct v3270ft_entry * v3270ft_create_entry(void);
 
+	G_GNUC_INTERNAL void v3270ftprogress_signal_emit(gpointer instance, enum V3270FTPROGRESS_SIGNAL signal_id, ...);
 
 
 #endif // PRIVATE_H_INCLUDED

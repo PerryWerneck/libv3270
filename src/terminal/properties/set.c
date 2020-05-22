@@ -216,7 +216,7 @@ LIB3270_EXPORT void v3270_set_session_name(GtkWidget *widget, const gchar *name)
 
 	g_message("Session name changes to \"%s\"",terminal->session.name);
 
-	g_signal_emit(GTK_WIDGET(widget), v3270_widget_signal[V3270_SIGNAL_SESSION_CHANGED], 0);
+	v3270_signal_emit(GTK_WIDGET(widget), V3270_SIGNAL_SESSION_CHANGED);
 	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.session_name);
 
 }

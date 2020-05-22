@@ -91,7 +91,7 @@
 
  };
 
- guint v3270_trace_signal[V3270_TRACE_SIGNAL_LAST]	= { 0 };
+ static guint v3270_trace_signal[V3270_TRACE_SIGNAL_LAST] = { 0 };
 
  G_DEFINE_TYPE(V3270Trace, V3270Trace, GTK_TYPE_BOX);
 
@@ -533,6 +533,17 @@
  GtkScrolledWindow * v3270_trace_get_scrolled_window(GtkWidget *widget)
  {
  	return GTK_V3270_TRACE(widget)->scroll;
+ }
+
+ void v3270_trace_signal_emit(gpointer instance, enum V3270_TRACE_SIGNAL signal_id, ...)
+ {
+
+	va_list var_args;
+
+	va_start (var_args, signal_id);
+	g_signal_emit_valist(instance, (guint) v3270_trace_signal[signal_id], 0, var_args);
+	va_end (var_args);
+
  }
 
 
