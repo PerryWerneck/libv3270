@@ -84,10 +84,10 @@
  }
 
  static const GVariantType * get_parameter_type(GAction G_GNUC_UNUSED(*object)) {
- 	return G_VARIANT_TYPE_UINT32;
+ 	return G_VARIANT_TYPE_INT32;
  }
 
- static gboolean get_enabled(GAction *action, GtkWidget *terminal) {
+ static gboolean get_enabled(GAction G_GNUC_UNUSED(*action), GtkWidget G_GNUC_UNUSED(*terminal)) {
  	return TRUE;
  }
 
