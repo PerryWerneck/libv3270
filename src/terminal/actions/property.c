@@ -250,9 +250,7 @@
  	action->pspec							= pspec;
  	action->parent.group.id					= action_group;
 
- 	if(GTK_IS_V3270(widget)) {
-		v3270_action_set_terminal_widget(G_ACTION(action), widget);
- 	}
+	v3270_action_set_terminal_widget(G_ACTION(action), widget);
 
 	return V3270_SIMPLE_ACTION(action);
  }
