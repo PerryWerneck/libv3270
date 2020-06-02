@@ -47,6 +47,9 @@
  /// @brief This function adds the terminal settings from widget to key_file.
  LIB3270_EXPORT void v3270_to_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name);
 
+ /// @brief Emit the "save-settings" signal.
+ LIB3270_EXPORT void v3270_emit_save_settings(GtkWidget *widget);
+
 #ifdef _WIN32
 
  LIB3270_EXPORT gboolean v3270_load_registry(GtkWidget *widget, HKEY hKey, const gchar *group_name);

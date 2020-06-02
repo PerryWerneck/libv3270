@@ -137,9 +137,6 @@
 
  G_GNUC_INTERNAL void			  v3270_dialog_close(GtkDialog *dialog, gpointer user_data);
 
- /// @brief Emit the "save-settings" signal.
- G_GNUC_INTERNAL void			  v3270_emit_save_settings(GtkWidget *widget);
-
  /// @brief Emit "has-text" signal.
  G_GNUC_INTERNAL void			  v3270_emit_copy_state(GtkWidget *widget);
 
