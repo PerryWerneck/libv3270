@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-08 00:47-0300\n"
+"POT-Creation-Date: 2020-06-04 09:11-0300\n"
 "PO-Revision-Date: 2020-05-08 00:48-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -184,7 +184,7 @@ msgstr "Não encontrei uma fonte válida com o nome \"%s\""
 msgid "Can't load %s"
 msgstr "Não foi possível carregar %s"
 
-#: src/dialogs/load.c:325
+#: src/dialogs/load.c:324
 #, c-format
 msgid "Can't open %s"
 msgstr "Não foi possível abrir %s"
@@ -206,12 +206,12 @@ msgstr "Erro ao analisar valor de caractere"
 msgid "Can't paste"
 msgstr "Não é possivel colar"
 
-#: src/selection/text.c:187
+#: src/selection/text.c:186
 msgid "Can't paste text"
 msgstr "Não é possível colar texto"
 
 #: src/filetransfer/save.c:117 src/filetransfer/activitylist.c:436
-#: src/trace/trace.c:463 src/dialogs/transfer.c:91 src/dialogs/save/save.c:461
+#: src/trace/trace.c:486 src/dialogs/transfer.c:91 src/dialogs/save/save.c:461
 #, c-format
 msgid "Can't save %s"
 msgstr "Não foi possível salvar arquivo %s"
@@ -228,7 +228,7 @@ msgstr "Não foi possível registrar manipuladores de I/O 3270"
 msgid "Can't start file transfer session"
 msgstr "Não foi possível iniciar transferência de arquivo"
 
-#: src/terminal/callbacks.c:395 src/filetransfer/v3270ftprogress.c:433
+#: src/terminal/callbacks.c:396 src/filetransfer/v3270ftprogress.c:433
 #: src/filetransfer/transfer.c:89 src/dialogs/load.c:111
 #: src/dialogs/save/save.c:136 src/dialogs/settings/host.c:401
 msgid "Cancel"
@@ -294,7 +294,7 @@ msgstr "Lista de LUs separadas por vírgula."
 msgid "Comma-separated values (CSV)"
 msgstr "Arquivo separado por vírgulas (CSV)"
 
-#: src/trace/trace.c:351
+#: src/trace/trace.c:358
 msgid "Command to execute"
 msgstr "Comando a executar"
 
@@ -302,7 +302,7 @@ msgstr "Comando a executar"
 msgid "Connection"
 msgstr "Conexão"
 
-#: src/terminal/callbacks.c:396
+#: src/terminal/callbacks.c:397
 msgid "Continue"
 msgstr "Continuar"
 
@@ -588,7 +588,7 @@ msgstr "Intensificado/Protegido"
 msgid "Intensified/Unprotected"
 msgstr "Intensificado/Desprotegido"
 
-#: src/terminal/callbacks.c:423
+#: src/terminal/callbacks.c:424
 msgid "Invalid callback table, possible version mismatch in lib3270"
 msgstr ""
 "Tabela de callbacks inválida, possível divergência de versão na lib3270"
@@ -996,7 +996,7 @@ msgid "Same of the screen"
 msgstr "Igual ao terminal"
 
 #: src/terminal/actions/table.c:230 src/filetransfer/v3270ft.c:215
-#: src/filetransfer/activitylist.c:453 src/trace/trace.c:482
+#: src/filetransfer/activitylist.c:453 src/trace/trace.c:505
 #: src/dialogs/transfer.c:69
 msgid "Save"
 msgstr "Salvar"
@@ -1041,7 +1041,7 @@ msgstr "Salvar área selecionada"
 msgid "Save terminal contents"
 msgstr "Salvar conteúdo da tela"
 
-#: src/trace/trace.c:481
+#: src/trace/trace.c:504
 msgid "Save trace to file"
 msgstr "Salvar trace para arquivo"
 
@@ -1317,7 +1317,7 @@ msgstr ""
 "Tabela de callbacks para transferência de arquivos inválida, possível "
 "divergência de versão na lib3270"
 
-#: src/terminal/callbacks.c:390
+#: src/terminal/callbacks.c:391
 #, c-format
 msgid "The error code was %d"
 msgstr "O código de erro foi %d"

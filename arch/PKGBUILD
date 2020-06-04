@@ -3,7 +3,7 @@
 pkgname=libv3270
 
 pkgver=5.2
-pkgrel=1
+pkgrel=2
 pkgdesc="3270 Virtual Terminal for GTK"
 url="https://portal.softwarepublico.gov.br/social/pw3270/"
 arch=(i686 x86_64)
