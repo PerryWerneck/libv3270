@@ -1,8 +1,8 @@
 #
 # spec file for package libv3270
 #
-# Copyright (c) 2019 SUSE LLC
-# Copyright (c) <2008> <Banco do Brasil S.A.>
+# Copyright (c) 2019 SUSE LINUX GmbH, Nuernberg, Germany.
+# Copyright (c) 2008 Banco do Brasil S.A.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -18,11 +18,10 @@
 
 
 Name:           libv3270
-Version:        5.2
+Version:        5.3
 Release:        0
 Summary:        3270 Virtual Terminal for GTK
 License:        LGPL-3.0-only
-Group:          Development/Libraries/C and C++
 URL:            https://github.com/PerryWerneck/libv3270
 Source:         libv3270-%{version}.tar.xz
 BuildRequires:  autoconf >= 2.61
@@ -32,15 +31,10 @@ BuildRequires:  coreutils
 BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
-%if 0%{?fedora} ||  0%{?suse_version} > 1200
 BuildRequires:  pkgconfig(gtk+-3.0)
-BuildRequires:  pkgconfig(lib3270) >= 5.2
-%else
-BuildRequires:  gtk3-devel
-BuildRequires:  lib3270-devel >= 5.2
-%endif
-%if 0%{?centos_version} && 0%{?centos_version} < 800
-# CENTOS Genmarshal doesn't depends on python!
+BuildRequires:  pkgconfig(lib3270) >= %{version}
+%if 0%{?centos_version}
+# CENTOS Genmarshal doesn't depend on python!
 BuildRequires:  python
 %endif
 
@@ -51,87 +45,61 @@ provides a TN3270 virtual terminal widget for GTK 3.
 
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
-#---[ Library ]-------------------------------------------------------------------------------------------------------
-
-%define _product %(pkg-config --variable=product_name lib3270)
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+%define _product %(pkg-config --variable=product_name lib3270)
 
 %package -n %{name}-%{_libvrs}
-Summary:        TN3270 Access library
-Group:          Development/Libraries/C and C++
+Summary:    TN3270 access library
 
 %description -n %{name}-%{_libvrs}
+Originally designed as part of the pw3270 application, this library
+provides a TN3270 virtual terminal widget for GTK 3.
 
-Originally designed as part of the pw3270 application this library provides a TN3270 virtual terminal widget for GTK 3.
-
-See more details at https://softwarepublico.gov.br/social/pw3270/
-
-#---[ Development ]---------------------------------------------------------------------------------------------------
+For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %package devel
-Summary:        Header files for the 3270 Virtual Terminal library
-Group:          Development/Libraries/C and C++
-Requires:       %{name}-%{_libvrs} = %{version}
+Summary:    Header files for the 3270 Virtual Terminal library
+Requires:   %{name}-%{_libvrs} = %{version}
 
 %description devel
 GTK development files for the 3270 Virtual Terminal.
 
 %package -n glade-catalog-v3270
-Summary:        Glade catalog for the TN3270 terminal emulator library
-Group:          Development/Libraries/C and C++
-Requires:       %{name}-%{_libvrs} = %{version}
-Requires:       glade
+Summary:    Glade catalog for the TN3270 terminal emulator library
+Requires:   glade
 
 %description -n glade-catalog-v3270
 This package provides a catalog for Glade to allow the use of V3270
-
-#---[ Build & Install ]-----------------------------------------------------------------------------------------------
+widgets in Glade.
 
 %prep
-%setup -q -n libv3270-%{version}
-
+%setup -q
 NOCONFIGURE=1 ./autogen.sh
-
-%configure \
-	--disable-static \
-	--enable-pic \
-	--with-release=%{release}
+%configure --with-release=%{release}
 
 %build
-make %{?_smp_mflags}
+make all %{?_smp_mflags}
 
 %install
 %make_install
-%find_lang libv3270 langfiles
+%find_lang %{name} langfiles
 
 %files -n %{name}-%{_libvrs} -f langfiles
-
-# https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
-%if 0%{?sle_version} > 120200
-%doc AUTHORS README.md
 %license LICENSE
-%else
-%doc LICENSE AUTHORS README.md
-%endif
-
-%{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
-
+%doc AUTHORS README.md
+%{_libdir}/%{name}.so.*
 %{_datadir}/%{_product}/colors.conf
-
 %dir %{_datadir}/%{_product}/remap/
 %{_datadir}/%{_product}/remap/*.xml
 
 %files devel
-
+%{_datadir}/pw3270/pot/*.pot
 %{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/*.pc
-
 %{_includedir}/v3270.h
 %{_includedir}/v3270
-
-%{_datadir}/%{_product}/pot/*.pot
 
 %files -n glade-catalog-v3270
 %{_datadir}/glade/
