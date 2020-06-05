@@ -29,7 +29,7 @@
 SONAME=@SONAME@
 LIBNAME=libv3270
 PRODUCT_NAME=@PRODUCT_NAME@
-INSTALL_PACKAGES=@INSTALL_PACKAGES@ locale
+INSTALL_PACKAGES=@INSTALL_PACKAGES@
 
 SOURCES= \
 	$(wildcard src/terminal/*.c) \
@@ -321,7 +321,8 @@ install: \
 
 install-linux-lib: \
 	$(BINRLS)/$(SONAME) \
-	install-conf
+	install-conf \
+	install-locale
 
 	# Install library
 	@$(MKDIR) $(DESTDIR)$(libdir)
@@ -330,14 +331,11 @@ install-linux-lib: \
 		$(BINRLS)/$(SONAME) \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
 
-	@$(LN_S) \
-		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
-
 install-windows-lib: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/$(LIBNAME).dll.a \
-	install-conf
+	install-conf \
+	install-locale
 
 	@$(MKDIR) \
 		$(DESTDIR)$(bindir)
@@ -410,6 +408,9 @@ install-dev: \
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 	@$(INSTALL_DATA) locale/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 install-glade:
 
