@@ -29,6 +29,7 @@
 
  #include <clipboard.h>
  #include <lib3270/selection.h>
+ #include <v3270/settings.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
