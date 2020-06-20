@@ -31,6 +31,7 @@
  #include <internals.h>
  #include <terminal.h>
  #include <v3270/dialogs.h>
+ #include <v3270/settings.h>
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 

@@ -30,6 +30,7 @@
  #include <config.h>
  #include "private.h"
  #include <gdk/gdk.h>
+ #include <v3270/settings.h>
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
