@@ -446,7 +446,46 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
  {
 	debug("%s",__FUNCTION__);
 
-	GdkPixbuf * pixbuf = v3270_get_as_pixbuf(dialog->terminal);
+	GdkPixbuf * pixbuf = NULL;
+
+	switch(dialog->mode)
+	{
+	case LIB3270_CONTENT_ALL:
+		debug("%s","LIB3270_CONTENT_ALL");
+#ifdef DEBUG
+		{
+			debug("%s","LIB3270_CONTENT_SELECTED");
+			GList * selection = g_list_append_lib3270_selection(NULL, v3270_get_session(dialog->terminal),TRUE);
+			pixbuf = v3270_get_selection_as_pixbuf(GTK_V3270(dialog->terminal), selection, TRUE);
+			g_list_free_full(selection,(GDestroyNotify) lib3270_free);
+		}
+#else
+		pixbuf = v3270_get_as_pixbuf(dialog->terminal);
+#endif // DEBUG
+
+		break;
+
+	case LIB3270_CONTENT_COPY:
+		{
+			debug("%s","LIB3270_CONTENT_COPY");
+			const GList * selection = v3270_get_selection_blocks(dialog->terminal);
+			pixbuf = v3270_get_selection_as_pixbuf(GTK_V3270(dialog->terminal), selection, FALSE);
+		}
+		break;
+
+	case LIB3270_CONTENT_SELECTED:
+		{
+			debug("%s","LIB3270_CONTENT_SELECTED");
+			GList * selection = g_list_append_lib3270_selection(NULL, v3270_get_session(dialog->terminal),FALSE);
+			pixbuf = v3270_get_selection_as_pixbuf(GTK_V3270(dialog->terminal), selection, FALSE);
+			g_list_free_full(selection,(GDestroyNotify) lib3270_free);
+		}
+		break;
+
+	default:
+		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,_( "Unexpected mode %d" ),(int) dialog->mode);
+		return;
+	}
 
 	if(pixbuf)
 	{

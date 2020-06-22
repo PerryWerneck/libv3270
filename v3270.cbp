@@ -219,6 +219,9 @@
 		<Unit filename="src/selection/linux/paste.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/selection/pixbuf.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/selection/selection.c">
 			<Option compilerVar="CC" />
 		</Unit>
