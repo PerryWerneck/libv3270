@@ -256,6 +256,7 @@ G_BEGIN_DECLS
  };
 
  G_GNUC_INTERNAL void v3270_activate(GtkWidget *widget);
+ G_GNUC_INTERNAL GdkPixbuf * v3270_get_as_pixbuf(GtkWidget *widget);
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 

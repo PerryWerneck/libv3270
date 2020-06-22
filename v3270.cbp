@@ -6,6 +6,7 @@
 		<Option makefile_is_custom="1" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="src/selection/" />
 		<Build>
 			<Target title="Debug">
 				<Option output=".bin/Debug/libv3270" prefix_auto="1" extension_auto="1" />
@@ -213,6 +214,7 @@
 		</Unit>
 		<Unit filename="src/selection/linux/copy.c">
 			<Option compilerVar="CC" />
+			<Option virtualFolder="src/selection/" />
 		</Unit>
 		<Unit filename="src/selection/linux/paste.c">
 			<Option compilerVar="CC" />
@@ -417,9 +419,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>
