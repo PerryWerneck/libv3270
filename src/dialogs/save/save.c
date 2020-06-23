@@ -181,6 +181,38 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
  }
 
+ static void fileformat_changed(GtkComboBox *formats, GtkEntry *entry)
+ {
+	const gchar * text = gtk_entry_get_text(entry);
+
+ 	if(!(text && *text))
+		return;
+
+	gchar * extension = strrchr(text,'.');
+	if(!extension)
+		return;
+
+	extension++;
+	const gchar	* format = gtk_combo_box_get_active_id(formats);
+	if(*format == '.')
+		format++;
+
+	if(g_ascii_strcasecmp(extension,format) == 0)
+		return;
+
+	size_t szFilename = strlen(text) + strlen(format);
+	g_autofree gchar * filename = g_malloc0(szFilename + 1);
+
+	strncpy(filename,text,szFilename);
+	extension = strrchr(filename,'.');
+	if(extension)
+	{
+		*(++extension) = 0;
+		strncat(filename, format + (*format == '.' ? 1 : 0),szFilename);
+		gtk_entry_set_text(entry,filename);
+	}
+
+ }
 
  static void V3270SaveDialog_init(V3270SaveDialog *dialog)
  {
@@ -289,6 +321,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		}
 
 		g_signal_connect(dialog->filename,"changed",G_CALLBACK(filename_changed),dialog->format);
+		g_signal_connect(dialog->format,"changed",G_CALLBACK(fileformat_changed),dialog->filename);
 
 	}
 
