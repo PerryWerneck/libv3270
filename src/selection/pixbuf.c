@@ -111,7 +111,7 @@ GdkPixbuf * v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selecti
 					v3270_draw_element(
 						cr,
 						block->contents[src].chr,
-						block->contents[src].attribute.visual,
+						block->contents[src].attribute.visual & ~LIB3270_ATTR_SELECTED,
 						terminal->host,
 						&terminal->font,
 						&rect,
@@ -119,6 +119,7 @@ GdkPixbuf * v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selecti
 					);
 
 				}
+				src++;
 				rect.x += rect.width;
 			}
 
