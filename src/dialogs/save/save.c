@@ -532,17 +532,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	{
 	case LIB3270_CONTENT_ALL:
 		debug("%s","LIB3270_CONTENT_ALL");
-#ifdef DEBUG
-		{
-			debug("%s","LIB3270_CONTENT_SELECTED");
-			GList * selection = g_list_append_lib3270_selection(NULL, v3270_get_session(dialog->terminal),TRUE);
-			pixbuf = v3270_get_selection_as_pixbuf(GTK_V3270(dialog->terminal), selection, TRUE);
-			g_list_free_full(selection,(GDestroyNotify) lib3270_free);
-		}
-#else
 		pixbuf = v3270_get_as_pixbuf(dialog->terminal);
-#endif // DEBUG
-
 		break;
 
 	case LIB3270_CONTENT_COPY:
