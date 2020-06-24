@@ -103,9 +103,13 @@
 	lib3270_disconnect(v3270_get_session(terminal));
  }
 
- static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ static void save_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
- 	lib3270_save_all(v3270_get_session(terminal),NULL);
+ 	H3270 *hSession = v3270_get_session(terminal);
+ 	if(lib3270_get_has_selection(hSession))
+		lib3270_save_selected(hSession,NULL);
+	else
+		lib3270_save_all(hSession,NULL);
  }
 
  static void load_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
@@ -226,7 +230,7 @@
 		{ "gtk-harddisk",				G_CALLBACK(ft_clicked),				"Open file transfer dialog"		},
 		{ "gtk-copy",					G_CALLBACK(copy_clicked),			"Copy data"						},
 		{ "gtk-paste",					G_CALLBACK(paste_clicked),			"Paste data"					},
-		{ "document-save",				G_CALLBACK(save_all_clicked),		"Save screen"					},
+		{ "document-save",				G_CALLBACK(save_clicked),			"Save screen or selection"		},
 		{ "document-open",				G_CALLBACK(load_clicked),			"Paste file"					},
 
 		{ "applications-system",		G_CALLBACK(preferences_clicked),	"Session properties"			},
