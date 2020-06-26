@@ -127,6 +127,7 @@ G_BEGIN_DECLS
  	V3270_SELECTION_SCREEN_PASTE		= 0x08,	///< @brief Enable screen paste.
  	V3270_SELECTION_SMART_COPY			= 0x10,	///< @brief Enable copy/append based on current selection state.
  	V3270_SELECTION_DIALOG_STATE		= 0x20,	///< @brief Used for settings dialog.
+ 	V3270_SELECTION_PIXBUFF				= 0x40,	///< @brief Allow pixbuf formats.
 
  } V3270SelectionOption;
 
