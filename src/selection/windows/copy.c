@@ -104,6 +104,20 @@ static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionDa
 		}
 		break;
 
+	case CLIPBOARD_TYPE_PIXBUFF:
+		{
+			GdkPixbuf * pixbuff = v3270_get_selection_as_pixbuf(terminal, terminal->selection.blocks, FALSE);
+
+			debug("%s: pixbuff=%p (blocks=%p)",__FUNCTION__,pixbuff,terminal->selection.blocks);
+
+			if(pixbuff)
+			{
+				gtk_selection_data_set_pixbuf(selection,pixbuff);
+				g_object_unref(pixbuff);
+			}
+		}
+		break;
+
 	default:
 		g_warning("Unexpected clipboard type %d\n",target);
 	}
@@ -141,6 +155,11 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 
 		gtk_target_list_add_table(list, targets, G_N_ELEMENTS(targets));
 
+	}
+
+	if(terminal->selection.options & V3270_SELECTION_PIXBUFF)
+	{
+		gtk_target_list_add_image_targets(list,CLIPBOARD_TYPE_PIXBUFF,TRUE);
 	}
 
 	int				  n_targets;
