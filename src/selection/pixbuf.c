@@ -57,6 +57,7 @@ GdkPixbuf * v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selecti
 					if(col > cols)
 						cols = col;
 				}
+				src++;
 			}
 
 			if(hasSelection)
@@ -68,6 +69,8 @@ GdkPixbuf * v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selecti
 
 	}
 
+	debug("%s: rows=%d cols=%d",__FUNCTION__,rows,cols);
+
 	if(!rows)
 		return NULL;
 
@@ -75,6 +78,8 @@ GdkPixbuf * v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selecti
 
 	gint width	= (cols+1) * terminal->font.width;
 	gint height	= (rows+1) * terminal->font.spacing.value;
+
+	debug("%s: width=%d height=%d",__FUNCTION__,width,height);
 
 	cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
 
@@ -131,11 +136,11 @@ GdkPixbuf * v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selecti
 		}
 	}
 
-	cairo_destroy (cr);
+	cairo_destroy(cr);
 
 	GdkPixbuf * pixbuf = gdk_pixbuf_get_from_surface(surface,0,0,width,height);
 
-	cairo_surface_destroy (surface);
+	cairo_surface_destroy(surface);
 
 	return pixbuf;
 

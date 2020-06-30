@@ -440,7 +440,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	GList 		* dynamic	= NULL;
 	const GList * selection = NULL;
 
-	debug("%s",__FUNCTION__);
+	debug("%s(%d)",__FUNCTION__,dialog->mode);
 
 	switch(dialog->mode)
 	{
@@ -463,6 +463,8 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,_( "Unexpected mode %d" ),(int) dialog->mode);
 		return;
 	}
+
+	debug("Selection=%p",selection);
 
 	if(!selection)
 	{
@@ -524,7 +526,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
  static void save_as_image(V3270SaveDialog * dialog, const gchar *format, GError **error)
  {
-	debug("%s",__FUNCTION__);
+	debug("%s(%d)",__FUNCTION__,dialog->mode);
 
 	GdkPixbuf * pixbuf = NULL;
 
@@ -547,6 +549,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		{
 			debug("%s","LIB3270_CONTENT_SELECTED");
 			GList * selection = g_list_append_lib3270_selection(NULL, v3270_get_session(dialog->terminal),FALSE);
+			debug("Selection=%p",selection);
 			pixbuf = v3270_get_selection_as_pixbuf(GTK_V3270(dialog->terminal), selection, FALSE);
 			g_list_free_full(selection,(GDestroyNotify) lib3270_free);
 		}
@@ -557,16 +560,23 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		return;
 	}
 
+	debug("pixbuff=%p",pixbuf);
+
 	if(pixbuf)
 	{
 		const gchar * filename = get_filename(dialog);
 
+		debug("Filename=%p",filename);
 		if(filename)
 		{
 			gdk_pixbuf_save(pixbuf,filename,format,error,NULL);
 		}
 
 		g_object_unref(pixbuf);
+	}
+	else
+	{
+		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),-1,_( "Error saving image" ));
 	}
 
  }
