@@ -813,7 +813,7 @@ static gboolean bg_emit_save_settings(v3270 *terminal)
  	return FALSE;
 }
 
-void v3270_emit_save_settings(GtkWidget *widget)
+LIB3270_EXPORT void v3270_emit_save_settings(GtkWidget *widget)
 {
 	debug("%s(Freeze is %s)",__FUNCTION__,GTK_V3270(widget)->freeze ? "ON" : "OFF");
 	if(widget && GTK_IS_V3270(widget) && !GTK_V3270(widget)->freeze)
