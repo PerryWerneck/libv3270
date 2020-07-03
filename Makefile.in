@@ -339,7 +339,6 @@ install-linux-lib: \
 
 install-windows-lib: \
 	$(BINRLS)/$(SONAME) \
-	$(BINRLS)/$(LIBNAME).dll.a \
 	install-conf \
 	install-locale
 
@@ -349,20 +348,6 @@ install-windows-lib: \
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(SONAME) \
 		$(DESTDIR)$(bindir)/$(SONAME)
-
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).dll.a \
-		$(DESTDIR)$(libdir)
-
-	@$(MKDIR) \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/$(LIBNAME).def \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
@@ -390,9 +375,9 @@ install-conf:
 		conf/colors.conf \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/colors.conf
 
-
 install-dev: \
-	locale/$(LIBNAME).pot
+	locale/$(LIBNAME).pot \
+	install-@OSNAME@-dev
 
 	@mkdir -p $(DESTDIR)$(includedir)/v3270
 
@@ -414,9 +399,34 @@ install-dev: \
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 	@$(INSTALL_DATA) locale/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
+
+install-linux-dev:
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
 	@$(LN_S) \
 		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
+install-windows-dev: \
+	$(BINRLS)/$(SONAME) \
+	$(BINRLS)/$(LIBNAME).dll.a
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).dll.a \
+		$(DESTDIR)$(libdir)
+
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(LIBNAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
 
 install-glade:
 
