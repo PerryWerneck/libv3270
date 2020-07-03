@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-04 09:11-0300\n"
-"PO-Revision-Date: 2020-05-08 00:48-0300\n"
+"POT-Creation-Date: 2020-07-03 12:42-0300\n"
+"PO-Revision-Date: 2020-07-03 15:04-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -174,7 +174,7 @@ msgstr "Tema de c_ores:"
 msgid "Can't add activity"
 msgstr "Não é possível adicionar atividade"
 
-#: src/terminal/font/properties.c:40
+#: src/terminal/font/properties.c:41
 #, c-format
 msgid "Can't find a valid font with the name \"%s\""
 msgstr "Não encontrei uma fonte válida com o nome \"%s\""
@@ -202,7 +202,7 @@ msgstr "Erro ao converter valor do cgcsid"
 msgid "Can't parse character value"
 msgstr "Erro ao analisar valor de caractere"
 
-#: src/selection/linux/paste.c:80 src/selection/linux/paste.c:115
+#: src/selection/windows/paste.c:79 src/selection/windows/paste.c:119
 msgid "Can't paste"
 msgstr "Não é possivel colar"
 
@@ -405,7 +405,7 @@ msgstr "Turquesa Escuro"
 msgid "Default"
 msgstr "Padrão"
 
-#: src/dialogs/popups.c:148
+#: src/dialogs/popups.c:149
 msgid "Don't ask again"
 msgstr "Não perguntar de novo"
 
@@ -425,7 +425,7 @@ msgstr "Emulação"
 msgid "Enabled"
 msgstr "Habilitado"
 
-#: src/dialogs/popups.c:55 src/dialogs/popups.c:84
+#: src/dialogs/popups.c:56 src/dialogs/popups.c:85
 msgid "Error"
 msgstr "Erro"
 
@@ -482,12 +482,12 @@ msgstr ""
 msgid "Font"
 msgstr "Fonte"
 
-#: src/terminal/font/properties.c:39
+#: src/terminal/font/properties.c:40
 #, c-format
 msgid "Font \"%s\" is not monospace"
 msgstr "Fonte \"%s\" não é mono espaçada"
 
-#: src/terminal/font/properties.c:38
+#: src/terminal/font/properties.c:39
 #, c-format
 msgid "Font \"%s\" is valid"
 msgstr "Fonte \"%s\" é válida"
@@ -702,10 +702,6 @@ msgstr "Nenhum (Não exporta cores)"
 msgid "None (Don't export font name)"
 msgstr "Nenhuma (Não exporta fontes)"
 
-#: src/selection/linux/paste.c:117
-msgid "None of the screens in the clipboard match with the current one."
-msgstr "Nenhuma das telas da área de transferência corresponde à atual."
-
 #: src/dialogs/settings/colors.c:174
 msgid "Normal/Protected"
 msgstr "Normal/Protegido"
@@ -714,7 +710,7 @@ msgstr "Normal/Protegido"
 msgid "Normal/Unprotected"
 msgstr "Normal/Desprotegido"
 
-#: src/selection/linux/paste.c:76
+#: src/selection/windows/paste.c:75
 msgid "Not the same terminal type"
 msgstr "O tipo de terminal é diferente"
 
@@ -746,7 +742,7 @@ msgstr "Estado normal na OIA"
 msgid "Open"
 msgstr "Abrir"
 
-#: src/dialogs/popups.c:115
+#: src/dialogs/popups.c:116
 msgid "Operation failed"
 msgstr "Operação falhou"
 
@@ -1484,9 +1480,9 @@ msgstr "Turquesa"
 msgid "UTF-8"
 msgstr "UTF-8"
 
-#: src/selection/linux/paste.c:116
-msgid "Unable to paste formatted data."
-msgstr "Incapaz de colar texto formatado."
+#: src/selection/windows/paste.c:115
+msgid "Unable to paste formatted data"
+msgstr "Incapaz de colar tela formatada."
 
 #: src/filetransfer/tables.c:92
 msgid "Undefined"
@@ -1507,7 +1503,7 @@ msgstr "Modo inesperado %d"
 msgid "Unexpected status %d in print operation"
 msgstr "Estado inesperado %d na operação de impressão"
 
-#: src/dialogs/save/save.c:149
+#: src/dialogs/windows/select.c:169 src/dialogs/save/save.c:149
 msgid "Untitled document"
 msgstr "Documento sem título"
 
@@ -1709,9 +1705,9 @@ msgstr "Texto _ASCII"
 msgid "_Apply"
 msgstr "_Aplicar"
 
-#: src/selection/linux/paste.c:84 src/selection/linux/paste.c:118
-#: src/dialogs/load.c:205 src/dialogs/load.c:224 src/dialogs/linux/select.c:51
-#: src/dialogs/linux/select.c:77 src/dialogs/print/settingsdialog.c:410
+#: src/selection/windows/paste.c:83 src/selection/windows/paste.c:123
+#: src/dialogs/load.c:205 src/dialogs/load.c:224
+#: src/dialogs/windows/select.c:158 src/dialogs/print/settingsdialog.c:410
 #: src/dialogs/print/settingsdialog.c:429 src/dialogs/save/save.c:267
 #: src/dialogs/save/save.c:286 src/dialogs/settings/dialog.c:231
 msgid "_Cancel"
@@ -1762,7 +1758,7 @@ msgstr "_Modelo"
 msgid "_Operation"
 msgstr "_Operação:"
 
-#: src/selection/linux/paste.c:85 src/selection/linux/paste.c:119
+#: src/selection/windows/paste.c:84 src/selection/windows/paste.c:124
 msgid "_Paste as text"
 msgstr "_Colar como texto"
 
@@ -2930,6 +2926,9 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "Non zero if the host is TSO."
 #~ msgstr "Diferente de zero se o host é TSO"
+
+#~ msgid "None of the screens in the clipboard match with the current one."
+#~ msgstr "Nenhuma das telas da área de transferência corresponde à atual."
 
 #~ msgid "Not available"
 #~ msgstr "Não disponível"
