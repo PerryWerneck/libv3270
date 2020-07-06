@@ -38,24 +38,27 @@ GdkPixbuf * v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selecti
 	const GList *selection;
 
 	// Get image size
-	size_t rows = 0, cols = 0;
+	size_t rows = 0, from_col = 1000, to_col = 0;
 
 	for(selection = selections; selection; selection = g_list_next(selection))
 	{
 		lib3270_selection * block = ((lib3270_selection *) selection->data);
-		unsigned int row, col, src = 0;
+		unsigned int row, src = 0;
 
 		for(row=0; row < block->bounds.height; row++)
 		{
 			size_t hasSelection = FALSE;
+			unsigned int col;
 
 			for(col=0; col<block->bounds.width; col++)
 			{
 				if( (block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED) || all )
 				{
 					hasSelection = TRUE;
-					if(col > cols)
-						cols = col;
+					if(col < from_col)
+						from_col = col;
+					if(col > to_col)
+						to_col = col;
 				}
 				src++;
 			}
@@ -69,22 +72,24 @@ GdkPixbuf * v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selecti
 
 	}
 
-	debug("%s: rows=%d cols=%d",__FUNCTION__,rows,cols);
+	debug("Selection rows=%u cols=%u",(unsigned int) rows, (unsigned int) (to_col - from_col));
 
-	if(!rows)
+	if(!(rows || (from_col > to_col)))
 		return NULL;
 
-	debug("Selection rows=%u cols=%u",(unsigned int) rows, (unsigned int) cols);
-
-	gint width	= (cols+1) * terminal->font.width;
-	gint height	= (rows+1) * terminal->font.spacing.value;
+	gint width	= ((to_col - from_col)+1) * terminal->font.width;
+	gint height	= rows * terminal->font.spacing.value;
 
 	debug("%s: width=%d height=%d",__FUNCTION__,width,height);
 
 	cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
 
 	cairo_t *cr = cairo_create(surface);
+#ifdef DEBUG
+	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_BLUE);
+#else
 	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_BACKGROUND);
+#endif // DEBUG
 	cairo_rectangle(cr, 0, 0, width, height);
 	cairo_fill(cr);
 	cairo_stroke(cr);
@@ -107,7 +112,8 @@ GdkPixbuf * v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selecti
 			size_t hasSelection = FALSE;
 			rect.x = 0;
 
-			for(col=0; col<block->bounds.width; col++)
+			src += from_col;
+			for(col=from_col; col<block->bounds.width; col++)
 			{
 				if( (block->contents[src].attribute.visual & LIB3270_ATTR_SELECTED) || all )
 				{
