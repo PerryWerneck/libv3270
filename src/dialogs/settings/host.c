@@ -760,6 +760,9 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 	// Apply auto-disconnect
 	v3270_set_auto_disconnect(terminal,gtk_spin_button_get_value_as_int(widget->input.auto_disconnect));
 
+	// Apply unlock-delay
+	lib3270_set_unlock_delay(hSession, (unsigned int) gtk_spin_button_get_value(widget->input.unlock_delay));
+
 }
 
 static void load(GtkWidget *w, GtkWidget *terminal)
