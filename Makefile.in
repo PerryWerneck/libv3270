@@ -349,6 +349,10 @@ install-windows-lib: \
 		$(BINRLS)/$(SONAME) \
 		$(DESTDIR)$(bindir)/$(SONAME)
 
+zip: \
+	$(BINRLS)/$(SONAME)
+	@$(ZIP) -9 -j $(BASEDIR)/@PACKAGE_NAME@-@PACKAGE_VERSION@-@PACKAGE_RELEASE@-@host_cpu@.zip $(BINRLS)/$(SONAME)
+
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
 
