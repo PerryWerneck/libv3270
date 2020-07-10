@@ -35,6 +35,7 @@ For the supported distributions get the install repositories and instructions fr
 	```
 	$ sudo zypper ar obs://windows:mingw:win32 mingw32
 	$ sudo zypper ar obs://windows:mingw:win64 mingw64
+	$ sudo zypper ar obs://home:PerryWerneck:pw3270 pw3270
 	$ sudo zypper ref
 	```
 
