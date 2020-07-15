@@ -84,8 +84,6 @@ const gchar * v3270_get_default_colors()
                 return default_colors;
 			}
 
-			exit(-1);
-
 			free(default_colors);
 			default_colors = NULL;
 		}
