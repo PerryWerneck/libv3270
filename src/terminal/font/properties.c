@@ -47,11 +47,65 @@ static const gchar * invalid_font_messages[] = {
 const gchar * v3270_get_default_font_name()
 {
 #if defined(_WIN32)
-	return "Lucida Console";
-#elif defined(__APPLE__)
+	{
+		HKEY hKey;
+		DWORD disp = 0;
+		LSTATUS	rc = RegCreateKeyEx(
+						HKEY_LOCAL_MACHINE,
+						"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),
+						0,
+						NULL,
+						REG_OPTION_NON_VOLATILE,
+						KEY_QUERY_VALUE|KEY_READ,
+						NULL,
+						&hKey,
+						&disp);
+
+		debug("%s=%d","Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc);
+
+		if(rc == ERROR_SUCCESS)
+		{
+			static char * default_font_name = NULL;
+			DWORD cbData = 4096;
+
+			if(!default_font_name)
+			{
+				default_font_name = (char *) malloc(cbData+1);
+			}
+			else
+			{
+				default_font_name = (char *) realloc(default_font_name,cbData+1);
+			}
+
+			DWORD dwRet = RegQueryValueEx(hKey,"font-family",NULL,NULL,(LPBYTE) default_font_name, &cbData);
+
+			debug("dwRet=%d",dwRet);
+
+			RegCloseKey(hKey);
+
+			if(dwRet == ERROR_SUCCESS)
+			{
+				default_font_name = (char *) realloc(default_font_name,cbData+1);
+                default_font_name[cbData] = 0;
+                return default_font_name;
+			}
+
+			free(default_font_name);
+			default_font_name = NULL;
+		}
+	}
+
+	// TODO: Search for a valid font-family
 	return "Courier New";
+
+#elif defined(__APPLE__)
+
+	return "Courier New";
+
 #else
+
 	return "monospace";
+
 #endif // _WIN32
 }
 
