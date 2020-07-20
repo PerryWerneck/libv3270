@@ -47,14 +47,34 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void set_timer(H3270 *session, unsigned char on)
+struct has_timer
 {
-	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
+	H3270			* hSession;
+	unsigned char	  on;
+};
 
-	if(on)
+static gboolean bg_has_timer(struct has_timer *data)
+{
+	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(data->hSession));
+
+	if(data->on)
 		v3270_start_timer(widget);
 	else
 		v3270_stop_timer(widget);
+
+	g_free(data);
+
+	return FALSE;
+}
+
+static void set_timer(H3270 *session, unsigned char on)
+{
+	struct has_timer *data = g_malloc0(sizeof(struct has_timer));
+
+	data->hSession = session;
+	data->on = on;
+
+	g_idle_add((GSourceFunc) bg_has_timer, data);
 
 }
 
