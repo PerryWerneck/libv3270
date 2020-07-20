@@ -827,6 +827,7 @@ struct timer_info
 static void release_timer(struct timer_info *info)
 {
 	info->terminal->timer = NULL;
+	g_object_notify_by_pspec(G_OBJECT(info->terminal),GTK_V3270_GET_CLASS(info->terminal)->properties.has_timer);
 
 	if(info->terminal->surface)
 	{
@@ -1050,6 +1051,8 @@ void v3270_start_timer(GtkWidget *widget)
 
 	terminal->timer = g_timeout_source_new(100);
 	g_source_set_callback(terminal->timer,(GSourceFunc) update_timer, info, (GDestroyNotify) release_timer);
+
+	g_object_notify_by_pspec(G_OBJECT(terminal),GTK_V3270_GET_CLASS(widget)->properties.has_timer);
 
 	g_source_attach(terminal->timer,NULL);
 	g_source_unref(terminal->timer);

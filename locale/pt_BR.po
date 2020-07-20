@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-06 16:11-0300\n"
+"POT-Creation-Date: 2020-07-16 15:51-0300\n"
 "PO-Revision-Date: 2020-07-06 16:12-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -59,15 +59,15 @@ msgstr "_Adicionar ao arquivo"
 msgid "About security"
 msgstr "Sobre a segurança"
 
-#: src/dialogs/settings/accelerator.c:191
+#: src/dialogs/settings/accelerator.c:196
 msgid "Accelerator"
 msgstr "Atalho"
 
-#: src/dialogs/settings/accelerator.c:329
+#: src/dialogs/settings/accelerator.c:334
 msgid "Accelerator is in use"
 msgstr "Atalho está em uso"
 
-#: src/dialogs/settings/accelerator.c:240
+#: src/dialogs/settings/accelerator.c:245
 msgid "Accelerators"
 msgstr "Atalhos"
 
@@ -88,7 +88,7 @@ msgstr "Adicionar à cópia"
 msgid "Address or name of the host to connect."
 msgstr "Endereço ou nome do host a conectar."
 
-#: src/dialogs/settings/accelerator.c:201
+#: src/dialogs/settings/accelerator.c:206
 msgid "Alternative"
 msgstr "Alternativa"
 
@@ -120,7 +120,7 @@ msgstr "Adiciona seleção na área de transferência"
 msgid "Appends the source file to the destination file."
 msgstr "Adiciona conteúdo do arquivo origem ao final do arquivo destino."
 
-#: src/dialogs/settings/accelerator.c:311
+#: src/dialogs/settings/accelerator.c:316
 #, c-format
 msgid "Assign it to action (<b>%s</b>)?"
 msgstr "Associar com a ação (<b>%s</b>)?"
@@ -613,8 +613,8 @@ msgstr "Escopo de mapeamento inválido"
 msgid "Invalid state"
 msgstr "Estado inválido"
 
-#: src/dialogs/settings/accelerator.c:145
-#: src/dialogs/settings/accelerator.c:239
+#: src/dialogs/settings/accelerator.c:150
+#: src/dialogs/settings/accelerator.c:244
 msgid "Keyboard accelerators"
 msgstr "Atalhos de teclado"
 
@@ -670,7 +670,7 @@ msgstr "Monocromático"
 msgid "Mustard"
 msgstr "Mostarda"
 
-#: src/dialogs/settings/accelerator.c:153
+#: src/dialogs/settings/accelerator.c:158
 msgid "Name"
 msgstr "Nome"
 
@@ -950,7 +950,7 @@ msgstr "Formato de registro"
 msgid "Red"
 msgstr "Vermelho"
 
-#: src/dialogs/settings/accelerator.c:454
+#: src/dialogs/settings/accelerator.c:459
 msgid "Rejected by action"
 msgstr "Rejeitado pela ação"
 
@@ -1257,7 +1257,7 @@ msgstr "Tipo de situação"
 msgid "State of the dynamic font spacing"
 msgstr "Estado do espaçamento dinâmico"
 
-#: src/dialogs/settings/accelerator.c:171
+#: src/dialogs/settings/accelerator.c:176
 msgid "Summary"
 msgstr "Sumário"
 
@@ -1304,7 +1304,7 @@ msgstr ""
 msgid "The EBCDIC host character set. "
 msgstr "A tabela de caracteres EBCDIC."
 
-#: src/dialogs/settings/accelerator.c:450
+#: src/dialogs/settings/accelerator.c:455
 #, c-format
 msgid "The action \"%s\" can't manage alternative keys"
 msgstr "A ação \"%s\" não permite uso de atalho alternativo"
@@ -1389,12 +1389,12 @@ msgstr "Operação de impressão está em andamento"
 msgid "The print settings should be stored."
 msgstr "Configuração de impressão deve ser armazenada"
 
-#: src/dialogs/settings/accelerator.c:304
+#: src/dialogs/settings/accelerator.c:309
 #, c-format
 msgid "The selected accelerator is in use by action <b>%s</b> (<b>%s</b>)"
 msgstr "O atalho selecionado está em uso pela ação <b>%s</b> (<b>%s</b>)"
 
-#: src/dialogs/settings/accelerator.c:324
+#: src/dialogs/settings/accelerator.c:329
 msgid "The selected accelerator is in use by the same action"
 msgstr "O atalho selecionado está em uso na mesma ação"
 

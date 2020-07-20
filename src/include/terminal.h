@@ -78,6 +78,7 @@ G_BEGIN_DECLS
 		GParamSpec * session_name;
 		GParamSpec * trace;
 		GParamSpec * has_copy;
+		GParamSpec * has_timer;
 
 		struct
 		{

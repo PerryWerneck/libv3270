@@ -242,7 +242,6 @@
 		klass->properties.settings[V3270_SETTING_SELECTION_OPTIONS]
 	);
 
-
 	klass->properties.has_copy =
 		g_param_spec_boolean(
 			"has_copy",
@@ -258,6 +257,20 @@
 		klass->properties.has_copy
 	);
 
+	klass->properties.has_timer =
+		g_param_spec_boolean(
+			"has_timer",
+			"has_timer",
+			_( "True if the timer indicator is active" ),
+			FALSE,
+			G_PARAM_READABLE
+		);
+
+	g_object_class_install_property(
+		gobject_class,
+		V3270_PROPERTY_HAS_TIMER,
+		klass->properties.has_timer
+	);
 
 	//
 	// Create dynamic properties
