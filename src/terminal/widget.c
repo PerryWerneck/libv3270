@@ -242,7 +242,6 @@ static void v3270_class_init(v3270Class *klass)
 	klass->activate									= v3270_activate;
 	klass->toggle_changed 							= v3270_toggle_changed;
 	klass->message_changed 							= v3270_update_message;
-	klass->popup_message							= v3270_popup_message;
 
 	// Register I/O Handlers
 	v3270_register_io_handlers(klass);
@@ -427,15 +426,6 @@ static void v3270_class_init(v3270Class *klass)
 						NULL, NULL,
 						v3270_VOID__VOID_UINT_UINT,
 						G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_UINT);
-
-	v3270_widget_signal[V3270_SIGNAL_MESSAGE] =
-		g_signal_new(	I_("popup_message"),
-						G_OBJECT_CLASS_TYPE (gobject_class),
-						G_SIGNAL_RUN_FIRST,
-						G_STRUCT_OFFSET (v3270Class, popup_message),
-						NULL, NULL,
-						v3270_VOID__VOID_UINT_POINTER_POINTER_POINTER,
-						G_TYPE_NONE, 4, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_FIELD] =
 		g_signal_new(	I_("field_clicked"),

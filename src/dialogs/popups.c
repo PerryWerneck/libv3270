@@ -131,6 +131,7 @@
 
  }
 
+ /*
  void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *title, const gchar *message, const gchar *text) {
 
 	LIB3270_POPUP popup = {
@@ -148,6 +149,7 @@
 	v3270_show_popup(widget, &popup, FALSE);
 
  }
+ */
 
  void v3270_error_popup(GtkWidget *widget, const gchar *title, const gchar *summary, const gchar *body) {
 

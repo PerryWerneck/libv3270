@@ -82,7 +82,6 @@
  	V3270_SIGNAL_KEYPRESS,
  	V3270_SIGNAL_MODEL_CHANGED,
  	V3270_SIGNAL_CHANGED,
- 	V3270_SIGNAL_MESSAGE,
  	V3270_SIGNAL_FIELD,
  	V3270_SIGNAL_SESSION_CHANGED,
 
@@ -132,6 +131,8 @@
  G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, const gchar *tooltip, GtkAlign align, gboolean expand, gboolean fill, guint padding);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_grid(GtkAlign align);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
+
+ G_GNUC_INTERNAL GtkResponseType v3270_show_popup(GtkWidget *widget, const LIB3270_POPUP *popup, gboolean wait);
 
  G_GNUC_INTERNAL void			  v3270_signal_emit(gpointer instance, enum V3270_SIGNAL signal_id, ...);
 

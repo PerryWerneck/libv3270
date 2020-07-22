@@ -43,6 +43,7 @@
  #include <lib3270.h>
  #include <lib3270/session.h>
  #include <lib3270/log.h>
+ #include <lib3270/popup.h>
  #include <errno.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
@@ -275,16 +276,16 @@ static void update_selection(H3270 *session, G_GNUC_UNUSED int start, G_GNUC_UNU
 
 }
 
-static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text)
+static void message(H3270 *session, LIB3270_NOTIFY type , const char *title, const char *message, const char *text)
 {
-	v3270_signal_emit(
-		GTK_WIDGET(lib3270_get_user_data(session)),
-		V3270_SIGNAL_MESSAGE,
-		(int) id,
-		(gchar *) title,
-		(gchar *) message,
-		(gchar *) text
-	);
+	LIB3270_POPUP popup = {
+		.type = type,
+		.title = title,
+		.summary = message,
+		.body = text
+	};
+
+	v3270_show_popup(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
 
 }
 
@@ -325,23 +326,18 @@ static int load(H3270 *session, const char *filename)
 
 static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
 {
- 	GtkWidget *terminal = (GtkWidget *) lib3270_get_user_data(session);
+	LIB3270_POPUP popup = {
+		.type = type,
+		.title = title,
+		.summary = msg
+	};
 
- 	if(terminal && GTK_IS_V3270(terminal))
-	{
+	g_autofree gchar * body = NULL;
 
-		if(fmt)
-		{
-			gchar *text = g_strdup_vprintf(fmt,args);
-			v3270_popup_message(GTK_WIDGET(terminal),type,title,msg,text);
-			g_free(text);
-		}
-		else
-		{
-			v3270_popup_message(GTK_WIDGET(terminal),type,title,msg,NULL);
-		}
+	if(fmt)
+		body = g_strdup_vprintf(fmt,args);
 
- 	}
+	v3270_show_popup(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
 
  }
 
