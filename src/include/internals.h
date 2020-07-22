@@ -44,6 +44,7 @@
  #include <lib3270/log.h>
  #include <v3270.h>
  #include <v3270/toggle.h>
+ #include <lib3270/popup.h>
 
  G_BEGIN_DECLS
 
