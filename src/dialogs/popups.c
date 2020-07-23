@@ -43,14 +43,14 @@
 	// Popup settings.
 	static const struct _settings {
 		GtkMessageType type;
-		GtkButtonsType buttons;
+		const gchar *button;
 		const gchar *title;
 	} settings[LIB3270_NOTIFY_USER] = {
 
 		// LIB3270_NOTIFY_INFO - Simple information dialog.
 		{
 			.type = GTK_MESSAGE_INFO,
-			.buttons = GTK_BUTTONS_OK,
+			.button = N_("_Ok"),
 			.title = N_("Information")
 
 		},
@@ -58,7 +58,7 @@
 		// LIB3270_NOTIFY_WARNING - Warning message.
 		{
 			.type = GTK_MESSAGE_WARNING,
-			.buttons = GTK_BUTTONS_OK,
+			.button = N_("_Ok"),
 			.title = N_("Warning")
 
 		},
@@ -66,7 +66,7 @@
 		// LIB3270_NOTIFY_ERROR - Error message.
 		{
 			.type = GTK_MESSAGE_ERROR,
-			.buttons = GTK_BUTTONS_OK,
+			.button = N_("_Ok"),
 			.title = N_("Error")
 
 		},
@@ -74,7 +74,7 @@
 		// LIB3270_NOTIFY_CRITICAL - Critical error, user can abort application.
 		{
 			.type = GTK_MESSAGE_ERROR,
-			.buttons = GTK_BUTTONS_CLOSE,
+			.button = N_("_Close"),
 			.title = N_("Critical Error")
 
 		},
@@ -82,11 +82,10 @@
 		// LIB3270_NOTIFY_SECURE - Secure host dialog.
 		{
 			.type = GTK_MESSAGE_OTHER,
-			.buttons = GTK_BUTTONS_OK,
+			.button = N_("_Ok"),
 			.title = N_("Security alert")
 
 		}
-
 
 	};
 
@@ -96,7 +95,7 @@
 				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
 				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 				settings[popup->type].type,
-				settings[popup->type].buttons,
+				GTK_BUTTONS_NONE,
 				"%s",popup->summary
 			);
 
@@ -114,6 +113,21 @@
 	if(wait) {
 
 		// Wait for response.
+		if(popup->label) {
+
+			gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
+			gtk_dialog_add_button(GTK_DIALOG(dialog), popup->label, GTK_RESPONSE_APPLY);
+			gtk_dialog_set_default_response(
+				GTK_DIALOG(dialog),
+				(popup->type == LIB3270_NOTIFY_SECURE ? GTK_RESPONSE_CANCEL : GTK_RESPONSE_APPLY)
+			);
+
+		} else {
+
+			gtk_dialog_add_button(GTK_DIALOG(dialog), g_dgettext(GETTEXT_PACKAGE,settings[popup->type].button), GTK_RESPONSE_OK);
+
+		}
+
 		gtk_widget_show_all(dialog);
 		gint rc = gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_destroy(dialog);
@@ -124,6 +138,8 @@
 	// Unnamed dialog, no need for wait.
 	g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
 	g_signal_connect(dialog,"response",G_CALLBACK(gtk_widget_destroy),NULL);
+
+	gtk_dialog_add_button(GTK_DIALOG(dialog), settings[popup->type].button, GTK_RESPONSE_OK);
 
 	gtk_widget_show_all(dialog);
 
