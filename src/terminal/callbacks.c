@@ -428,6 +428,20 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	return -1;
  }
 
+ static int popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+
+	GtkResponseType response = v3270_show_popup(
+									GTK_WIDGET(lib3270_get_user_data(hSession)),
+									popup,
+									wait != 0 ? TRUE : FALSE );
+
+	if(response == GTK_RESPONSE_OK || response == GTK_RESPONSE_APPLY)
+		return 0;
+
+	return -1;
+
+ }
+
  void v3270_install_callbacks(v3270 *widget)
  {
 	struct lib3270_session_callbacks *cbk;
@@ -466,7 +480,9 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->print				= print;
 	cbk->save				= save;
 	cbk->load				= load;
+
 	cbk->popup_ssl_error	= popup_ssl_error;
+	cbk->popup_show			= popup_show;
 
 }
 
