@@ -40,6 +40,24 @@
 
 	g_return_val_if_fail(GTK_IS_WIDGET(widget),GTK_RESPONSE_NONE);
 
+	// Check if the dialog is enabled
+	if(popup->name && GTK_IS_V3270(widget)) {
+
+			GtkResponseType response = GTK_RESPONSE_NONE;
+
+			v3270_signal_emit(
+				widget,
+				V3270_SIGNAL_LOAD_POPUP_RESPONSE,
+				popup->name,
+				response,
+				&response
+			);
+
+			if(response != GTK_RESPONSE_NONE)
+				return response;
+
+	}
+
 	// Popup settings.
 	static const struct _settings {
 		GtkMessageType type;
@@ -51,40 +69,30 @@
 		{
 			.type = GTK_MESSAGE_INFO,
 			.button = N_("_Ok"),
-			.title = N_("Information")
-
 		},
 
 		// LIB3270_NOTIFY_WARNING - Warning message.
 		{
 			.type = GTK_MESSAGE_WARNING,
 			.button = N_("_Ok"),
-			.title = N_("Warning")
-
 		},
 
 		// LIB3270_NOTIFY_ERROR - Error message.
 		{
 			.type = GTK_MESSAGE_ERROR,
 			.button = N_("_Ok"),
-			.title = N_("Error")
-
 		},
 
 		// LIB3270_NOTIFY_CRITICAL - Critical error, user can abort application.
 		{
 			.type = GTK_MESSAGE_ERROR,
 			.button = N_("_Close"),
-			.title = N_("Critical Error")
-
 		},
 
 		// LIB3270_NOTIFY_SECURE - Secure host dialog.
 		{
 			.type = GTK_MESSAGE_OTHER,
 			.button = N_("_Ok"),
-			.title = N_("Security alert")
-
 		}
 
 	};
@@ -96,21 +104,45 @@
 				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 				settings[popup->type].type,
 				GTK_BUTTONS_NONE,
-				"%s",popup->summary
+				"<b><big>%s</big></b>",popup->summary
 			);
 
 	if(popup->body) {
-		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"%s",popup->body);
+		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"<small>%s</small>",popup->body);
 	}
 
 	if(popup->title) {
 		gtk_window_set_title(GTK_WINDOW(dialog),popup->title);
-	} else {
-		gtk_window_set_title(GTK_WINDOW(dialog),g_dgettext(GETTEXT_PACKAGE,settings[popup->type].title));
 	}
 
-
 	if(wait) {
+
+		GtkWidget * dont_ask = NULL;
+
+#ifdef DEBUG
+		if(popup->name && GTK_IS_V3270(widget)) {
+			// Set check button
+			dont_ask = gtk_check_button_new_with_label(_("Don't ask again"));
+
+			gtk_widget_set_can_focus(dont_ask,FALSE);
+			gtk_widget_set_can_default(dont_ask,FALSE);
+
+#if GTK_CHECK_VERSION(3,20,0)
+			gtk_widget_set_focus_on_click(dont_ask,FALSE);
+#endif // GTK 3,20,0
+
+			//gtk_widget_set_valign(dont_ask, GTK_ALIGN_BASELINE);
+			//gtk_widget_set_halign(dont_ask, GTK_ALIGN_START);
+
+			gtk_box_pack_start(
+				GTK_BOX(gtk_message_dialog_get_message_area(GTK_MESSAGE_DIALOG(dialog))),
+				dont_ask,
+				TRUE,
+				TRUE,
+				0
+			);
+		}
+#endif // DEBUG
 
 		// Wait for response.
 		if(popup->label) {
@@ -129,7 +161,24 @@
 		}
 
 		gtk_widget_show_all(dialog);
-		gint rc = gtk_dialog_run(GTK_DIALOG(dialog));
+		GtkResponseType rc = gtk_dialog_run(GTK_DIALOG(dialog));
+
+		if(dont_ask && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dont_ask))) {
+
+			gboolean saved = FALSE;
+
+			v3270_signal_emit(
+				widget,
+				V3270_SIGNAL_SAVE_POPUP_RESPONSE,
+				popup->name,
+				rc,
+				&saved
+			);
+
+			debug("response was %s",saved ? "saved" : "not saved");
+
+		}
+
 		gtk_widget_destroy(dialog);
 		return rc;
 
@@ -146,26 +195,6 @@
 	return GTK_RESPONSE_NONE;
 
  }
-
- /*
- void v3270_popup_message(GtkWidget *widget, LIB3270_NOTIFY type , const gchar *title, const gchar *message, const gchar *text) {
-
-	LIB3270_POPUP popup = {
-		.type = type,
-		.body = text
-	};
-
-	if(message) {
-		popup.summary = message;
-		popup.title = title;
-	} else {
-		popup.summary = title;
-	}
-
-	v3270_show_popup(widget, &popup, FALSE);
-
- }
- */
 
  void v3270_error_popup(GtkWidget *widget, const gchar *title, const gchar *summary, const gchar *body) {
 

@@ -114,7 +114,9 @@
  	//
  	// Settings signals (Mostly fired by V3270Settings dialogs).
  	//
- 	V3270_SIGNAL_SAVE_SETTINGS,		///< @brief Notify main application to save all widget settings.
+ 	V3270_SIGNAL_SAVE_SETTINGS,			///< @brief Notify main application to save all widget settings.
+ 	V3270_SIGNAL_LOAD_POPUP_RESPONSE,	///< @brief Load popup response (GTK_RESPONSE_NONE to show popup).
+ 	V3270_SIGNAL_SAVE_POPUP_RESPONSE,	///< @brief Save popup response.
 
  	V3270_SIGNAL_LAST
  };

@@ -201,6 +201,14 @@ static void finalize(GObject *object) {
 	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);
  }
 
+ static GtkResponseType load_popup_response(v3270 G_GNUC_UNUSED(*widget), const gchar G_GNUC_UNUSED(*popup_name), GtkResponseType response) {
+	return response;
+ }
+
+ static gboolean save_popup_response(v3270 G_GNUC_UNUSED(*widget), const gchar G_GNUC_UNUSED(*popup_name), GtkResponseType G_GNUC_UNUSED(response)) {
+	return FALSE;
+ }
+
 static void v3270_class_init(v3270Class *klass)
 {
 	GObjectClass	* gobject_class	= G_OBJECT_CLASS(klass);
@@ -242,9 +250,12 @@ static void v3270_class_init(v3270Class *klass)
 	klass->activate									= v3270_activate;
 	klass->toggle_changed 							= v3270_toggle_changed;
 	klass->message_changed 							= v3270_update_message;
+	klass->load_popup_response						= load_popup_response;
+	klass->save_popup_response						= save_popup_response;
 
 	// Register I/O Handlers
 	v3270_register_io_handlers(klass);
+
 
 	// Cursors
 	{
@@ -463,6 +474,24 @@ static void v3270_class_init(v3270Class *klass)
 						NULL, NULL,
 						v3270_VOID__VOID,
 						G_TYPE_NONE, 0);
+
+	v3270_widget_signal[V3270_SIGNAL_LOAD_POPUP_RESPONSE] =
+		g_signal_new(	I_("load-popup-response"),
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_LAST,
+						G_STRUCT_OFFSET (v3270Class, load_popup_response),
+						NULL, NULL,
+						v3270_UINT__POINTER_UINT,
+						G_TYPE_UINT, 2, G_TYPE_POINTER, G_TYPE_UINT);
+
+	v3270_widget_signal[V3270_SIGNAL_SAVE_POPUP_RESPONSE] =
+		g_signal_new(	I_("save-popup-response"),
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_LAST,
+						G_STRUCT_OFFSET (v3270Class, save_popup_response),
+						NULL, NULL,
+						v3270_BOOLEAN__POINTER_UINT,
+						G_TYPE_BOOLEAN, 2, G_TYPE_POINTER, G_TYPE_UINT);
 
 	v3270_init_properties(gobject_class);
 

@@ -105,6 +105,8 @@ G_BEGIN_DECLS
 	void (*activate)(GtkWidget *widget);
 	void (*toggle_changed)(v3270 *widget,LIB3270_TOGGLE_ID toggle_id,gboolean toggle_state,const gchar *toggle_name);
 	void (*message_changed)(v3270 *widget, LIB3270_MESSAGE id);
+	guint (*load_popup_response)(v3270 *widget, const gchar *popup_name, guint response);
+	gboolean (*save_popup_response)(v3270 *widget, const gchar *popup_name, guint response);
 
  };
 
