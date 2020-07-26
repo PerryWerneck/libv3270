@@ -61,7 +61,6 @@
 	static const struct _settings {
 		GtkMessageType type;
 		const gchar *button;
-		const gchar *title;
 	} settings[LIB3270_NOTIFY_USER] = {
 
 		// LIB3270_NOTIFY_INFO - Simple information dialog.
@@ -163,7 +162,7 @@
 		gtk_widget_show_all(dialog);
 		GtkResponseType rc = gtk_dialog_run(GTK_DIALOG(dialog));
 
-		if(dont_ask && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dont_ask))) {
+		if(dont_ask && gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dont_ask)) && rc != GTK_RESPONSE_DELETE_EVENT && rc != GTK_RESPONSE_NONE) {
 
 			gboolean saved = FALSE;
 
@@ -228,6 +227,7 @@
 
  }
 
+ /*
  GtkResponseType v3270_popup_toggleable_dialog(GtkWidget *widget, V3270_TOGGLEABLE_DIALOG id, const gchar *title, const gchar *summary, const gchar *body, const gchar *first_button_text, ...) {
 
 	GtkResponseType response = GTK_V3270(widget)->responses[id];
@@ -315,3 +315,4 @@
 	return response;
 
  }
+*/

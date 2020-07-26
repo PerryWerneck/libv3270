@@ -185,6 +185,7 @@
  	unsigned short keycode;
  } V3270PFKeyAccelerator;
 
+ /*
  typedef enum v3270_toggleable_dialog
  {
 	V3270_TOGGLEABLE_DIALOG_PASTE_FAILED,
@@ -193,6 +194,7 @@
  } V3270_TOGGLEABLE_DIALOG;
 
  G_GNUC_INTERNAL GtkResponseType v3270_popup_toggleable_dialog(GtkWidget *widget, V3270_TOGGLEABLE_DIALOG id, const gchar *title, const gchar *summary, const gchar *body, const gchar *first_button_text, ...) G_GNUC_NULL_TERMINATED;
+ */
 
 #if GTK_CHECK_VERSION(3,12,0)
  G_GNUC_INTERNAL GtkHeaderBar	* v3270_dialog_get_header_bar(GtkWidget * widget);

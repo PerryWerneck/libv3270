@@ -87,13 +87,13 @@ G_BEGIN_DECLS
 			guint integer;
 			guint uint;
 			guint str;
-			guint responses;
+//			guint responses;
 		} type;
 
     } properties;
 
     // Predefined responses.
-   	GParamSpec * responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
+//   	GParamSpec * responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
 
     // Cursors
 	GdkCursor * cursors[LIB3270_POINTER_COUNT];
@@ -163,7 +163,7 @@ G_BEGIN_DECLS
 	int copying			: 1;	/// @brief Copy with center mouse button
 
     /// @brief Action properties.
-   	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
+//   	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
 
 	GSource					* timer;
 	GtkIMContext			* input_method;

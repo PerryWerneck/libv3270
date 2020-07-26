@@ -112,7 +112,7 @@
  	return G_VARIANT_TYPE_BOOLEAN;
  }
 
- static gboolean get_enabled(GAction *action, GtkWidget *terminal) {
+ static gboolean get_enabled(GAction G_GNUC_UNUSED(*action), GtkWidget G_GNUC_UNUSED(*terminal)) {
  	return TRUE;
  }
 
@@ -126,7 +126,7 @@
 
  }
 
- void Lib3270ToggleAction_init(Lib3270ToggleAction *action) {
+ void Lib3270ToggleAction_init(Lib3270ToggleAction G_GNUC_UNUSED(*action)) {
  }
 
  GAction * g_action_new_from_toggle(const LIB3270_TOGGLE * definition) {

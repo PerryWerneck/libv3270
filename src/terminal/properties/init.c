@@ -398,6 +398,7 @@
 	//
 	// Create action properties.
 	//
+	/*
 	klass->properties.type.responses = klass->properties.count;
 
 	static const struct
@@ -435,7 +436,7 @@
 		}
 
 	}
-
+	*/
 
  }
 
