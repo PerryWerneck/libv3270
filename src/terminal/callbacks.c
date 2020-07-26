@@ -378,6 +378,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_update_oia, data, g_free);
  }
 
+ /*
  static int popup_ssl_error(H3270 *session, int rc, const char *title, const char *summary, const char *body)
  {
  	GtkWidget *terminal = (GtkWidget *) lib3270_get_user_data(session);
@@ -427,6 +428,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
 	return -1;
  }
+ */
 
  static int popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
 
@@ -481,7 +483,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->save				= save;
 	cbk->load				= load;
 
-	cbk->popup_ssl_error	= popup_ssl_error;
+//	cbk->popup_ssl_error	= popup_ssl_error;
 	cbk->popup_show			= popup_show;
 
 }
