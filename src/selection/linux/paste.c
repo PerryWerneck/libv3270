@@ -118,7 +118,7 @@ static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *select
 			.label = _("_Paste as text")
 		};
 
-		if(v3270_show_popup(widget,&popup,1) == GTK_RESPONSE_APPLY)
+		if(v3270_popup_dialog_show(widget,&popup,1) == GTK_RESPONSE_APPLY)
 		{
 			gtk_clipboard_request_text(
 				clipboard,

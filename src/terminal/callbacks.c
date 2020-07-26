@@ -285,7 +285,7 @@ static void message(H3270 *session, LIB3270_NOTIFY type , const char *title, con
 		.body = text
 	};
 
-	v3270_show_popup(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
+	v3270_popup_dialog_show(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
 
 }
 
@@ -334,10 +334,12 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
 	g_autofree gchar * body = NULL;
 
-	if(fmt)
+	if(fmt) {
 		body = g_strdup_vprintf(fmt,args);
+		popup.body = body;
+	}
 
-	v3270_show_popup(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
+	v3270_popup_dialog_show(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
 
  }
 
@@ -432,10 +434,10 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
  static int popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
 
-	GtkResponseType response = v3270_show_popup(
+	GtkResponseType response = v3270_popup_dialog_show(
 									GTK_WIDGET(lib3270_get_user_data(hSession)),
 									popup,
-									wait != 0 ? TRUE : FALSE );
+									wait != 0);
 
 	if(response == GTK_RESPONSE_OK || response == GTK_RESPONSE_APPLY)
 		return 0;

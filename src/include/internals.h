@@ -135,7 +135,7 @@
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_grid(GtkAlign align);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
 
- G_GNUC_INTERNAL GtkResponseType v3270_show_popup(GtkWidget *widget, const LIB3270_POPUP *popup, gboolean wait);
+ G_GNUC_INTERNAL GtkResponseType v3270_popup_dialog_show(GtkWidget *widget, const LIB3270_POPUP *popup, gboolean wait);
 
  G_GNUC_INTERNAL void			  v3270_signal_emit(gpointer instance, enum V3270_SIGNAL signal_id, ...);
 

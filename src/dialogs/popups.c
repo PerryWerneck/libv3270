@@ -36,12 +36,14 @@
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- GtkResponseType v3270_show_popup(GtkWidget *widget, const LIB3270_POPUP *popup, gboolean wait) {
+ GtkResponseType v3270_popup_dialog_show(GtkWidget *widget, const LIB3270_POPUP *popup, gboolean wait) {
 
 	g_return_val_if_fail(GTK_IS_WIDGET(widget),GTK_RESPONSE_NONE);
 
 	// Check if the dialog is enabled
-	if(popup->name && GTK_IS_V3270(widget)) {
+	gboolean allow_disabling = (popup->name && GTK_IS_V3270(widget));
+
+	if(allow_disabling) {
 
 			GtkResponseType response = GTK_RESPONSE_DELETE_EVENT;
 
@@ -55,6 +57,7 @@
 			if((response != GTK_RESPONSE_NONE) && (response != GTK_RESPONSE_DELETE_EVENT))
 				return response;
 
+			allow_disabling = (response == GTK_RESPONSE_NONE);
 	}
 
 	// Popup settings.
@@ -119,7 +122,7 @@
 		GtkWidget * dont_ask = NULL;
 
 #ifdef DEBUG
-		if(popup->name && GTK_IS_V3270(widget)) {
+		if(allow_disabling) {
 			// Set check button
 			dont_ask = gtk_check_button_new_with_label(_("Don't ask again"));
 
@@ -204,7 +207,7 @@
 		.body = body
 	};
 
-	v3270_show_popup(widget, &popup, FALSE);
+	v3270_popup_dialog_show(widget, &popup, FALSE);
 
  }
 
@@ -223,7 +226,7 @@
 		.body = error->message
 	};
 
-	v3270_show_popup(widget, &popup, FALSE);
+	v3270_popup_dialog_show(widget, &popup, FALSE);
 
  }
 
