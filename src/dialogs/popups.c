@@ -43,17 +43,16 @@
 	// Check if the dialog is enabled
 	if(popup->name && GTK_IS_V3270(widget)) {
 
-			GtkResponseType response = GTK_RESPONSE_NONE;
+			GtkResponseType response = GTK_RESPONSE_DELETE_EVENT;
 
 			v3270_signal_emit(
 				widget,
 				V3270_SIGNAL_LOAD_POPUP_RESPONSE,
 				popup->name,
-				response,
 				&response
 			);
 
-			if(response != GTK_RESPONSE_NONE)
+			if((response != GTK_RESPONSE_NONE) && (response != GTK_RESPONSE_DELETE_EVENT))
 				return response;
 
 	}
@@ -104,7 +103,8 @@
 				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 				settings[popup->type].type,
 				GTK_BUTTONS_NONE,
-				"<b><big>%s</big></b>",popup->summary
+				(popup->body ? "<b><big>%s</big></b>" : "%s"),
+					popup->summary
 			);
 
 	if(popup->body) {
@@ -239,14 +239,15 @@
 				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 				GTK_MESSAGE_INFO,
 				GTK_BUTTONS_NONE,
-				"%s",
-				summary
+				(body ? "<b><big>%s</big></b>" : "%s"),
+					summary
 			);
 
 		if(body)
-			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"%s",body);
+			gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"<small>%s</small>",body);
 
-		gtk_window_set_title(GTK_WINDOW(dialog),title);
+		if(title)
+			gtk_window_set_title(GTK_WINDOW(dialog),title);
 
 		// Set check button
 		GtkWidget * dont_ask = gtk_check_button_new_with_label(_("Don't ask again"));

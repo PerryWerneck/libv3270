@@ -201,8 +201,8 @@ static void finalize(GObject *object) {
 	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);
  }
 
- static GtkResponseType load_popup_response(v3270 G_GNUC_UNUSED(*widget), const gchar G_GNUC_UNUSED(*popup_name), GtkResponseType response) {
-	return response;
+ static GtkResponseType load_popup_response(v3270 G_GNUC_UNUSED(*widget), const gchar G_GNUC_UNUSED(*popup_name)) {
+	return GTK_RESPONSE_DELETE_EVENT;
  }
 
  static gboolean save_popup_response(v3270 G_GNUC_UNUSED(*widget), const gchar G_GNUC_UNUSED(*popup_name), GtkResponseType G_GNUC_UNUSED(response)) {
@@ -481,8 +481,8 @@ static void v3270_class_init(v3270Class *klass)
 						G_SIGNAL_RUN_LAST,
 						G_STRUCT_OFFSET (v3270Class, load_popup_response),
 						NULL, NULL,
-						v3270_UINT__POINTER_UINT,
-						G_TYPE_UINT, 2, G_TYPE_POINTER, G_TYPE_UINT);
+						v3270_UINT__POINTER,
+						G_TYPE_UINT, 1, G_TYPE_POINTER);
 
 	v3270_widget_signal[V3270_SIGNAL_SAVE_POPUP_RESPONSE] =
 		g_signal_new(	I_("save-popup-response"),

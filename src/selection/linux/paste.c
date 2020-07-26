@@ -108,6 +108,8 @@ static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *select
 	if(!v3270_set_from_data_block(terminal, selection))
 	{
 		debug("%s: Can't paste data",__FUNCTION__);
+
+
 		if(
 			v3270_popup_toggleable_dialog(
 				widget,
