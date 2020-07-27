@@ -45,7 +45,7 @@
 
 	if(allow_disabling) {
 
-			GtkResponseType response = GTK_RESPONSE_DELETE_EVENT;
+			GtkResponseType response = 0;
 
 			v3270_signal_emit(
 				widget,
@@ -54,7 +54,7 @@
 				&response
 			);
 
-			if((response != GTK_RESPONSE_NONE) && (response != GTK_RESPONSE_DELETE_EVENT))
+			if(response && response != GTK_RESPONSE_NONE)
 				return response;
 
 			allow_disabling = (response == GTK_RESPONSE_NONE);
