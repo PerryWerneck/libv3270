@@ -43,16 +43,21 @@
 	// Check if the dialog is enabled
 	gboolean allow_disabling = (popup->name && GTK_IS_V3270(widget));
 
+	debug("%s: name=%s allow-disabling: %s", __FUNCTION__, popup->name, allow_disabling ? "Yes" : "No");
+
 	if(allow_disabling) {
 
 			GtkResponseType response = 0;
 
+			debug("Emitting %s","V3270_SIGNAL_LOAD_POPUP_RESPONSE");
 			v3270_signal_emit(
 				widget,
 				V3270_SIGNAL_LOAD_POPUP_RESPONSE,
 				popup->name,
 				&response
 			);
+
+			debug("Got response %d",(int) response);
 
 			if(response && response != GTK_RESPONSE_NONE)
 				return response;

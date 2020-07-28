@@ -190,6 +190,7 @@
  static void popup_clicked(GtkButton *button, GtkWidget *terminal)
  {
 
+	/*
 		static const LIB3270_POPUP popup = {
 		.name = "sample_popup",
 		.type = LIB3270_NOTIFY_INFO,
@@ -197,7 +198,8 @@
 		.body = "This it the body of the message, can be used for a bigger explanation"
 	};
 
-	lib3270_popup_show(v3270_get_session(terminal), &popup, 1);
+	lib3270_popup(v3270_get_session(terminal), &popup, 1);
+	*/
 
  }
 

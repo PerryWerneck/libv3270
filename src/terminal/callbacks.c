@@ -276,6 +276,7 @@ static void update_selection(H3270 *session, G_GNUC_UNUSED int start, G_GNUC_UNU
 
 }
 
+/*
 static void message(H3270 *session, LIB3270_NOTIFY type , const char *title, const char *message, const char *text)
 {
 	LIB3270_POPUP popup = {
@@ -288,6 +289,7 @@ static void message(H3270 *session, LIB3270_NOTIFY type , const char *title, con
 	v3270_popup_dialog_show(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
 
 }
+*/
 
 static int print(H3270 *session, LIB3270_CONTENT_OPTION mode)
 {
@@ -324,6 +326,7 @@ static int load(H3270 *session, const char *filename)
 	return 0;
 }
 
+/*
 static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
 {
 	LIB3270_POPUP popup = {
@@ -342,6 +345,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	v3270_popup_dialog_show(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
 
  }
+ */
 
  static gboolean bg_update_ssl(H3270 *session)
  {
@@ -432,7 +436,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
  }
  */
 
- static int popup_show(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+ static int popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
 
 	GtkResponseType response = v3270_popup_dialog_show(
 									GTK_WIDGET(lib3270_get_user_data(hSession)),
@@ -442,15 +446,13 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	if(response == GTK_RESPONSE_OK || response == GTK_RESPONSE_APPLY)
 		return 0;
 
-	return -1;
+	return errno = ECANCELED;
 
  }
 
  void v3270_install_callbacks(v3270 *widget)
  {
 	struct lib3270_session_callbacks *cbk;
-
-	lib3270_set_popup_handler(widget->host, popup_handler);
 
 	cbk = lib3270_get_session_callbacks(widget->host,sizeof(struct lib3270_session_callbacks));
 	if(!cbk)
@@ -479,14 +481,11 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->update_model		= update_model;
 	cbk->changed			= changed;
 	cbk->ctlr_done			= ctlr_done;
-	cbk->message			= message;
 	cbk->update_ssl			= update_ssl;
 	cbk->print				= print;
 	cbk->save				= save;
 	cbk->load				= load;
-
-//	cbk->popup_ssl_error	= popup_ssl_error;
-	cbk->popup_show			= popup_show;
+	cbk->popup				= popup;
 
 }
 
