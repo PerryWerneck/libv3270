@@ -263,10 +263,6 @@
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
 		save_by_pspec(widget,klass->properties.toggle[ix],hKey);
 
-	// Save V3270 Responses
-	for(ix = 0; ix < G_N_ELEMENTS(terminal->responses); ix++)
-		save_by_pspec(widget,klass->responses[ix],hKey);
-
 	// Save V3270 properties
 	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
 		save_by_pspec(widget,klass->properties.settings[ix],hKey);
@@ -327,10 +323,6 @@
 	// Load Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
 		load_by_pspec(widget,klass->properties.toggle[ix],hKey);
-
-	// Load V3270 Responses
-	for(ix = 0; ix < G_N_ELEMENTS(terminal->responses); ix++)
-		load_by_pspec(widget,klass->responses[ix],hKey);
 
 	// Load V3270 properties
 	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
