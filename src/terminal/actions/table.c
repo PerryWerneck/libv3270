@@ -56,7 +56,7 @@
 
 		// Standard Clipboard actions
 		{
-			.flags = V3270_COPY_SMART,
+			.flags = (V3270_ACTION_FLAGS) V3270_COPY_SMART,
 			.name = "copy",
 			.keys = "<Primary>c",
 			.group = LIB3270_ACTION_GROUP_SELECTION,
@@ -70,7 +70,7 @@
 		{
 			.name = "copy-append",
 			.keys = "<Alt>c",
-			.flags = V3270_COPY_APPEND,
+			.flags = (V3270_ACTION_FLAGS) V3270_COPY_APPEND,
 			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.label = N_( "Add to copy" ),
 			.summary = N_("Append selection to clipboard"),
@@ -81,7 +81,7 @@
 		{
 			.name = "copy-text",
 			.keys = "<Primary><Shift>c",
-			.flags = V3270_COPY_TEXT,
+			.flags = (V3270_ACTION_FLAGS) V3270_COPY_TEXT,
 			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.icon = "edit-copy",
 			.label = N_( "Copy" ),
@@ -92,7 +92,7 @@
 		{
 			.name = "copy-table",
 			.keys = "<Shift><Alt>c",
-			.flags = V3270_COPY_TABLE,
+			.flags = (V3270_ACTION_FLAGS) V3270_COPY_TABLE,
 			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.icon = "edit-copy",
 			.label = N_( "Copy as table" ),
@@ -234,7 +234,7 @@
 		},
 
 		{
-			.flags = LIB3270_CONTENT_ALL,
+			.flags = (V3270_ACTION_FLAGS) LIB3270_CONTENT_ALL,
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.name = "save-all",
 			.label = N_("Save all"),
@@ -245,7 +245,7 @@
 		},
 
 		{
-			.flags = LIB3270_CONTENT_SELECTED,
+			.flags = (V3270_ACTION_FLAGS) LIB3270_CONTENT_SELECTED,
 			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.name = "save-selected",
 			.label = N_("Save selected"),
@@ -256,7 +256,7 @@
 		},
 
 		{
-			.flags = LIB3270_CONTENT_COPY,
+			.flags = (V3270_ACTION_FLAGS) LIB3270_CONTENT_COPY,
 			.group = LIB3270_ACTION_GROUP_COPY,
 			.name = "save-copy",
 			.label = N_("Save copy"),
@@ -281,7 +281,7 @@
 		},
 
 		{
-			.flags = LIB3270_CONTENT_ALL,
+			.flags = (V3270_ACTION_FLAGS) LIB3270_CONTENT_ALL,
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.name = "print-all",
 			.icon = "document-print",
@@ -292,7 +292,7 @@
 		},
 
 		{
-			.flags = LIB3270_CONTENT_SELECTED,
+			.flags = (V3270_ACTION_FLAGS) LIB3270_CONTENT_SELECTED,
 			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.name = "print-selected",
 			.icon = "document-print",
@@ -303,7 +303,7 @@
 		},
 
 		{
-			.flags = LIB3270_CONTENT_COPY,
+			.flags = (V3270_ACTION_FLAGS) LIB3270_CONTENT_COPY,
 			.group = LIB3270_ACTION_GROUP_COPY,
 			.name = "print-copy",
 			.icon = "document-print",

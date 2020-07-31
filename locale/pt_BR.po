@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-27 18:34-0300\n"
+"POT-Creation-Date: 2020-07-29 11:02-0300\n"
 "PO-Revision-Date: 2020-07-23 11:06-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -24,7 +24,7 @@ msgstr ""
 msgid "16 colors"
 msgstr "16 cores"
 
-#: src/filetransfer/v3270ftprogress.c:386 src/filetransfer/v3270ft.c:353
+#: src/filetransfer/v3270ft.c:353 src/filetransfer/v3270ftprogress.c:386
 #: src/dialogs/print/settingsdialog.c:284
 #: src/dialogs/print/settingsdialog.c:286
 #: src/dialogs/print/settingsdialog.c:288
@@ -202,7 +202,7 @@ msgstr "Erro ao converter valor do cgcsid"
 msgid "Can't parse character value"
 msgstr "Erro ao analisar valor de caractere"
 
-#: src/selection/linux/paste.c:81 src/selection/linux/paste.c:115
+#: src/selection/windows/paste.c:79 src/selection/windows/paste.c:119
 msgid "Can't paste"
 msgstr "Não é possivel colar"
 
@@ -210,13 +210,13 @@ msgstr "Não é possivel colar"
 msgid "Can't paste text"
 msgstr "Não é possível colar texto"
 
-#: src/filetransfer/save.c:117 src/filetransfer/activitylist.c:436
+#: src/filetransfer/activitylist.c:436 src/filetransfer/save.c:117
 #: src/trace/trace.c:486 src/dialogs/transfer.c:91 src/dialogs/save/save.c:627
 #, c-format
 msgid "Can't save %s"
 msgstr "Não foi possível salvar arquivo %s"
 
-#: src/filetransfer/worker.c:610 src/filetransfer/v3270ftprogress.c:773
+#: src/filetransfer/v3270ftprogress.c:773 src/filetransfer/worker.c:610
 msgid "Can't set callback table"
 msgstr "Não foi possível setar a tabela de retornos"
 
@@ -224,11 +224,11 @@ msgstr "Não foi possível setar a tabela de retornos"
 msgid "Can't set lib3270 I/O controller"
 msgstr "Não foi possível registrar manipuladores de I/O 3270"
 
-#: src/filetransfer/worker.c:591 src/filetransfer/v3270ftprogress.c:760
+#: src/filetransfer/v3270ftprogress.c:760 src/filetransfer/worker.c:591
 msgid "Can't start file transfer session"
 msgstr "Não foi possível iniciar transferência de arquivo"
 
-#: src/filetransfer/v3270ftprogress.c:433 src/filetransfer/transfer.c:89
+#: src/filetransfer/transfer.c:89 src/filetransfer/v3270ftprogress.c:433
 #: src/dialogs/load.c:111 src/dialogs/save/save.c:117
 #: src/dialogs/settings/host.c:401
 msgid "Cancel"
@@ -237,10 +237,6 @@ msgstr "_Cancelar"
 #: src/filetransfer/transfer.c:90
 msgid "Cancel transfer operation."
 msgstr "Cancelar transferência"
-
-#: src/dialogs/settings/host.c:546
-msgid "Check for SSL secure connection."
-msgstr "Marcar para ativar a conexão segura via SSL."
 
 #: src/filetransfer/tables.c:44
 msgid "Check this if the file consists of character data only."
@@ -401,7 +397,7 @@ msgstr "Turquesa Escuro"
 msgid "Default"
 msgstr "Padrão"
 
-#: src/dialogs/popups.c:127
+#: src/dialogs/popups.c:132
 msgid "Don't ask again"
 msgstr "Não perguntar de novo"
 
@@ -409,7 +405,7 @@ msgstr "Não perguntar de novo"
 msgid "ETA:"
 msgstr "ETA:"
 
-#: src/terminal/actions/pfkey.c:105 src/terminal/actions/pakey.c:105
+#: src/terminal/actions/pakey.c:105 src/terminal/actions/pfkey.c:105
 msgid "Emit a PA Key action"
 msgstr "Emite uma ação de tecla PA"
 
@@ -524,11 +520,11 @@ msgstr "Verde"
 msgid "HTML options"
 msgstr "Opções HTML"
 
-#: src/dialogs/settings/host.c:635
+#: src/dialogs/settings/host.c:664
 msgid "Host"
 msgstr "Servidor"
 
-#: src/dialogs/settings/host.c:634
+#: src/dialogs/settings/host.c:663
 msgid "Host settings"
 msgstr "Configurações do servidor"
 
@@ -588,7 +584,7 @@ msgstr "Intensificado/Protegido"
 msgid "Intensified/Unprotected"
 msgstr "Intensificado/Desprotegido"
 
-#: src/terminal/callbacks.c:458
+#: src/terminal/callbacks.c:460
 msgid "Invalid callback table, possible version mismatch in lib3270"
 msgstr ""
 "Tabela de callbacks inválida, possível divergência de versão na lib3270"
@@ -614,11 +610,11 @@ msgstr "Atalhos de teclado"
 msgid "L_U Names"
 msgstr "Nomes de L_U"
 
-#: src/filetransfer/v3270ft.c:198 src/filetransfer/activitylist.c:384
+#: src/filetransfer/activitylist.c:384 src/filetransfer/v3270ft.c:198
 msgid "Load"
 msgstr "Load"
 
-#: src/filetransfer/v3270ft.c:197 src/filetransfer/activitylist.c:383
+#: src/filetransfer/activitylist.c:383 src/filetransfer/v3270ft.c:197
 msgid "Load queue from file"
 msgstr "Ler a fila de um arquivo"
 
@@ -702,10 +698,6 @@ msgstr "Nenhum (Não exporta cores)"
 msgid "None (Don't export font name)"
 msgstr "Nenhuma (Não exporta fontes)"
 
-#: src/selection/linux/paste.c:117
-msgid "None of the screens in the clipboard match with the current one."
-msgstr "Nenhuma das telas da área de transferência corresponde à atual."
-
 #: src/dialogs/settings/colors.c:174
 msgid "Normal/Protected"
 msgstr "Normal/Protegido"
@@ -714,7 +706,7 @@ msgstr "Normal/Protegido"
 msgid "Normal/Unprotected"
 msgstr "Normal/Desprotegido"
 
-#: src/selection/linux/paste.c:77
+#: src/selection/windows/paste.c:75
 msgid "Not the same terminal type"
 msgstr "O tipo de terminal é diferente"
 
@@ -930,7 +922,7 @@ msgstr "Recebendo arquivo"
 msgid "Record Length"
 msgstr "Comprimento de registro:"
 
-#: src/filetransfer/v3270ft.c:340 src/filetransfer/settings.c:519
+#: src/filetransfer/settings.c:519 src/filetransfer/v3270ft.c:340
 msgid "Record format"
 msgstr "Formato de registro"
 
@@ -987,12 +979,16 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
+#: src/dialogs/settings/host.c:560
+msgid "SSL/TLS"
+msgstr ""
+
 #: src/dialogs/settings/clipboard.c:318 src/dialogs/settings/clipboard.c:438
 msgid "Same of the screen"
 msgstr "Igual ao terminal"
 
-#: src/terminal/actions/table.c:230 src/filetransfer/v3270ft.c:215
-#: src/filetransfer/activitylist.c:453 src/trace/trace.c:505
+#: src/terminal/actions/table.c:230 src/filetransfer/activitylist.c:453
+#: src/filetransfer/v3270ft.c:215 src/trace/trace.c:505
 #: src/dialogs/transfer.c:69
 msgid "Save"
 msgstr "Salvar"
@@ -1013,7 +1009,7 @@ msgstr "Salvar tela"
 msgid "Save copy"
 msgstr "Salvar cópia"
 
-#: src/filetransfer/v3270ft.c:214 src/filetransfer/activitylist.c:452
+#: src/filetransfer/activitylist.c:452 src/filetransfer/v3270ft.c:214
 msgid "Save queue to file"
 msgstr "Salvar a fila para um arquivo"
 
@@ -1085,7 +1081,7 @@ msgstr ""
 msgid "Secondary space"
 msgstr "Secondary space"
 
-#: src/filetransfer/v3270ft.c:303 src/filetransfer/settings.c:209
+#: src/filetransfer/settings.c:209 src/filetransfer/v3270ft.c:303
 #: src/dialogs/save/save.c:98 src/dialogs/save/save.c:118
 #: src/dialogs/settings/host.c:402
 msgid "Select"
@@ -1103,7 +1099,7 @@ msgstr "Seleciona mapeamento de teclado personalizado"
 msgid "Select destination file"
 msgstr "Selecionar arquivo destino"
 
-#: src/filetransfer/v3270ft.c:591 src/filetransfer/settings.c:467
+#: src/filetransfer/settings.c:467 src/filetransfer/v3270ft.c:591
 #: src/dialogs/load.c:92 src/dialogs/load.c:108 src/dialogs/load.c:171
 #: src/dialogs/save/save.c:258
 msgid "Select file"
@@ -1117,7 +1113,7 @@ msgstr "Selecionar primeiro arquivo"
 msgid "Select last file"
 msgstr "Selecionar último arquivo"
 
-#: src/filetransfer/v3270ft.c:302 src/filetransfer/settings.c:208
+#: src/filetransfer/settings.c:208 src/filetransfer/v3270ft.c:302
 msgid "Select local file"
 msgstr "Selecionar arquivo local"
 
@@ -1169,7 +1165,7 @@ msgstr "Skip this transfer, keep the file on queue."
 msgid "Smart copy"
 msgstr "Cópia inteligente"
 
-#: src/filetransfer/v3270ft.c:341 src/filetransfer/settings.c:544
+#: src/filetransfer/settings.c:544 src/filetransfer/v3270ft.c:341
 msgid "Space allocation units"
 msgstr "Unidades de alocação de espaço"
 
@@ -1288,7 +1284,7 @@ msgstr ""
 "has been reached, or the maximum number of data blocks per file (16060) has "
 "been reached."
 
-#: src/dialogs/settings/host.c:616
+#: src/dialogs/settings/host.c:645
 msgid "The EBCDIC host character set. "
 msgstr "A tabela de caracteres EBCDIC."
 
@@ -1437,7 +1433,7 @@ msgstr "Janela de trace"
 msgid "Tracks"
 msgstr "Trilhas"
 
-#: src/filetransfer/worker.c:568 src/filetransfer/v3270ftprogress.c:721
+#: src/filetransfer/v3270ftprogress.c:721 src/filetransfer/worker.c:568
 msgid "Transfer failed"
 msgstr "Transferência falhou"
 
@@ -1445,7 +1441,7 @@ msgstr "Transferência falhou"
 msgid "Transfer operation has timed out"
 msgstr "Operação de transferência esgotou o tempo de espera"
 
-#: src/filetransfer/v3270ft.c:339 src/filetransfer/settings.c:492
+#: src/filetransfer/settings.c:492 src/filetransfer/v3270ft.c:339
 msgid "Transfer options"
 msgstr "Opções de transferência"
 
@@ -1479,8 +1475,9 @@ msgstr "Turquesa"
 msgid "UTF-8"
 msgstr "UTF-8"
 
-#: src/selection/linux/paste.c:116
-msgid "Unable to paste formatted data."
+#: src/selection/windows/paste.c:115
+#, fuzzy
+msgid "Unable to paste formatted data"
 msgstr "Incapaz de colar dados formatados."
 
 #: src/filetransfer/tables.c:92
@@ -1502,7 +1499,11 @@ msgstr "Modo inesperado %d"
 msgid "Unexpected status %d in print operation"
 msgstr "Estado inesperado %d na operação de impressão"
 
-#: src/dialogs/save/save.c:130
+#: src/dialogs/settings/host.c:559
+msgid "Unsecure"
+msgstr ""
+
+#: src/dialogs/windows/select.c:169 src/dialogs/save/save.c:130
 msgid "Untitled document"
 msgstr "Documento sem título"
 
@@ -1708,21 +1709,21 @@ msgstr "Texto _ASCII"
 msgid "_Apply"
 msgstr "_Aplicar"
 
-#: src/selection/linux/paste.c:85 src/dialogs/popups.c:152
-#: src/dialogs/load.c:205 src/dialogs/load.c:224 src/dialogs/linux/select.c:51
-#: src/dialogs/linux/select.c:77 src/dialogs/print/settingsdialog.c:410
+#: src/selection/windows/paste.c:83 src/selection/windows/paste.c:123
+#: src/dialogs/load.c:205 src/dialogs/load.c:224 src/dialogs/popups.c:157
+#: src/dialogs/windows/select.c:158 src/dialogs/print/settingsdialog.c:410
 #: src/dialogs/print/settingsdialog.c:429 src/dialogs/save/save.c:342
 #: src/dialogs/save/save.c:361 src/dialogs/settings/dialog.c:231
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: src/dialogs/settings/host.c:615
+#: src/dialogs/settings/host.c:644
 msgid "_Charset"
 msgstr "Tabela de _Caracteres"
 
-#: src/trace/tracewindow.c:125 src/dialogs/transfer.c:163
-#: src/dialogs/transfer.c:183 src/dialogs/security.c:235
-#: src/dialogs/popups.c:90
+#: src/trace/tracewindow.c:125 src/dialogs/popups.c:95
+#: src/dialogs/security.c:235 src/dialogs/transfer.c:163
+#: src/dialogs/transfer.c:183
 msgid "_Close"
 msgstr "_Close"
 
@@ -1758,8 +1759,8 @@ msgstr "Arquivo _local:"
 msgid "_Model"
 msgstr "_Modelo"
 
-#: src/dialogs/popups.c:72 src/dialogs/popups.c:78 src/dialogs/popups.c:84
-#: src/dialogs/popups.c:96
+#: src/dialogs/popups.c:77 src/dialogs/popups.c:83 src/dialogs/popups.c:89
+#: src/dialogs/popups.c:101
 msgid "_Ok"
 msgstr "_Ok"
 
@@ -1767,7 +1768,7 @@ msgstr "_Ok"
 msgid "_Operation"
 msgstr "_Operação:"
 
-#: src/selection/linux/paste.c:86 src/selection/linux/paste.c:118
+#: src/selection/windows/paste.c:84 src/selection/windows/paste.c:124
 msgid "_Paste as text"
 msgstr "_Colar como texto"
 
@@ -1781,8 +1782,9 @@ msgid "_Save"
 msgstr "_Salvar"
 
 #: src/dialogs/settings/host.c:545
-msgid "_Secure connection."
-msgstr "Conexão _Segura."
+#, fuzzy
+msgid "_Security"
+msgstr "Alerta de segurança"
 
 #: src/dialogs/settings/host.c:228
 msgid "_Service"
@@ -2313,6 +2315,9 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "Charset has more than 256 entries"
 #~ msgstr "Tabela de tradução tem mais de 256 caracteres"
+
+#~ msgid "Check for SSL secure connection."
+#~ msgstr "Marcar para ativar a conexão segura via SSL."
 
 #~ msgid "Check for text files."
 #~ msgstr "Marque se o arquivo for texto."
@@ -2942,6 +2947,9 @@ msgstr "Diminui o tamanho da fonte"
 #~ msgid "Non zero if the host is TSO."
 #~ msgstr "Diferente de zero se o host é TSO"
 
+#~ msgid "None of the screens in the clipboard match with the current one."
+#~ msgstr "Nenhuma das telas da área de transferência corresponde à atual."
+
 #~ msgid "Not available"
 #~ msgstr "Não disponível"
 
@@ -3353,9 +3361,6 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "Secure connection was successful."
 #~ msgstr "Conexão segura efetuada com sucesso."
-
-#~ msgid "Security alert"
-#~ msgstr "Alerta de segurança"
 
 #~ msgid "Security warning"
 #~ msgstr "Alerta de segurança"
@@ -4060,6 +4065,9 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "_Receive"
 #~ msgstr "_Receber"
+
+#~ msgid "_Secure connection."
+#~ msgstr "Conexão _Segura."
 
 #~ msgid "_Send"
 #~ msgstr "_Enviar"
