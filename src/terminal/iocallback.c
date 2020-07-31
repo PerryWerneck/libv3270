@@ -37,7 +37,7 @@ static void				* static_AddSource(H3270 *session, int fd, LIB3270_IO_FLAG flag, 
 static void	  			  static_RemoveSource(H3270 *session, void *id);
 static void      		  static_SetSourceState(H3270 *session, void *id, int enabled);
 
-static void 			* static_AddTimer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session));
+static void 			* static_AddTimer(H3270 *session, unsigned long interval_ms, int (*proc)(H3270 *session, void *userdata), void *userdata);
 static void 			  static_RemoveTimer(H3270 *session, void * timer);
 static int				  static_Sleep(H3270 *hSession, int seconds);
 static int 				  static_RunPendingEvents(H3270 *hSession, int wait);
@@ -48,7 +48,7 @@ static int 				  static_RunPendingEvents(H3270 *hSession, int wait);
  {
 	unsigned char remove;
 	void	* userdata;
-	int		(*call)(H3270 *session);
+	int		(*call)(H3270 *session, void *userdata);
 	H3270 	* session;
  } TIMER;
 
@@ -74,17 +74,18 @@ static void static_SetSourceState(G_GNUC_UNUSED H3270 *session, void *id, int en
 static gboolean do_timer(TIMER *t)
 {
 	if(!t->remove)
-		return t->call(t->session) != 0;
+		return t->call(t->session,t->userdata);
 
 	return FALSE;
 }
 
-static void * static_AddTimer(H3270 *session, unsigned long interval, int (*call)(H3270 *session))
+static void * static_AddTimer(H3270 *session, unsigned long interval, int (*call)(H3270 *session, void *userdata), void *userdata)
 {
 	TIMER *t = g_malloc0(sizeof(TIMER));
 
 	t->call		= call;
 	t->session	= session;
+	t->userdata	= userdata;
 
 	g_timeout_add_full(G_PRIORITY_DEFAULT, (guint) interval, (GSourceFunc) do_timer, t, g_free);
 
