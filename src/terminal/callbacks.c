@@ -454,10 +454,27 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
  {
 	struct lib3270_session_callbacks *cbk;
 
-	cbk = lib3270_get_session_callbacks(widget->host,sizeof(struct lib3270_session_callbacks));
+	cbk = lib3270_get_session_callbacks(widget->host,G_STRINGIFY(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
 	if(!cbk)
 	{
-		g_error( _( "Invalid callback table, possible version mismatch in lib3270") );
+		if(g_ascii_strcasecmp(G_STRINGIFY(LIB3270_REVISION),lib3270_get_revision()))
+		{
+			g_error(
+				_("Invalid callback table, the release %s of lib%s can't be used (expecting revision %s)"),
+				lib3270_get_revision(),
+				G_STRINGIFY(LIB3270_NAME),
+				G_STRINGIFY(LIB3270_REVISION)
+			);
+		}
+		else
+		{
+			g_error(
+				_("Unexpected callback table, the release %s of lib%s is invalid"),
+				lib3270_get_revision(),
+				G_STRINGIFY(LIB3270_NAME)
+			);
+		}
+
 		return;
 	}
 

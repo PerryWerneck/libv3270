@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-29 11:02-0300\n"
-"PO-Revision-Date: 2020-07-23 11:06-0300\n"
+"POT-Creation-Date: 2020-08-03 15:22-0300\n"
+"PO-Revision-Date: 2020-08-03 15:26-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -24,7 +24,7 @@ msgstr ""
 msgid "16 colors"
 msgstr "16 cores"
 
-#: src/filetransfer/v3270ft.c:353 src/filetransfer/v3270ftprogress.c:386
+#: src/filetransfer/v3270ftprogress.c:386 src/filetransfer/v3270ft.c:353
 #: src/dialogs/print/settingsdialog.c:284
 #: src/dialogs/print/settingsdialog.c:286
 #: src/dialogs/print/settingsdialog.c:288
@@ -202,7 +202,7 @@ msgstr "Erro ao converter valor do cgcsid"
 msgid "Can't parse character value"
 msgstr "Erro ao analisar valor de caractere"
 
-#: src/selection/windows/paste.c:79 src/selection/windows/paste.c:119
+#: src/selection/linux/paste.c:81 src/selection/linux/paste.c:115
 msgid "Can't paste"
 msgstr "Não é possivel colar"
 
@@ -210,25 +210,25 @@ msgstr "Não é possivel colar"
 msgid "Can't paste text"
 msgstr "Não é possível colar texto"
 
-#: src/filetransfer/activitylist.c:436 src/filetransfer/save.c:117
+#: src/filetransfer/save.c:117 src/filetransfer/activitylist.c:436
 #: src/trace/trace.c:486 src/dialogs/transfer.c:91 src/dialogs/save/save.c:627
 #, c-format
 msgid "Can't save %s"
 msgstr "Não foi possível salvar arquivo %s"
 
-#: src/filetransfer/v3270ftprogress.c:773 src/filetransfer/worker.c:610
+#: src/filetransfer/worker.c:610 src/filetransfer/v3270ftprogress.c:773
 msgid "Can't set callback table"
 msgstr "Não foi possível setar a tabela de retornos"
 
-#: src/terminal/iocallback.c:199
+#: src/terminal/iocallback.c:200
 msgid "Can't set lib3270 I/O controller"
 msgstr "Não foi possível registrar manipuladores de I/O 3270"
 
-#: src/filetransfer/v3270ftprogress.c:760 src/filetransfer/worker.c:591
+#: src/filetransfer/worker.c:591 src/filetransfer/v3270ftprogress.c:760
 msgid "Can't start file transfer session"
 msgstr "Não foi possível iniciar transferência de arquivo"
 
-#: src/filetransfer/transfer.c:89 src/filetransfer/v3270ftprogress.c:433
+#: src/filetransfer/v3270ftprogress.c:433 src/filetransfer/transfer.c:89
 #: src/dialogs/load.c:111 src/dialogs/save/save.c:117
 #: src/dialogs/settings/host.c:401
 msgid "Cancel"
@@ -405,7 +405,7 @@ msgstr "Não perguntar de novo"
 msgid "ETA:"
 msgstr "ETA:"
 
-#: src/terminal/actions/pakey.c:105 src/terminal/actions/pfkey.c:105
+#: src/terminal/actions/pfkey.c:105 src/terminal/actions/pakey.c:105
 msgid "Emit a PA Key action"
 msgstr "Emite uma ação de tecla PA"
 
@@ -584,10 +584,14 @@ msgstr "Intensificado/Protegido"
 msgid "Intensified/Unprotected"
 msgstr "Intensificado/Desprotegido"
 
-#: src/terminal/callbacks.c:460
-msgid "Invalid callback table, possible version mismatch in lib3270"
+#: src/terminal/callbacks.c:463
+#, c-format
+msgid ""
+"Invalid callback table, the release %s of lib%s can't be used (expecting "
+"revision %s)"
 msgstr ""
-"Tabela de callbacks inválida, possível divergência de versão na lib3270"
+"Tabela de callbacks inválida, a revisão %s da lib%s não pode ser usada "
+"(esperando a revisão %s)"
 
 #: src/terminal/charset.c:132
 msgid "Invalid cgcsgid value"
@@ -610,11 +614,11 @@ msgstr "Atalhos de teclado"
 msgid "L_U Names"
 msgstr "Nomes de L_U"
 
-#: src/filetransfer/activitylist.c:384 src/filetransfer/v3270ft.c:198
+#: src/filetransfer/v3270ft.c:198 src/filetransfer/activitylist.c:384
 msgid "Load"
 msgstr "Load"
 
-#: src/filetransfer/activitylist.c:383 src/filetransfer/v3270ft.c:197
+#: src/filetransfer/v3270ft.c:197 src/filetransfer/activitylist.c:383
 msgid "Load queue from file"
 msgstr "Ler a fila de um arquivo"
 
@@ -698,6 +702,10 @@ msgstr "Nenhum (Não exporta cores)"
 msgid "None (Don't export font name)"
 msgstr "Nenhuma (Não exporta fontes)"
 
+#: src/selection/linux/paste.c:117
+msgid "None of the screens in the clipboard match with the current one."
+msgstr "Nenhuma das telas da área de transferência corresponde à atual."
+
 #: src/dialogs/settings/colors.c:174
 msgid "Normal/Protected"
 msgstr "Normal/Protegido"
@@ -706,7 +714,7 @@ msgstr "Normal/Protegido"
 msgid "Normal/Unprotected"
 msgstr "Normal/Desprotegido"
 
-#: src/selection/windows/paste.c:75
+#: src/selection/linux/paste.c:77
 msgid "Not the same terminal type"
 msgstr "O tipo de terminal é diferente"
 
@@ -922,7 +930,7 @@ msgstr "Recebendo arquivo"
 msgid "Record Length"
 msgstr "Comprimento de registro:"
 
-#: src/filetransfer/settings.c:519 src/filetransfer/v3270ft.c:340
+#: src/filetransfer/v3270ft.c:340 src/filetransfer/settings.c:519
 msgid "Record format"
 msgstr "Formato de registro"
 
@@ -981,14 +989,14 @@ msgstr ""
 
 #: src/dialogs/settings/host.c:560
 msgid "SSL/TLS"
-msgstr ""
+msgstr "SSL/TLS"
 
 #: src/dialogs/settings/clipboard.c:318 src/dialogs/settings/clipboard.c:438
 msgid "Same of the screen"
 msgstr "Igual ao terminal"
 
-#: src/terminal/actions/table.c:230 src/filetransfer/activitylist.c:453
-#: src/filetransfer/v3270ft.c:215 src/trace/trace.c:505
+#: src/terminal/actions/table.c:230 src/filetransfer/v3270ft.c:215
+#: src/filetransfer/activitylist.c:453 src/trace/trace.c:505
 #: src/dialogs/transfer.c:69
 msgid "Save"
 msgstr "Salvar"
@@ -1009,7 +1017,7 @@ msgstr "Salvar tela"
 msgid "Save copy"
 msgstr "Salvar cópia"
 
-#: src/filetransfer/activitylist.c:452 src/filetransfer/v3270ft.c:214
+#: src/filetransfer/v3270ft.c:214 src/filetransfer/activitylist.c:452
 msgid "Save queue to file"
 msgstr "Salvar a fila para um arquivo"
 
@@ -1081,7 +1089,7 @@ msgstr ""
 msgid "Secondary space"
 msgstr "Secondary space"
 
-#: src/filetransfer/settings.c:209 src/filetransfer/v3270ft.c:303
+#: src/filetransfer/v3270ft.c:303 src/filetransfer/settings.c:209
 #: src/dialogs/save/save.c:98 src/dialogs/save/save.c:118
 #: src/dialogs/settings/host.c:402
 msgid "Select"
@@ -1099,7 +1107,7 @@ msgstr "Seleciona mapeamento de teclado personalizado"
 msgid "Select destination file"
 msgstr "Selecionar arquivo destino"
 
-#: src/filetransfer/settings.c:467 src/filetransfer/v3270ft.c:591
+#: src/filetransfer/v3270ft.c:591 src/filetransfer/settings.c:467
 #: src/dialogs/load.c:92 src/dialogs/load.c:108 src/dialogs/load.c:171
 #: src/dialogs/save/save.c:258
 msgid "Select file"
@@ -1113,7 +1121,7 @@ msgstr "Selecionar primeiro arquivo"
 msgid "Select last file"
 msgstr "Selecionar último arquivo"
 
-#: src/filetransfer/settings.c:208 src/filetransfer/v3270ft.c:302
+#: src/filetransfer/v3270ft.c:302 src/filetransfer/settings.c:208
 msgid "Select local file"
 msgstr "Selecionar arquivo local"
 
@@ -1165,7 +1173,7 @@ msgstr "Skip this transfer, keep the file on queue."
 msgid "Smart copy"
 msgstr "Cópia inteligente"
 
-#: src/filetransfer/settings.c:544 src/filetransfer/v3270ft.c:341
+#: src/filetransfer/v3270ft.c:341 src/filetransfer/settings.c:544
 msgid "Space allocation units"
 msgstr "Unidades de alocação de espaço"
 
@@ -1433,7 +1441,7 @@ msgstr "Janela de trace"
 msgid "Tracks"
 msgstr "Trilhas"
 
-#: src/filetransfer/v3270ftprogress.c:721 src/filetransfer/worker.c:568
+#: src/filetransfer/worker.c:568 src/filetransfer/v3270ftprogress.c:721
 msgid "Transfer failed"
 msgstr "Transferência falhou"
 
@@ -1441,7 +1449,7 @@ msgstr "Transferência falhou"
 msgid "Transfer operation has timed out"
 msgstr "Operação de transferência esgotou o tempo de espera"
 
-#: src/filetransfer/settings.c:492 src/filetransfer/v3270ft.c:339
+#: src/filetransfer/v3270ft.c:339 src/filetransfer/settings.c:492
 msgid "Transfer options"
 msgstr "Opções de transferência"
 
@@ -1475,14 +1483,18 @@ msgstr "Turquesa"
 msgid "UTF-8"
 msgstr "UTF-8"
 
-#: src/selection/windows/paste.c:115
-#, fuzzy
-msgid "Unable to paste formatted data"
+#: src/selection/linux/paste.c:116
+msgid "Unable to paste formatted data."
 msgstr "Incapaz de colar dados formatados."
 
 #: src/filetransfer/tables.c:92
 msgid "Undefined"
 msgstr "Indefinido"
+
+#: src/terminal/callbacks.c:472
+#, c-format
+msgid "Unexpected callback table, the release %s of lib%s is invalid"
+msgstr "Tabela de callbacks inesperada, a revisão %s da lib%s é inválida"
 
 #: src/dialogs/save/save.c:495
 #, c-format
@@ -1501,9 +1513,9 @@ msgstr "Estado inesperado %d na operação de impressão"
 
 #: src/dialogs/settings/host.c:559
 msgid "Unsecure"
-msgstr ""
+msgstr "Insegura"
 
-#: src/dialogs/windows/select.c:169 src/dialogs/save/save.c:130
+#: src/dialogs/save/save.c:130
 msgid "Untitled document"
 msgstr "Documento sem título"
 
@@ -1709,9 +1721,9 @@ msgstr "Texto _ASCII"
 msgid "_Apply"
 msgstr "_Aplicar"
 
-#: src/selection/windows/paste.c:83 src/selection/windows/paste.c:123
-#: src/dialogs/load.c:205 src/dialogs/load.c:224 src/dialogs/popups.c:157
-#: src/dialogs/windows/select.c:158 src/dialogs/print/settingsdialog.c:410
+#: src/selection/linux/paste.c:85 src/dialogs/popups.c:157
+#: src/dialogs/load.c:205 src/dialogs/load.c:224 src/dialogs/linux/select.c:51
+#: src/dialogs/linux/select.c:77 src/dialogs/print/settingsdialog.c:410
 #: src/dialogs/print/settingsdialog.c:429 src/dialogs/save/save.c:342
 #: src/dialogs/save/save.c:361 src/dialogs/settings/dialog.c:231
 msgid "_Cancel"
@@ -1721,9 +1733,9 @@ msgstr "_Cancelar"
 msgid "_Charset"
 msgstr "Tabela de _Caracteres"
 
-#: src/trace/tracewindow.c:125 src/dialogs/popups.c:95
-#: src/dialogs/security.c:235 src/dialogs/transfer.c:163
-#: src/dialogs/transfer.c:183
+#: src/trace/tracewindow.c:125 src/dialogs/transfer.c:163
+#: src/dialogs/transfer.c:183 src/dialogs/security.c:235
+#: src/dialogs/popups.c:95
 msgid "_Close"
 msgstr "_Close"
 
@@ -1768,7 +1780,7 @@ msgstr "_Ok"
 msgid "_Operation"
 msgstr "_Operação:"
 
-#: src/selection/windows/paste.c:84 src/selection/windows/paste.c:124
+#: src/selection/linux/paste.c:86 src/selection/linux/paste.c:118
 msgid "_Paste as text"
 msgstr "_Colar como texto"
 
@@ -1782,9 +1794,8 @@ msgid "_Save"
 msgstr "_Salvar"
 
 #: src/dialogs/settings/host.c:545
-#, fuzzy
 msgid "_Security"
-msgstr "Alerta de segurança"
+msgstr "_Segurança"
 
 #: src/dialogs/settings/host.c:228
 msgid "_Service"
@@ -2794,6 +2805,10 @@ msgstr "Diminui o tamanho da fonte"
 #~ msgid "Invalid argument format"
 #~ msgstr "O formato do argumento é inválido"
 
+#~ msgid "Invalid callback table, possible version mismatch in lib3270"
+#~ msgstr ""
+#~ "Tabela de callbacks inválida, possível divergência de versão na lib3270"
+
 #~ msgid "Invalid character value"
 #~ msgstr "Valor de caractere inválido"
 
@@ -2946,9 +2961,6 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "Non zero if the host is TSO."
 #~ msgstr "Diferente de zero se o host é TSO"
-
-#~ msgid "None of the screens in the clipboard match with the current one."
-#~ msgstr "Nenhuma das telas da área de transferência corresponde à atual."
 
 #~ msgid "Not available"
 #~ msgstr "Não disponível"
