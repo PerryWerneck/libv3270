@@ -232,7 +232,7 @@ msgstr "Não foi possível iniciar transferência de arquivo"
 #: src/dialogs/load.c:111 src/dialogs/save/save.c:117
 #: src/dialogs/settings/host.c:401
 msgid "Cancel"
-msgstr "_Cancelar"
+msgstr "Cancelar"
 
 #: src/filetransfer/transfer.c:90
 msgid "Cancel transfer operation."
