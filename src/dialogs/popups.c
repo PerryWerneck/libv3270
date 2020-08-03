@@ -126,7 +126,6 @@
 
 		GtkWidget * dont_ask = NULL;
 
-#ifdef DEBUG
 		if(allow_disabling) {
 			// Set check button
 			dont_ask = gtk_check_button_new_with_label(_("Don't ask again"));
@@ -138,8 +137,8 @@
 			gtk_widget_set_focus_on_click(dont_ask,FALSE);
 #endif // GTK 3,20,0
 
-			//gtk_widget_set_valign(dont_ask, GTK_ALIGN_BASELINE);
-			//gtk_widget_set_halign(dont_ask, GTK_ALIGN_START);
+			gtk_widget_set_valign(dont_ask, GTK_ALIGN_BASELINE);
+			gtk_widget_set_halign(dont_ask, GTK_ALIGN_START);
 
 			gtk_box_pack_start(
 				GTK_BOX(gtk_message_dialog_get_message_area(GTK_MESSAGE_DIALOG(dialog))),
@@ -149,7 +148,6 @@
 				0
 			);
 		}
-#endif // DEBUG
 
 		// Wait for response.
 		if(popup->label) {
