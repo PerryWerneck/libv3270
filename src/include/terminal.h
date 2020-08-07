@@ -33,6 +33,7 @@
 
 G_BEGIN_DECLS
 
+/*
  /// @brief V3270 Properties saved to the configuration file.
  typedef enum
  {
@@ -56,6 +57,7 @@ G_BEGIN_DECLS
  } V3270_SETTING;
 
  G_GNUC_INTERNAL void v3270_notify_setting(GtkWidget *widget, V3270_SETTING id);
+*/
 
  struct _v3270Class
  {
@@ -69,7 +71,7 @@ G_BEGIN_DECLS
 		GParamSpec * toggle[LIB3270_TOGGLE_COUNT];		// Toggle properties.
 
 		// Properties saved to the configuration file.
-		GParamSpec * settings[V3270_SETTING_COUNT];
+		const gchar **persistent;
 
 		// Signal related properties
 		GParamSpec * online;
@@ -91,9 +93,6 @@ G_BEGIN_DECLS
 		} type;
 
     } properties;
-
-    // Predefined responses.
-//   	GParamSpec * responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
 
     // Cursors
 	GdkCursor * cursors[LIB3270_POINTER_COUNT];

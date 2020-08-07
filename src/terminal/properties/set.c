@@ -256,7 +256,7 @@ LIB3270_EXPORT void v3270_set_auto_disconnect(GtkWidget *widget, guint minutes)
 	if(terminal->activity.disconnect != minutes)
 	{
 		terminal->activity.disconnect = minutes;
- 		v3270_notify_setting(widget,V3270_SETTING_AUTO_DISCONNECT);
+ 		v3270_emit_save_settings(widget,"auto_disconnect");
 	}
 
 }
@@ -273,7 +273,7 @@ LIB3270_EXPORT void	v3270_set_dynamic_font_spacing(GtkWidget *widget, gboolean s
 		terminal->font.spacing.dynamic = state;
 		v3270_reconfigure(terminal);
 		gtk_widget_queue_draw(widget);
- 		v3270_notify_setting(widget,V3270_SETTING_DYNAMIC_SPACING);
+		v3270_emit_save_settings(widget,"dynamic_font_spacing");
 	}
 
 }
@@ -282,6 +282,6 @@ LIB3270_EXPORT void v3270_set_lunames(GtkWidget *widget, const gchar *lunames)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
 	lib3270_set_lunames(GTK_V3270(widget)->host,(lunames && *lunames ? lunames : NULL));
-	v3270_notify_setting(widget,V3270_SETTING_LU_NAMES);
+	v3270_emit_save_settings(widget,"lu_names");
 }
 

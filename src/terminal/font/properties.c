@@ -162,10 +162,7 @@ LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 		terminal->font.family = g_strdup(name);
 		terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
 
-		v3270_emit_save_settings(widget);
-
-		debug("%s: %p",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_FONT_FAMILY]);
-		v3270_notify_setting(widget,V3270_SETTING_FONT_FAMILY);
+		v3270_emit_save_settings(widget,"font_family");
 
 		if(gtk_widget_get_realized(widget) && gtk_widget_get_has_window(widget))
 		{
@@ -175,13 +172,6 @@ LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 
 	}
 
-}
-
-void v3270_notify_setting(GtkWidget *widget, V3270_SETTING id)
-{
-	debug("%s(%u)",__FUNCTION__,(unsigned int) id);
-	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.settings[id]);
-	v3270_emit_save_settings(widget);
 }
 
 LIB3270_EXPORT const gchar * v3270_get_font_family(GtkWidget *widget)

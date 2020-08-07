@@ -112,7 +112,8 @@ static gboolean	v3270_update_url(v3270 *terminal)
 {
 	GtkWidget * widget = GTK_WIDGET(terminal);
 	debug("url=%s",v3270_get_url(widget));
-	v3270_notify_setting(widget,V3270_SETTING_URL);
+
+	v3270_emit_save_settings(widget,"url");
 	v3270_signal_emit(widget, V3270_SIGNAL_SESSION_CHANGED);
 	return FALSE;
 }
@@ -201,9 +202,7 @@ static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNU
 {
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
 
-	debug("%s: terminal=%p pspec=%p",__FUNCTION__,widget,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
-	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
-
+//	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
 	v3270_signal_emit(widget,V3270_SIGNAL_MODEL_CHANGED, (guint) model, name);
 }
 

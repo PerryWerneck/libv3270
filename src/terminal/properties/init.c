@@ -43,15 +43,7 @@
  	} properties[] = {
  		{ "connected",				&klass->properties.online									},
  		{ "associated-lu",			&klass->properties.associated_lu							},
- 		{ "url",					&klass->properties.settings[V3270_SETTING_URL]				},
- 		{ "model-number",			&klass->properties.settings[V3270_SETTING_MODEL_NUMBER]		},
  		{ "has-selection",			&klass->properties.selection								},
- 		{ "oversize",				&klass->properties.settings[V3270_SETTING_OVERSIZE]			},
- 		{ "host-charset",			&klass->properties.settings[V3270_SETTING_HOST_CHARSET]		},
- 		{ "unlock-delay",			&klass->properties.settings[V3270_SETTING_UNLOCK_DELAY]		},
- 		{ "color-type",				&klass->properties.settings[V3270_SETTING_COLOR_TYPE]		},
- 		{ "host-type",				&klass->properties.settings[V3270_SETTING_HOST_TYPE]		},
- 		{ "crl-preferred-protocol",	&klass->properties.settings[V3270_SETTING_CRL_PROTOCOL]		},
  	};
 
  	size_t ix;
@@ -83,7 +75,7 @@
 	// Setup internal properties.
 
 	// Font family
-	klass->properties.settings[V3270_SETTING_FONT_FAMILY] =
+	spec =
 		g_param_spec_string(
 			"font_family",
 			"font_family",
@@ -95,7 +87,7 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_FONT_FAMILY,
-		klass->properties.settings[V3270_SETTING_FONT_FAMILY]
+		spec
 	);
 
 	// Session name.
@@ -114,7 +106,7 @@
 	);
 
 	// Auto disconnect
-	klass->properties.settings[V3270_SETTING_AUTO_DISCONNECT] =
+	spec =
 		g_param_spec_uint(
 			"auto_disconnect",
 			"auto_disconnect",
@@ -128,7 +120,7 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_AUTO_DISCONNECT,
-		klass->properties.settings[V3270_SETTING_AUTO_DISCONNECT]
+		spec
 	);
 
 	// Clipboard
@@ -147,7 +139,7 @@
 	);
 
 	// Remap file
-	klass->properties.settings[V3270_SETTING_REMAP_FILE] =
+	spec =
 		g_param_spec_string(
 			"remap_file",
 			"remap_file",
@@ -159,11 +151,11 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_REMAP_FILE,
-		klass->properties.settings[V3270_SETTING_REMAP_FILE]
+		spec
 	);
 
 	// Dynamic font spacing
-	klass->properties.settings[V3270_SETTING_DYNAMIC_SPACING] =
+	spec =
 		g_param_spec_boolean(
 			"dynamic_font_spacing",
 			"dynamic_font_spacing",
@@ -175,11 +167,11 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_DYNAMIC_SPACING,
-		klass->properties.settings[V3270_SETTING_DYNAMIC_SPACING]
+		spec
 	);
 
 	// Lu names
-	klass->properties.settings[V3270_SETTING_LU_NAMES] =
+	spec =
 		g_param_spec_string(
 			"lu_names",
 			"lu_names",
@@ -191,7 +183,7 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_LU_NAMES,
-		klass->properties.settings[V3270_SETTING_LU_NAMES]
+		spec
 	);
 
 	// Trace
@@ -209,7 +201,7 @@
 	);
 
 	// Colors
-	klass->properties.settings[V3270_SETTING_TERMINAL_COLORS] =
+	spec =
 		g_param_spec_string(
 			"colors",
 			"colors",
@@ -221,11 +213,11 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_TERMINAL_COLORS,
-		klass->properties.settings[V3270_SETTING_TERMINAL_COLORS]
+		spec
 	);
 
 	// Clipboard options
-	klass->properties.settings[V3270_SETTING_SELECTION_OPTIONS] =
+	spec =
 		g_param_spec_uint(
 			"selection_flags",
 			"selection_flags",
@@ -239,7 +231,7 @@
 	g_object_class_install_property(
 		gobject_class,
 		V3270_PROPERTY_SELECTION_OPTIONS,
-		klass->properties.settings[V3270_SETTING_SELECTION_OPTIONS]
+		spec
 	);
 
 	klass->properties.has_copy =

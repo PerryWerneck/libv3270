@@ -58,6 +58,26 @@
  *
  */
 
+/// @brief Persistent properties (load/save from session file).
+static const gchar *persistent_properties[] = {
+		"url",
+		"model-number",
+		"oversize",
+		"host-charset",
+		"unlock-delay",
+		"color-type",
+		"host-type",
+		"crl-preferred-protocol",
+		"remap_file",
+		"dynamic_font_spacing",
+		"lu_names",
+		"font_family",
+		"auto_disconnect",
+		"colors",
+		"selection_flags",
+		NULL
+};
+
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
  G_DEFINE_TYPE(v3270, v3270, GTK_TYPE_WIDGET);
@@ -206,6 +226,8 @@ static void finalize(GObject *object) {
 	GObjectClass	* gobject_class	= G_OBJECT_CLASS(klass);
 	GtkWidgetClass	* widget_class	= GTK_WIDGET_CLASS(klass);
 	GtkBindingSet	* binding		= gtk_binding_set_by_class(klass);
+
+	klass->properties.persistent = persistent_properties;
 
 	// Setup widget key bindings
 	gtk_binding_entry_skip(binding,GDK_F10,0);
@@ -824,8 +846,11 @@ static gboolean bg_emit_save_settings(v3270 *terminal)
  	return FALSE;
 }
 
-LIB3270_EXPORT void v3270_emit_save_settings(GtkWidget *widget)
+LIB3270_EXPORT void v3270_emit_save_settings(GtkWidget *widget, const gchar *property_name)
 {
+	if(property_name)
+		g_object_notify(G_OBJECT(widget),property_name);
+
 	debug("%s(Freeze is %s)",__FUNCTION__,GTK_V3270(widget)->freeze ? "ON" : "OFF");
 	if(widget && GTK_IS_V3270(widget) && !GTK_V3270(widget)->freeze)
 	{

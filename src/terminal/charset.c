@@ -337,8 +337,7 @@
 	g_free(cfg.host);
 	g_free(cfg.display);
 
-	debug("%s=%p",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_REMAP_FILE]);
-	v3270_notify_setting(widget,V3270_SETTING_REMAP_FILE);
+	v3270_emit_save_settings(widget,"remap_file");
 
  }
 

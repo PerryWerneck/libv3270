@@ -151,7 +151,7 @@ void v3270_selection_set_font_family(GtkWidget *widget, const gchar *name) {
 		terminal->selection.font_family	= g_strdup(name);
 	}
 
-	v3270_emit_save_settings(widget);
+	v3270_emit_save_settings(widget,NULL);
 
 }
 
@@ -181,7 +181,7 @@ void v3270_selection_set_color_scheme(GtkWidget *widget, const gchar *name) {
 		terminal->selection.color.scheme = g_strdup(name);
 	}
 
-	v3270_emit_save_settings(widget);
+	v3270_emit_save_settings(widget,NULL);
 
 }
 
