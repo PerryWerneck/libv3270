@@ -40,6 +40,7 @@
  #include <lib3270/charset.h>
  #include <lib3270/log.h>
  #include <v3270/dialogs.h>
+ #include <v3270/settings.h>
 
  #define ERROR_DOMAIN g_quark_from_static_string(PACKAGE_NAME)
 

@@ -45,6 +45,7 @@
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
  #include <errno.h>
+ #include <v3270/settings.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
