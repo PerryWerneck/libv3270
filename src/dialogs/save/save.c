@@ -91,22 +91,6 @@
 #ifdef WIN32
 static void icon_press(GtkEntry G_GNUC_UNUSED(*entry), G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, V3270SaveDialog *widget)
 {
-	/*
-
-	GtkFileChooserNative * dialog =
-			gtk_file_chooser_native_new(
-				_( "Select destination file"),
-				GTK_WINDOW(widget),
-				GTK_FILE_CHOOSER_ACTION_SAVE,
-				_("Select"),
-				_("Cancel")
-			);
-
-	gint rc = gtk_native_dialog_run (GTK_NATIVE_DIALOG(dialog));
-
-	debug("rc=%d",rc);
-	*/
-
 	g_autofree gchar *filename =
 						v3270_select_file(
 								GTK_WIDGET(widget),
@@ -124,9 +108,6 @@ static void icon_press(GtkEntry G_GNUC_UNUSED(*entry), G_GNUC_UNUSED GtkEntryIco
 #else
 static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, V3270SaveDialog *widget)
 {
-
-	//gint format = gtk_combo_box_get_active(GTK_COMBO_BOX(widget->format));
-	//g_autofree gchar * extension = g_strconcat("*",formats[format].extension,NULL);
 
 	GtkWidget * dialog =
 		gtk_file_chooser_dialog_new(
@@ -155,6 +136,83 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
  }
 #endif // _WIN32
+
+
+ static void filename_changed(GtkEntry *entry, GtkComboBox *formats)
+ {
+ 	const gchar * text = gtk_entry_get_text(entry);
+
+ 	if(!(text && *text))
+		return;
+
+	const gchar * extension = strrchr(text,'.');
+	if(!extension)
+		return;
+
+	extension++;
+	const gchar	* format = gtk_combo_box_get_active_id(formats);
+	if(*format == '.')
+		format++;
+
+	if(g_ascii_strcasecmp(extension,format) == 0)
+		return;
+
+	gint column = gtk_combo_box_get_id_column(formats);
+	GtkTreeModel * model = gtk_combo_box_get_model(formats);
+	GtkTreeIter iter;
+
+	debug("id_column=%d",column);
+
+	if(gtk_tree_model_get_iter_first(model,&iter))
+	{
+		do
+		{
+			g_autofree gchar *id = NULL;
+			gtk_tree_model_get(model, &iter, column, &id, -1);
+
+			if(g_ascii_strcasecmp(extension,id + (*id == '.' ? 1 : 0)) == 0)
+			{
+				gtk_combo_box_set_active_iter(formats,&iter);
+				break;
+			}
+
+		} while(gtk_tree_model_iter_next(model,&iter));
+	}
+
+ }
+
+ static void fileformat_changed(GtkComboBox *formats, GtkEntry *entry)
+ {
+	const gchar * text = gtk_entry_get_text(entry);
+
+ 	if(!(text && *text))
+		return;
+
+	gchar * extension = strrchr(text,'.');
+	if(!extension)
+		return;
+
+	extension++;
+	const gchar	* format = gtk_combo_box_get_active_id(formats);
+	if(*format == '.')
+		format++;
+
+	if(g_ascii_strcasecmp(extension,format) == 0)
+		return;
+
+	size_t szFilename = strlen(text) + strlen(format);
+	g_autofree gchar * filename = g_malloc0(szFilename + 1);
+
+	strncpy(filename,text,szFilename);
+	extension = strrchr(filename,'.');
+	if(extension)
+	{
+		*(++extension) = 0;
+		strncat(filename, format + (*format == '.' ? 1 : 0),szFilename);
+		gtk_entry_set_text(entry,filename);
+	}
+
+ }
 
  static void V3270SaveDialog_init(V3270SaveDialog *dialog)
  {
@@ -195,16 +253,10 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		gtk_grid_attach(grid,widget,0,0,1,1);
 		gtk_label_set_mnemonic_widget(GTK_LABEL(widget),dialog->filename);
 
-//#ifdef WIN32
-//		widget = gtk_button_new_from_icon_name("document-open",GTK_ICON_SIZE_BUTTON);
-//		g_signal_connect(G_OBJECT(widget),"clicked",G_CALLBACK(select_file),dialog);
-//		gtk_grid_attach(grid,widget,4,0,1,1);
-//#else
-		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,"document-open");
+		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,"document-save-as");
 		gtk_entry_set_icon_activatable(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,TRUE);
 		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,_("Select file"));
 		g_signal_connect(G_OBJECT(dialog->filename),"icon-press",G_CALLBACK(icon_press),dialog);
-//#endif // WIN32
 
 		gtk_entry_set_width_chars(GTK_ENTRY(dialog->filename),60);
 		gtk_entry_set_max_length(GTK_ENTRY(dialog->filename),PATH_MAX);
@@ -240,13 +292,36 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		{
 			gtk_combo_box_text_insert(
 				GTK_COMBO_BOX_TEXT(dialog->format),
-				ix,
+				-1,
 				formats[ix].extension,
 				g_dgettext(GETTEXT_PACKAGE,formats[ix].name)
 			);
 		}
 
 		gtk_combo_box_set_active(GTK_COMBO_BOX(dialog->format),0);
+
+		// Image formats.
+		GSList *img_formats = gdk_pixbuf_get_formats();
+		GSList *img_format;
+
+		for(img_format = img_formats;img_format;img_format = g_slist_next(img_format))
+		{
+			GdkPixbufFormat * pixFormat = (GdkPixbufFormat *) img_format->data;
+
+			if (gdk_pixbuf_format_is_writable(pixFormat))
+			{
+				gtk_combo_box_text_insert(
+					GTK_COMBO_BOX_TEXT(dialog->format),
+					-1,
+					gdk_pixbuf_format_get_name(pixFormat),
+					gdk_pixbuf_format_get_description(pixFormat)
+				);
+			}
+
+		}
+
+		g_signal_connect(dialog->filename,"changed",G_CALLBACK(filename_changed),dialog->format);
+		g_signal_connect(dialog->format,"changed",G_CALLBACK(fileformat_changed),dialog->filename);
 
 	}
 
@@ -335,19 +410,37 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	return GTK_WIDGET(dialog);
  }
 
- void v3270_save_dialog_apply(GtkWidget *widget, GError **error)
+ static const gchar * get_filename(V3270SaveDialog * dialog)
  {
- 	V3270SaveDialog * dialog = V3270_SAVE_DIALOG(widget);
+	const gchar * filename	= gtk_entry_get_text(GTK_ENTRY(dialog->filename));
+	gint		  response 	= GTK_RESPONSE_OK;
 
- 	if(!v3270_is_connected(dialog->terminal))
+	if(g_file_test(filename,G_FILE_TEST_EXISTS))
 	{
-		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,"%s",strerror(ENOTCONN));
-		return;
+		GtkWidget * confirmation =
+						gtk_message_dialog_new_with_markup(
+								GTK_WINDOW(dialog),
+								GTK_DIALOG_DESTROY_WITH_PARENT,
+								GTK_MESSAGE_QUESTION,GTK_BUTTONS_OK_CANCEL,
+								_("The file \"%s\" already exists. Replace it?"),
+								filename
+							);
+
+		response = gtk_dialog_run(GTK_DIALOG(confirmation));
+		gtk_widget_destroy(confirmation);
 	}
 
+	return (response == GTK_RESPONSE_OK ? filename : NULL);
+
+ }
+
+ static void save_as_text(V3270SaveDialog * dialog, size_t index, GError **error)
+ {
 	// Get selection
 	GList 		* dynamic	= NULL;
 	const GList * selection = NULL;
+
+	debug("%s(%d)",__FUNCTION__,dialog->mode);
 
 	switch(dialog->mode)
 	{
@@ -371,6 +464,8 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		return;
 	}
 
+	debug("Selection=%p",selection);
+
 	if(!selection)
 	{
 		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,"%s",strerror(ENODATA));
@@ -382,7 +477,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 		debug("Encoding: %s",encoding);
 
-		switch(gtk_combo_box_get_active(GTK_COMBO_BOX(dialog->format)))
+		switch(index)
 		{
 		case 0: // "Plain text"
 			text = v3270_get_selection_as_text(GTK_V3270(dialog->terminal), selection, encoding, dialog->mode == LIB3270_CONTENT_ALL);
@@ -402,25 +497,9 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 		if(text)
 		{
-			const gchar * filename	= gtk_entry_get_text(GTK_ENTRY(dialog->filename));
-			gint		  response 	= GTK_RESPONSE_OK;
+			const gchar * filename = get_filename(dialog);
 
-			if(g_file_test(filename,G_FILE_TEST_EXISTS))
-			{
-				GtkWidget * confirmation =
-								gtk_message_dialog_new_with_markup(
-										GTK_WINDOW(widget),
-										GTK_DIALOG_DESTROY_WITH_PARENT,
-										GTK_MESSAGE_QUESTION,GTK_BUTTONS_OK_CANCEL,
-										_("The file \"%s\" already exists. Replace it?"),
-										filename
-									);
-
-				response = gtk_dialog_run(GTK_DIALOG(confirmation));
-				gtk_widget_destroy(confirmation);
-			}
-
-			if(response == GTK_RESPONSE_OK)
+			if(filename)
 			{
 				g_file_set_contents(
 					gtk_entry_get_text(GTK_ENTRY(dialog->filename)),
@@ -443,6 +522,93 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		g_list_free_full(dynamic,(GDestroyNotify) lib3270_free);
 
 	#pragma GCC diagnostic pop
+ }
+
+ static void save_as_image(V3270SaveDialog * dialog, const gchar *format, GError **error)
+ {
+	debug("%s(%d)",__FUNCTION__,dialog->mode);
+
+	GdkPixbuf * pixbuf = NULL;
+
+	switch(dialog->mode)
+	{
+	case LIB3270_CONTENT_ALL:
+		debug("%s","LIB3270_CONTENT_ALL");
+		pixbuf = v3270_get_as_pixbuf(dialog->terminal);
+		break;
+
+	case LIB3270_CONTENT_COPY:
+		{
+			debug("%s","LIB3270_CONTENT_COPY");
+			const GList * selection = v3270_get_selection_blocks(dialog->terminal);
+			pixbuf = v3270_get_selection_as_pixbuf(GTK_V3270(dialog->terminal), selection, FALSE);
+		}
+		break;
+
+	case LIB3270_CONTENT_SELECTED:
+		{
+			debug("%s","LIB3270_CONTENT_SELECTED");
+			GList * selection = g_list_append_lib3270_selection(NULL, v3270_get_session(dialog->terminal),FALSE);
+			debug("Selection=%p",selection);
+			pixbuf = v3270_get_selection_as_pixbuf(GTK_V3270(dialog->terminal), selection, FALSE);
+			g_list_free_full(selection,(GDestroyNotify) lib3270_free);
+		}
+		break;
+
+	default:
+		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,_( "Unexpected mode %d" ),(int) dialog->mode);
+		return;
+	}
+
+	debug("pixbuff=%p",pixbuf);
+
+	if(pixbuf)
+	{
+		const gchar * filename = get_filename(dialog);
+
+		debug("Filename=%p",filename);
+		if(filename)
+		{
+			gdk_pixbuf_save(pixbuf,filename,format,error,NULL);
+		}
+
+		g_object_unref(pixbuf);
+	}
+	else
+	{
+		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),-1,_( "Error saving image" ));
+	}
+
+ }
+
+ void v3270_save_dialog_apply(GtkWidget *widget, GError **error)
+ {
+ 	size_t ix;
+ 	V3270SaveDialog * dialog = V3270_SAVE_DIALOG(widget);
+
+ 	if(!v3270_is_connected(dialog->terminal))
+	{
+		*error = g_error_new(g_quark_from_static_string(PACKAGE_NAME),ENOTCONN,"%s",strerror(ENOTCONN));
+		return;
+	}
+
+	// Get type ID
+	const gchar	* format = gtk_combo_box_get_active_id(GTK_COMBO_BOX(dialog->format));
+
+	// Check for text formats.
+	for(ix=0;ix<G_N_ELEMENTS(formats);ix++)
+	{
+		if(!strcmp(formats[ix].extension,format))
+		{
+			// Is text format, save it
+			save_as_text(dialog, ix, error);
+			return;
+		}
+
+	}
+
+	save_as_image(dialog, format, error);
+
  }
 
  void v3270_save_dialog_run(GtkWidget *widget)

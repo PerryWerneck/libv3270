@@ -48,7 +48,7 @@
  LIB3270_EXPORT void v3270_to_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name);
 
  /// @brief Emit the "save-settings" signal.
- LIB3270_EXPORT void v3270_emit_save_settings(GtkWidget *widget);
+ LIB3270_EXPORT void v3270_emit_save_settings(GtkWidget *widget, const gchar *property_name);
 
 #ifdef _WIN32
 

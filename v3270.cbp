@@ -217,6 +217,9 @@
 		<Unit filename="src/selection/linux/paste.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/selection/pixbuf.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/selection/selection.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -358,6 +361,7 @@
 		<Unit filename="src/terminal/linux/iosource.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/terminal/marshal" />
 		<Unit filename="src/terminal/marshal.h" />
 		<Unit filename="src/terminal/mouse.c">
 			<Option compilerVar="CC" />
@@ -417,9 +421,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

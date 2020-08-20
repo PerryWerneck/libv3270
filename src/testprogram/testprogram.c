@@ -71,35 +71,6 @@
  }
  */
 
-#ifdef _WIN32
-
- static int get_registry(HKEY *hKey,REGSAM samDesired)
- {
- 	DWORD	disp;
-
-	if(RegCreateKeyEx(HKEY_CURRENT_USER,"software\\v3270",0,NULL,REG_OPTION_NON_VOLATILE,samDesired,NULL,hKey,&disp) != ERROR_SUCCESS)
-	{
-		g_warning("Can't open registry");
-		return -1;
-	}
-
-	return 0;
-
- }
-
- static void save_settings(GtkWidget *terminal, GtkWidget *window)
- {
- 	HKEY hKey = 0;
-
-	if(get_registry(&hKey,KEY_SET_VALUE))
-		return;
-
-	v3270_to_registry(terminal,hKey,"terminal");
-	RegCloseKey(hKey);
- }
-
-#else
-
  static GKeyFile * get_key_file()
  {
 	GKeyFile * key_file = g_key_file_new();
@@ -109,7 +80,7 @@
 
  static void save_settings(GtkWidget *terminal, GtkWidget *window)
  {
- 	debug("%s: Saving settings for windows %p",__FUNCTION__,window);
+ 	debug("%s: Saving settings for window %p",__FUNCTION__,window);
 
  	GKeyFile * key_file = get_key_file();
 
@@ -122,8 +93,6 @@
 
  }
 
-#endif // _WIN32
-
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
@@ -132,7 +101,7 @@
 	GtkWidget	* notebook	= gtk_notebook_new();
 
 	// Hack to speed up the tests.
-	lib3270_disable_crl_download(v3270_get_session(terminal));
+	lib3270_ssl_set_crl_download(v3270_get_session(terminal),0);
 
 	gtk_box_pack_start(GTK_BOX(vBox),create_toolbar(terminal),FALSE,TRUE,0);
 	gtk_box_pack_start(GTK_BOX(vBox),notebook,TRUE,TRUE,0);
@@ -147,32 +116,12 @@
 
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),terminal,gtk_label_new("Terminal"));
 
-#ifdef _WIN32
-		v3270_set_font_family(terminal,"Lucida Console");
-#endif // _WIN32
-
-		v3270_selection_set_font_family(terminal,"monospace");
-
 		// Load settings before connecting the signals.
-#ifdef _WIN32
-		{
- 			HKEY hKey = 0;
-
-			if(!get_registry(&hKey,KEY_SET_VALUE))
-			{
-				v3270_load_registry(terminal,hKey,"terminal");
-				RegCloseKey(hKey);
-			}
-
-		}
-#else
 		debug("%s: Loading settings...",__FUNCTION__);
 		GKeyFile * key_file = get_key_file();
 		v3270_load_key_file(terminal,key_file,NULL);
 		v3270_accelerator_map_load_key_file(terminal,key_file,NULL);
-
 		g_key_file_free(key_file);
-#endif // _WIN32
 
 	}
 

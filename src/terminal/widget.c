@@ -58,6 +58,26 @@
  *
  */
 
+/// @brief Persistent properties (load/save from session file).
+static const gchar *persistent_properties[] = {
+		"url",
+		"model-number",
+		"oversize",
+		"host-charset",
+		"unlock-delay",
+		"color-type",
+		"host-type",
+		"crl-preferred-protocol",
+		"remap_file",
+		"dynamic_font_spacing",
+		"lu_names",
+		"font_family",
+		"auto_disconnect",
+		"colors",
+		"selection_flags",
+		NULL
+};
+
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
  G_DEFINE_TYPE(v3270, v3270, GTK_TYPE_WIDGET);
@@ -201,11 +221,13 @@ static void finalize(GObject *object) {
 	G_OBJECT_CLASS(v3270_parent_class)->finalize(object);
  }
 
-static void v3270_class_init(v3270Class *klass)
-{
+ static void v3270_class_init(v3270Class *klass)
+ {
 	GObjectClass	* gobject_class	= G_OBJECT_CLASS(klass);
 	GtkWidgetClass	* widget_class	= GTK_WIDGET_CLASS(klass);
 	GtkBindingSet	* binding		= gtk_binding_set_by_class(klass);
+
+	klass->properties.persistent = persistent_properties;
 
 	// Setup widget key bindings
 	gtk_binding_entry_skip(binding,GDK_F10,0);
@@ -242,10 +264,10 @@ static void v3270_class_init(v3270Class *klass)
 	klass->activate									= v3270_activate;
 	klass->toggle_changed 							= v3270_toggle_changed;
 	klass->message_changed 							= v3270_update_message;
-	klass->popup_message							= v3270_popup_message;
 
 	// Register I/O Handlers
 	v3270_register_io_handlers(klass);
+
 
 	// Cursors
 	{
@@ -428,15 +450,6 @@ static void v3270_class_init(v3270Class *klass)
 						v3270_VOID__VOID_UINT_UINT,
 						G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_UINT);
 
-	v3270_widget_signal[V3270_SIGNAL_MESSAGE] =
-		g_signal_new(	I_("popup_message"),
-						G_OBJECT_CLASS_TYPE (gobject_class),
-						G_SIGNAL_RUN_FIRST,
-						G_STRUCT_OFFSET (v3270Class, popup_message),
-						NULL, NULL,
-						v3270_VOID__VOID_UINT_POINTER_POINTER_POINTER,
-						G_TYPE_NONE, 4, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-
 	v3270_widget_signal[V3270_SIGNAL_FIELD] =
 		g_signal_new(	I_("field_clicked"),
 						G_OBJECT_CLASS_TYPE (gobject_class),
@@ -474,6 +487,24 @@ static void v3270_class_init(v3270Class *klass)
 						v3270_VOID__VOID,
 						G_TYPE_NONE, 0);
 
+	v3270_widget_signal[V3270_SIGNAL_LOAD_POPUP_RESPONSE] =
+		g_signal_new(	I_("load-popup-response"),
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_LAST,
+						0,
+						NULL, NULL,
+						v3270_UINT__POINTER,
+						G_TYPE_UINT, 1, G_TYPE_POINTER);
+
+	v3270_widget_signal[V3270_SIGNAL_SAVE_POPUP_RESPONSE] =
+		g_signal_new(	I_("save-popup-response"),
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_LAST,
+						0,
+						NULL, NULL,
+						v3270_BOOLEAN__POINTER_UINT,
+						G_TYPE_BOOLEAN, 2, G_TYPE_POINTER, G_TYPE_UINT);
+
 	v3270_init_properties(gobject_class);
 
 }
@@ -492,7 +523,7 @@ static void release_activity_timer(v3270 *widget)
 
 static void v3270_init(v3270 *widget)
 {
-	size_t ix;
+	// size_t ix;
 
 	widget->host = lib3270_session_new(NULL);
 	lib3270_set_user_data(widget->host,widget);
@@ -534,8 +565,10 @@ static void v3270_init(v3270 *widget)
 	v3270_font_info_init(&widget->font);
 	v3270_set_color_table(widget->color,v3270_get_default_colors());
 
+	/*
 	for(ix = 0; ix < G_N_ELEMENTS(widget->responses); ix++)
 		widget->responses[ix] = GTK_RESPONSE_NONE;
+	*/
 
 	// Init accelerators
 	v3270_init_accelerators(widget);
@@ -813,8 +846,11 @@ static gboolean bg_emit_save_settings(v3270 *terminal)
  	return FALSE;
 }
 
-LIB3270_EXPORT void v3270_emit_save_settings(GtkWidget *widget)
+LIB3270_EXPORT void v3270_emit_save_settings(GtkWidget *widget, const gchar *property_name)
 {
+	if(property_name)
+		g_object_notify(G_OBJECT(widget),property_name);
+
 	debug("%s(Freeze is %s)",__FUNCTION__,GTK_V3270(widget)->freeze ? "ON" : "OFF");
 	if(widget && GTK_IS_V3270(widget) && !GTK_V3270(widget)->freeze)
 	{

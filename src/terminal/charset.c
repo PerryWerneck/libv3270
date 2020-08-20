@@ -40,6 +40,7 @@
  #include <lib3270/charset.h>
  #include <lib3270/log.h>
  #include <v3270/dialogs.h>
+ #include <v3270/settings.h>
 
  #define ERROR_DOMAIN g_quark_from_static_string(PACKAGE_NAME)
 
@@ -337,8 +338,7 @@
 	g_free(cfg.host);
 	g_free(cfg.display);
 
-	debug("%s=%p",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_REMAP_FILE]);
-	v3270_notify_setting(widget,V3270_SETTING_REMAP_FILE);
+	v3270_emit_save_settings(widget,"remap_file");
 
  }
 

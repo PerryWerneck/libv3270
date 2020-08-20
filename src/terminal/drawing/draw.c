@@ -524,6 +524,29 @@ LIB3270_EXPORT void v3270_reload(GtkWidget *widget)
 
 }
 
+GdkPixbuf * v3270_get_as_pixbuf(GtkWidget *widget)
+{
+	v3270 * terminal = GTK_V3270(widget);
+
+	if(!(gtk_widget_get_realized(widget) && terminal->drawing))
+		return NULL;
+
+	gint width	= gtk_widget_get_allocated_width(widget);
+	gint height	= gtk_widget_get_allocated_height(widget);
+
+	cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
+
+	cairo_t *cr = cairo_create(surface);
+	v3270_redraw(terminal, cr, width, height);
+	cairo_destroy (cr);
+
+	GdkPixbuf * pixbuf = gdk_pixbuf_get_from_surface(surface,0,0,width,height);
+
+	cairo_surface_destroy (surface);
+
+	return pixbuf;
+}
+
 void v3270_update_char(H3270 *session, int addr, unsigned char chr, unsigned short attr, unsigned char cursor)
 {
 	v3270					* terminal = GTK_V3270(lib3270_get_user_data(session));

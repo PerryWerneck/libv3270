@@ -30,6 +30,7 @@
  #include <clipboard.h>
  #include <lib3270/toggle.h>
  #include <v3270/dialogs.h>
+ #include <lib3270/popup.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -108,17 +109,16 @@ static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *select
 	if(!v3270_set_from_data_block(terminal, selection))
 	{
 		debug("%s: Can't paste data",__FUNCTION__);
-		if(
-			v3270_popup_toggleable_dialog(
-				widget,
-				V3270_TOGGLEABLE_DIALOG_PASTE_FAILED,
-				_("Can't paste"),
-				_("Unable to paste formatted data."),
-				_("None of the screens in the clipboard match with the current one."),
-				_("_Cancel"), GTK_RESPONSE_CANCEL,
-				_("_Paste as text"), GTK_RESPONSE_APPLY,
-				NULL
-			) == GTK_RESPONSE_APPLY)
+
+		LIB3270_POPUP popup = {
+			.name = "cantpaste",
+			.title = _("Can't paste"),
+			.summary = _("Unable to paste formatted data."),
+			.body = _("None of the screens in the clipboard match with the current one."),
+			.label = _("_Paste as text")
+		};
+
+		if(v3270_popup_dialog_show(widget,&popup,1) == GTK_RESPONSE_APPLY)
 		{
 			gtk_clipboard_request_text(
 				clipboard,
@@ -127,50 +127,7 @@ static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *select
 			);
 		}
 
-		/*
-		GtkResponseType response = GTK_V3270(terminal)->responses[V3270_TOGGLEABLE_DIALOG_PASTE_FAILED];
-
-		if(response == GTK_RESPONSE_NONE)
-		{
-			// No predefined response, ask.
-			GtkWidget * dialog =
-						gtk_message_dialog_new(
-							GTK_WINDOW(gtk_widget_get_toplevel(widget)),
-							GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-							GTK_MESSAGE_INFO,
-							GTK_BUTTONS_NONE,
-							_("Unable to paste formatted data")
-						);
-
-
-			gtk_window_set_title(GTK_WINDOW(dialog),_("Can't paste"));
-
-			gtk_dialog_add_buttons(
-				GTK_DIALOG (dialog),
-				_("_Cancel"), GTK_RESPONSE_CANCEL,
-				_("_Paste as text"), GTK_RESPONSE_APPLY,
-				NULL
-			);
-
-			gtk_dialog_set_default_response(GTK_DIALOG (dialog),response);
-
-			gint response = gtk_dialog_run(GTK_DIALOG(dialog));
-
-			gtk_widget_destroy(dialog);
-		}
-
-		if(response == GTK_RESPONSE_APPLY)
-		{
-			gtk_clipboard_request_text(
-						clipboard,
-						(GtkClipboardTextReceivedFunc) text_received,
-						(gpointer) widget
-			);
-		}
-
-		*/
 		return;
-
 
 	}
 

@@ -140,6 +140,11 @@
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(widget->store),1,GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID);
 
 	GtkWidget * view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(widget->store));
+
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(view),TRUE);
+	gtk_tree_view_set_search_column(GTK_TREE_VIEW(view),1);
+
+
 	g_signal_connect(G_OBJECT(widget),"realize",G_CALLBACK(realize),view);
 
 	gtk_widget_set_tooltip_markup(view,_("Keyboard accelerators"));

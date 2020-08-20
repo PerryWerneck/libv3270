@@ -45,7 +45,8 @@
 		CLIPBOARD_TYPE_TEXT,
 		CLIPBOARD_TYPE_CSV,
 		CLIPBOARD_TYPE_HTML,
-		CLIPBOARD_TYPE_V3270_FORMATTED
+		CLIPBOARD_TYPE_V3270_FORMATTED,
+		CLIPBOARD_TYPE_PIXBUFF
 	};
 
 	/// @brief Column from selection.
@@ -91,6 +92,7 @@
 
 	/// @brief Get contents.
 	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_text(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all);
+	G_GNUC_INTERNAL GdkPixbuf	* v3270_get_selection_as_pixbuf(v3270 * terminal, const GList *selection, gboolean all);
 	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_table(v3270 * terminal, const GList *selection, const gchar *delimiter, const gchar *encoding, gboolean all);
 	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_div(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all, const V3270SelectionOption options);
 	G_GNUC_INTERNAL gchar		* v3270_get_selection_as_html_table(v3270 * terminal, const GList *selection, const gchar *encoding, gboolean all, const V3270SelectionOption options);

@@ -47,11 +47,65 @@ static const gchar * invalid_font_messages[] = {
 const gchar * v3270_get_default_font_name()
 {
 #if defined(_WIN32)
-	return "Lucida Console";
-#elif defined(__APPLE__)
+	{
+		HKEY hKey;
+		DWORD disp = 0;
+		LSTATUS	rc = RegCreateKeyEx(
+						HKEY_LOCAL_MACHINE,
+						"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),
+						0,
+						NULL,
+						REG_OPTION_NON_VOLATILE,
+						KEY_QUERY_VALUE|KEY_READ,
+						NULL,
+						&hKey,
+						&disp);
+
+		debug("%s=%d","Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),rc);
+
+		if(rc == ERROR_SUCCESS)
+		{
+			static char * default_font_name = NULL;
+			DWORD cbData = 4096;
+
+			if(!default_font_name)
+			{
+				default_font_name = (char *) malloc(cbData+1);
+			}
+			else
+			{
+				default_font_name = (char *) realloc(default_font_name,cbData+1);
+			}
+
+			DWORD dwRet = RegQueryValueEx(hKey,"font-family",NULL,NULL,(LPBYTE) default_font_name, &cbData);
+
+			debug("dwRet=%d",dwRet);
+
+			RegCloseKey(hKey);
+
+			if(dwRet == ERROR_SUCCESS)
+			{
+				default_font_name = (char *) realloc(default_font_name,cbData+1);
+                default_font_name[cbData] = 0;
+                return default_font_name;
+			}
+
+			free(default_font_name);
+			default_font_name = NULL;
+		}
+	}
+
+	// TODO: Search for a valid font-family
 	return "Courier New";
+
+#elif defined(__APPLE__)
+
+	return "Courier New";
+
 #else
+
 	return "monospace";
+
 #endif // _WIN32
 }
 
@@ -108,10 +162,7 @@ LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 		terminal->font.family = g_strdup(name);
 		terminal->font.weight = lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_BOLD) ? CAIRO_FONT_WEIGHT_BOLD : CAIRO_FONT_WEIGHT_NORMAL;
 
-		v3270_emit_save_settings(widget);
-
-		debug("%s: %p",__FUNCTION__,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_FONT_FAMILY]);
-		v3270_notify_setting(widget,V3270_SETTING_FONT_FAMILY);
+		v3270_emit_save_settings(widget,"font_family");
 
 		if(gtk_widget_get_realized(widget) && gtk_widget_get_has_window(widget))
 		{
@@ -121,13 +172,6 @@ LIB3270_EXPORT void v3270_set_font_family(GtkWidget *widget, const gchar *name)
 
 	}
 
-}
-
-void v3270_notify_setting(GtkWidget *widget, V3270_SETTING id)
-{
-	debug("%s(%u)",__FUNCTION__,(unsigned int) id);
-	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.settings[id]);
-	v3270_emit_save_settings(widget);
 }
 
 LIB3270_EXPORT const gchar * v3270_get_font_family(GtkWidget *widget)

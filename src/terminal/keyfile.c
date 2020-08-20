@@ -308,13 +308,17 @@
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
 		save_by_pspec(widget,klass->properties.toggle[ix],key_file,group_name);
 
-	// Save V3270 Responses
-	for(ix = 0; ix < G_N_ELEMENTS(terminal->responses); ix++)
-		save_by_pspec(widget,klass->responses[ix],key_file,group_name);
-
 	// Save V3270 properties
-	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
-		save_by_pspec(widget,klass->properties.settings[ix],key_file,group_name);
+	for(ix = 0; klass->properties.persistent[ix];ix++)
+	{
+		save_by_pspec(
+			widget,
+			g_object_class_find_property(G_OBJECT_CLASS(klass),klass->properties.persistent[ix]),
+			key_file,
+			group_name
+		);
+
+	}
 
  }
 
@@ -360,13 +364,17 @@
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
 		load_by_pspec(widget,klass->properties.toggle[ix],key_file,group_name);
 
-	// Load V3270 Responses
-	for(ix = 0; ix < G_N_ELEMENTS(terminal->responses); ix++)
-		load_by_pspec(widget,klass->responses[ix],key_file,group_name);
-
 	// Load V3270 properties
-	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
-		load_by_pspec(widget,klass->properties.settings[ix],key_file,group_name);
+	for(ix = 0; klass->properties.persistent[ix];ix++)
+	{
+		load_by_pspec(
+			widget,
+			g_object_class_find_property(G_OBJECT_CLASS(klass),klass->properties.persistent[ix]),
+			key_file,
+			group_name
+		);
+
+	}
 
 	g_object_thaw_notify(G_OBJECT(widget));
 	terminal->freeze = 0;

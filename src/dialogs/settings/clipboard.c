@@ -163,11 +163,22 @@
 		.label = N_("Smart copy"),
 		.tooltip = N_("When set the first copy operation after the selection will set the clipboard contents and the next ones will append"),
 		.left = 1,
+		.top = 4,
+		.width = 1,
+		.height = 1,
+		.grid = COPY_SETTINGS
+	},
+
+	{
+		.label = N_("Image copy"),
+		.tooltip = N_("When set allow image formats on clipboard"),
+		.left = 1,
 		.top = 3,
 		.width = 1,
 		.height = 1,
 		.grid = COPY_SETTINGS
 	}
+
  };
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
@@ -472,6 +483,7 @@ static void load(GtkWidget *w, GtkWidget *t) {
 	gtk_toggle_button_set_active(widget->input.checkboxes[0],(terminal->selection.options & V3270_SELECTION_NON_BREAKABLE_SPACE) != 0);
 	gtk_toggle_button_set_active(widget->input.checkboxes[1],(terminal->selection.options & V3270_SELECTION_SCREEN_PASTE) != 0);
 	gtk_toggle_button_set_active(widget->input.checkboxes[2],(terminal->selection.options & V3270_SELECTION_SMART_COPY) != 0);
+	gtk_toggle_button_set_active(widget->input.checkboxes[3],(terminal->selection.options & V3270_SELECTION_PIXBUFF) != 0);
 
 	//
 	// Set font combo-box
@@ -557,6 +569,12 @@ static void apply(GtkWidget *w, GtkWidget *t) {
 			terminal->selection.options |= V3270_SELECTION_SMART_COPY;
 		} else {
 			terminal->selection.options &= ~V3270_SELECTION_SMART_COPY;
+		}
+
+		if(gtk_toggle_button_get_active(widget->input.checkboxes[3])) {
+			terminal->selection.options |= V3270_SELECTION_PIXBUFF;
+		} else {
+			terminal->selection.options &= ~V3270_SELECTION_PIXBUFF;
 		}
 
 		// Get font settings

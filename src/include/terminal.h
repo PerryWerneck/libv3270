@@ -33,6 +33,7 @@
 
 G_BEGIN_DECLS
 
+/*
  /// @brief V3270 Properties saved to the configuration file.
  typedef enum
  {
@@ -56,6 +57,7 @@ G_BEGIN_DECLS
  } V3270_SETTING;
 
  G_GNUC_INTERNAL void v3270_notify_setting(GtkWidget *widget, V3270_SETTING id);
+*/
 
  struct _v3270Class
  {
@@ -69,7 +71,7 @@ G_BEGIN_DECLS
 		GParamSpec * toggle[LIB3270_TOGGLE_COUNT];		// Toggle properties.
 
 		// Properties saved to the configuration file.
-		GParamSpec * settings[V3270_SETTING_COUNT];
+		const gchar **persistent;
 
 		// Signal related properties
 		GParamSpec * online;
@@ -78,6 +80,7 @@ G_BEGIN_DECLS
 		GParamSpec * session_name;
 		GParamSpec * trace;
 		GParamSpec * has_copy;
+		GParamSpec * has_timer;
 
 		struct
 		{
@@ -86,13 +89,10 @@ G_BEGIN_DECLS
 			guint integer;
 			guint uint;
 			guint str;
-			guint responses;
+//			guint responses;
 		} type;
 
     } properties;
-
-    // Predefined responses.
-   	GParamSpec * responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
 
     // Cursors
 	GdkCursor * cursors[LIB3270_POINTER_COUNT];
@@ -104,7 +104,8 @@ G_BEGIN_DECLS
 	void (*activate)(GtkWidget *widget);
 	void (*toggle_changed)(v3270 *widget,LIB3270_TOGGLE_ID toggle_id,gboolean toggle_state,const gchar *toggle_name);
 	void (*message_changed)(v3270 *widget, LIB3270_MESSAGE id);
-	void (*popup_message)(GtkWidget *widget, LIB3270_NOTIFY id , const gchar *title, const gchar *message, const gchar *text);
+	guint (*load_popup_response)(v3270 *widget, const gchar *popup_name, guint response);
+	gboolean (*save_popup_response)(v3270 *widget, const gchar *popup_name, guint response);
 
  };
 
@@ -127,6 +128,7 @@ G_BEGIN_DECLS
  	V3270_SELECTION_SCREEN_PASTE		= 0x08,	///< @brief Enable screen paste.
  	V3270_SELECTION_SMART_COPY			= 0x10,	///< @brief Enable copy/append based on current selection state.
  	V3270_SELECTION_DIALOG_STATE		= 0x20,	///< @brief Used for settings dialog.
+ 	V3270_SELECTION_PIXBUFF				= 0x40,	///< @brief Allow pixbuf formats.
 
  } V3270SelectionOption;
 
@@ -160,7 +162,7 @@ G_BEGIN_DECLS
 	int copying			: 1;	/// @brief Copy with center mouse button
 
     /// @brief Action properties.
-   	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
+//   	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
 
 	GSource					* timer;
 	GtkIMContext			* input_method;
@@ -256,6 +258,7 @@ G_BEGIN_DECLS
  };
 
  G_GNUC_INTERNAL void v3270_activate(GtkWidget *widget);
+ G_GNUC_INTERNAL GdkPixbuf * v3270_get_as_pixbuf(GtkWidget *widget);
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 

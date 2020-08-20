@@ -37,6 +37,7 @@
  #include <v3270/selection.h>
  #include <v3270/trace.h>
  #include <lib3270/log.h>
+ #include <lib3270/popup.h>
  #include <stdlib.h>
 
  #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -103,9 +104,13 @@
 	lib3270_disconnect(v3270_get_session(terminal));
  }
 
- static void save_all_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
+ static void save_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
- 	lib3270_save_all(v3270_get_session(terminal),NULL);
+ 	H3270 *hSession = v3270_get_session(terminal);
+ 	if(lib3270_get_has_selection(hSession))
+		lib3270_save_selected(hSession,NULL);
+	else
+		lib3270_save_all(hSession,NULL);
  }
 
  static void load_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
@@ -159,6 +164,7 @@
 	*/
 
 
+	/*
 	{
 		//
 		// Test V3270 FT Dialog
@@ -176,7 +182,24 @@
 		gtk_widget_show_all(dialog);
 
 	}
+	*/
 
+
+ }
+
+ static void popup_clicked(GtkButton *button, GtkWidget *terminal)
+ {
+
+	/*
+		static const LIB3270_POPUP popup = {
+		.name = "sample_popup",
+		.type = LIB3270_NOTIFY_INFO,
+		.summary = "This is the summary of message",
+		.body = "This it the body of the message, can be used for a bigger explanation"
+	};
+
+	lib3270_popup(v3270_get_session(terminal), &popup, 1);
+	*/
 
  }
 
@@ -226,8 +249,9 @@
 		{ "gtk-harddisk",				G_CALLBACK(ft_clicked),				"Open file transfer dialog"		},
 		{ "gtk-copy",					G_CALLBACK(copy_clicked),			"Copy data"						},
 		{ "gtk-paste",					G_CALLBACK(paste_clicked),			"Paste data"					},
-		{ "document-save",				G_CALLBACK(save_all_clicked),		"Save screen"					},
+		{ "document-save",				G_CALLBACK(save_clicked),			"Save screen or selection"		},
 		{ "document-open",				G_CALLBACK(load_clicked),			"Paste file"					},
+		{ "dialog-information",			G_CALLBACK(popup_clicked),			"Show test popup"				},
 
 		{ "applications-system",		G_CALLBACK(preferences_clicked),	"Session properties"			},
 

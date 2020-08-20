@@ -52,21 +52,21 @@
  {
  	{
  		.left = 2,
- 		.top = 3,
- 		.width = 1,
+ 		.top = 2,
+ 		.width = 2,
  		.grid = CONNECTION,
  		.id = LIB3270_TOGGLE_CONNECT_ON_STARTUP,
  	},
  	{
- 		.left = 3,
- 		.top = 3,
+ 		.left = 4,
+ 		.top = 2,
  		.width = 1,
  		.grid = CONNECTION,
 		.id = LIB3270_TOGGLE_RECONNECT,
  	},
  	{
- 		.left = 4,
- 		.top = 3,
+ 		.left = 5,
+ 		.top = 2,
  		.width = 1,
  		.grid = CONNECTION,
 		.id = LIB3270_TOGGLE_KEEP_ALIVE,
@@ -208,7 +208,7 @@
  	{
  		.left = 0,
  		.top = 0,
- 		.width = 4,
+ 		.width = 5,
  		.height = 1,
  		.grid = CONNECTION,
 
@@ -260,7 +260,7 @@
  	{
  		.left = 2,
  		.top = 1,
- 		.width = 2,
+ 		.width = 3,
  		.height = 1,
  		.grid = CONNECTION,
 
@@ -279,7 +279,7 @@
 	struct
 	{
 		GtkEntry			* entry[G_N_ELEMENTS(entryfields)];		///< @brief Entry fields for host & service name.
-		GtkToggleButton		* ssl;									///< @brief SSL Connection?
+		GtkComboBox			* ssl;									///< @brief SSL Connection?
 		GtkComboBox			* combos[G_N_ELEMENTS(combos)];			///< @brief Combo-boxes.
 		GtkComboBox			* charset;								///< @brief Charset combo box.
 		GtkToggleButton		* toggles[G_N_ELEMENTS(toggleList)];	///< @brief Toggle checks.
@@ -540,12 +540,41 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 	}
 
-	// SSL checkbox
+	// SSL input
 	{
+		GtkWidget *label = gtk_label_new_with_mnemonic(_( "_Security" ));
+		gtk_widget_set_halign(label,GTK_ALIGN_END);
+		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),label,0,3,1,1);
+
+		GtkTreeModel * model = (GtkTreeModel *) gtk_list_store_new(1,G_TYPE_STRING);
+
+		widget->input.ssl = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
+
+		GtkCellRenderer * text_renderer	= gtk_cell_renderer_text_new();
+		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.ssl), text_renderer, TRUE);
+		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.ssl), text_renderer, "text", 0, NULL);
+
+		static const gchar * levels[] =
+		{
+			N_("Unsecure"),
+			N_("SSL/TLS")
+		};
+
+		size_t level;
+		for(level = 0; level < G_N_ELEMENTS(levels); level++)
+		{
+			GtkTreeIter iter;
+			gtk_list_store_append((GtkListStore *) model, &iter);
+			gtk_list_store_set((GtkListStore *) model, &iter, 0, levels[level], -1);
+		};
+
+		/*
 		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
 		gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
 		gtk_widget_set_halign(GTK_WIDGET(widget->input.ssl),GTK_ALIGN_START);
-		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),GTK_WIDGET(widget->input.ssl),1,3,1,1);
+		*/
+
+		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),GTK_WIDGET(widget->input.ssl),1,3,2,1);
 	}
 
 	// Toggle checkboxes
@@ -699,7 +728,7 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 	{
 		g_autofree gchar * url =
 			g_strconcat(
-							(gtk_toggle_button_get_active(widget->input.ssl) ? "tn3270s://" : "tn3270://"),
+							(gtk_combo_box_get_active(widget->input.ssl) > 0 ? "tn3270s://" : "tn3270://"),
 							gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]),
 							":",
 							gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]),
@@ -778,9 +807,9 @@ static void load(GtkWidget *w, GtkWidget *terminal)
     {
 
         g_autofree gchar * url = g_strdup(u);
-        debug("URL=[%s]",url);
 
-		gtk_toggle_button_set_active(widget->input.ssl,g_str_has_prefix(u,"tn3270s"));
+		gtk_combo_box_set_active(widget->input.ssl,(g_str_has_prefix(u,"tn3270s") ? 1 : 0));
+//		gtk_toggle_button_set_active(widget->input.ssl,g_str_has_prefix(u,"tn3270s"));
 
         gchar *hostname = strstr(url,"://");
         if(!hostname)

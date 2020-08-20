@@ -44,6 +44,7 @@
  #include <lib3270/log.h>
  #include <v3270.h>
  #include <v3270/toggle.h>
+ #include <lib3270/popup.h>
 
  G_BEGIN_DECLS
 
@@ -82,7 +83,6 @@
  	V3270_SIGNAL_KEYPRESS,
  	V3270_SIGNAL_MODEL_CHANGED,
  	V3270_SIGNAL_CHANGED,
- 	V3270_SIGNAL_MESSAGE,
  	V3270_SIGNAL_FIELD,
  	V3270_SIGNAL_SESSION_CHANGED,
 
@@ -114,7 +114,9 @@
  	//
  	// Settings signals (Mostly fired by V3270Settings dialogs).
  	//
- 	V3270_SIGNAL_SAVE_SETTINGS,		///< @brief Notify main application to save all widget settings.
+ 	V3270_SIGNAL_SAVE_SETTINGS,			///< @brief Notify main application to save all widget settings.
+ 	V3270_SIGNAL_LOAD_POPUP_RESPONSE,	///< @brief Load popup response (GTK_RESPONSE_NONE to show popup).
+ 	V3270_SIGNAL_SAVE_POPUP_RESPONSE,	///< @brief Save popup response.
 
  	V3270_SIGNAL_LAST
  };
@@ -132,6 +134,8 @@
  G_GNUC_INTERNAL GtkWidget		* v3270_box_pack_frame(GtkWidget *box, GtkWidget *child, const gchar *title, const gchar *tooltip, GtkAlign align, gboolean expand, gboolean fill, guint padding);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_grid(GtkAlign align);
  G_GNUC_INTERNAL GtkWidget		* v3270_dialog_create_frame(GtkWidget * child, const gchar *title);
+
+ G_GNUC_INTERNAL GtkResponseType v3270_popup_dialog_show(GtkWidget *widget, const LIB3270_POPUP *popup, gboolean wait);
 
  G_GNUC_INTERNAL void			  v3270_signal_emit(gpointer instance, enum V3270_SIGNAL signal_id, ...);
 
@@ -181,6 +185,7 @@
  	unsigned short keycode;
  } V3270PFKeyAccelerator;
 
+ /*
  typedef enum v3270_toggleable_dialog
  {
 	V3270_TOGGLEABLE_DIALOG_PASTE_FAILED,
@@ -189,6 +194,7 @@
  } V3270_TOGGLEABLE_DIALOG;
 
  G_GNUC_INTERNAL GtkResponseType v3270_popup_toggleable_dialog(GtkWidget *widget, V3270_TOGGLEABLE_DIALOG id, const gchar *title, const gchar *summary, const gchar *body, const gchar *first_button_text, ...) G_GNUC_NULL_TERMINATED;
+ */
 
 #if GTK_CHECK_VERSION(3,12,0)
  G_GNUC_INTERNAL GtkHeaderBar	* v3270_dialog_get_header_bar(GtkWidget * widget);

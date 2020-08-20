@@ -43,18 +43,40 @@
  #include <lib3270.h>
  #include <lib3270/session.h>
  #include <lib3270/log.h>
+ #include <lib3270/popup.h>
  #include <errno.h>
+ #include <v3270/settings.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void set_timer(H3270 *session, unsigned char on)
+struct has_timer
 {
-	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(session));
+	H3270			* hSession;
+	unsigned char	  on;
+};
 
-	if(on)
+static gboolean bg_has_timer(struct has_timer *data)
+{
+	GtkWidget *widget = GTK_WIDGET(lib3270_get_user_data(data->hSession));
+
+	if(data->on)
 		v3270_start_timer(widget);
 	else
 		v3270_stop_timer(widget);
+
+	g_free(data);
+
+	return FALSE;
+}
+
+static void set_timer(H3270 *session, unsigned char on)
+{
+	struct has_timer *data = g_malloc0(sizeof(struct has_timer));
+
+	data->hSession = session;
+	data->on = on;
+
+	g_idle_add((GSourceFunc) bg_has_timer, data);
 
 }
 
@@ -91,7 +113,8 @@ static gboolean	v3270_update_url(v3270 *terminal)
 {
 	GtkWidget * widget = GTK_WIDGET(terminal);
 	debug("url=%s",v3270_get_url(widget));
-	v3270_notify_setting(widget,V3270_SETTING_URL);
+
+	v3270_emit_save_settings(widget,"url");
 	v3270_signal_emit(widget, V3270_SIGNAL_SESSION_CHANGED);
 	return FALSE;
 }
@@ -180,9 +203,7 @@ static void update_model(H3270 *session, const char *name, int model, G_GNUC_UNU
 {
 	GtkWidget * widget = GTK_WIDGET(lib3270_get_user_data(session));
 
-	debug("%s: terminal=%p pspec=%p",__FUNCTION__,widget,GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
-	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
-
+//	g_object_notify_by_pspec(G_OBJECT(widget), GTK_V3270_GET_CLASS(widget)->properties.settings[V3270_SETTING_MODEL_NUMBER]);
 	v3270_signal_emit(widget,V3270_SIGNAL_MODEL_CHANGED, (guint) model, name);
 }
 
@@ -255,18 +276,20 @@ static void update_selection(H3270 *session, G_GNUC_UNUSED int start, G_GNUC_UNU
 
 }
 
-static void message(H3270 *session, LIB3270_NOTIFY id , const char *title, const char *message, const char *text)
+/*
+static void message(H3270 *session, LIB3270_NOTIFY type , const char *title, const char *message, const char *text)
 {
-	v3270_signal_emit(
-		GTK_WIDGET(lib3270_get_user_data(session)),
-		V3270_SIGNAL_MESSAGE,
-		(int) id,
-		(gchar *) title,
-		(gchar *) message,
-		(gchar *) text
-	);
+	LIB3270_POPUP popup = {
+		.type = type,
+		.title = title,
+		.summary = message,
+		.body = text
+	};
+
+	v3270_popup_dialog_show(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
 
 }
+*/
 
 static int print(H3270 *session, LIB3270_CONTENT_OPTION mode)
 {
@@ -303,27 +326,26 @@ static int load(H3270 *session, const char *filename)
 	return 0;
 }
 
+/*
 static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
 {
- 	GtkWidget *terminal = (GtkWidget *) lib3270_get_user_data(session);
+	LIB3270_POPUP popup = {
+		.type = type,
+		.title = title,
+		.summary = msg
+	};
 
- 	if(terminal && GTK_IS_V3270(terminal))
-	{
+	g_autofree gchar * body = NULL;
 
-		if(fmt)
-		{
-			gchar *text = g_strdup_vprintf(fmt,args);
-			v3270_popup_message(GTK_WIDGET(terminal),type,title,msg,text);
-			g_free(text);
-		}
-		else
-		{
-			v3270_popup_message(GTK_WIDGET(terminal),type,title,msg,NULL);
-		}
+	if(fmt) {
+		body = g_strdup_vprintf(fmt,args);
+		popup.body = body;
+	}
 
- 	}
+	v3270_popup_dialog_show(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
 
  }
+ */
 
  static gboolean bg_update_ssl(H3270 *session)
  {
@@ -362,6 +384,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_update_oia, data, g_free);
  }
 
+ /*
  static int popup_ssl_error(H3270 *session, int rc, const char *title, const char *summary, const char *body)
  {
  	GtkWidget *terminal = (GtkWidget *) lib3270_get_user_data(session);
@@ -411,17 +434,47 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
 	return -1;
  }
+ */
+
+ static int popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
+
+	GtkResponseType response = v3270_popup_dialog_show(
+									GTK_WIDGET(lib3270_get_user_data(hSession)),
+									popup,
+									wait != 0);
+
+	if(response == GTK_RESPONSE_OK || response == GTK_RESPONSE_APPLY)
+		return 0;
+
+	return errno = ECANCELED;
+
+ }
 
  void v3270_install_callbacks(v3270 *widget)
  {
 	struct lib3270_session_callbacks *cbk;
 
-	lib3270_set_popup_handler(widget->host, popup_handler);
-
-	cbk = lib3270_get_session_callbacks(widget->host,sizeof(struct lib3270_session_callbacks));
+	cbk = lib3270_get_session_callbacks(widget->host,G_STRINGIFY(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
 	if(!cbk)
 	{
-		g_error( _( "Invalid callback table, possible version mismatch in lib3270") );
+		if(g_ascii_strcasecmp(G_STRINGIFY(LIB3270_REVISION),lib3270_get_revision()))
+		{
+			g_error(
+				_("Invalid callback table, the release %s of lib%s can't be used (expecting revision %s)"),
+				lib3270_get_revision(),
+				G_STRINGIFY(LIB3270_NAME),
+				G_STRINGIFY(LIB3270_REVISION)
+			);
+		}
+		else
+		{
+			g_error(
+				_("Unexpected callback table, the release %s of lib%s is invalid"),
+				lib3270_get_revision(),
+				G_STRINGIFY(LIB3270_NAME)
+			);
+		}
+
 		return;
 	}
 
@@ -445,12 +498,11 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->update_model		= update_model;
 	cbk->changed			= changed;
 	cbk->ctlr_done			= ctlr_done;
-	cbk->message			= message;
 	cbk->update_ssl			= update_ssl;
 	cbk->print				= print;
 	cbk->save				= save;
 	cbk->load				= load;
-	cbk->popup_ssl_error	= popup_ssl_error;
+	cbk->popup				= popup;
 
 }
 

@@ -39,11 +39,13 @@
 
 // 	debug("%s(%u,%s)",__FUNCTION__,prop_id,g_param_spec_get_name(pspec));
 
+	/*
  	if(prop_id >= klass->properties.type.responses)
 	{
 		g_value_set_int(value,(int) window->responses[prop_id - klass->properties.type.responses]);
 	}
- 	else if(prop_id >= klass->properties.type.str)
+ 	else */
+	if(prop_id >= klass->properties.type.str)
 	{
 		const LIB3270_STRING_PROPERTY * prop = (lib3270_get_string_properties_list()+(prop_id - klass->properties.type.str));
 //		debug("%s.%s.%s",__FUNCTION__,"string",prop->name);
@@ -146,6 +148,11 @@
 		case V3270_PROPERTY_HAS_COPY:
 			g_value_set_boolean(value,window->selection.blocks != NULL);
 			break;
+
+		case V3270_PROPERTY_HAS_TIMER:
+			g_value_set_boolean(value,window->timer != NULL);
+			break;
+
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 
