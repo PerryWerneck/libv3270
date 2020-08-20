@@ -317,7 +317,6 @@
 			key_file,
 			group_name
 		);
-
 	}
 
  }

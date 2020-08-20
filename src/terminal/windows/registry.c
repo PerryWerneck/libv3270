@@ -261,11 +261,23 @@
 
 	// Save Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
-		save_by_pspec(widget,klass->properties.toggle[ix],hKey);
+	{
+		save_by_pspec(
+			widget,
+			klass->properties.toggle[ix],
+			hKey
+		);
+	}
 
 	// Save V3270 properties
-	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
-		save_by_pspec(widget,klass->properties.settings[ix],hKey);
+	for(ix = 0; klass->properties.persistent[ix];ix++)
+	{
+		save_by_pspec(
+			widget,
+			g_object_class_find_property(G_OBJECT_CLASS(klass),klass->properties.persistent[ix]),
+			hKey
+		);
+	}
 
 	RegCloseKey(hKey);
 
@@ -322,14 +334,23 @@
 
 	// Load Toggles
 	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
-		load_by_pspec(widget,klass->properties.toggle[ix],hKey);
+	{
+		load_by_pspec(
+			widget,
+			klass->properties.toggle[ix],
+			hKey
+		);
+	}
 
 	// Load V3270 properties
-	for(ix = 0; ix < V3270_SETTING_COUNT; ix++)
-		load_by_pspec(widget,klass->properties.settings[ix],hKey);
-
-	// Load V3270 colors
-	// v3270_set_colors(widget,g_key_file_get_string(key_file,group_name,"colors",NULL));
+	for(ix = 0; klass->properties.persistent[ix];ix++)
+	{
+		load_by_pspec(
+			widget,
+			g_object_class_find_property(G_OBJECT_CLASS(klass),klass->properties.persistent[ix]),
+			hKey
+		);
+	}
 
 	g_object_thaw_notify(G_OBJECT(widget));
 
