@@ -444,27 +444,6 @@ static void alternative_edited(GtkCellRendererAccel G_GNUC_UNUSED(*renderer), gc
 	}
 	gtk_tree_path_free(tree_path);
 
-	if(accel && accel->type == V3270_ACCELERATOR_TYPE_PFKEY)
-	{
-		GtkWidget * dialog =
-			gtk_message_dialog_new_with_markup(
-				GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(widget))),
-				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_ERROR,
-				GTK_BUTTONS_CANCEL,
-				_( "The action \"%s\" can't manage alternative keys" ),
-				v3270_accelerator_get_description(accel)
-			);
-
-		gtk_window_set_title(GTK_WINDOW(dialog),_("Rejected by action"));
-		gtk_widget_show_all(dialog);
-
-		g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
-		g_signal_connect(dialog,"response",G_CALLBACK(gtk_widget_destroy),NULL);
-
-		return;
-	}
-
 	// Call the common validation.
 	change_accel(widget, path, accel_key, mask, ALTERNATIVE_VALUE, ALTERNATIVE_MASK);
 }
@@ -490,17 +469,8 @@ void load(GtkWidget *widget, GtkWidget *terminal)
 
 			if(ix < G_N_ELEMENTS(keymaps))
 			{
-				if(accel->type == V3270_ACCELERATOR_TYPE_PFKEY)
-				{
-					keymaps[ix].key = GDK_F1 + (((V3270PFKeyAccelerator *)accel)->keycode - 1);
-					keymaps[ix].mods = 0;
-				}
-				else
-				{
-					keymaps[ix].key = accel->key;
-					keymaps[ix].mods = accel->mods;
-				}
-
+				keymaps[ix].key = accel->key;
+				keymaps[ix].mods = accel->mods;
 				ix++;
 			}
 
@@ -560,43 +530,18 @@ static gboolean add_accel(GtkTreeModel *model, GtkTreePath G_GNUC_UNUSED(*path),
 	// Allways create the "main" accelerator to keep the action active.
 	V3270Accelerator * acc = v3270_accelerator_clone(accel);
 
-	if(acc->type == V3270_ACCELERATOR_TYPE_PFKEY) {
+	acc->key	= keymap[0].key;
+	acc->mods	= keymap[0].mods;
+	*accelerators = g_slist_prepend(*accelerators,acc);
 
-		if(keymap[0].mods) {
-			g_warning("PFKey accelerator can't manage modifiers");
-		}
-
-		int pfkey = (keymap[0].key - GDK_F1) + 1;
-
-		if(pfkey < 0 || pfkey > 22) {
-
-			g_warning("Invalid pfkey code: %d",pfkey);
-
-		} else {
-
-			((V3270PFKeyAccelerator *) acc)->keycode = (unsigned short) pfkey;
-
-		}
-
+	// The alternative one is created only when set.
+	if(keymap[1].key)
+	{
+		acc = v3270_accelerator_clone(accel);
+		acc->key	= keymap[1].key;
+		acc->mods	= keymap[1].mods;
 		*accelerators = g_slist_prepend(*accelerators,acc);
-
-	} else {
-
-		acc->key	= keymap[0].key;
-		acc->mods	= keymap[0].mods;
-		*accelerators = g_slist_prepend(*accelerators,acc);
-
-		// The alternative one is created only when set.
-		if(keymap[1].key)
-		{
-			acc = v3270_accelerator_clone(accel);
-			acc->key	= keymap[1].key;
-			acc->mods	= keymap[1].mods;
-			*accelerators = g_slist_prepend(*accelerators,acc);
-		}
-
 	}
-
 
 	return FALSE;
 }
@@ -617,10 +562,7 @@ void apply(GtkWidget *s, GtkWidget *t)
 	if(terminal->accelerators)
 		g_slist_free_full(terminal->accelerators,g_free);
 
-	terminal->accelerators = accelerators;
-
-	// And sort it.
-	v3270_accelerator_map_sort(terminal);
+	terminal->accelerators = v3270_accelerator_map_sort(accelerators);
 
 }
 

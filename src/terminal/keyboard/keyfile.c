@@ -44,36 +44,18 @@
  static void save_accelerator(const V3270Accelerator * accel, const char *keys, gpointer ptr)
  {
 
- 	if(accel->type == V3270_ACCELERATOR_TYPE_PFKEY)
-	{
-		// It's a PF-Key action!
-		g_autofree gchar * key = g_strdup_printf("pf%u",((V3270PFKeyAccelerator *)accel)->keycode);
-
-		debug("%p %s=%s",accel,v3270_accelerator_get_name(accel),key);
-
-		g_key_file_set_string(
-			((struct Args *) ptr)->key_file,
-			((struct Args *) ptr)->group_name,
-			v3270_accelerator_get_name(accel),
-			key
-		);
-
-	}
- 	else
-	{
-		const gchar * key = v3270_accelerator_get_name(accel);
-		if(!key)
-			return;
+	const gchar * key = v3270_accelerator_get_name(accel);
+	if(!key)
+		return;
 
 //		debug("%s=%s",v3270_accelerator_get_name(accel),keys);
 
-		g_key_file_set_string(
-			((struct Args *) ptr)->key_file,
-			((struct Args *) ptr)->group_name,
-			key,
-			(keys ? keys : "")
-		);
-	}
+	g_key_file_set_string(
+		((struct Args *) ptr)->key_file,
+		((struct Args *) ptr)->group_name,
+		key,
+		(keys ? keys : "")
+	);
 
  }
 
@@ -137,36 +119,11 @@
 		for(ix=0;keycodes[ix];ix++)
 		{
 
-			if(accel->type == V3270_ACCELERATOR_TYPE_PFKEY)
-			{
-				// It's a PFKey redirector
-
-				unsigned int pfkey = 0;
-
-				if(sscanf(keycodes[ix],"pf%u",&pfkey) != 1)
-				{
-					g_warning("Can't parse key \"%s\" for accelerator %s",keycodes[ix],v3270_accelerator_get_name(accel));
-					return;
-				}
-
-				debug("Creating special accelerator %s",v3270_accelerator_get_name(accel));
-
-				// Remap PFKey accelerator
-				V3270Accelerator * acc = v3270_accelerator_clone(accel);
-				((V3270PFKeyAccelerator *) acc)->keycode = (unsigned short) pfkey;
-				terminal->accelerators = g_slist_prepend(terminal->accelerators,acc);
-
-				debug("****[%s]***",v3270_accelerator_get_name(accel));
-
-			}
-			else
-			{
-				// Standard accelerator.
-				V3270Accelerator * acc = v3270_accelerator_clone(accel);
-				gtk_accelerator_parse(keycodes[ix],&acc->key,&acc->mods);
-				acc->key = gdk_keyval_to_lower(acc->key);
-				terminal->accelerators = g_slist_prepend(terminal->accelerators,acc);
-			}
+			// Standard accelerator.
+			V3270Accelerator * acc = v3270_accelerator_clone(accel);
+			gtk_accelerator_parse(keycodes[ix],&acc->key,&acc->mods);
+			acc->key = gdk_keyval_to_lower(acc->key);
+			terminal->accelerators = g_slist_prepend(terminal->accelerators,acc);
 
 		}
 
@@ -205,7 +162,7 @@
 
 	g_strfreev(keys);
 
-	v3270_accelerator_map_sort(terminal);
+	terminal->accelerators = v3270_accelerator_map_sort(terminal->accelerators);
 
 	g_object_thaw_notify(G_OBJECT(widget));
 	terminal->freeze = 0;

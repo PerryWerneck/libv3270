@@ -565,13 +565,8 @@ static void v3270_init(v3270 *widget)
 	v3270_font_info_init(&widget->font);
 	v3270_set_color_table(widget->color,v3270_get_default_colors());
 
-	/*
-	for(ix = 0; ix < G_N_ELEMENTS(widget->responses); ix++)
-		widget->responses[ix] = GTK_RESPONSE_NONE;
-	*/
-
 	// Init accelerators
-	v3270_init_accelerators(widget);
+	widget->accelerators = v3270_accelerator_map_load_default(NULL);
 
 }
 

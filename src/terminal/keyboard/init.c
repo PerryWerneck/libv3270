@@ -68,6 +68,7 @@
  	return lib3270_toggle(v3270_get_session(widget),action->id);
  }
 
+ /*
  static int fire_pfkey_action(GtkWidget *widget, V3270PFKeyAccelerator *accel)
  {
  	debug("%s accel=%p",__FUNCTION__,accel);
@@ -75,12 +76,13 @@
 
  	return lib3270_pfkey(v3270_get_session(widget),(int) accel->keycode);
  }
+ */
 
- void v3270_init_accelerators(v3270 *widget)
+ GSList	* v3270_accelerator_map_load_default(GSList * accelerators)
  {
  	size_t ix;
 
-	// Create accelerators for lib3270 actions.
+ 	// Create accelerators for lib3270 actions.
 	{
 		const LIB3270_ACTION * actions = lib3270_get_actions();
 
@@ -105,7 +107,7 @@
 
 					v3270_accelerator_parse(accelerator,keys[key]);
 
-					widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+					accelerators = g_slist_prepend(accelerators,accelerator);
 
 				}
 
@@ -119,7 +121,7 @@
 				accelerator->type = V3270_ACCELERATOR_TYPE_LIB3270_ACTION;
 				accelerator->arg  = (gconstpointer) &actions[ix];
 				accelerator->activate = G_CALLBACK(fire_lib3270_action);
-				widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+				accelerators = g_slist_prepend(accelerators,accelerator);
 
 			}
 
@@ -141,7 +143,7 @@
 
 			v3270_accelerator_parse(accelerator,toggles[ix].key);
 
-			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+			accelerators = g_slist_prepend(accelerators,accelerator);
 
 		}
 
@@ -169,7 +171,7 @@
 
 					v3270_accelerator_parse(accelerator,keys[key]);
 
-					widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+					accelerators = g_slist_prepend(accelerators,accelerator);
 
 				}
 
@@ -184,7 +186,7 @@
 				accelerator->arg = (gconstpointer) &actions[ix];
 				accelerator->activate = G_CALLBACK(actions[ix].activate);
 
-				widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
+				accelerators = g_slist_prepend(accelerators,accelerator);
 
 			}
 		}
@@ -192,6 +194,7 @@
 	}
 
 	// Create PF-Key accelerators
+	/*
 	{
 		static const struct
 		{
@@ -236,8 +239,9 @@
 		}
 
 	}
+	*/
 
-	v3270_accelerator_map_sort(widget);
+	return v3270_accelerator_map_sort(accelerators);
 
  }
 

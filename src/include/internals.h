@@ -158,7 +158,6 @@
  	V3270_ACCELERATOR_TYPE_INTERNAL,			///< @brief Accelerator is internal.
  	V3270_ACCELERATOR_TYPE_LIB3270_ACTION,		///< @brief Accelerator is a lib3270 action.
  	V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE,		///< @brief Accelerator is a lib3270 toggle.
- 	V3270_ACCELERATOR_TYPE_PFKEY,				///< @brief Accelerator is a PFKey redirector.
  	V3270_ACCELERATOR_TYPE_CUSTOM,				///< @brief Custom (application based) accelerator.
  };
 
@@ -177,24 +176,6 @@
  	const gchar *name;
  } V3270CustomAccelerator;
 
- typedef struct _V3270PFKeyAccelerator
- {
- 	struct _V3270Accelerator parent;
- 	const gchar *name;
- 	const gchar *description;
- 	unsigned short keycode;
- } V3270PFKeyAccelerator;
-
- /*
- typedef enum v3270_toggleable_dialog
- {
-	V3270_TOGGLEABLE_DIALOG_PASTE_FAILED,
-
-	V3270_TOGGLEABLE_DIALOG_CUSTOM
- } V3270_TOGGLEABLE_DIALOG;
-
- G_GNUC_INTERNAL GtkResponseType v3270_popup_toggleable_dialog(GtkWidget *widget, V3270_TOGGLEABLE_DIALOG id, const gchar *title, const gchar *summary, const gchar *body, const gchar *first_button_text, ...) G_GNUC_NULL_TERMINATED;
- */
 
 #if GTK_CHECK_VERSION(3,12,0)
  G_GNUC_INTERNAL GtkHeaderBar	* v3270_dialog_get_header_bar(GtkWidget * widget);
@@ -387,8 +368,8 @@ G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned
  G_GNUC_INTERNAL void		  v3270_update_toggle(GtkWidget *widget, LIB3270_TOGGLE_ID id, unsigned char value, const char *name);
 
  // Accelerators
- G_GNUC_INTERNAL void		  v3270_accelerator_map_sort(v3270 *widget);
- G_GNUC_INTERNAL void		  v3270_init_accelerators(v3270 *widget);
+ G_GNUC_INTERNAL GSList		* v3270_accelerator_map_sort(GSList * accelerators);
+ G_GNUC_INTERNAL GSList		* v3270_accelerator_map_load_default(GSList * accelerators);
 
 G_END_DECLS
 

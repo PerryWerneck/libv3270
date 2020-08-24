@@ -44,7 +44,8 @@
 			g_slist_free_full(terminal->accelerators,g_free);
 			terminal->accelerators = NULL;
 		}
-		v3270_init_accelerators(terminal);
+		terminal->accelerators = v3270_accelerator_map_load_default(NULL);
+
 	}
 
  }
@@ -57,9 +58,9 @@
 	return a->arg - b->arg;
  }
 
- void v3270_accelerator_map_sort(v3270 *widget)
+ GSList	* v3270_accelerator_map_sort(GSList * accelerators)
  {
-	widget->accelerators = g_slist_sort(widget->accelerators, (GCompareFunc) compare_func);
+	return g_slist_sort(accelerators, (GCompareFunc) compare_func);
  }
 
  void v3270_accelerator_map_foreach(GtkWidget *widget,void (*call)(const V3270Accelerator * accel, const char *keys, gpointer ptr), gpointer ptr)

@@ -51,15 +51,6 @@
 		}
 		break;
 
-	case V3270_ACCELERATOR_TYPE_PFKEY:
-		{
-			V3270PFKeyAccelerator * customAccel = g_new0(V3270PFKeyAccelerator,1);
-			*customAccel = *((V3270PFKeyAccelerator *) accel);
-			customAccel->parent.arg = (gconstpointer) customAccel;
-			rc = (V3270Accelerator *) customAccel;
-		}
-		break;
-
 	default:
 		rc = g_new0(V3270Accelerator,1);
 		*rc = *accel;
@@ -176,14 +167,6 @@
 			description = g_dgettext(GETTEXT_PACKAGE,property->summary);
 		break;
 
-	case V3270_ACCELERATOR_TYPE_PFKEY:
-		debug("%s","V3270_ACCELERATOR_TYPE_PFKEY");
-
-		if( ((V3270PFKeyAccelerator *)accel)->description )
-			description = g_dgettext(GETTEXT_PACKAGE,((V3270PFKeyAccelerator *)accel)->description);
-
-		break;
-
 	}
 
 	debug("%s=%s",__FUNCTION__,description);
@@ -216,14 +199,6 @@
 			description = g_dgettext(GETTEXT_PACKAGE,property->description);
 		else if(property->summary)
 			description = g_dgettext(GETTEXT_PACKAGE,property->summary);
-		break;
-
-	case V3270_ACCELERATOR_TYPE_PFKEY:
-		debug("%s","V3270_ACCELERATOR_TYPE_PFKEY");
-
-		if( ((V3270PFKeyAccelerator *)accel)->description )
-			description = g_dgettext(GETTEXT_PACKAGE,((V3270PFKeyAccelerator *)accel)->description);
-
 		break;
 
 	}
@@ -298,9 +273,6 @@
 
 	case V3270_ACCELERATOR_TYPE_CUSTOM:
 		return ((V3270CustomAccelerator *) accel)->name;
-
-	case V3270_ACCELERATOR_TYPE_PFKEY:
-		return ((V3270PFKeyAccelerator *) accel)->name;
 
 	}
 
