@@ -51,6 +51,14 @@
 		}
 		break;
 
+ 	case V3270_ACCELERATOR_TYPE_PFKEY:
+ 		{
+ 			V3270PFKeyAccelerator * accell = g_new0(V3270PFKeyAccelerator,1);
+			*accell = *((V3270PFKeyAccelerator *) accel);
+			rc = (V3270Accelerator *) accell;
+ 		}
+ 		break;
+
 	default:
 		rc = g_new0(V3270Accelerator,1);
 		*rc = *accel;
@@ -270,6 +278,9 @@
 	case V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE:
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
 		return lib3270_property_get_name((const LIB3270_PROPERTY *) accel->arg);
+
+	case V3270_ACCELERATOR_TYPE_PFKEY:
+		return gdk_atom_name(((const V3270PFKeyAccelerator *) accel)->name);
 
 	case V3270_ACCELERATOR_TYPE_CUSTOM:
 		return ((V3270CustomAccelerator *) accel)->name;

@@ -68,15 +68,42 @@
  	return lib3270_toggle(v3270_get_session(widget),action->id);
  }
 
- /*
- static int fire_pfkey_action(GtkWidget *widget, V3270PFKeyAccelerator *accel)
+ static int fire_pfkey_action(GtkWidget *widget, gpointer *id)
  {
- 	debug("%s accel=%p",__FUNCTION__,accel);
-	debug("%s Accelerator(%s)=%p pfkey=%d",__FUNCTION__,accel->name,accel,accel->keycode);
-
- 	return lib3270_pfkey(v3270_get_session(widget),(int) accel->keycode);
+ 	debug("%s(%u)",__FUNCTION__,GPOINTER_TO_INT(id));
+	return lib3270_pfkey(GTK_V3270(widget)->host,GPOINTER_TO_INT(id));
  }
- */
+
+ static V3270PFKeyAccelerator * v3270_pfkey_accelerator_new(int id, const gchar *keyname)
+ {
+	V3270PFKeyAccelerator * accelerator = g_new0(V3270PFKeyAccelerator,1);
+
+	accelerator->parent.type = V3270_ACCELERATOR_TYPE_PFKEY;
+	accelerator->parent.arg = GINT_TO_POINTER(id);
+
+	g_autofree gchar *name = g_strdup_printf("pf%02d",id);
+	debug("%s(%s)",__FUNCTION__,name);
+	accelerator->name = gdk_atom_intern(name,FALSE);
+
+	if(keyname) {
+
+		v3270_accelerator_parse((V3270Accelerator *) accelerator,keyname);
+
+	} else {
+
+		g_autofree gchar *kn = NULL;
+		if(id < 12)
+			kn = g_strdup_printf("F%u",id);
+		else
+			kn = g_strdup_printf("<shift>F%u",id-12);
+
+		v3270_accelerator_parse((V3270Accelerator *) accelerator,kn);
+	}
+
+	accelerator->parent.activate = G_CALLBACK(fire_pfkey_action);
+
+	return accelerator;
+ }
 
  GSList	* v3270_accelerator_map_load_default(GSList * accelerators)
  {
@@ -194,6 +221,21 @@
 	}
 
 	// Create PF-Key accelerators
+	{
+		unsigned short key;
+		// PF1 - PF24
+		for(key = 1; key < 25; key++) {
+			accelerators = g_slist_prepend(accelerators,v3270_pfkey_accelerator_new(key,NULL));
+
+			if(key == 7) {
+				accelerators = g_slist_prepend(accelerators,v3270_pfkey_accelerator_new(key,"Page_Up"));
+			} else if(key == 8) {
+				accelerators = g_slist_prepend(accelerators,v3270_pfkey_accelerator_new(key,"Page_Down"));
+			}
+
+		}
+
+	}
 	/*
 	{
 		static const struct

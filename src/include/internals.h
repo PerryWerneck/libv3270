@@ -158,6 +158,7 @@
  	V3270_ACCELERATOR_TYPE_INTERNAL,			///< @brief Accelerator is internal.
  	V3270_ACCELERATOR_TYPE_LIB3270_ACTION,		///< @brief Accelerator is a lib3270 action.
  	V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE,		///< @brief Accelerator is a lib3270 toggle.
+ 	V3270_ACCELERATOR_TYPE_PFKEY,				///< @brief Accelerator is a PFKEY.
  	V3270_ACCELERATOR_TYPE_CUSTOM,				///< @brief Custom (application based) accelerator.
  };
 
@@ -169,6 +170,12 @@
 	gconstpointer		arg;
 	GCallback			activate;
  };
+
+ typedef struct _V3270PFKeyAccelerator
+ {
+ 	struct _V3270Accelerator parent;
+ 	GdkAtom name;
+ } V3270PFKeyAccelerator;
 
  typedef struct _V3270CustomAccelerator
  {

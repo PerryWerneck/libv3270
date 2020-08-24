@@ -148,6 +148,7 @@
 		return TRUE;
 	}
 
+	/*
 	if(event->keyval >= GDK_F1 && event->keyval <= GDK_F12 && !(event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK)))
 	{
 		// It's a PFKey Action.
@@ -162,6 +163,7 @@
 		}
 
 	}
+	*/
 
 	return FALSE;
 
