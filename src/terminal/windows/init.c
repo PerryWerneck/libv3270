@@ -42,7 +42,6 @@ BOOL WINAPI DllMain(HANDLE hInstance, DWORD dwcallpurpose, LPVOID G_GNUC_UNUSED(
 {
     debug("%s starts",__FUNCTION__);
 
-	/*
     switch(dwcallpurpose)
     {
     case DLL_PROCESS_ATTACH:
@@ -62,6 +61,8 @@ BOOL WINAPI DllMain(HANDLE hInstance, DWORD dwcallpurpose, LPVOID G_GNUC_UNUSED(
 
 			bindtextdomain(GETTEXT_PACKAGE,lpFilename);
 			bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+
+			debug("bindtextdomain(%s,\"%s\"",GETTEXT_PACKAGE,lpFilename);
     	}
 		break;
 
@@ -70,7 +71,6 @@ BOOL WINAPI DllMain(HANDLE hInstance, DWORD dwcallpurpose, LPVOID G_GNUC_UNUSED(
 		break;
 
     }
-	*/
 
     debug("%s ends",__FUNCTION__);
     return TRUE;
