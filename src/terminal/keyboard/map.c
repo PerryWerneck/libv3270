@@ -157,7 +157,7 @@
 	}
 
 	// Sort!
-	v3270_accelerator_map_sort(terminal);
+	terminal->accelerators = v3270_accelerator_map_sort(terminal->accelerators);
 
 	return accel;
 

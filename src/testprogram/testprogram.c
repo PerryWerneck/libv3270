@@ -159,6 +159,7 @@ int main (int argc, char **argv) {
 	putenv("GTK_CSD=0");
 #endif // _WIN32
 
+	bind_textdomain_codeset("libv3270", "UTF-8");
 	textdomain("libv3270");
 
 	app = gtk_application_new ("br.com.bb.libv3270",G_APPLICATION_FLAGS_NONE);
