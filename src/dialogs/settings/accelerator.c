@@ -431,7 +431,6 @@ static void alternative_edited(GtkCellRendererAccel G_GNUC_UNUSED(*renderer), gc
 #endif // DEBUG
 
 	// Check for "single-accel" actions
-	V3270Accelerator *accel = NULL;
 	GtkTreePath * tree_path = gtk_tree_path_new_from_string(path);
 	GtkTreeIter iter;
 	if(gtk_tree_model_get_iter(GTK_TREE_MODEL(widget->store),&iter,tree_path))
@@ -439,7 +438,6 @@ static void alternative_edited(GtkCellRendererAccel G_GNUC_UNUSED(*renderer), gc
 		GValue value;
 		memset(&value,0,sizeof(value));
 		gtk_tree_model_get_value(GTK_TREE_MODEL(widget->store), &iter, ACTION, &value);
-		accel = (V3270Accelerator *) g_value_get_pointer(&value);
 		g_value_unset(&value);
 	}
 	gtk_tree_path_free(tree_path);

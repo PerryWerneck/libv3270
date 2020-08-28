@@ -92,10 +92,12 @@
 	} else {
 
 		g_autofree gchar *kn = NULL;
-		if(id < 12)
+		if(id < 13)
 			kn = g_strdup_printf("F%u",id);
 		else
 			kn = g_strdup_printf("<shift>F%u",id-12);
+
+		debug("********* %d - %s",id,kn);
 
 		v3270_accelerator_parse((V3270Accelerator *) accelerator,kn);
 	}
@@ -225,6 +227,7 @@
 		unsigned short key;
 		// PF1 - PF24
 		for(key = 1; key < 25; key++) {
+
 			accelerators = g_slist_prepend(accelerators,v3270_pfkey_accelerator_new(key,NULL));
 
 			if(key == 7) {
