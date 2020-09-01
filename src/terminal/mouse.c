@@ -37,6 +37,7 @@
  #include <lib3270/actions.h>
  #include <lib3270/log.h>
  #include <lib3270/trace.h>
+ #include <lib3270/ssl.h>
 
  #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 

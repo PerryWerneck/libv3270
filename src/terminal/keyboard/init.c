@@ -97,8 +97,6 @@
 		else
 			kn = g_strdup_printf("<shift>F%u",id-12);
 
-		debug("********* %d - %s",id,kn);
-
 		v3270_accelerator_parse((V3270Accelerator *) accelerator,kn);
 	}
 

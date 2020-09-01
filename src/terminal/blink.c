@@ -30,6 +30,7 @@
  #include <config.h>
  #include <terminal.h>
  #include <internals.h>
+ #include <lib3270/ssl.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 

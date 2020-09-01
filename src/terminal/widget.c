@@ -35,6 +35,7 @@
  #include <lib3270/log.h>
  #include <lib3270/toggle.h>
  #include <lib3270/actions.h>
+ #include <lib3270/ssl.h>
  #include <internals.h>
 
  #if GTK_CHECK_VERSION(3,0,0)

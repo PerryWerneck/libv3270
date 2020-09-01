@@ -36,6 +36,7 @@
  #include <libintl.h>
  #include <glib/gi18n-lib.h>
  #include <internals.h>
+ #include <lib3270/ssl.h>
 
  #include <v3270.h>
 
