@@ -349,9 +349,21 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
  static gboolean bg_update_ssl(H3270 *session)
  {
- 	v3270_blink_ssl(GTK_V3270(lib3270_get_user_data(session)));
+ 	v3270 *terminal = GTK_V3270(lib3270_get_user_data(session));
 
-	if(lib3270_get_ssl_state(session) == LIB3270_SSL_NEGOTIATING)
+ 	if(terminal->surface)
+	{
+		// Redraw SSL area.
+		GdkRectangle	* r;
+		cairo_t			* cr = v3270_oia_set_update_region(terminal,&r,V3270_OIA_SSL);
+
+		v3270_draw_ssl_status(terminal,cr,r);
+		v3270_queue_draw_area(GTK_WIDGET(terminal),r->x,r->y,r->width,r->height);
+		cairo_destroy(cr);
+
+	}
+
+ 	if(v3270_blink_ssl(terminal))
 		v3270_start_blinking(GTK_WIDGET(lib3270_get_user_data(session)));
 
 	return FALSE;
@@ -359,6 +371,8 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
  static void update_ssl(H3270 *session, G_GNUC_UNUSED LIB3270_SSL_STATE state)
  {
+ 	debug("----------------------> %d", (int) state);
+
 	g_idle_add((GSourceFunc) bg_update_ssl, session);
  }
 

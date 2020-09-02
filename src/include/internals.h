@@ -338,7 +338,7 @@ G_GNUC_INTERNAL void v3270_draw_element(cairo_t *cr, unsigned char chr, unsigned
  G_GNUC_INTERNAL void		  v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col, unsigned char c, unsigned short attr);
  G_GNUC_INTERNAL void		  v3270_update_oia(v3270 *terminal, LIB3270_FLAG id, unsigned char on);
 
- G_GNUC_INTERNAL void		  v3270_blink_ssl(v3270 *terminal);
+ G_GNUC_INTERNAL gboolean	  v3270_blink_ssl(v3270 *terminal);
 
  G_GNUC_INTERNAL void		  v3270_queue_draw_area(GtkWidget *widget, gint x, gint y, gint width, gint height);
 

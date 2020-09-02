@@ -363,6 +363,7 @@ void v3270_draw_ssl_status(v3270 *widget, cairo_t *cr, GdkRectangle *rect)
 		break;
 
 	case LIB3270_SSL_NEGOTIATING:		// Negotiating SSL
+	case LIB3270_SSL_VERIFYING:			// Verifying SSL
 		if(widget->blink.show)
 		{
 			gdk_cairo_set_source_rgba(cr,widget->color+V3270_COLOR_OIA_STATUS_WARNING);
@@ -1073,21 +1074,6 @@ void v3270_stop_timer(GtkWidget *widget)
 		{
 			g_source_unref(terminal->timer);
 		}
-	}
-
-}
-
-void v3270_blink_ssl(v3270 *terminal)
-{
-	if(terminal->surface)
-	{
-		GdkRectangle	* r;
-		cairo_t			* cr = v3270_oia_set_update_region(terminal,&r,V3270_OIA_SSL);
-
-		v3270_draw_ssl_status(terminal,cr,r);
-		v3270_queue_draw_area(GTK_WIDGET(terminal),r->x,r->y,r->width,r->height);
-		cairo_destroy(cr);
-
 	}
 
 }

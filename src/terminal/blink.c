@@ -34,6 +34,12 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+ gboolean v3270_blink_ssl(v3270 *terminal)
+ {
+	LIB3270_SSL_STATE state = lib3270_get_ssl_state(terminal->host);
+	return (state == LIB3270_SSL_NEGOTIATING || state == LIB3270_SSL_VERIFYING);
+ }
+
  static gboolean blink_timer_tick(v3270 *widget)
  {
  	gboolean rc = FALSE;
@@ -47,7 +53,7 @@
 		rc = TRUE;
 	}
 
-	if(lib3270_get_ssl_state(widget->host) == LIB3270_SSL_NEGOTIATING)
+	if(v3270_blink_ssl(widget))
 	{
 		GdkRectangle	* r;
 		cairo_t			* cr = v3270_oia_set_update_region(widget,&r,V3270_OIA_SSL);

@@ -363,11 +363,12 @@ gboolean v3270_motion_notify_event(GtkWidget *widget, GdkEventMotion *event)
 		{
 			switch(lib3270_get_ssl_state(terminal->host))
 			{
-			case LIB3270_SSL_UNSECURE:	/**< No secure connection */
+			case LIB3270_SSL_UNSECURE:	// No secure connection
 				id = LIB3270_POINTER_QUESTION;
 				break;
 
-			case LIB3270_SSL_NEGOTIATING:	/**< Negotiating SSL */
+			case LIB3270_SSL_NEGOTIATING:	// Negotiating SSL
+			case LIB3270_SSL_VERIFYING:		// Verifying SSL
 				id = LIB3270_POINTER_WAITING;
 				break;
 
