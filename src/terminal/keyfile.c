@@ -88,6 +88,8 @@
 	g_value_init(&value, pspec->value_type);
 	g_object_get_property(G_OBJECT(widget),name,&value);
 
+	debug("%s %u",name,(unsigned int) pspec->value_type);
+
 	switch(pspec->value_type) {
 	case G_TYPE_STRING:
 		{
@@ -120,7 +122,7 @@
 		{
 			gboolean current = g_value_get_boolean(&value);
 
-//			debug("%s=%s (default: %s)",name,current ? "ON" : "OFF" ,G_PARAM_SPEC_BOOLEAN(pspec)->default_value ? "ON" : "OFF");
+			debug("%s=%s (default: %s)",name,current ? "ON" : "OFF" ,G_PARAM_SPEC_BOOLEAN(pspec)->default_value ? "ON" : "OFF");
 
 			if(current != G_PARAM_SPEC_BOOLEAN(pspec)->default_value)
 			{

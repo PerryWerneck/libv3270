@@ -314,7 +314,7 @@
 					bool_props[ix].name,
 					bool_props[ix].name,
 					bool_props[ix].description,
-					FALSE,
+					bool_props[ix].default_value != 0,
 					(bool_props[ix].set == NULL ? G_PARAM_READABLE : (G_PARAM_READABLE|G_PARAM_WRITABLE))
 		);
 

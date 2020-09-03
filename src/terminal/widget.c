@@ -69,6 +69,7 @@ static const gchar *persistent_properties[] = {
 		"color-type",
 		"host-type",
 		"crl-preferred-protocol",
+		"crl_download",
 		"remap_file",
 		"dynamic_font_spacing",
 		"lu_names",
