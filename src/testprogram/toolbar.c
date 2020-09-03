@@ -49,11 +49,14 @@
  	v3270_print(terminal,NULL);
  }
 
+ /*
  static void host_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
 	v3270_select_host(terminal);
  }
+ */
 
+ /*
  static void font_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
 	v3270_settings_popup_dialog(
@@ -63,6 +66,7 @@
 	);
 
  }
+ */
 
  static void preferences_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {

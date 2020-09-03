@@ -57,6 +57,7 @@
  	GtkWidget		* font_list;
  	GtkWidget		* preview;
  	GtkToggleButton	* bold;
+ 	GtkToggleButton	* dynamic;
 
  	struct {
 		cairo_font_face_t	* face;
@@ -66,6 +67,7 @@
  	struct {
  		gchar		* family;
  		gboolean	  bold;
+ 		gboolean	  dynamic;
  	} saved;
 
  } V3270FontChooserWidget;
@@ -90,6 +92,9 @@
 		v3270_set_font_family(terminal,chooser->saved.family);
 
 	v3270_set_toggle(terminal,LIB3270_TOGGLE_BOLD,chooser->saved.bold);
+
+	v3270_set_dynamic_font_spacing(terminal,chooser->saved.dynamic);
+
  }
 
  static void load(GtkWidget *widget, GtkWidget *terminal)
@@ -104,6 +109,7 @@
 
 	chooser->saved.family	= g_strdup(v3270_get_font_family(terminal));
 	chooser->saved.bold		= v3270_get_toggle(terminal,LIB3270_TOGGLE_BOLD);
+	chooser->saved.dynamic	= v3270_get_dynamic_font_spacing(terminal);
 
 	GtkTreeIter active;
 	gtk_tree_view_set_model(
@@ -121,6 +127,7 @@
 	);
 
 	gtk_toggle_button_set_active(chooser->bold,chooser->saved.bold);
+	gtk_toggle_button_set_active(chooser->dynamic,chooser->saved.dynamic);
 
 	gtk_widget_queue_draw(chooser->preview);
  }
@@ -253,6 +260,12 @@ static void bold_toggled(GtkToggleButton *togglebutton, V3270FontChooserWidget *
 
 }
 
+static void dynamic_spacing_toggled(GtkToggleButton *togglebutton, V3270FontChooserWidget *widget)
+{
+	v3270_set_dynamic_font_spacing(widget->parent.terminal,gtk_toggle_button_get_active(togglebutton));
+}
+
+
 static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 {
 	widget->font.weight = CAIRO_FONT_WEIGHT_NORMAL;
@@ -313,9 +326,17 @@ static void V3270FontChooserWidget_init(V3270FontChooserWidget *widget)
 	// Add font-weight button
 	{
 		widget->bold = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(_("Bold")));
-		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->bold),1,3,5,1);
+		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->bold),1,3,1,1);
 		g_signal_connect(G_OBJECT(widget->bold),"toggled",G_CALLBACK(bold_toggled),widget);
 	}
+
+	// Add dynamic font spacing button
+	{
+		widget->dynamic = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_label(_("Dynamic font spacing")));
+		gtk_grid_attach(GTK_GRID(widget),GTK_WIDGET(widget->dynamic),2,3,1,1);
+		g_signal_connect(G_OBJECT(widget->dynamic),"toggled",G_CALLBACK(dynamic_spacing_toggled),widget);
+	}
+
 
 	gtk_widget_show_all(GTK_WIDGET(widget));
 
