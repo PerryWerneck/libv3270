@@ -36,6 +36,12 @@
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 
+ static void v3270_dialog_add_class_for_response(GtkWidget *dialog, gint response_id, const char *className) {
+	GtkWidget * widget = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog),response_id);
+	GtkStyleContext *context = gtk_widget_get_style_context(widget);
+	gtk_style_context_add_class(context,className);
+ }
+
  GtkResponseType v3270_popup_dialog_show(GtkWidget *widget, const LIB3270_POPUP *popup, gboolean wait) {
 
 	g_return_val_if_fail(GTK_IS_WIDGET(widget),GTK_RESPONSE_NONE);
@@ -154,10 +160,41 @@
 
 			gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
 			gtk_dialog_add_button(GTK_DIALOG(dialog), popup->label, GTK_RESPONSE_APPLY);
-			gtk_dialog_set_default_response(
-				GTK_DIALOG(dialog),
-				(popup->type == LIB3270_NOTIFY_SECURE ? GTK_RESPONSE_CANCEL : GTK_RESPONSE_APPLY)
-			);
+
+			switch(popup->type) {
+			case LIB3270_NOTIFY_SECURE:
+			case LIB3270_NOTIFY_CRITICAL:
+				gtk_dialog_set_default_response(
+					GTK_DIALOG(dialog),
+					GTK_RESPONSE_CANCEL
+				);
+
+				v3270_dialog_add_class_for_response(dialog,GTK_RESPONSE_APPLY,"destructive-action");
+				v3270_dialog_add_class_for_response(dialog,GTK_RESPONSE_CANCEL,"suggested-action");
+				break;
+
+			case LIB3270_NOTIFY_ERROR:
+				gtk_dialog_set_default_response(
+					GTK_DIALOG(dialog),
+					GTK_RESPONSE_CANCEL
+				);
+				v3270_dialog_add_class_for_response(dialog,GTK_RESPONSE_CANCEL,"suggested-action");
+				break;
+
+			case LIB3270_NOTIFY_INFO:
+				gtk_dialog_set_default_response(
+					GTK_DIALOG(dialog),
+					GTK_RESPONSE_APPLY
+				);
+				v3270_dialog_add_class_for_response(dialog,GTK_RESPONSE_APPLY,"suggested-action");
+				break;
+
+			default:
+				gtk_dialog_set_default_response(
+					GTK_DIALOG(dialog),
+					GTK_RESPONSE_APPLY
+				);
+			}
 
 		} else {
 
