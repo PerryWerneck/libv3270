@@ -124,9 +124,18 @@
 		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),"<small>%s</small>",popup->body);
 	}
 
+#ifdef _WIN32
+	gtk_container_set_border_width(GTK_CONTAINER(dialog),12);
+	if(popup->title) {
+		gtk_window_set_title(GTK_WINDOW(dialog),popup->title);
+	} else {
+		gtk_window_set_title(GTK_WINDOW(dialog),G_STRINGIFY(PRODUCT_NAME));
+	}
+#else
 	if(popup->title) {
 		gtk_window_set_title(GTK_WINDOW(dialog),popup->title);
 	}
+#endif // _WIN32
 
 	if(wait) {
 
