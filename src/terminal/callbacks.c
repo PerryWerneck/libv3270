@@ -398,58 +398,6 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_update_oia, data, g_free);
  }
 
- /*
- static int popup_ssl_error(H3270 *session, int rc, const char *title, const char *summary, const char *body)
- {
- 	GtkWidget *terminal = (GtkWidget *) lib3270_get_user_data(session);
-
- 	debug("%s.summary=\"%s\"",__FUNCTION__,summary);
- 	debug("%s.body=\"%s\"",__FUNCTION__,body ? body : "undefined");
-
- 	if(terminal && GTK_IS_V3270(terminal))
-	{
-		GtkWidget * dialog = gtk_message_dialog_new_with_markup(
-								GTK_WINDOW(gtk_widget_get_toplevel(terminal)),
-								GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-								GTK_MESSAGE_WARNING,
-								GTK_BUTTONS_NONE,
-								"%s",
-								summary
-						);
-
-		gtk_window_set_title(GTK_WINDOW(dialog), title);
-
-		if(body && *body)
-		{
-			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",body);
-		}
-		else if(rc)
-		{
-			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),_( "The error code was %d"),rc);
-		}
-
-		gtk_dialog_add_buttons(
-			GTK_DIALOG(dialog),
-			_("Cancel"), GTK_RESPONSE_CANCEL,
-			_("Continue"), GTK_RESPONSE_APPLY,
-			NULL
-		);
-
-		gtk_dialog_set_default_response(GTK_DIALOG (dialog),GTK_RESPONSE_CANCEL);
-
-		gtk_widget_show_all(dialog);
-		int rc = gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
-
-		if(rc == GTK_RESPONSE_APPLY)
-			return 0;
-
- 	}
-
-	return -1;
- }
- */
-
  static int popup(H3270 *hSession, const LIB3270_POPUP *popup, unsigned char wait) {
 
 	GtkResponseType response = v3270_popup_dialog_show(
@@ -463,6 +411,21 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	return errno = ECANCELED;
 
  }
+
+ static int action(H3270 *hSession, const char *name) {
+
+	guint response = ENOENT;
+
+	v3270_signal_emit(
+		GTK_WIDGET(lib3270_get_user_data(hSession)),
+		V3270_SIGNAL_FIRE_ACTION,
+		name,
+		&response
+	);
+
+	return response;
+ }
+
 
  void v3270_install_callbacks(v3270 *widget)
  {
@@ -517,6 +480,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->save				= save;
 	cbk->load				= load;
 	cbk->popup				= popup;
+	cbk->action				= action;
 
 }
 

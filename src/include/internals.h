@@ -118,6 +118,11 @@
  	V3270_SIGNAL_LOAD_POPUP_RESPONSE,	///< @brief Load popup response (GTK_RESPONSE_NONE to show popup).
  	V3270_SIGNAL_SAVE_POPUP_RESPONSE,	///< @brief Save popup response.
 
+ 	//
+ 	// Misc signals
+ 	//
+ 	V3270_SIGNAL_FIRE_ACTION,			///< @brief Fire action by name.
+
  	V3270_SIGNAL_LAST
  };
 
