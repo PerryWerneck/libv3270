@@ -266,6 +266,7 @@
  LIB3270_EXPORT void v3270_to_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name)
  {
 	g_return_if_fail(GTK_IS_V3270(widget));
+	g_return_if_fail(key_file != NULL);
 
 	if(!group_name)
 		group_name = "terminal";
@@ -327,6 +328,7 @@
  LIB3270_EXPORT gboolean v3270_load_key_file(GtkWidget *widget, GKeyFile *key_file, const gchar *group_name)
  {
 	g_return_val_if_fail(GTK_IS_V3270(widget),FALSE);
+	g_return_val_if_fail(key_file != NULL,FALSE);
 
 	size_t		  ix;
 
