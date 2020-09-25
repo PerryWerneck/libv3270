@@ -44,6 +44,9 @@
 
  GtkResponseType v3270_popup_dialog_show(GtkWidget *widget, const LIB3270_POPUP *popup, gboolean wait) {
 
+	// https://developer.gnome.org/hig/stable/dialogs.html.en
+	// https://developer.gnome.org/hig/stable/visual-layout.html.en
+
 	g_return_val_if_fail(GTK_IS_WIDGET(widget),GTK_RESPONSE_NONE);
 
 	// Check if the dialog is enabled
@@ -178,6 +181,7 @@
 					GTK_RESPONSE_CANCEL
 				);
 
+				// https://developer.gnome.org/Buttons/
 				v3270_dialog_add_class_for_response(dialog,GTK_RESPONSE_APPLY,"destructive-action");
 				v3270_dialog_add_class_for_response(dialog,GTK_RESPONSE_CANCEL,"suggested-action");
 				break;
@@ -187,6 +191,8 @@
 					GTK_DIALOG(dialog),
 					GTK_RESPONSE_CANCEL
 				);
+
+				// https://developer.gnome.org/Buttons/
 				v3270_dialog_add_class_for_response(dialog,GTK_RESPONSE_CANCEL,"suggested-action");
 				break;
 
@@ -195,6 +201,8 @@
 					GTK_DIALOG(dialog),
 					GTK_RESPONSE_APPLY
 				);
+
+				// https://developer.gnome.org/Buttons/
 				v3270_dialog_add_class_for_response(dialog,GTK_RESPONSE_APPLY,"suggested-action");
 				break;
 
@@ -260,7 +268,10 @@
 
  }
 
- void v3270_popup_gerror(GtkWidget *widget, GError *error, const gchar *title, const gchar *fmt, ...) {
+ gboolean v3270_popup_gerror(GtkWidget *widget, GError **error, const gchar *title, const gchar *fmt, ...) {
+
+	if(!(error && *error))
+		return FALSE;
 
 	// Format message.
  	va_list arg_ptr;
@@ -272,10 +283,15 @@
 		.type = LIB3270_NOTIFY_ERROR,
 		.title = title,
 		.summary = summary,
-		.body = error->message
+		.body = (*error)->message
 	};
 
 	v3270_popup_dialog_show(widget, &popup, FALSE);
+
+	g_error_free(*error);
+	*error = NULL;
+
+	return TRUE;
 
  }
 

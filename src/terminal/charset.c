@@ -317,12 +317,10 @@
 	{
 		v3270_popup_gerror(
 				widget,
-				error,
+				&error,
 				_( "Remap Failed" ),
 				_(  "Can't parse %s" ), path
 		);
-
-		g_error_free(error);
 
 	} else {
 

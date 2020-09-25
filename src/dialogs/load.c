@@ -315,16 +315,13 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		GError * error 	= NULL;
 		v3270_load_dialog_apply(widget,&error);
 
-		if(error)
-		{
-			v3270_popup_gerror(
-				widget,
-				error,
-				NULL,
-				_("Can't open %s"),gtk_entry_get_text(GTK_ENTRY(V3270_LOAD_DIALOG(widget)->filename))
-			);
-			g_error_free(error);
-		}
+		// The operation has failed? If yes notify user and free error object.
+		v3270_popup_gerror(
+			widget,
+			&error,
+			NULL,
+			_("Can't open %s"),gtk_entry_get_text(GTK_ENTRY(V3270_LOAD_DIALOG(widget)->filename))
+		);
 
 	}
  	debug("%s",__FUNCTION__);
