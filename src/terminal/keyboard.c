@@ -48,6 +48,10 @@
 	#include <gdk/gdkkeysyms.h>
  #endif
 
+ #ifndef GDK_NUMLOCK_MASK
+	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
+ #endif
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  #define keyval_is_alt() (event->keyval == GDK_Alt_L || event->keyval == GDK_Meta_L || event->keyval == GDK_ISO_Level3_Shift)
@@ -135,11 +139,12 @@
 		debug("Keyboard action \"%s\" was %s",key_name,handled ? "Handled" : "Not handled");
 	}
 #endif // DEBUG
+
 	if(handled)
 		return TRUE;
 
 
-	// Check for s
+	// Check for acelerator
 	const V3270Accelerator * accelerator = v3270_accelerator_map_lookup_entry(widget, event->keyval, event->state);
 	if(accelerator)
 	{
@@ -148,22 +153,26 @@
 		return TRUE;
 	}
 
-	/*
-	if(event->keyval >= GDK_F1 && event->keyval <= GDK_F12 && !(event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK)))
-	{
-		// It's a PFKey Action.
-		int pfcode = (event->keyval - GDK_F1) + ((event->state & GDK_SHIFT_MASK) ? 13 : 1);
 
-		if(pfcode > 0 && pfcode < 25)
-		{
-			if(lib3270_pfkey(GTK_V3270(widget)->host,pfcode))
-				gdk_display_beep(gtk_widget_get_display(widget));
+	// Check +/- keyboard redirection
+	if(lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_KP_ALTERNATIVE) && (event->state & GDK_NUMLOCK_MASK)) {
 
+		debug("%s: Checking keypad special actions", __FUNCTION__);
+
+		switch(event->keyval) {
+		case GDK_KP_Add:
+			debug("%s: Calling lib3270_nextfield",__FUNCTION__);
+			lib3270_nextfield(terminal->host);
 			return TRUE;
+
+		case GDK_KP_Subtract:
+			debug("%s: Calling lib3270_previousfield",__FUNCTION__);
+			lib3270_previousfield(terminal->host);
+			return TRUE;
+
 		}
 
 	}
-	*/
 
 	return FALSE;
 

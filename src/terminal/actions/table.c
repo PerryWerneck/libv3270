@@ -33,14 +33,16 @@
  #include <v3270/selection.h>
  #include <terminal.h>
 
- static int fire_kp_add_action(GtkWidget *widget, const struct _v3270_action * action);
- static int fire_kp_sub_action(GtkWidget *widget, const struct _v3270_action * action);
+// static int fire_kp_add_action(GtkWidget *widget, const struct _v3270_action * action);
+// static int fire_kp_sub_action(GtkWidget *widget, const struct _v3270_action * action);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  LIB3270_EXPORT const V3270_ACTION * v3270_get_actions() {
 
 	 static const V3270_ACTION actions[] = {
+
+	 	/*
 		{
 			.name = "keypad-add",
 			.keys = "<Mod2>KP_Add",
@@ -53,6 +55,7 @@
 			.group = LIB3270_ACTION_GROUP_ONLINE,
 			.activate = fire_kp_sub_action
 		},
+		*/
 
 		// Standard Clipboard actions
 		{
@@ -321,6 +324,7 @@
 
  }
 
+ /*
  int fire_kp_add_action(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
 
 	if(v3270_get_toggle(widget,LIB3270_TOGGLE_KP_ALTERNATIVE))
@@ -332,6 +336,7 @@
 
  }
 
+
  int fire_kp_sub_action(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
 
 	if(v3270_get_toggle(widget,LIB3270_TOGGLE_KP_ALTERNATIVE))
@@ -342,3 +347,4 @@
 	return 0;
 
  }
+*/
