@@ -73,7 +73,7 @@
 		},
 
 		{
-			.name = "copy-as-html",
+			.name = "copy-html",
 			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.label = N_( "Copy as HTML" ),
 			.summary = N_("Copy selection in HTML format"),
