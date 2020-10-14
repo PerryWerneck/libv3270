@@ -193,3 +193,52 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 
 }
 
+void v3270_set_copy_target(GtkWidget *widget, const gchar *target, guint flags, guint info) {
+
+	v3270 * terminal = GTK_V3270(widget);
+
+    if(!terminal->selection.blocks)
+    {
+    	// No clipboard data, return.
+    	v3270_emit_copy_state(widget);
+    	return;
+    }
+
+    // Has clipboard data, inform system.
+	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,terminal->selection.target);
+
+	GtkTargetList * list = gtk_target_list_new(NULL,0);
+
+	GtkTargetEntry entry = {
+		.target = (char *) target,
+		.flags = flags,
+		.info = info
+	};
+
+	gtk_target_list_add_table(list, &entry, 1);
+
+	int				  n_targets;
+	GtkTargetEntry	* targets = gtk_target_table_new_from_list(list, &n_targets);
+
+	if(gtk_clipboard_set_with_owner(
+			clipboard,
+			targets,
+			n_targets,
+			(GtkClipboardGetFunc)	clipboard_get,
+			(GtkClipboardClearFunc) clipboard_clear,
+			G_OBJECT(widget)
+		))
+	{
+		gtk_clipboard_set_can_store(clipboard,targets,1);
+	}
+
+	gtk_target_table_free(targets, n_targets);
+	gtk_target_list_unref(list);
+   	v3270_emit_copy_state(widget);
+}
+
+LIB3270_EXPORT void v3270_copy_as_html(GtkWidget *widget) {
+	debug("%s(%p)",__FUNCTION__,widget);
+	v3270_set_copy_target(widget,"text/html", 0, CLIPBOARD_TYPE_HTML);
+}
+

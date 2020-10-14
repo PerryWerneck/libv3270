@@ -36,6 +36,8 @@
 // static int fire_kp_add_action(GtkWidget *widget, const struct _v3270_action * action);
 // static int fire_kp_sub_action(GtkWidget *widget, const struct _v3270_action * action);
 
+ static int fire_copy_as_html(GtkWidget *widget, const struct _v3270_action * action);
+
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  LIB3270_EXPORT const V3270_ACTION * v3270_get_actions() {
@@ -68,6 +70,15 @@
 			.summary = N_("Copy selection to clipboard"),
 			.description = N_("Replace current clipboard contents with the selected area"),
 			.activate = fire_copy_accelerator
+		},
+
+		{
+			.name = "copy-as-html",
+			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.label = N_( "Copy as HTML" ),
+			.summary = N_("Copy selection in HTML format"),
+			.description = N_("Replace current clipboard contents with the selected area in HTML format"),
+			.activate = fire_copy_as_html
 		},
 
 		{
@@ -324,6 +335,11 @@
 
  }
 
+ static int fire_copy_as_html(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
+	v3270_copy_as_html(widget);
+	return 0;
+ }
+
  /*
  int fire_kp_add_action(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
 
@@ -335,7 +351,6 @@
 	return 0;
 
  }
-
 
  int fire_kp_sub_action(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
 
