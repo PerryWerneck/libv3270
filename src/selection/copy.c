@@ -30,7 +30,17 @@
  #include <clipboard.h>
  #include <lib3270/selection.h>
 
- static void do_copy(v3270 *terminal, gboolean cut) {
+ static void do_copy(v3270 *terminal, V3270_COPY_MODE mode, gboolean cut) {
+
+	if(mode == V3270_COPY_SMART) {
+		mode = (terminal->append ? V3270_COPY_APPEND : V3270_COPY_FORMATTED);
+	}
+
+	if(mode != V3270_COPY_APPEND) {
+		// It's not append, clear current contents ...
+		v3270_clear_selection(terminal);
+		terminal->selection.format = mode;
+	}
 
  	lib3270_selection * selection = lib3270_selection_new(terminal->host,cut,0);
 
@@ -44,32 +54,60 @@
  LIB3270_EXPORT void v3270_clipboard_set(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut) {
 
 	g_return_if_fail(GTK_IS_V3270(widget));
-
-	v3270 * terminal = GTK_V3270(widget);
-
-	if(mode == V3270_COPY_SMART) {
-		mode = (terminal->append ? V3270_COPY_APPEND : V3270_COPY_FORMATTED);
-	}
-
-	if(mode != V3270_COPY_APPEND) {
-
-		// It's not append, clear current contents ...
-		v3270_clear_selection(terminal);
-
-		terminal->selection.format = mode;
-
-	}
-
-	do_copy(terminal,cut);
-
+	do_copy(GTK_V3270(widget),mode,cut);
 	v3270_update_system_clipboard(widget);
+
  }
 
- LIB3270_EXPORT void v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE format, gboolean cut) {
-	v3270_clipboard_set(widget,format,cut);
+ LIB3270_EXPORT void v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut) {
+	v3270_clipboard_set(widget,mode,cut);
  }
 
  LIB3270_EXPORT void v3270_append_selection(GtkWidget *widget, gboolean cut) {
 	v3270_clipboard_set(widget,V3270_COPY_APPEND,cut);
  }
 
+ LIB3270_EXPORT void v3270_copy_as_html(GtkWidget *widget) {
+
+	g_return_if_fail(GTK_IS_V3270(widget));
+	v3270 * terminal = GTK_V3270(widget);
+
+	debug("%s",__FUNCTION__);
+
+	do_copy(terminal,V3270_COPY_FORMATTED,0);
+
+	//
+	// Export only in HTML format
+	//
+	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,terminal->selection.target);
+
+	GtkTargetList * list = gtk_target_list_new(NULL,0);
+
+	static const GtkTargetEntry entry = {
+		.target = "text/html",
+		.flags = 0,
+		.info = CLIPBOARD_TYPE_HTML
+	};
+
+	gtk_target_list_add_table(list, &entry, 1);
+
+	int				  n_targets;
+	GtkTargetEntry	* targets = gtk_target_table_new_from_list(list, &n_targets);
+
+	if(gtk_clipboard_set_with_owner(
+			clipboard,
+			targets,
+			n_targets,
+			(GtkClipboardGetFunc)	v3270_clipboard_get,
+			(GtkClipboardClearFunc) v3270_clipboard_clear,
+			G_OBJECT(widget)
+		))
+	{
+		gtk_clipboard_set_can_store(clipboard,targets,1);
+	}
+
+	gtk_target_table_free(targets, n_targets);
+	gtk_target_list_unref(list);
+
+   	v3270_emit_copy_state(widget);
+ }
