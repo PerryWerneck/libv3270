@@ -49,7 +49,8 @@ SOURCES= \
 	$(wildcard src/dialogs/print/*.c) \
 	$(wildcard src/dialogs/save/*.c) \
 	$(wildcard src/dialogs/font/*.c) \
-	$(wildcard src/dialogs/settings/*.c)
+	$(wildcard src/dialogs/settings/*.c) \
+	$(wildcard src/tools/*.c)
 
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.c)
@@ -149,6 +150,11 @@ $(OBJDBG)/%.o: \
 
 	@$(CC) \
 		$(CFLAGS) \
+		-DDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+	@$(CC) \
+		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
 		-DDEBUG=1 \
 		-o $@ -c $<
@@ -177,6 +183,13 @@ $(OBJRLS)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) $(dir $@)
+
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+
 	@$(CC) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
@@ -563,5 +576,9 @@ cleanRelease:
 clean: \
 	cleanDebug \
 	cleanRelease
+
+-include $(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).d)
+-include $(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).d)
+
 
 
