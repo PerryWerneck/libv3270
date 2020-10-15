@@ -161,7 +161,20 @@
 	gtk_widget_bind_ptr(widget,entry);
 
 	entry->action	= action;
-	entry->accept	= _("Continue");
+
+	switch(action) {
+	case GTK_FILE_CHOOSER_ACTION_OPEN:
+		entry->accept = _("_Open");
+		break;
+
+	case GTK_FILE_CHOOSER_ACTION_SAVE:
+		entry->accept = _("_Save");
+		break;
+
+	default:
+		entry->accept = _("_Continue");
+
+	}
 
 	entry->title = (const char *) (entry+1);
 	strcpy((char *) entry->title,title);
