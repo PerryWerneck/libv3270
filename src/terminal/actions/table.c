@@ -37,6 +37,7 @@
 // static int fire_kp_sub_action(GtkWidget *widget, const struct _v3270_action * action);
 
  static int fire_copy_as_html(GtkWidget *widget, const struct _v3270_action * action);
+ static int fire_copy_as_pixbuff(GtkWidget *widget, const struct _v3270_action * action);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -79,6 +80,15 @@
 			.summary = N_("Copy selection in HTML format"),
 			.description = N_("Replace current clipboard contents with the selected area in HTML format"),
 			.activate = fire_copy_as_html
+		},
+
+		{
+			.name = "copy-pixbuff",
+			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.label = N_( "Copy as image" ),
+			.summary = N_("Copy selection in image format"),
+			.description = N_("Replace current clipboard contents with the selected area in image format"),
+			.activate = fire_copy_as_pixbuff
 		},
 
 		{
@@ -337,6 +347,11 @@
 
  static int fire_copy_as_html(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
 	v3270_copy_as_html(widget);
+	return 0;
+ }
+
+ static int fire_copy_as_pixbuff(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
+	v3270_copy_as_pixbuff(widget);
 	return 0;
  }
 

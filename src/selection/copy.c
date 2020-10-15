@@ -111,3 +111,43 @@
 
    	v3270_emit_copy_state(widget);
  }
+
+ LIB3270_EXPORT void v3270_copy_as_pixbuff(GtkWidget *widget) {
+
+	g_return_if_fail(GTK_IS_V3270(widget));
+	v3270 * terminal = GTK_V3270(widget);
+
+	debug("%s",__FUNCTION__);
+
+	do_copy(terminal,V3270_COPY_FORMATTED,0);
+
+	//
+	// Export only in HTML format
+	//
+	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,terminal->selection.target);
+
+	GtkTargetList * list = gtk_target_list_new(NULL,0);
+
+	gtk_target_list_add_image_targets(list,CLIPBOARD_TYPE_PIXBUFF,TRUE);
+
+	int				  n_targets;
+	GtkTargetEntry	* targets = gtk_target_table_new_from_list(list, &n_targets);
+
+	if(gtk_clipboard_set_with_owner(
+			clipboard,
+			targets,
+			n_targets,
+			(GtkClipboardGetFunc)	v3270_clipboard_get,
+			(GtkClipboardClearFunc) v3270_clipboard_clear,
+			G_OBJECT(widget)
+		))
+	{
+		gtk_clipboard_set_can_store(clipboard,targets,1);
+	}
+
+	gtk_target_table_free(targets, n_targets);
+	gtk_target_list_unref(list);
+
+   	v3270_emit_copy_state(widget);
+
+  }
