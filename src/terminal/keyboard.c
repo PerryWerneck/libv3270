@@ -90,7 +90,7 @@
 #ifdef DEBUG
 	{
 		g_autofree gchar * keyname = gtk_accelerator_name(event->keyval,event->state);
-		debug("%s Keyval: %d (%s) State: %04x %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+		debug("%s Keyval: %d (%s) State: %04x %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 				__FUNCTION__,
 				event->keyval,
 				gdk_keyval_name(event->keyval),
@@ -109,19 +109,32 @@
 				event->state & GDK_BUTTON4_MASK		? " GDK_BUTTON4_MASK"	: "",
 				event->state & GDK_BUTTON5_MASK		? " GDK_BUTTON5_MASK"	: "",
 				event->state & GDK_RELEASE_MASK		? " GDK_RELEASE_MASK"	: "",
-				event->state & GDK_MODIFIER_MASK	? " GDK_MODIFIER_MASK"	: ""
+				event->state & GDK_MODIFIER_MASK	? " GDK_MODIFIER_MASK"	: "",
+				event->state & GDK_NUMLOCK_MASK     ? " GDK_NUMLOCK_MASK"	: ""
 			);
 
 	}
 #endif // DEBUG
 
-	if(gtk_im_context_filter_keypress(terminal->input_method,event))
-		return TRUE;
+	// Check +/- keyboard redirection
+	if(lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_KP_ALTERNATIVE) && (event->state & GDK_NUMLOCK_MASK)) {
 
-	/*
-	if(!gtk_accelerator_valid(event->keyval,event->state))
-		return FALSE;
-	*/
+		switch(event->keyval) {
+		case GDK_KP_Add:
+			debug("%s: Calling lib3270_nextfield",__FUNCTION__);
+            gtk_im_context_reset(terminal->input_method);
+			lib3270_nextfield(terminal->host);
+			return TRUE;
+
+		case GDK_KP_Subtract:
+			debug("%s: Calling lib3270_previousfield",__FUNCTION__);
+            gtk_im_context_reset(terminal->input_method);
+			lib3270_previousfield(terminal->host);
+			return TRUE;
+
+		}
+
+	}
 
 	// Signal to the application.
 	gboolean handled = FALSE;
@@ -140,41 +153,22 @@
 	}
 #endif // DEBUG
 
-	if(handled)
+	if(handled) {
+		gtk_im_context_reset(terminal->input_method);
 		return TRUE;
-
+	}
 
 	// Check for acelerator
 	const V3270Accelerator * accelerator = v3270_accelerator_map_lookup_entry(widget, event->keyval, event->state);
 	if(accelerator)
 	{
 		debug("Found accelerator %s",v3270_accelerator_get_name(accelerator));
+		gtk_im_context_reset(terminal->input_method);
 		v3270_accelerator_activate(accelerator,widget);
 		return TRUE;
 	}
 
-
-	// Check +/- keyboard redirection
-	if(lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_KP_ALTERNATIVE) && (event->state & GDK_NUMLOCK_MASK)) {
-
-		debug("%s: Checking keypad special actions", __FUNCTION__);
-
-		switch(event->keyval) {
-		case GDK_KP_Add:
-			debug("%s: Calling lib3270_nextfield",__FUNCTION__);
-			lib3270_nextfield(terminal->host);
-			return TRUE;
-
-		case GDK_KP_Subtract:
-			debug("%s: Calling lib3270_previousfield",__FUNCTION__);
-			lib3270_previousfield(terminal->host);
-			return TRUE;
-
-		}
-
-	}
-
-	return FALSE;
+	return gtk_im_context_filter_keypress(terminal->input_method,event);
 
  }
 

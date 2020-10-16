@@ -762,6 +762,9 @@ void v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col,
 	if(!terminal->surface)
 		return;
 
+    // Reset input context
+    gtk_im_context_reset(terminal->input_method);
+
 	// Update cursor rectangle
 	saved = terminal->cursor.rect;
 
