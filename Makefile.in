@@ -75,6 +75,7 @@ CONVERT=@CONVERT@
 OPTIPNG=@OPTIPNG@
 ZIP=@ZIP@
 DLLTOOL=@DLLTOOL@
+STRIP=@STRIP@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -188,7 +189,6 @@ $(OBJRLS)/%.o: \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
 		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
-
 
 	@$(CC) \
 		$(CFLAGS) \
@@ -324,6 +324,11 @@ $(BINRLS)/$(SONAME): \
 		-L$(BINRLS) \
 		$(LIBS)
 
+strip: \
+	$(BINRLS)/$(SONAME)
+
+	@$(STRIP) --discard-all $(BINRLS)/$(SONAME)
+
 $(BINRLS)/static/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
@@ -427,7 +432,7 @@ install-linux-dev:
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 install-windows-dev: \
-	$(BINRLS)/$(SONAME) \
+	strip \
 	$(BINRLS)/$(LIBNAME).dll.a
 
 	@$(MKDIR) \

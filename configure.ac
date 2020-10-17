@@ -238,6 +238,7 @@ AC_PATH_TOOL([MSGMERGE], [msgmerge], [no])
 AC_PATH_TOOL([MSGFMT], [msgfmt], [no])
 AC_PATH_TOOL([VALGRIND], [valgrind], [no])
 AC_PATH_TOOL([GENMARSHAL], [glib-genmarshal], [glib-genmarshal])
+AC_PATH_TOOL([STRIP], [strip], [true])
 
 AC_CHECK_HEADER(libintl.h, [
 	AC_DEFINE(HAVE_LIBINTL, 1)
