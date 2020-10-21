@@ -48,10 +48,6 @@
 	#include <gdk/gdkkeysyms.h>
  #endif
 
- #ifndef GDK_NUMLOCK_MASK
-	#define GDK_NUMLOCK_MASK GDK_MOD2_MASK
- #endif
-
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  #define keyval_is_alt() (event->keyval == GDK_Alt_L || event->keyval == GDK_Meta_L || event->keyval == GDK_ISO_Level3_Shift)
@@ -90,7 +86,7 @@
 #ifdef DEBUG
 	{
 		g_autofree gchar * keyname = gtk_accelerator_name(event->keyval,event->state);
-		debug("%s Keyval: %d (%s) State: %04x %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+		debug("%s Keyval: %d (%s) State: %04x %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%",
 				__FUNCTION__,
 				event->keyval,
 				gdk_keyval_name(event->keyval),
@@ -109,15 +105,14 @@
 				event->state & GDK_BUTTON4_MASK		? " GDK_BUTTON4_MASK"	: "",
 				event->state & GDK_BUTTON5_MASK		? " GDK_BUTTON5_MASK"	: "",
 				event->state & GDK_RELEASE_MASK		? " GDK_RELEASE_MASK"	: "",
-				event->state & GDK_MODIFIER_MASK	? " GDK_MODIFIER_MASK"	: "",
-				event->state & GDK_NUMLOCK_MASK     ? " GDK_NUMLOCK_MASK"	: ""
+				event->state & GDK_MODIFIER_MASK	? " GDK_MODIFIER_MASK"	: ""
 			);
 
 	}
 #endif // DEBUG
 
 	// Check +/- keyboard redirection
-	if(lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_KP_ALTERNATIVE) && (event->state & GDK_NUMLOCK_MASK)) {
+	if(lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_KP_ALTERNATIVE) && !(event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK|GDK_MOD1_MASK))) {
 
 		switch(event->keyval) {
 		case GDK_KP_Add:
