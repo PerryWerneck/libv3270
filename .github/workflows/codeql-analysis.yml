@@ -72,7 +72,7 @@ jobs:
        make all
        sudo make install
        cd ..
-       rm -fr lib3270
+       sudo rm -fr lib3270
   
     - name: build
       run: | 
