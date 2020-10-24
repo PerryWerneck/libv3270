@@ -20,8 +20,8 @@ For the supported distributions get the install repositories and instructions fr
 
 ### Requirements
 
- * GTK-3 (https://www.gtk.org/)
- * lib3270 (https://softwarepublico.gov.br/social/pw3270/)
+ * [GTK3](https://www.gtk.org/)
+ * [lib3270](../../../lib3270)
 
 ### Building
 
