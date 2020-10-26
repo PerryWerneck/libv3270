@@ -455,7 +455,8 @@
 			char buffer[40];
 			double	seconds = ((double) remaining) / update->kbytes_sec;
 			time_t 	eta		= time(NULL) + ((time_t) seconds);
-			strftime(buffer, 39, "%H:%M:%S", localtime(&eta));
+			struct tm tm;
+			strftime(buffer, 39, "%H:%M:%S", localtime_r(&eta,&tm));
 
 			gtk_entry_set_text(update->worker->field[PROGRESS_FIELD_ETA],buffer);
 
