@@ -96,14 +96,12 @@
 
 		if(err)
 		{
-			v3270_error_popup(
+			v3270_popup_gerror(
 				widget,
-				NULL,
+				&err,
 				_("Print operation has failed"),
 				err->message
 			);
-
-			g_error_free(err);
 
 			rc = -1;
 		}

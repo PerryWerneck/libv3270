@@ -86,12 +86,10 @@ static void save_activity_clicked(GtkWidget *button, GObject *activity)
 
 			v3270_popup_gerror(
 					button,
-					error,
+					&error,
 					NULL,
 					_("Can't save %s"),filename
 			);
-
-			g_error_free(error);
 
 		}
 

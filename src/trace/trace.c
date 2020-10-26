@@ -477,18 +477,12 @@
 
 		g_free(text);
 
-		if(error)
-		{
-			v3270_popup_gerror(
-					widget,
-					error,
-					NULL,
-					_(  "Can't save %s" ), filename
-			);
-
-			g_error_free(error);
-
-		}
+		v3270_popup_gerror(
+				widget,
+				&error,
+				NULL,
+				_(  "Can't save %s" ), filename
+		);
 
 	}
 

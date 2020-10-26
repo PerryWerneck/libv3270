@@ -52,12 +52,10 @@
 
 		v3270_popup_gerror(
 				GTK_WIDGET(operation->widget),
-				err,
+				&err,
 				NULL,
 				"%s",_( "Print operation failed" )
 		);
-
-		g_error_free(err);
 
 	}
 

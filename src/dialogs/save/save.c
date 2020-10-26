@@ -618,17 +618,12 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		GError * error 	= NULL;
 		v3270_save_dialog_apply(widget,&error);
 
-		if(error)
-		{
-			v3270_popup_gerror(
-					widget,
-					error,
-					NULL,
-					_("Can't save %s"),gtk_entry_get_text(GTK_ENTRY(V3270_SAVE_DIALOG(widget)->filename))
-			);
-
-			g_error_free(error);
-		}
+		v3270_popup_gerror(
+				widget,
+				&error,
+				NULL,
+				_("Can't save %s"),gtk_entry_get_text(GTK_ENTRY(V3270_SAVE_DIALOG(widget)->filename))
+		);
 
 	}
 

@@ -262,18 +262,13 @@ LIB3270_EXPORT void v3270ft_load(GtkWidget *widget,const gchar *filename) {
 	g_list_foreach(GTK_V3270FT(widget)->files,(GFunc) validate_item, error);
 	v3270ft_select_last(widget);
 
-	if(error) {
+	v3270_popup_gerror(
+			widget,
+			&error,
+			NULL,
+			_("Can't load %s"),filename
+	);
 
-		v3270_popup_gerror(
-				widget,
-				error,
-				NULL,
-				_("Can't load %s"),filename
-		);
-
-		g_error_free(error);
-
-	}
 
 }
 

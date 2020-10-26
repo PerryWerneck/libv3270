@@ -431,12 +431,10 @@
 
 		v3270_popup_gerror(
 				widget,
-				error,
+				&error,
 				NULL,
 				_("Can't save %s"),list->filename
 		);
-
-		g_error_free(error);
 
 	}
 

@@ -238,13 +238,6 @@
  LIB3270_EXPORT	void			  v3270_set_remap_filename(GtkWidget *widget, const gchar *path);
  LIB3270_EXPORT const gchar		* v3270_get_remap_filename(GtkWidget *widget);
 
- // SSL & Security
- LIB3270_EXPORT const gchar		* v3270_get_ssl_state_icon_name(GtkWidget *widget);
- LIB3270_EXPORT const gchar		* v3270_get_ssl_state_message(GtkWidget *widget);
- LIB3270_EXPORT const gchar		* v3270_get_ssl_state_description(GtkWidget *widget);
- LIB3270_EXPORT GtkWidget 		* v3270_security_dialog_new(GtkWidget *widget);
- LIB3270_EXPORT void			  v3270_popup_security_dialog(GtkWidget *widget);
-
  // Auxiliary widgets
  LIB3270_EXPORT void			  v3270_select_host(GtkWidget *widget);
 

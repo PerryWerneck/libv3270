@@ -138,8 +138,6 @@ dnl Check for other programs
 dnl ---------------------------------------------------------------------------
 
 AC_PATH_TOOL([AR], [ar], [ar])
-AC_PATH_TOOL([CONVERT], [convert], [no])
-AC_PATH_TOOL([OPTIPNG],[optipng],[no])
 AC_PATH_TOOL([ZIP],[zip],[no])
 AC_PATH_TOOL([DLLTOOL],[dlltool],[no])
 AC_PATH_TOOL([WINDRES], [windres], [no])
@@ -238,6 +236,7 @@ AC_PATH_TOOL([MSGMERGE], [msgmerge], [no])
 AC_PATH_TOOL([MSGFMT], [msgfmt], [no])
 AC_PATH_TOOL([VALGRIND], [valgrind], [no])
 AC_PATH_TOOL([GENMARSHAL], [glib-genmarshal], [glib-genmarshal])
+AC_PATH_TOOL([STRIP], [strip], [true])
 
 AC_CHECK_HEADER(libintl.h, [
 	AC_DEFINE(HAVE_LIBINTL, 1)

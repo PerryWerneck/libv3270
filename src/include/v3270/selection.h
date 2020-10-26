@@ -59,6 +59,9 @@
 	LIB3270_EXPORT void				  v3270_copy_selection(GtkWidget *widget, V3270_COPY_MODE mode, gboolean cut) G_GNUC_DEPRECATED;
 	LIB3270_EXPORT void				  v3270_append_selection(GtkWidget *widget, gboolean cut) G_GNUC_DEPRECATED;
 
+	LIB3270_EXPORT void				  v3270_copy_as_html(GtkWidget *widget);
+	LIB3270_EXPORT void				  v3270_copy_as_pixbuff(GtkWidget *widget);
+
 	// Selections
 
 	LIB3270_EXPORT gchar			* v3270_get_selected(GtkWidget *widget, gboolean cut);

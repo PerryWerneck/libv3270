@@ -183,8 +183,7 @@ LIB3270_EXPORT void v3270_input_text(GtkWidget *widget, const gchar *text, const
                 V3270_SIGNAL_PASTENEXT,
                 FALSE
         );
-		v3270_popup_gerror(widget,error,NULL,"%s",_("Can't paste text"));
-		g_error_free(error);
+		v3270_popup_gerror(widget,&error,NULL,"%s",_("Can't paste text"));
 		return;
 	}
 

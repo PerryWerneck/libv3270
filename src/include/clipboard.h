@@ -104,6 +104,9 @@
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_table(v3270 * terminal, const gchar *delimiter, const gchar *encoding);
 	G_GNUC_INTERNAL gchar		* v3270_get_copy_as_data_block(v3270 * terminal);
 
+	G_GNUC_INTERNAL void		  v3270_clipboard_clear(GtkClipboard *clipboard, GObject *obj);
+	G_GNUC_INTERNAL void		  v3270_clipboard_get(GtkClipboard *clipboard, GtkSelectionData *selection, guint target, GObject *obj);
+
 	/// @brief Set contents.
 	G_GNUC_INTERNAL gboolean	  v3270_set_from_data_block(v3270 * terminal, const struct SelectionHeader *selection);
 

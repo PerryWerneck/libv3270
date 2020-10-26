@@ -33,7 +33,7 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-static void clipboard_clear(G_GNUC_UNUSED GtkClipboard *clipboard, G_GNUC_UNUSED  GObject *obj)
+void v3270_clipboard_clear(G_GNUC_UNUSED GtkClipboard *clipboard, G_GNUC_UNUSED  GObject *obj)
 {
 	v3270 * terminal = GTK_V3270(obj);
 
@@ -45,7 +45,7 @@ static void clipboard_clear(G_GNUC_UNUSED GtkClipboard *clipboard, G_GNUC_UNUSED
 
 }
 
-static void clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionData *selection, guint target, GObject *obj)
+void v3270_clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionData *selection, guint target, GObject *obj)
 {
 	v3270 * terminal = GTK_V3270(obj);
 
@@ -178,8 +178,8 @@ void v3270_update_system_clipboard(GtkWidget *widget)
 			clipboard,
 			targets,
 			n_targets,
-			(GtkClipboardGetFunc)	clipboard_get,
-			(GtkClipboardClearFunc) clipboard_clear,
+			(GtkClipboardGetFunc)	v3270_clipboard_get,
+			(GtkClipboardClearFunc) v3270_clipboard_clear,
 			G_OBJECT(widget)
 		))
 	{
@@ -192,4 +192,5 @@ void v3270_update_system_clipboard(GtkWidget *widget)
    	v3270_emit_copy_state(widget);
 
 }
+
 

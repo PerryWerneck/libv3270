@@ -49,7 +49,8 @@ SOURCES= \
 	$(wildcard src/dialogs/print/*.c) \
 	$(wildcard src/dialogs/save/*.c) \
 	$(wildcard src/dialogs/font/*.c) \
-	$(wildcard src/dialogs/settings/*.c)
+	$(wildcard src/dialogs/settings/*.c) \
+	$(wildcard src/tools/*.c)
 
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.c)
@@ -70,10 +71,9 @@ WINDRES=@WINDRES@
 AR=@AR@
 VALGRIND=@VALGRIND@
 GENMARSHAL=@GENMARSHAL@
-CONVERT=@CONVERT@
-OPTIPNG=@OPTIPNG@
 ZIP=@ZIP@
 DLLTOOL=@DLLTOOL@
+STRIP=@STRIP@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -149,6 +149,11 @@ $(OBJDBG)/%.o: \
 
 	@$(CC) \
 		$(CFLAGS) \
+		-DDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+	@$(CC) \
+		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
 		-DDEBUG=1 \
 		-o $@ -c $<
@@ -177,6 +182,12 @@ $(OBJRLS)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) $(dir $@)
+
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
 	@$(CC) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
@@ -311,6 +322,11 @@ $(BINRLS)/$(SONAME): \
 		-L$(BINRLS) \
 		$(LIBS)
 
+strip: \
+	$(BINRLS)/$(SONAME)
+
+	@$(STRIP) --discard-all $(BINRLS)/$(SONAME)
+
 $(BINRLS)/static/$(LIBNAME).a: \
 	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
@@ -414,7 +430,7 @@ install-linux-dev:
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
 
 install-windows-dev: \
-	$(BINRLS)/$(SONAME) \
+	strip \
 	$(BINRLS)/$(LIBNAME).dll.a
 
 	@$(MKDIR) \
@@ -563,5 +579,9 @@ cleanRelease:
 clean: \
 	cleanDebug \
 	cleanRelease
+
+-include $(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).d)
+-include $(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).d)
+
 
 

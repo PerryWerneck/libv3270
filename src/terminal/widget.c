@@ -816,6 +816,11 @@ gboolean v3270_focus_out_event(GtkWidget *widget, GdkEventFocus *event)
 
 	gtk_im_context_focus_out(terminal->input_method);
 
+#ifdef KEY_FLAG_ALT
+    terminal->keyflags &= ~KEY_FLAG_ALT;
+    v3270_draw_alt_status(terminal);
+#endif // KEY_FLAG_ALT
+
 	return notify_focus(widget,event);
 }
 
