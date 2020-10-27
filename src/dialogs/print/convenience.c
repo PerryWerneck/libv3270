@@ -99,8 +99,8 @@
 			v3270_popup_gerror(
 				widget,
 				&err,
-				_("Print operation has failed"),
-				err->message
+				NULL,
+				_("Print operation has failed")
 			);
 
 			rc = -1;
