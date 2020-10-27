@@ -43,6 +43,6 @@
 	#undef RPQ_REVISION
 	#undef SCCS_USER
 	#undef SCCS_DATE
-
+	#undef HAVE_LOCALTIME_R
 
 #endif /* LIBV3270_CONFIG_INCLUDED */

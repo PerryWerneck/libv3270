@@ -485,9 +485,15 @@ void v3270ftprogress_update(GtkWidget *widget, unsigned long current, unsigned l
 				char buffer[40];
 				double	seconds = ((double) remaining) / kbytes_sec;
 				time_t 	eta		= time(0) + ((time_t) seconds);
-				struct tm tm;
 
-				strftime(buffer, 39, "%H:%M:%S", localtime_r(&eta,&tm));
+#ifdef HAVE_LOCALTIME_R
+				{
+					struct tm tm;
+					strftime(buffer, 39, "%H:%M:%S", localtime_r(&eta,&tm));
+				}
+#else
+				strftime(buffer, 39, "%H:%M:%S", localtime(&eta));
+#endif // HAVE_LOCALTIME_R
 
 				gtk_entry_set_text(dialog->info[PROGRESS_FIELD_ETA],buffer);
 
