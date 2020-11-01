@@ -60,8 +60,6 @@ install: build
 
 	# Install dev
 	make DESTDIR=$(PWD)/debian/$(PACKAGE_NAME)-dev install-dev
-	mkdir -p $(PWD)/debian/$(PACKAGE_NAME)-dev/usr/lib
-	mv $(PWD)/debian/$(PACKAGE_NAME)/usr/lib/*.so $(PWD)/debian/$(PACKAGE_NAME)-dev/usr/lib
   
 	# Install glade
 	make DESTDIR=$(PWD)/debian/libv3270-glade install-glade

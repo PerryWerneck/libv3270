@@ -32,7 +32,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
 BuildRequires:  pkgconfig(gtk+-3.0)
-BuildRequires:  pkgconfig(lib3270) >= %{version}
+BuildRequires:  pkgconfig(lib3270) >= 5.3
 %if 0%{?centos_version}
 # CENTOS Genmarshal doesn't depend on python!
 BuildRequires:  python
@@ -46,7 +46,7 @@ provides a TN3270 virtual terminal widget for GTK 3.
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
-%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2 | cut -d+ -f1)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 %define _product %(pkg-config --variable=product_name lib3270)
 
