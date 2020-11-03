@@ -23,6 +23,7 @@ Release:        0
 Summary:        3270 Virtual Terminal for GTK
 License:        LGPL-3.0-only
 URL:            https://github.com/PerryWerneck/libv3270
+Group:          Development/Languages/C and C++
 Source:         libv3270-%{version}.tar.xz
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
@@ -64,7 +65,7 @@ Summary:    Header files for the 3270 Virtual Terminal library
 Requires:   %{name}-%{_libvrs} = %{version}
 
 %description devel
-GTK development files for the 3270 Virtual Terminal.
+Originally designed as part of the pw3270 application, this package provides the development files required to %{name}.
 
 %package -n glade-catalog-v3270
 Summary:    Glade catalog for the TN3270 terminal emulator library
