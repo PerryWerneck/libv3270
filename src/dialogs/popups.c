@@ -58,15 +58,12 @@
 
 			GtkResponseType response = 0;
 
-			debug("Emitting %s","V3270_SIGNAL_LOAD_POPUP_RESPONSE");
 			v3270_signal_emit(
 				widget,
 				V3270_SIGNAL_LOAD_POPUP_RESPONSE,
 				popup->name,
 				&response
 			);
-
-			debug("Got response %d",(int) response);
 
 			if(response && response != GTK_RESPONSE_NONE)
 				return response;
@@ -129,16 +126,25 @@
 
 #ifdef _WIN32
 	gtk_container_set_border_width(GTK_CONTAINER(dialog),12);
-	if(popup->title) {
-		gtk_window_set_title(GTK_WINDOW(dialog),popup->title);
-	} else {
-		gtk_window_set_title(GTK_WINDOW(dialog),G_STRINGIFY(PRODUCT_NAME));
-	}
-#else
-	if(popup->title) {
-		gtk_window_set_title(GTK_WINDOW(dialog),popup->title);
-	}
 #endif // _WIN32
+
+	if(popup->title) {
+
+		gtk_window_set_title(GTK_WINDOW(dialog),popup->title);
+
+	} else if(GTK_IS_V3270(widget)) {
+
+		const gchar *url = v3270_get_url(widget);
+		g_autofree gchar * title = g_strconcat(
+										v3270_get_session_name(widget),
+										" - ",
+										url ? url : _("No host"),
+										NULL
+									);
+
+		gtk_window_set_title(GTK_WINDOW(dialog),title);
+
+	}
 
 	if(wait) {
 
