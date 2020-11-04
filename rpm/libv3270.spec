@@ -18,7 +18,7 @@
 
 
 Name:           libv3270
-Version:        5.3
+Version:        5.4
 Release:        0
 Summary:        3270 Virtual Terminal for GTK
 License:        LGPL-3.0-only
@@ -33,7 +33,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
 BuildRequires:  pkgconfig(gtk+-3.0)
-BuildRequires:  pkgconfig(lib3270) >= 5.3
+BuildRequires:  pkgconfig(lib3270) >= 5.4
 %if 0%{?centos_version}
 # CENTOS Genmarshal doesn't depend on python!
 BuildRequires:  python
