@@ -35,6 +35,7 @@
  #include <lib3270/log.h>
  #include <lib3270/toggle.h>
  #include <lib3270/actions.h>
+ #include <lib3270/properties.h>
  #include <lib3270/ssl.h>
  #include <internals.h>
 
@@ -189,15 +190,25 @@ static void finalize(GObject *object) {
 
 	v3270 * terminal = GTK_V3270(object);
 
+	if(terminal->host) {
+		// Release session
+		debug("%s: Cleaning 3270 session",__FUNCTION__);
+		lib3270_disconnect(terminal->host);
+
+		debug("Task count: %u",lib3270_get_task_count(terminal->host));
+		while(lib3270_get_task_count(terminal->host))
+		{
+			debug("%s: waiting",__FUNCTION__);
+			usleep(100);
+		}
+
+		lib3270_session_free(terminal->host);
+		terminal->host = NULL;
+	}
+
 	if(terminal->remap_filename) {
 		g_free(terminal->remap_filename);
 		terminal->remap_filename = NULL;
-	}
-
-	if(terminal->host) {
-		// Release session
-		lib3270_session_free(terminal->host);
-		terminal->host = NULL;
 	}
 
 	if(terminal->accelerators) {
@@ -597,6 +608,7 @@ static void v3270_destroy(GtkWidget *widget)
 		// Cleanup
 		lib3270_reset_callbacks(terminal->host);
 		lib3270_set_user_data(terminal->host,NULL);
+		lib3270_disconnect(terminal->host);
 	}
 
 	if(terminal->accessible)
