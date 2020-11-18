@@ -426,6 +426,29 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	return response;
  }
 
+ struct _bg_reconnect
+ {
+	H3270 *hSession;
+	int seconds;
+ };
+
+ static gboolean bg_reconnect(struct _bg_reconnect *cfg)
+ {
+	lib3270_reconnect(cfg->hSession,cfg->seconds);
+	return G_SOURCE_REMOVE;
+ }
+
+ static int reconnect(H3270 *hSession,int seconds)
+ {
+ 	struct _bg_reconnect *cfg = g_new0(struct _bg_reconnect, 1);
+
+ 	cfg->hSession = hSession;
+ 	cfg->seconds = seconds;
+
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_reconnect, cfg, g_free);
+
+ 	return 0;
+ }
 
  void v3270_install_callbacks(v3270 *widget)
  {
@@ -481,6 +504,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->load				= load;
 	cbk->popup				= popup;
 	cbk->action				= action;
+	cbk->reconnect			= reconnect;
 
 }
 

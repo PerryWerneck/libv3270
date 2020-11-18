@@ -363,10 +363,6 @@
 
 	}
 
-	// Load Toggles
-	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
-		load_by_pspec(widget,klass->properties.toggle[ix],key_file,group_name);
-
 	// Load V3270 properties
 	for(ix = 0; klass->properties.persistent[ix];ix++)
 	{
@@ -378,6 +374,10 @@
 		);
 
 	}
+
+	// Load Toggles
+	for(ix = 0; ix < G_N_ELEMENTS(klass->properties.toggle); ix++)
+		load_by_pspec(widget,klass->properties.toggle[ix],key_file,group_name);
 
 	g_object_thaw_notify(G_OBJECT(widget));
 	terminal->freeze = 0;

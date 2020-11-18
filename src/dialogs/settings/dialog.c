@@ -284,10 +284,23 @@ GtkWidget * v3270_settings_dialog_new()
 
 }
 
-static void set_terminal_widget(GtkWidget *settings, GtkWidget *terminal)
+struct _set_terminal_info
+{
+	GtkNotebook *notebook;	///< @brief The notebook.
+	GtkWidget *terminal;	///< @brief The V3270 terminal.
+	gint selected;			///< @brief First sensitive page (-1 = none)
+};
+
+static void set_terminal_widget(GtkWidget *settings, struct _set_terminal_info *info)
 {
 	if(GTK_IS_V3270_SETTINGS(settings))
-		v3270_settings_set_terminal_widget(settings,terminal);
+	{
+		v3270_settings_set_terminal_widget(settings,info->terminal);
+		if(gtk_widget_get_sensitive(settings) && info->selected < 0)
+			info->selected = gtk_notebook_page_num(info->notebook,settings);
+	}
+
+	gtk_widget_show(settings);
 }
 
 void v3270_settings_dialog_set_terminal_widget(GtkWidget *widget, GtkWidget *terminal)
@@ -298,11 +311,28 @@ void v3270_settings_dialog_set_terminal_widget(GtkWidget *widget, GtkWidget *ter
 
 	GTK_V3270_SETTINGS_DIALOG(widget)->terminal = terminal;
 
+	struct _set_terminal_info info = {
+		.notebook = GTK_V3270_SETTINGS_DIALOG(widget)->tabs,
+		.terminal = terminal,
+		.selected = -1
+	};
+
 	gtk_container_foreach(
-		GTK_CONTAINER(GTK_V3270_SETTINGS_DIALOG(widget)->tabs),
+		GTK_CONTAINER(info.notebook),
 		(GtkCallback) set_terminal_widget,
-		terminal
+		&info
 	);
+
+	if(info.selected >= 0)
+	{
+		debug("Found active page on %d",info.selected);
+		gtk_notebook_set_current_page(info.notebook, info.selected);
+	}
+	else
+	{
+		g_message("No active page on settings dialog");
+	}
+
 }
 
 void v3270_settings_dialog_set_has_subtitle(GtkWidget *widget, gboolean has_subtitle)

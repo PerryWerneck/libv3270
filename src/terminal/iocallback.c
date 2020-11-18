@@ -146,11 +146,7 @@ gpointer BgCall(struct bgParameter *p)
 
 static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void *parm)
 {
-//	return callback(hSession,parm);
-
 	struct bgParameter p = { TRUE, hSession, -1, callback, parm };
-
-//	trace("%s starts -------------------------------------", __FUNCTION__);
 
 	p.running = TRUE;
 
@@ -177,21 +173,21 @@ static int static_RunTask(H3270 *hSession, int(*callback)(H3270 *, void *), void
 
 void v3270_register_io_handlers(G_GNUC_UNUSED v3270Class *cls)
 {
-	static LIB3270_IO_CONTROLLER hdl =
+	static const LIB3270_IO_CONTROLLER hdl =
 	{
-		sizeof(LIB3270_IO_CONTROLLER),
+		.sz = sizeof(LIB3270_IO_CONTROLLER),
 
-		static_AddTimer,
-		static_RemoveTimer,
+		.AddTimer = static_AddTimer,
+		.RemoveTimer = static_RemoveTimer,
 
-		static_AddSource,
-		static_RemoveSource,
-		static_SetSourceState,
+		.add_poll = static_AddSource,
+		.remove_poll = static_RemoveSource,
+		.set_poll_state = static_SetSourceState,
 
-		static_Sleep,
-		static_RunPendingEvents,
-		beep,
-		static_RunTask
+		.Wait = static_Sleep,
+		.event_dispatcher = static_RunPendingEvents,
+		.ring_bell = beep,
+		.run_task = static_RunTask
 
 	};
 
