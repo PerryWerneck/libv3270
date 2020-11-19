@@ -139,14 +139,6 @@
 
  }
 
- static void release_ptr(GtkWidget G_GNUC_UNUSED(*object), gpointer ptr) {
- 	g_free(ptr);
- }
-
- LIB3270_EXPORT void gtk_widget_bind_ptr(GtkWidget *widget, gpointer ptr) {
-	g_signal_connect(widget,"destroy",G_CALLBACK(release_ptr),ptr);
- }
-
  LIB3270_EXPORT void gtk_entry_bind_to_filechooser(GtkWidget *widget, GtkFileChooserAction action, const gchar *title, const gchar *icon_name, const gchar *pattern, const gchar *name) {
 
 	gtk_entry_set_icon_from_icon_name(

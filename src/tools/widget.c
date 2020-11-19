@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como tools.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -27,23 +27,23 @@
  *
  */
 
-#ifndef V3270_TOOLS_H_INCLUDED
+ /**
+  * @brief Useful extensions for GtkWidget.
+  *
+  */
 
- #include <gtk/gtk.h>
- #include <lib3270.h>
+ #include <v3270/tools.h>
 
- G_BEGIN_DECLS
+ LIB3270_EXPORT void gtk_widget_add_class(GtkWidget *widget, const char *className) {
+	GtkStyleContext *context = gtk_widget_get_style_context(widget);
+	gtk_style_context_add_class(context,className);
+ }
 
-	/// @brief Bind pointer to widget; release it when widget is destroyed.
-	LIB3270_EXPORT void gtk_widget_bind_ptr(GtkWidget *widget, gpointer ptr);
+ static void release_ptr(GtkWidget G_GNUC_UNUSED(*object), gpointer ptr) {
+ 	g_free(ptr);
+ }
 
-	/// @brief Add style to widget.
-	LIB3270_EXPORT void gtk_widget_add_class(GtkWidget *widget, const char *className);
-
-	/// @brief Bind file chooser with entry field.
-	LIB3270_EXPORT void gtk_entry_bind_to_filechooser(GtkWidget *widget, GtkFileChooserAction action, const gchar *title, const gchar *icon_name, const gchar *pattern, const gchar *name);
-
- G_END_DECLS
-
-#endif // V3270_TOOLS_H_INCLUDED
+ LIB3270_EXPORT void gtk_widget_bind_ptr(GtkWidget *widget, gpointer ptr) {
+	g_signal_connect(widget,"destroy",G_CALLBACK(release_ptr),ptr);
+ }
 

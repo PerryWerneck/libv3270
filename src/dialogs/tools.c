@@ -29,6 +29,7 @@
 
  #include <internals.h>
  #include <v3270/dialogs.h>
+ #include <v3270/tools.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -50,7 +51,7 @@
  	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 
 	GtkFrame 	* frame		= GTK_FRAME(gtk_frame_new(""));
-	GtkWidget	* label		= gtk_label_new(NULL);
+	GtkWidget	* label		= gtk_label_new(title);
 
 #ifdef G_OS_UNIX
 	{
@@ -58,15 +59,11 @@
 		g_autofree gchar * markup = g_strdup_printf("<b>%s</b>",title);
 		gtk_label_set_markup(GTK_LABEL(label),markup);
 
+		gtk_widget_add_class(label,"separator");
 		g_object_set(G_OBJECT(frame),"margin-top",6,NULL);
 
 		gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_NONE);
 
-	}
-#else
-	{
-		// Non Unix/Linux, use the windows style.
-		gtk_label_set_text(GTK_LABEL(label),title);
 	}
 #endif // G_OS_UNIX
 
