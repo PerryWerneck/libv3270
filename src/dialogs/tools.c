@@ -46,28 +46,27 @@
 	return grid;
  }
 
+ GtkWidget * v3270_dialog_section_get_label_widget(GtkWidget *widget) {
+	GtkWidget *rc = NULL;
+	g_object_get(G_OBJECT(widget),"label-widget",&rc,NULL);
+	return rc;
+ }
+
  GtkWidget * v3270_dialog_section_new(const gchar * title, const gchar *tooltip, GtkWidget *child) {
 
  	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 
-	GtkFrame 	* frame		= GTK_FRAME(gtk_frame_new(""));
-	GtkWidget	* label		= gtk_label_new(title);
+	GtkFrame 	* frame	= GTK_FRAME(gtk_frame_new(title));
+	GtkWidget	* label	= v3270_dialog_section_get_label_widget(GTK_WIDGET(frame));
 
 #ifdef G_OS_UNIX
 	{
 		// Unix/Linux version, follow gnome guidelines
-		g_autofree gchar * markup = g_strdup_printf("<b>%s</b>",title);
-		gtk_label_set_markup(GTK_LABEL(label),markup);
-
 		gtk_widget_add_class(label,"separator");
-		g_object_set(G_OBJECT(frame),"margin-top",6,NULL);
-
 		gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_NONE);
 
 	}
 #endif // G_OS_UNIX
-
-	gtk_frame_set_label_widget(GTK_FRAME(frame),label);
 
 	if(child) {
 		gtk_container_set_border_width(GTK_CONTAINER(child),12);
