@@ -216,4 +216,22 @@
 
  }
 
+ gboolean v3270_dialog_get_use_header() {
+
+#ifdef DEBUG
+	return FALSE;
+#endif // DEBUG
+
+#ifdef _WIN32
+	return FALSE;
+#elif GTK_CHECK_VERSION(3,12,0)
+	gboolean use_header;
+	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
+	return use_header;
+#else
+	return FALSE;
+#endif // _WIN32
+
+ }
+
 

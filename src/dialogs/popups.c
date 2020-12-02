@@ -32,6 +32,7 @@
  #include <terminal.h>
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
+ #include <v3270/tools.h>
  #include <lib3270/popup.h>
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/

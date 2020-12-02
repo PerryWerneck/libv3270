@@ -193,6 +193,8 @@
  G_GNUC_INTERNAL GtkHeaderBar	* v3270_dialog_get_header_bar(GtkWidget * widget);
 #endif // ! GTK 3.12
 
+ G_GNUC_INTERNAL gboolean		  v3270_dialog_get_use_header();
+
  G_GNUC_INTERNAL void			  v3270_grid_attach(GtkGrid *grid, const struct v3270_entry_field * description, GtkWidget *widget);
 
  // Toggle button widget

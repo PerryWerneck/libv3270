@@ -233,14 +233,11 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
  {
  	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
-	gboolean use_header;
-	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
-
 	// Create dialog
 	V3270LoadDialog * dialog = V3270_LOAD_DIALOG(
 									g_object_new(
 										GTK_TYPE_V3270LoadDialog,
-										"use-header-bar", (use_header ? 1 : 0),
+										"use-header-bar", (v3270_dialog_get_use_header() ? 1 : 0),
 										NULL)
 									);
 

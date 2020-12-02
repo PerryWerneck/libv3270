@@ -63,29 +63,12 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-/*
- static void V3270SaveDialog_finalize(V3270SaveDialog *object)
- {
-	V3270SaveDialog *dialog = V3270_SAVE_DIALOG(object);
- }
-*/
-
  static void V3270SaveDialog_class_init(V3270SaveDialogClass G_GNUC_UNUSED(*klass))
  {
 
 	debug("%s",__FUNCTION__);
 //	G_OBJECT_CLASS(klass)->finalize = V3270SaveDialog_finalize;
 
- }
-
- static void cancel_operation(GtkButton G_GNUC_UNUSED(*button), GtkDialog *dialog)
- {
-	gtk_dialog_response(dialog,GTK_RESPONSE_CANCEL);
- }
-
- static void apply_operation(GtkButton G_GNUC_UNUSED(*button), GtkDialog *dialog)
- {
-	gtk_dialog_response(dialog,GTK_RESPONSE_APPLY);
  }
 
 #ifdef WIN32
@@ -138,27 +121,42 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 #endif // _WIN32
 
 
- static void filename_changed(GtkEntry *entry, GtkComboBox *formats)
+ static void filename_changed(GtkEntry *entry, V3270SaveDialog *dialog)
  {
  	const gchar * text = gtk_entry_get_text(entry);
+	GtkWidget * button = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog),GTK_RESPONSE_APPLY);
 
- 	if(!(text && *text))
+ 	if(!(text && *text)) {
+		gtk_widget_set_sensitive(button,FALSE);
 		return;
+ 	}
 
-	const gchar * extension = strrchr(text,'.');
+ 	if(g_str_has_suffix(text,G_DIR_SEPARATOR_S)) {
+		gtk_widget_set_sensitive(button,FALSE);
+		return;
+ 	}
+
+ 	g_autofree gchar * dirname = g_path_get_dirname(text);
+ 	g_autofree gchar * basename = g_path_get_basename(text);
+
+ 	gtk_widget_set_sensitive(button,g_file_test(dirname,G_FILE_TEST_IS_DIR) && *basename && (*basename != '.'));
+
+ 	debug("*************[%s]***********",basename);
+
+	const gchar * extension = strrchr(basename,'.');
 	if(!extension)
 		return;
 
 	extension++;
-	const gchar	* format = gtk_combo_box_get_active_id(formats);
+	const gchar	* format = gtk_combo_box_get_active_id(dialog->format);
 	if(*format == '.')
 		format++;
 
 	if(g_ascii_strcasecmp(extension,format) == 0)
 		return;
 
-	gint column = gtk_combo_box_get_id_column(formats);
-	GtkTreeModel * model = gtk_combo_box_get_model(formats);
+	gint column = gtk_combo_box_get_id_column(dialog->format);
+	GtkTreeModel * model = gtk_combo_box_get_model(dialog->format);
 	GtkTreeIter iter;
 
 	debug("id_column=%d",column);
@@ -172,7 +170,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 			if(g_ascii_strcasecmp(extension,id + (*id == '.' ? 1 : 0)) == 0)
 			{
-				gtk_combo_box_set_active_iter(formats,&iter);
+				gtk_combo_box_set_active_iter(dialog->format,&iter);
 				break;
 			}
 
@@ -228,7 +226,6 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	// Setup visual elements
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 	GtkWidget *widget;
-	GtkWidget *button;
 
 	GtkBox * box = GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
 	gtk_window_set_resizable(GTK_WINDOW(dialog),FALSE);
@@ -284,9 +281,9 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		gtk_widget_set_valign(widget,GTK_ALIGN_CENTER);
 		gtk_grid_attach(grid,widget,2,1,1,1);
 
-		dialog->format = gtk_combo_box_text_new();
+		dialog->format = GTK_COMBO_BOX(gtk_combo_box_text_new());
 
-		gtk_grid_attach(grid,dialog->format,3,1,1,1);
+		gtk_grid_attach(grid,GTK_WIDGET(dialog->format),3,1,1,1);
 
 		for(ix=0;ix<G_N_ELEMENTS(formats);ix++)
 		{
@@ -320,7 +317,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 		}
 
-		g_signal_connect(dialog->filename,"changed",G_CALLBACK(filename_changed),dialog->format);
+		g_signal_connect(dialog->filename,"changed",G_CALLBACK(filename_changed),dialog);
 		g_signal_connect(dialog->format,"changed",G_CALLBACK(fileformat_changed),dialog->filename);
 
 	}
@@ -328,41 +325,19 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	// Buttons
 	// https://developer.gnome.org/icon-naming-spec/
-#ifdef _WIN32
-	widget = NULL;
-#elif GTK_CHECK_VERSION(3,14,0)
-	widget = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
-#else
-	widget = NULL;
-#endif // GTK(3,14,0)
+	gtk_dialog_add_buttons(
+		GTK_DIALOG (dialog),
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Save"), GTK_RESPONSE_APPLY,
+		NULL
+	);
 
-	if(widget)
-	{
-		// Have header bar
-		button = gtk_button_new_with_mnemonic(_("_Cancel"));
-		gtk_widget_set_tooltip_markup(button,_("Click to cancel operation"));
-		gtk_header_bar_pack_start(GTK_HEADER_BAR(widget),button);
-		g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(cancel_operation),dialog);
-
-		button = gtk_button_new_with_mnemonic(_("_Save"));
-		gtk_widget_set_tooltip_markup(button,_("Click to save file"));
-		gtk_header_bar_pack_end(GTK_HEADER_BAR(widget),button);
-		g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(apply_operation),dialog);
+	if(!v3270_dialog_get_use_header()) {
+		GtkWidget * content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+		gtk_box_set_spacing(GTK_BOX(content_area),3);
 	}
-	else
-	{
-		gtk_box_set_spacing(
-			GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
-			18
-		);
 
-		gtk_dialog_add_buttons(
-			GTK_DIALOG (dialog),
-			_("_Cancel"), GTK_RESPONSE_CANCEL,
-			_("_Save"), GTK_RESPONSE_APPLY,
-			NULL
-		);
-	}
+	gtk_widget_set_sensitive(gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog),GTK_RESPONSE_APPLY),FALSE);
 
  }
 
@@ -377,14 +352,11 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
  		N_("Save copy"),
  	};
 
-	gboolean use_header;
-	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
-
 	// Create dialog
 	V3270SaveDialog * dialog = V3270_SAVE_DIALOG(
 									g_object_new(
 										GTK_TYPE_V3270SaveDialog,
-										"use-header-bar", (use_header ? 1 : 0),
+										"use-header-bar", v3270_dialog_get_use_header() ? 1 : 0,
 										NULL)
 									);
 
