@@ -34,6 +34,7 @@
  #include <lib3270/selection.h>
  #include <clipboard.h>
  #include <limits.h>
+ #include <v3270/tools.h>
 
 /*--[ GTK Requires ]---------------------------------------------------------------------------------*/
 
@@ -71,6 +72,7 @@
 
  }
 
+/*
 #ifdef WIN32
 static void icon_press(GtkEntry G_GNUC_UNUSED(*entry), G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, V3270SaveDialog *widget)
 {
@@ -119,7 +121,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
  }
 #endif // _WIN32
-
+*/
 
  static void filename_changed(GtkEntry *entry, V3270SaveDialog *dialog)
  {
@@ -139,9 +141,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
  	g_autofree gchar * dirname = g_path_get_dirname(text);
  	g_autofree gchar * basename = g_path_get_basename(text);
 
- 	gtk_widget_set_sensitive(button,g_file_test(dirname,G_FILE_TEST_IS_DIR) && *basename && (*basename != '.'));
-
- 	debug("*************[%s]***********",basename);
+ 	gtk_widget_set_sensitive(button,g_file_test(dirname,G_FILE_TEST_IS_DIR));
 
 	const gchar * extension = strrchr(basename,'.');
 	if(!extension)
@@ -250,10 +250,21 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		gtk_grid_attach(grid,widget,0,0,1,1);
 		gtk_label_set_mnemonic_widget(GTK_LABEL(widget),dialog->filename);
 
+		/*
 		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,"document-save-as");
 		gtk_entry_set_icon_activatable(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,TRUE);
 		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,_("Select file"));
 		g_signal_connect(G_OBJECT(dialog->filename),"icon-press",G_CALLBACK(icon_press),dialog);
+		*/
+
+		gtk_entry_bind_to_filechooser(
+			dialog->filename,
+			GTK_FILE_CHOOSER_ACTION_SAVE,
+			_( "Select destination file" ),
+			NULL,
+			NULL,
+			NULL
+		);
 
 		gtk_entry_set_width_chars(GTK_ENTRY(dialog->filename),60);
 		gtk_entry_set_max_length(GTK_ENTRY(dialog->filename),PATH_MAX);
