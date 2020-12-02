@@ -345,7 +345,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	if(!v3270_dialog_get_use_header()) {
 		GtkWidget * content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-		gtk_box_set_spacing(GTK_BOX(content_area),3);
+		gtk_box_set_spacing(GTK_BOX(content_area),6);
 	}
 
 	gtk_widget_set_sensitive(gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog),GTK_RESPONSE_APPLY),FALSE);

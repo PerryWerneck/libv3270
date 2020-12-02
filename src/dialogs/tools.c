@@ -218,10 +218,6 @@
 
  gboolean v3270_dialog_get_use_header() {
 
-#ifdef DEBUG
-	return FALSE;
-#endif // DEBUG
-
 #ifdef _WIN32
 	return FALSE;
 #elif GTK_CHECK_VERSION(3,12,0)
