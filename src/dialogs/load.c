@@ -132,23 +132,8 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		return;
  	}
 
- 	if(g_str_has_suffix(text,G_DIR_SEPARATOR_S)) {
-		gtk_widget_set_sensitive(button,FALSE);
-		return;
- 	}
+	gtk_widget_set_sensitive(button,g_file_test(text, G_FILE_TEST_IS_REGULAR));
 
- 	g_autofree gchar * dirname = g_path_get_dirname(text);
-
- 	if(!g_file_test(dirname,G_FILE_TEST_IS_DIR)) {
-		gtk_widget_set_sensitive(button,FALSE);
-		return;
- 	}
-
-
- //	g_autofree gchar * basename = g_path_get_basename(text);
-
-
-	gtk_widget_set_sensitive(button,TRUE);
  }
 
  static void V3270LoadDialog_init(V3270LoadDialog *dialog) {
