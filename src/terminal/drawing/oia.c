@@ -258,10 +258,8 @@ static void setup_double_char_position(GdkRectangle *rect, G_GNUC_UNUSED v3270Fo
 static int draw_centered_char(cairo_t *cr, v3270FontInfo *metrics, int x, int y, const gchar chr)
 {
 	char str[2] = { chr, 0 };
-//	cairo_text_extents_t extents;
 
 	cairo_set_scaled_font(cr,metrics->scaled);
-//	cairo_text_extents(cr,str,&extents);
 
 	v3270_draw_text_at(cr, x, y, metrics, str);
 
@@ -293,33 +291,95 @@ static void draw_undera(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGB
 
 }
 
+static void draw_boxed_char(cairo_t *cr, const GdkRectangle *rect, v3270FontInfo *metrics, const char *str) {
+
+	cairo_status_t		 		  status;
+	cairo_glyph_t				* glyphs			= NULL;
+	int							  num_glyphs		= 0;
+	cairo_text_cluster_t		* clusters			= NULL;
+	int							  num_clusters		= 0;
+	cairo_text_cluster_flags_t	  cluster_flags;
+	double x = ((double) rect->x);
+	double y = (rect->y+metrics->height);
+
+	status = cairo_scaled_font_text_to_glyphs(
+					metrics->scaled,
+					x+1,
+					y,
+					str, strlen(str),
+					&glyphs,
+					&num_glyphs,
+					&clusters,
+					&num_clusters,
+					&cluster_flags
+				);
+
+	if (status == CAIRO_STATUS_SUCCESS) {
+		cairo_show_text_glyphs(
+			cr,
+			str,
+			strlen(str),
+			glyphs,
+			num_glyphs,
+			clusters,
+			num_clusters,
+			cluster_flags
+		);
+	}
+
+	if(glyphs)
+		cairo_glyph_free(glyphs);
+
+	if(clusters)
+		cairo_text_cluster_free(clusters);
+
+	// https://www.cairographics.org/FAQ/#sharp_lines
+	cairo_set_line_width(cr, 1);
+	cairo_move_to(cr,rect->x + 0.5, rect->y + 0.5);
+	cairo_line_to(cr,rect->x + 0.5, rect->y + rect->height + 0.5);
+	cairo_line_to(cr,rect->x + rect->width + 0.5, rect->y + rect->height + 0.5);
+	cairo_line_to(cr,rect->x + rect->width + 0.5, rect->y + 0.5);
+	cairo_close_path(cr);
+
+	cairo_stroke(cr);
+
+}
+
 void v3270_draw_connection(cairo_t *cr, H3270 *host, v3270FontInfo *metrics, GdkRGBA *color, const GdkRectangle *rect)
 {
- 	gchar str = ' ';
-
 	gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_BACKGROUND);
 	cairo_rectangle(cr, rect->x, rect->y, rect->width, rect->height);
 	cairo_fill(cr);
-
-	gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_FOREGROUND);
-	cairo_rectangle(cr, rect->x, rect->y, rect->width, rect->height);
 	cairo_stroke(cr);
 
-	if(lib3270_get_oia_box_solid(host))
+	gdk_cairo_set_source_rgba(cr,color+V3270_COLOR_OIA_FOREGROUND);
+
+	//cairo_rectangle(cr, rect->x, rect->y, rect->width, rect->height);
+
+ 	if(lib3270_get_oia_box_solid(host))
 	{
 		cairo_rectangle(cr, rect->x, rect->y, rect->width, rect->height);
 		cairo_fill(cr);
+		cairo_stroke(cr);
 		return;
 	}
 
+	const gchar *str = " ";
 	if(lib3270_in_ansi(host))
-		str = 'N';
+		str = "N";
 	else if(lib3270_in_sscp(host))
-		str = 'S';
+		str = "S";
 	else
-		str = '?';
+		str = "?";
 
-	draw_centered_char(cr,metrics,rect->x,rect->y,str);
+	draw_boxed_char(
+		cr,
+		rect,
+		metrics,
+		str
+	);
+
+//	draw_centered_char(cr,metrics,rect->x,rect->y,str[0]);
 
 }
 
@@ -553,9 +613,6 @@ static void draw_insert(cairo_t *cr, H3270 *host, GdkRGBA *color, GdkRectangle *
 
 }
 
-// v3270_draw_oia(cr, terminal->host, rect.y, cols, &terminal->font, terminal->color,terminal->oia_rect);
-// void v3270_draw_oia(cairo_t *cr, H3270 *host, int row, int cols, v3270FontInfo *metrics, GdkRGBA *color, GdkRectangle *rect)
-
 void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 {
 	static const struct _right_fields
@@ -611,11 +668,29 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 
 	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_FOREGROUND);
 
+	{
+		GdkRectangle rect = {
+			.x = lCol,
+			.y = row,
+			.width = terminal->font.width+2,
+			.height = terminal->font.spacing.value
+		};
+
+		draw_boxed_char(
+			cr,
+			&rect,
+			&terminal->font,
+			"4"
+		);
+	}
+
+	/*
 	draw_centered_char(cr,&terminal->font,lCol,row,'4');
 
 	cairo_stroke(cr);
 	cairo_rectangle(cr, lCol, row, terminal->font.width+2, terminal->font.spacing.value);
 	cairo_stroke(cr);
+	*/
 
 	lCol += (terminal->font.width+5);
 
@@ -631,8 +706,9 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 	// Connection indicator
 	terminal->oia.rect[V3270_OIA_CONNECTION].x = lCol;
 	terminal->oia.rect[V3270_OIA_CONNECTION].y = row;
-	terminal->oia.rect[V3270_OIA_CONNECTION].width  = terminal->font.width+3;
+	terminal->oia.rect[V3270_OIA_CONNECTION].width  = terminal->font.width;
 	terminal->oia.rect[V3270_OIA_CONNECTION].height = terminal->font.spacing.value;
+
 	v3270_draw_connection(cr,terminal->host,&terminal->font,terminal->color,terminal->oia.rect+V3270_OIA_CONNECTION);
 
 	lCol += (4 + terminal->oia.rect[V3270_OIA_CONNECTION].width);
