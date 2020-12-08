@@ -704,9 +704,14 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 	lCol += (3 + terminal->oia.rect[V3270_OIA_UNDERA].width);
 
 	// Connection indicator
+	//terminal->oia.rect[V3270_OIA_CONNECTION].x = lCol;
+	//terminal->oia.rect[V3270_OIA_CONNECTION].y = row;
+	//terminal->oia.rect[V3270_OIA_CONNECTION].width  = terminal->font.width;
+	//terminal->oia.rect[V3270_OIA_CONNECTION].height = terminal->font.spacing.value;
+
 	terminal->oia.rect[V3270_OIA_CONNECTION].x = lCol;
 	terminal->oia.rect[V3270_OIA_CONNECTION].y = row;
-	terminal->oia.rect[V3270_OIA_CONNECTION].width  = terminal->font.width;
+	terminal->oia.rect[V3270_OIA_CONNECTION].width = terminal->font.width+2;
 	terminal->oia.rect[V3270_OIA_CONNECTION].height = terminal->font.spacing.value;
 
 	v3270_draw_connection(cr,terminal->host,&terminal->font,terminal->color,terminal->oia.rect+V3270_OIA_CONNECTION);
