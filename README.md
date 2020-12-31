@@ -5,6 +5,8 @@ Created originally as part of PW3270 application.
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
 ![CodeQL](https://github.com/PerryWerneck/libv3270/workflows/CodeQL/badge.svg?branch=master)
+![Downloads](https://img.shields.io/github/downloads/PerryWerneck/libv3270/total.svg)
+
 
 ## Instalation
 
