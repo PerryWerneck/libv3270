@@ -731,7 +731,6 @@ void v3270_draw_oia(v3270 *terminal, cairo_t *cr, int row, int cols)
 	}
 
 	cairo_save(cr);
-//	v3270_draw_ssl_status(cr,terminal->host,&terminal->font,terminal->color,terminal->oia.rect+V3270_OIA_SSL);
 	v3270_draw_ssl_status(terminal,cr,terminal->oia.rect+V3270_OIA_SSL);
 	cairo_restore(cr);
 
@@ -762,12 +761,7 @@ cairo_t * v3270_oia_set_update_region(v3270 * terminal, GdkRectangle **r, V3270_
 
 	*r = rect;
 
-#ifdef DEBUG
-	cairo_set_source_rgb(cr,0.1,0.1,0.1);
-#else
 	gdk_cairo_set_source_rgba(cr,terminal->color+V3270_COLOR_OIA_BACKGROUND);
-#endif
-
 	cairo_rectangle(cr, rect->x, rect->y, rect->width, rect->height);
 	cairo_fill(cr);
 
@@ -802,19 +796,18 @@ gboolean v3270_update_associated_lu(v3270 *terminal)
 
 void v3270_update_message(v3270 *widget, LIB3270_MESSAGE id)
 {
-	cairo_t 		* cr;
-	GdkRectangle	* rect;
 
-	if(!widget->surface)
-		return;
+	if(widget->surface) {
 
-	cr = v3270_oia_set_update_region(widget,&rect,V3270_OIA_MESSAGE);
+		GdkRectangle	* rect;
+		cairo_t 		* cr	= v3270_oia_set_update_region(widget,&rect,V3270_OIA_MESSAGE);
 
-	draw_status_message(cr,id,&widget->font,widget->color,rect);
+		draw_status_message(cr,id,&widget->font,widget->color,rect);
+		cairo_destroy(cr);
 
-    cairo_destroy(cr);
+		v3270_queue_draw_area(GTK_WIDGET(widget),rect->x,rect->y,rect->width,rect->height);
 
-	v3270_queue_draw_area(GTK_WIDGET(widget),rect->x,rect->y,rect->width,rect->height);
+	}
 
 	if(widget->accessible)
 		v3270_acessible_set_state(widget->accessible,id);
