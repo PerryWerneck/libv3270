@@ -35,7 +35,6 @@
  #endif // WIN32
 
  #define ENABLE_NLS
- #define GETTEXT_PACKAGE PACKAGE_NAME
 
  #include <gtk/gtk.h>
  #include <libintl.h>

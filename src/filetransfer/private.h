@@ -35,7 +35,6 @@
 	#include <config.h>
 
 	#define ENABLE_NLS
-	#define GETTEXT_PACKAGE PACKAGE_NAME
 
 	#include <libintl.h>
 	#include <glib/gi18n-lib.h>
