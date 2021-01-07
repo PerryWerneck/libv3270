@@ -726,13 +726,10 @@ LIB3270_EXPORT GtkWidget * v3270ft_new(GtkWidget *parent) {
 
 #if GTK_CHECK_VERSION(3,12,0)
 
-	gboolean use_header;
-	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
-
 	GtkWidget * dialog =
 		GTK_WIDGET(g_object_new(
 			GTK_TYPE_V3270FT,
-			"use-header-bar", (use_header ? 1 : 0),
+			"use-header-bar", (v3270_dialog_get_use_header() ? 1 : 0),
 			NULL
 		));
 

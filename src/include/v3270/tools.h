@@ -37,6 +37,9 @@
 	/// @brief Bind pointer to widget; release it when widget is destroyed.
 	LIB3270_EXPORT void gtk_widget_bind_ptr(GtkWidget *widget, gpointer ptr);
 
+	/// @brief Add style to widget.
+	LIB3270_EXPORT void gtk_widget_add_class(GtkWidget *widget, const char *className);
+
 	/// @brief Bind file chooser with entry field.
 	LIB3270_EXPORT void gtk_entry_bind_to_filechooser(GtkWidget *widget, GtkFileChooserAction action, const gchar *title, const gchar *icon_name, const gchar *pattern, const gchar *name);
 

@@ -29,6 +29,7 @@
 
  #include <internals.h>
  #include <v3270/dialogs.h>
+ #include <v3270/tools.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -45,32 +46,27 @@
 	return grid;
  }
 
+ GtkWidget * v3270_dialog_section_get_label_widget(GtkWidget *widget) {
+	GtkWidget *rc = NULL;
+	g_object_get(G_OBJECT(widget),"label-widget",&rc,NULL);
+	return rc;
+ }
+
  GtkWidget * v3270_dialog_section_new(const gchar * title, const gchar *tooltip, GtkWidget *child) {
 
  	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 
-	GtkFrame 	* frame		= GTK_FRAME(gtk_frame_new(""));
-	GtkWidget	* label		= gtk_label_new(NULL);
+	GtkFrame 	* frame	= GTK_FRAME(gtk_frame_new(title));
+	GtkWidget	* label	= v3270_dialog_section_get_label_widget(GTK_WIDGET(frame));
 
 #ifdef G_OS_UNIX
 	{
 		// Unix/Linux version, follow gnome guidelines
-		g_autofree gchar * markup = g_strdup_printf("<b>%s</b>",title);
-		gtk_label_set_markup(GTK_LABEL(label),markup);
-
-		g_object_set(G_OBJECT(frame),"margin-top",6,NULL);
-
+		gtk_widget_add_class(label,"separator");
 		gtk_frame_set_shadow_type(GTK_FRAME(frame),GTK_SHADOW_NONE);
 
 	}
-#else
-	{
-		// Non Unix/Linux, use the windows style.
-		gtk_label_set_text(GTK_LABEL(label),title);
-	}
 #endif // G_OS_UNIX
-
-	gtk_frame_set_label_widget(GTK_FRAME(frame),label);
 
 	if(child) {
 		gtk_container_set_border_width(GTK_CONTAINER(child),12);
@@ -217,6 +213,20 @@
 
 	if(description->tooltip)
 		gtk_widget_set_tooltip_markup(widget,g_dgettext(GETTEXT_PACKAGE,description->tooltip));
+
+ }
+
+ gboolean v3270_dialog_get_use_header() {
+
+#ifdef _WIN32
+	return FALSE;
+#elif GTK_CHECK_VERSION(3,12,0)
+	gboolean use_header;
+	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
+	return use_header;
+#else
+	return FALSE;
+#endif // _WIN32
 
  }
 

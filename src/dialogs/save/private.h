@@ -49,7 +49,7 @@
 	GtkWidget				* terminal;
 	GtkWidget				* filename;
 	GtkWidget				* charset;
-	GtkWidget				* format;
+	GtkComboBox				* format;
 	LIB3270_CONTENT_OPTION	  mode;
 
  };

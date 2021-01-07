@@ -48,19 +48,6 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-/*
-static gboolean on_tab_focus(V3270Settings *settings, GdkEvent G_GNUC_UNUSED(*event), V3270SettingsDialog *dialog)
-{
-	debug("title: %s",settings->title);
-	debug("label: %s",settings->label);
-
-	if(settings->title)
-		gtk_window_set_title(dialog,settings->title);
-
- 	return FALSE;
-}
-*/
-
 static void on_switch_page(GtkNotebook G_GNUC_UNUSED(*notebook), V3270Settings *settings, guint G_GNUC_UNUSED(page_num), V3270SettingsDialog *dialog)
 {
 	debug("title: %s",settings->title);
@@ -215,15 +202,9 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 	GtkWidget * content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 
 	// Get use of header bar.
-#ifndef _WIN32
-	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &dialog->has_subtitle, NULL);
-#endif // _WIN32
+	dialog->has_subtitle = v3270_dialog_get_use_header();
 
-	// https://developer.gnome.org/hig/stable/visual-layout.html.en
-	//gtk_box_set_spacing(GTK_BOX(content_area),18);
-	//gtk_container_set_border_width(GTK_CONTAINER(content_area),18);
-
-//	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
+	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
     gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 
 	gtk_dialog_add_buttons(
@@ -236,11 +217,6 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 	// Create notebook for settings widgets
 	dialog->tabs = GTK_NOTEBOOK(gtk_notebook_new());
 
-#ifdef _WIN32
-	gtk_widget_set_margin_bottom(GTK_WIDGET(dialog->tabs),3);
-//	gtk_notebook_set_show_border(dialog->tabs, TRUE);
-#endif // _WIN32
-
 	gtk_notebook_set_scrollable(dialog->tabs,TRUE);
 	gtk_notebook_set_show_tabs(dialog->tabs,FALSE);
 	g_signal_connect(G_OBJECT(dialog->tabs), "page-added", G_CALLBACK(on_page_changed), dialog);
@@ -248,29 +224,20 @@ static void V3270SettingsDialog_init(V3270SettingsDialog *dialog)
 	g_signal_connect(G_OBJECT(dialog->tabs), "switch-page", G_CALLBACK(on_switch_page), dialog);
 	gtk_box_pack_start(GTK_BOX(content_area),GTK_WIDGET(dialog->tabs),TRUE,TRUE,0);
 
-
+	if(!dialog->has_subtitle) {
+		gtk_box_set_spacing(GTK_BOX(content_area),3);
+		gtk_widget_set_margin_bottom(content_area,3);
+	}
 }
 
 GtkWidget * v3270_settings_dialog_new()
 {
-#ifdef _WIN32
+#if GTK_CHECK_VERSION(3,12,0)
 
 	GtkWidget * dialog =
 		GTK_WIDGET(g_object_new(
 			GTK_TYPE_V3270_SETTINGS_DIALOG,
-			"use-header-bar", FALSE,
-			NULL
-		));
-
-#elif GTK_CHECK_VERSION(3,12,0)
-
-	gboolean use_header;
-	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
-
-	GtkWidget * dialog =
-		GTK_WIDGET(g_object_new(
-			GTK_TYPE_V3270_SETTINGS_DIALOG,
-			"use-header-bar", (use_header ? 1 : 0),
+			"use-header-bar", (v3270_dialog_get_use_header() ? 1 : 0),
 			NULL
 		));
 

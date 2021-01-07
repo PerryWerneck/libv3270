@@ -32,14 +32,14 @@
  #include <terminal.h>
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
+ #include <v3270/tools.h>
  #include <lib3270/popup.h>
 
  /*--[ Implement ]------------------------------------------------------------------------------------*/
 
  static void v3270_dialog_add_class_for_response(GtkWidget *dialog, gint response_id, const char *className) {
 	GtkWidget * widget = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog),response_id);
-	GtkStyleContext *context = gtk_widget_get_style_context(widget);
-	gtk_style_context_add_class(context,className);
+	gtk_widget_add_class(widget,className);
  }
 
  GtkResponseType v3270_popup_dialog_show(GtkWidget *widget, const LIB3270_POPUP *popup, gboolean wait) {

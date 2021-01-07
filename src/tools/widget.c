@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como private.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -27,44 +27,23 @@
  *
  */
 
-#ifndef PRIVATE_H_INCLUDED
+ /**
+  * @brief Useful extensions for GtkWidget.
+  *
+  */
 
-	#include <config.h>
+ #include <v3270/tools.h>
 
-	#include <gtk/gtk.h>
+ LIB3270_EXPORT void gtk_widget_add_class(GtkWidget *widget, const char *className) {
+	GtkStyleContext *context = gtk_widget_get_style_context(widget);
+	gtk_style_context_add_class(context,className);
+ }
 
-	#define ENABLE_NLS
+ static void release_ptr(GtkWidget G_GNUC_UNUSED(*object), gpointer ptr) {
+ 	g_free(ptr);
+ }
 
-	#include <libintl.h>
-	#include <glib/gi18n-lib.h>
-
-	#include <v3270.h>
-	#include <v3270/trace.h>
-
-	#include <lib3270.h>
-	#include <lib3270/log.h>
-	#include <lib3270/trace.h>
-
-	/// @brief V3270 Trace Signal list
-	enum V3270_TRACE_SIGNAL
-	{
-		V3270_TRACE_SIGNAL_COMMAND,
-
-		V3270_TRACE_SIGNAL_LAST
-	};
-
-	G_GNUC_INTERNAL H3270				* v3270_trace_get_session(GtkWidget *widget);
-	G_GNUC_INTERNAL GtkWidget			* v3270_trace_get_terminal(GtkWidget *widget);
-	G_GNUC_INTERNAL GtkTextBuffer		* v3270_trace_get_text_buffer(GtkWidget *widget);
-	G_GNUC_INTERNAL GtkScrolledWindow	* v3270_trace_get_scrolled_window(GtkWidget *widget);
-	G_GNUC_INTERNAL void				  v3270_trace_signal_emit(gpointer instance, enum V3270_TRACE_SIGNAL signal_id, ...);
-
-	G_BEGIN_DECLS
-
-
-	G_END_DECLS
-
-
-
-#endif // PRIVATE_H_INCLUDED
+ LIB3270_EXPORT void gtk_widget_bind_ptr(GtkWidget *widget, gpointer ptr) {
+	g_signal_connect(widget,"destroy",G_CALLBACK(release_ptr),ptr);
+ }
 

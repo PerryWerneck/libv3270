@@ -33,6 +33,7 @@ datarootdir=@datarootdir@
 localedir=${datarootdir}/locale
 
 PACKAGE_NAME=@PACKAGE_NAME@
+GETTEXT_PACKAGE=@GETTEXT_PACKAGE@
 PACKAGE_VERSION=@PACKAGE_VERSION@
 PACKAGE_TARNAME=@PACKAGE_TARNAME@
 PRODUCT_NAME=@PRODUCT_NAME@
@@ -50,21 +51,21 @@ INSTALL_DATA=@INSTALL_DATA@
 #---[ Rules ]----------------------------------------------------------------------------
 
 %.po: \
-	$(PACKAGE_NAME).pot
+	$(GETTEXT_PACKAGE).pot
 
 	@echo $(basename $@) ...
-	@$(MSGMERGE) --update --sort-output $@ $(PACKAGE_NAME).pot
+	@$(MSGMERGE) --update --sort-output $@ $(GETTEXT_PACKAGE).pot
 	@touch $@
 
-$(BINDIR)/%/LC_MESSAGES/$(PACKAGE_NAME).mo: \
+$(BINDIR)/%/LC_MESSAGES/$(GETTEXT_PACKAGE).mo: \
 	%.po
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
 	@$(MSGFMT) -c -v -o $@ $^
 
-$(DESTDIR)$(localedir)/%/LC_MESSAGES/$(PACKAGE_NAME).mo: \
-	$(BINDIR)/%/LC_MESSAGES/$(PACKAGE_NAME).mo
+$(DESTDIR)$(localedir)/%/LC_MESSAGES/$(GETTEXT_PACKAGE).mo: \
+	$(BINDIR)/%/LC_MESSAGES/$(GETTEXT_PACKAGE).mo
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
@@ -73,10 +74,10 @@ $(DESTDIR)$(localedir)/%/LC_MESSAGES/$(PACKAGE_NAME).mo: \
 #---[ Targets ]--------------------------------------------------------------------------
 
 all: \
-	$(foreach SRC, $(basename $(wildcard *.po)), $(BINDIR)/$(SRC)/LC_MESSAGES/$(PACKAGE_NAME).mo)
+	$(foreach SRC, $(basename $(wildcard *.po)), $(BINDIR)/$(SRC)/LC_MESSAGES/$(GETTEXT_PACKAGE).mo)
 
 install: \
-	$(foreach SRC, $(basename $(wildcard *.po)), $(DESTDIR)$(localedir)/$(SRC)/LC_MESSAGES/$(PACKAGE_NAME).mo)
+	$(foreach SRC, $(basename $(wildcard *.po)), $(DESTDIR)$(localedir)/$(SRC)/LC_MESSAGES/$(GETTEXT_PACKAGE).mo)
 
 
 

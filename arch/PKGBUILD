@@ -9,7 +9,7 @@ url="https://portal.softwarepublico.gov.br/social/pw3270/"
 arch=(i686 x86_64)
 license=(GPL)
 depends=()
-makedepends=(autoconf automake make openssl lib3270 gtk3 python3)
+makedepends=(autoconf automake make openssl lib3270 gtk3 python3 libtool)
 checkdepends=()
 
 #groups=(gnome)
@@ -22,8 +22,10 @@ conflicts=($pkgname)
 
 prepare() {
   cd $pkgname-$pkgver
+  mkdir -p scripts
+  touch scripts/config.rpath
   NOCONFIGURE=1 ./autogen.sh
-  ./configure --prefix=/usr
+  ./configure --prefix=/usr --disable-static
 }
 
 build() {

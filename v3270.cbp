@@ -408,6 +408,9 @@
 		<Unit filename="src/tools/entry.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/tools/widget.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/trace/exec.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -35,6 +35,7 @@
  #include <clipboard.h>
  #include <limits.h>
  #include <v3270/dialogs.h>
+ #include <v3270/tools.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
@@ -73,16 +74,7 @@
 
  }
 
- static void cancel_operation(GtkButton G_GNUC_UNUSED(*button), GtkDialog *dialog)
- {
-	gtk_dialog_response(dialog,GTK_RESPONSE_CANCEL);
- }
-
- static void apply_operation(GtkButton G_GNUC_UNUSED(*button), GtkDialog *dialog)
- {
-	gtk_dialog_response(dialog,GTK_RESPONSE_APPLY);
- }
-
+/*
 #ifdef WIN32
 static void icon_press(GtkEntry G_GNUC_UNUSED(*entry), G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, V3270LoadDialog *widget)
 {
@@ -128,9 +120,23 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
  }
 #endif // _WIN32
+*/
 
- static void V3270LoadDialog_init(V3270LoadDialog *dialog)
- {
+ static void filename_changed(GtkEntry *entry, V3270LoadDialog *dialog) {
+
+ 	const gchar * text = gtk_entry_get_text(entry);
+	GtkWidget * button = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog),GTK_RESPONSE_APPLY);
+
+ 	if(!(text && *text)) {
+		gtk_widget_set_sensitive(button,FALSE);
+		return;
+ 	}
+
+	gtk_widget_set_sensitive(button,g_file_test(text, G_FILE_TEST_IS_REGULAR));
+
+ }
+
+ static void V3270LoadDialog_init(V3270LoadDialog *dialog) {
  	//     0--------1---------------------2-------3--------------------4
  	// 0 - Filename xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx.xxxxxxxxx. x
  	// 1 - Charset  xxxxxxxxx.xxxxxxxxx.  Format: xxxxxxxxx.xxxxxxxxx.
@@ -141,7 +147,6 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	// Setup visual elements
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 	GtkWidget *widget;
-	GtkWidget *button;
 
 	GtkBox * box = GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
 	gtk_window_set_resizable(GTK_WINDOW(dialog),FALSE);
@@ -166,10 +171,23 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		gtk_grid_attach(grid,widget,0,0,1,1);
 		gtk_label_set_mnemonic_widget(GTK_LABEL(widget),dialog->filename);
 
+		/*
 		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,"document-open");
 		gtk_entry_set_icon_activatable(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,TRUE);
 		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(dialog->filename),GTK_ENTRY_ICON_SECONDARY,_("Select file"));
 		g_signal_connect(G_OBJECT(dialog->filename),"icon-press",G_CALLBACK(icon_press),dialog);
+		*/
+
+		g_signal_connect(dialog->filename,"changed",G_CALLBACK(filename_changed),dialog);
+
+		gtk_entry_bind_to_filechooser(
+			dialog->filename,
+			GTK_FILE_CHOOSER_ACTION_OPEN,
+			_( "Select file" ),
+			NULL,
+			"*.txt",
+			_("Text files")
+		);
 
 		gtk_entry_set_width_chars(GTK_ENTRY(dialog->filename),60);
 		gtk_entry_set_max_length(GTK_ENTRY(dialog->filename),PATH_MAX);
@@ -191,41 +209,20 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 	// Buttons
 	// https://developer.gnome.org/icon-naming-spec/
-#ifdef _WIN32
-	widget = NULL;
-#elif GTK_CHECK_VERSION(3,14,0)
-	widget = gtk_dialog_get_header_bar(GTK_DIALOG(dialog));
-#else
-	widget = NULL;
-#endif // GTK(3,14,0)
+	gtk_dialog_add_buttons(
+		GTK_DIALOG (dialog),
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Load"), GTK_RESPONSE_APPLY,
+		NULL
+	);
 
-	if(widget)
-	{
-		// Have header bar
-		button = gtk_button_new_with_mnemonic(_("_Cancel"));
-		gtk_widget_set_tooltip_markup(button,_("Click to cancel operation"));
-		gtk_header_bar_pack_start(GTK_HEADER_BAR(widget),button);
-		g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(cancel_operation),dialog);
-
-		button = gtk_button_new_with_mnemonic(_("_Load"));
-		gtk_widget_set_tooltip_markup(button,_("Click to load file"));
-		gtk_header_bar_pack_end(GTK_HEADER_BAR(widget),button);
-		g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(apply_operation),dialog);
+	if(!v3270_dialog_get_use_header()) {
+		GtkWidget * content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+		gtk_box_set_spacing(GTK_BOX(content_area),6);
 	}
-	else
-	{
-		gtk_box_set_spacing(
-			GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
-			18
-		);
 
-		gtk_dialog_add_buttons(
-			GTK_DIALOG (dialog),
-			_("_Cancel"), GTK_RESPONSE_CANCEL,
-			_("_Load"), GTK_RESPONSE_APPLY,
-			NULL
-		);
-	}
+	gtk_widget_set_sensitive(gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog),GTK_RESPONSE_APPLY),FALSE);
+
 
  }
 
@@ -233,14 +230,11 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
  {
  	g_return_val_if_fail(GTK_IS_V3270(widget),NULL);
 
-	gboolean use_header;
-	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
-
 	// Create dialog
 	V3270LoadDialog * dialog = V3270_LOAD_DIALOG(
 									g_object_new(
 										GTK_TYPE_V3270LoadDialog,
-										"use-header-bar", (use_header ? 1 : 0),
+										"use-header-bar", (v3270_dialog_get_use_header() ? 1 : 0),
 										NULL)
 									);
 

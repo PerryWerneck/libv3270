@@ -454,13 +454,10 @@ static void V3270FTSettingsDialog_init(V3270FTSettingsDialog *widget)
 
 LIB3270_EXPORT GtkWidget * v3270_ft_settings_dialog_new(GtkWidget *parent)
 {
-	gboolean use_header;
-	g_object_get(gtk_settings_get_default(), "gtk-dialogs-use-header", &use_header, NULL);
-
 	GtkWidget * dialog =
 		GTK_WIDGET(g_object_new(
 			GTK_TYPE_V3270_FT_DIALOG,
-			"use-header-bar", (use_header ? 1 : 0),
+			"use-header-bar", (v3270_dialog_get_use_header() ? 1 : 0),
 			NULL
 		));
 
