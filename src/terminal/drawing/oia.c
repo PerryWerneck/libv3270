@@ -144,7 +144,7 @@ static void setup_cursor_position(GdkRectangle *rect, v3270FontInfo *metrics, ca
 	rect->width = metrics->width * 8;
 	rect->x -= rect->width;
 
-	if(lib3270_get_toggle(host,LIB3270_TOGGLE_CURSOR_POS))
+	if(lib3270_get_toggle(host,LIB3270_TOGGLE_CURSOR_POS) && lib3270_is_connected(host))
 	{
 		int addr = lib3270_get_cursor_address(host);
 		draw_cursor_position(cr,rect,metrics,addr/cols,addr%cols);
@@ -871,7 +871,7 @@ void v3270_update_cursor(H3270 *session, unsigned short row, unsigned short col,
 		v3270_queue_draw_area(GTK_WIDGET(terminal),terminal->cursor.rect.x,0,1,terminal->oia.rect->y-3);
 	}
 
-	if(lib3270_get_toggle(session,LIB3270_TOGGLE_CURSOR_POS))
+	if(lib3270_get_toggle(session,LIB3270_TOGGLE_CURSOR_POS) && lib3270_is_connected(session))
 	{
 		// Update OIA
 		GdkRectangle	* rect;
