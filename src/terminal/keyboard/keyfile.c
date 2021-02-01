@@ -106,7 +106,7 @@
 
 	if(!accel)
 	{
-		g_warning("Can't parse accelerator %s",name);
+		g_warning("Can't parse accelerator '%s' with keys '%s'",name,keys);
 		return;
 	}
 
