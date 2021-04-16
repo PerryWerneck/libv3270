@@ -417,7 +417,7 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
 	GtkWidget *grids[GRID_COUNT];
 
-	grids[CONNECTION] = v3270_url_edit_new();
+	grids[CONNECTION] = widget->input.url = v3270_url_edit_new();
 	grids[EMULATION] = gtk_grid_new();
 
 	// Connection properties
