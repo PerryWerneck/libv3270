@@ -52,6 +52,7 @@
 	GtkWidget * v3270_url_edit_new();
 	void v3270_url_edit_set_url(GtkWidget *widget, const gchar *url);
 	const gchar * v3270_url_edit_get_url(GtkWidget *widget);
+	gboolean v3270_url_edit_is_valid(GtkWidget *widget);
 
 	G_END_DECLS
 

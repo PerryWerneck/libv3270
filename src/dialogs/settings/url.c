@@ -122,7 +122,7 @@
 		gtk_entry_set_width_chars(GTK_ENTRY(widget->entry.host),50);
 		gtk_entry_set_placeholder_text(GTK_ENTRY(widget->entry.host),_("The tn3270 host name"));
 		gtk_widget_set_tooltip_text(widget->entry.host,g_dgettext(GETTEXT_PACKAGE,labels[0].tooltip));
-		gtk_grid_attach(GTK_GRID(widget),widget->entry.host,1,0,4,1);
+		gtk_grid_attach(GTK_GRID(widget),widget->entry.host,1,0,5,1);
 	}
 
 	// Create the service/port field.
@@ -160,7 +160,7 @@
 		};
 
 		gtk_widget_set_tooltip_text(widget->entry.ssl,g_dgettext(GETTEXT_PACKAGE,labels[2].tooltip));
-		gtk_grid_attach(GTK_GRID(widget),widget->entry.ssl,3,1,2,1);
+		gtk_grid_attach(GTK_GRID(widget),widget->entry.ssl,3,1,3,1);
 	}
 
 	// Create labels.
@@ -256,3 +256,14 @@
 	return edit->url;
  }
 
+ gboolean v3270_url_edit_is_valid(GtkWidget *widget) {
+	g_return_val_if_fail(GTK_IS_V3270URLEdit(widget),FALSE);
+
+	V3270URLEdit *edit = GTK_V3270URLEdit(widget);
+
+	const gchar *host = gtk_entry_get_text(GTK_ENTRY(edit->entry.host));
+	if(!*host)
+		return FALSE;
+
+	return TRUE;
+ }

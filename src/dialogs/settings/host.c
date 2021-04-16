@@ -38,6 +38,7 @@
  #include <lib3270/log.h>
  #include <lib3270/toggle.h>
  #include <lib3270/properties.h>
+ #include <v3270/settings/url.h>
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 
@@ -52,21 +53,21 @@
  {
  	{
  		.left = 2,
- 		.top = 2,
+ 		.top = 3,
  		.width = 2,
  		.grid = CONNECTION,
  		.id = LIB3270_TOGGLE_CONNECT_ON_STARTUP,
  	},
  	{
  		.left = 4,
- 		.top = 2,
+ 		.top = 3,
  		.width = 1,
  		.grid = CONNECTION,
 		.id = LIB3270_TOGGLE_RECONNECT,
  	},
  	{
  		.left = 5,
- 		.top = 2,
+ 		.top = 3,
  		.width = 1,
  		.grid = CONNECTION,
 		.id = LIB3270_TOGGLE_KEEP_ALIVE,
@@ -94,8 +95,6 @@
 
  enum _entry
  {
- 	ENTRY_HOSTNAME,
- 	ENTRY_SRVCNAME,
  	ENTRY_OVERSIZE,
  	ENTRY_REMAP_FILE,
  	ENTRY_LU_NAMES,
@@ -206,32 +205,6 @@
 
  static const struct EntryFieldDefinition entryfields[] = {
  	{
- 		.left = 0,
- 		.top = 0,
- 		.width = 5,
- 		.height = 1,
- 		.grid = CONNECTION,
-
-		.label = N_( "_Host" ),
-		.tooltip = N_("Address or name of the host to connect."),
-		.max_length = 0xFF,
-		.width_chars = 50,
-
- 	},
- 	{
- 		.left = 0,
- 		.top = 1,
- 		.width = 1,
- 		.height = 1,
- 		.grid = CONNECTION,
-
- 		.label = N_( "_Service" ),
-		.tooltip = N_("Port or service name."),
-		.max_length = 6,
-		.width_chars = 7,
- 	},
-
- 	{
 		.top = 1,
 		.left = 3,
 		.width = 2,
@@ -258,9 +231,9 @@
  	},
 
  	{
- 		.left = 2,
- 		.top = 1,
- 		.width = 3,
+ 		.left = 0,
+ 		.top = 2,
+ 		.width = 5,
  		.height = 1,
  		.grid = CONNECTION,
 
@@ -279,12 +252,12 @@
 	struct
 	{
 		GtkEntry			* entry[G_N_ELEMENTS(entryfields)];		///< @brief Entry fields for host & service name.
-		GtkComboBox			* ssl;									///< @brief SSL Connection?
 		GtkComboBox			* combos[G_N_ELEMENTS(combos)];			///< @brief Combo-boxes.
 		GtkComboBox			* charset;								///< @brief Charset combo box.
 		GtkToggleButton		* toggles[G_N_ELEMENTS(toggleList)];	///< @brief Toggle checks.
 		GtkSpinButton		* auto_disconnect;						///< @brief Auto disconnect.
 		GtkSpinButton		* unlock_delay;							///< @brief Unlock delay.
+		GtkWidget			* url;									///< @brief The URL entry widget.
 
 	} input;
 
@@ -339,19 +312,7 @@ static gboolean oversize_validate(GtkEditable *editable) {
 static void update_valid(V3270HostSelectWidget *settings, gboolean valid) {
 
     if(valid) {
-
-        // Check required inputs.
-
-        static const int required[] = { ENTRY_HOSTNAME, ENTRY_SRVCNAME };
-        size_t ix;
-
-        for(ix = 0; ix < G_N_ELEMENTS(required); ix++) {
-            const gchar * chars = gtk_editable_get_chars(GTK_EDITABLE(settings->input.entry[required[ix]]),0,-1);
-            if(!*chars) {
-                valid = FALSE;
-                break;
-            }
-        }
+		valid = v3270_url_edit_is_valid(settings->input.url);
     }
 
     if(valid) {
@@ -362,12 +323,14 @@ static void update_valid(V3270HostSelectWidget *settings, gboolean valid) {
 
 }
 
+/*
 static void required_changed(GtkEditable *editable, GtkWidget *settings) {
 
     const gchar * chars = gtk_editable_get_chars(editable,0,-1);
     update_valid(GTK_V3270HostSelectWidget(settings),(*chars ? TRUE : FALSE));
 
 }
+*/
 
 static void oversize_changed(GtkEditable *editable, GtkWidget *settings) {
     update_valid(GTK_V3270HostSelectWidget(settings), oversize_validate(editable));
@@ -454,18 +417,10 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 {
 	GtkWidget *grids[GRID_COUNT];
 
-	{
-		size_t grid;
-
-		for(grid = 0; grid < G_N_ELEMENTS(grids); grid++)
-			grids[grid] = gtk_grid_new();
-
-	}
+	grids[CONNECTION] = v3270_url_edit_new();
+	grids[EMULATION] = gtk_grid_new();
 
 	// Connection properties
- 	gtk_grid_set_row_spacing(GTK_GRID(grids[CONNECTION]),6);
- 	gtk_grid_set_column_spacing(GTK_GRID(grids[CONNECTION]),12);
-
 	gtk_grid_attach(
 			GTK_GRID(widget),
 			v3270_dialog_section_new(_("Connection"),_("Network connection settings"),grids[CONNECTION]),
@@ -486,10 +441,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	{
 		v3270_settings_create_entry_fields(entryfields, G_N_ELEMENTS(entryfields), grids, widget->input.entry);
 
-		// Custom settings
-		// gtk_entry_set_placeholder_text(widget->input.entry[ENTRY_SRVCNAME],"telnet");
-
-		gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_HOSTNAME]),TRUE);
 		gtk_widget_set_hexpand(GTK_WIDGET(widget->input.entry[ENTRY_REMAP_FILE]),TRUE);
 
 		gtk_entry_set_icon_from_icon_name(widget->input.entry[ENTRY_REMAP_FILE],GTK_ENTRY_ICON_SECONDARY,"document-open");
@@ -500,8 +451,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_REMAP_FILE]),"changed",G_CALLBACK(remap_file_changed),widget);
 
 		g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_OVERSIZE]),"changed",G_CALLBACK(oversize_changed),widget);
-        g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_HOSTNAME]),"changed",G_CALLBACK(required_changed),widget);
-        g_signal_connect(G_OBJECT(widget->input.entry[ENTRY_SRVCNAME]),"changed",G_CALLBACK(required_changed),widget);
 
 	}
 
@@ -516,8 +465,8 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 
 		gtk_spin_button_set_increments(widget->input.auto_disconnect,1,1);
 
-		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),label,0,2,1,1);
-		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),GTK_WIDGET(widget->input.auto_disconnect),1,2,1,1);
+		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),label,0,3,1,1);
+		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),GTK_WIDGET(widget->input.auto_disconnect),1,3,1,1);
 		g_signal_connect(G_OBJECT(widget->input.auto_disconnect),"output",G_CALLBACK(spin_format),widget);
 	}
 
@@ -538,43 +487,6 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 		gtk_grid_attach(GTK_GRID(grids[EMULATION]),GTK_WIDGET(widget->input.unlock_delay),7,0,1,1);
 		g_signal_connect(G_OBJECT(widget->input.unlock_delay),"output",G_CALLBACK(spin_format),widget);
 
-	}
-
-	// SSL input
-	{
-		GtkWidget *label = gtk_label_new_with_mnemonic(_( "_Security" ));
-		gtk_widget_set_halign(label,GTK_ALIGN_END);
-		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),label,0,3,1,1);
-
-		GtkTreeModel * model = (GtkTreeModel *) gtk_list_store_new(1,G_TYPE_STRING);
-
-		widget->input.ssl = GTK_COMBO_BOX(gtk_combo_box_new_with_model(model));
-
-		GtkCellRenderer * text_renderer	= gtk_cell_renderer_text_new();
-		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget->input.ssl), text_renderer, TRUE);
-		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(widget->input.ssl), text_renderer, "text", 0, NULL);
-
-		static const gchar * levels[] =
-		{
-			N_("Unsecure"),
-			N_("SSL/TLS")
-		};
-
-		size_t level;
-		for(level = 0; level < G_N_ELEMENTS(levels); level++)
-		{
-			GtkTreeIter iter;
-			gtk_list_store_append((GtkListStore *) model, &iter);
-			gtk_list_store_set((GtkListStore *) model, &iter, 0, levels[level], -1);
-		};
-
-		/*
-		widget->input.ssl = GTK_TOGGLE_BUTTON(gtk_check_button_new_with_mnemonic(_( "_Secure connection." )));
-		gtk_widget_set_tooltip_text(GTK_WIDGET(widget->input.ssl),_( "Check for SSL secure connection." ));
-		gtk_widget_set_halign(GTK_WIDGET(widget->input.ssl),GTK_ALIGN_START);
-		*/
-
-		gtk_grid_attach(GTK_GRID(grids[CONNECTION]),GTK_WIDGET(widget->input.ssl),1,3,2,1);
 	}
 
 	// Toggle checkboxes
@@ -725,20 +637,7 @@ static void apply(GtkWidget *w, GtkWidget *terminal)
 	H3270 *hSession = v3270_get_session(terminal);
 
 	// Apply URL
-	{
-		g_autofree gchar * url =
-			g_strconcat(
-							(gtk_combo_box_get_active(widget->input.ssl) > 0 ? "tn3270s://" : "tn3270://"),
-							gtk_entry_get_text(widget->input.entry[ENTRY_HOSTNAME]),
-							":",
-							gtk_entry_get_text(widget->input.entry[ENTRY_SRVCNAME]),
-							NULL
-						);
-
-		debug("URL=[%s]",url);
-		lib3270_set_url(hSession,url);
-
-	}
+	lib3270_set_url(hSession,v3270_url_edit_get_url(widget->input.url));
 
 	// Apply LU names
 	v3270_set_lunames(terminal,gtk_entry_get_text(widget->input.entry[ENTRY_LU_NAMES]));
@@ -801,42 +700,7 @@ static void load(GtkWidget *w, GtkWidget *terminal)
 	H3270 *hSession = v3270_get_session(terminal);
 	V3270HostSelectWidget *widget = GTK_V3270HostSelectWidget(w);
 
-	const gchar * u = lib3270_get_url(hSession);
-
-	if(u)
-    {
-
-        g_autofree gchar * url = g_strdup(u);
-
-		gtk_combo_box_set_active(widget->input.ssl,(g_str_has_prefix(u,"tn3270s") ? 1 : 0));
-//		gtk_toggle_button_set_active(widget->input.ssl,g_str_has_prefix(u,"tn3270s"));
-
-        gchar *hostname = strstr(url,"://");
-        if(!hostname)
-        {
-            g_message("Invalid URL: \"%s\" (no scheme)",url);
-        }
-        else
-        {
-            hostname += 3;
-
-            gchar *srvcname = strchr(hostname,':');
-
-            if(srvcname)
-            {
-                *(srvcname++) = 0;
-            }
-            else
-            {
-                srvcname = "23";
-            }
-
-            gtk_entry_set_text(widget->input.entry[ENTRY_HOSTNAME],hostname);
-            gtk_entry_set_text(widget->input.entry[ENTRY_SRVCNAME],srvcname);
-
-        }
-
-    }
+	v3270_url_edit_set_url(widget->input.url,lib3270_get_url(hSession));
 
     // Load LU names
     g_autofree gchar * lunames = v3270_get_lunames(terminal);
