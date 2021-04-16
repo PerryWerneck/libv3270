@@ -34,6 +34,7 @@
  #include <v3270/colorscheme.h>
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
+ #include <v3270/settings/url.h>
  #include <v3270/selection.h>
  #include <v3270/trace.h>
  #include <lib3270/log.h>
@@ -70,6 +71,13 @@
 
  static void preferences_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
+	GtkWidget * dialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+
+	gtk_container_add(GTK_CONTAINER(dialog),v3270_url_edit_new());
+	gtk_widget_show_all(dialog);
+
+
+ 	/*
  	size_t ix;
  	GtkWidget * dialog = v3270_settings_dialog_new();
 
@@ -95,6 +103,7 @@
 	g_signal_connect(dialog,"response",G_CALLBACK(v3270_setttings_dialog_response),NULL);
 
 	gtk_widget_show_all(dialog);
+	*/
 
  }
 

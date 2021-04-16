@@ -307,7 +307,7 @@ static void update_message(GtkWidget *widget, GtkWidget *terminal)
 	gtk_widget_set_sensitive(widget, lib3270_is_disconnected(v3270_get_session(terminal)));
 }
 
-static void V3270HostSelectWidget_class_init(G_GNUC_UNUSED V3270HostSelectWidgetClass *klass)
+static void V3270HostSelectWidget_class_init(V3270HostSelectWidgetClass *klass)
 {
 	V3270SettingsClass * widget = GTK_V3270_SETTINGS_CLASS(klass);
 
