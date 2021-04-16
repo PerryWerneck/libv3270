@@ -160,24 +160,24 @@
 
 	switch(accel->type) {
 	case V3270_ACCELERATOR_TYPE_LIB3270_ACTION:
-		debug("%s","V3270_ACCELERATOR_TYPE_LIB3270_ACTION");
+//		debug("%s","V3270_ACCELERATOR_TYPE_LIB3270_ACTION");
 		description = lib3270_property_get_summary(property);
 		break;
 
 	case V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE:
-		debug("%s","V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE");
+//		debug("%s","V3270_ACCELERATOR_TYPE_LIB3270_TOGGLE");
 		description = lib3270_property_get_summary(property);
 		break;
 
 	case V3270_ACCELERATOR_TYPE_INTERNAL:
-		debug("%s","V3270_ACCELERATOR_TYPE_INTERNAL");
+//		debug("%s","V3270_ACCELERATOR_TYPE_INTERNAL");
 		if(property->summary)
 			description = g_dgettext(GETTEXT_PACKAGE,property->summary);
 		break;
 
 	}
 
-	debug("%s=%s",__FUNCTION__,description);
+//	debug("%s=%s",__FUNCTION__,description);
 
 	if(description && *description)
 		return description;

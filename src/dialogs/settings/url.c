@@ -120,7 +120,6 @@
 		widget->entry.host = gtk_entry_new();
 		gtk_widget_set_hexpand(widget->entry.host,TRUE);
 		gtk_entry_set_width_chars(GTK_ENTRY(widget->entry.host),50);
-		gtk_entry_set_placeholder_text(GTK_ENTRY(widget->entry.host),_("The tn3270 host name"));
 		gtk_widget_set_tooltip_text(widget->entry.host,g_dgettext(GETTEXT_PACKAGE,labels[0].tooltip));
 		gtk_grid_attach(GTK_GRID(widget),widget->entry.host,1,0,5,1);
 	}
