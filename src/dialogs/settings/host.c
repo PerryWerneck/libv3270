@@ -323,14 +323,16 @@ static void update_valid(V3270HostSelectWidget *settings, gboolean valid) {
 
 }
 
-/*
-static void required_changed(GtkEditable *editable, GtkWidget *settings) {
+static void url_valid(GtkWidget G_GNUC_UNUSED(*url), gboolean valid, V3270HostSelectWidget *settings) {
 
-    const gchar * chars = gtk_editable_get_chars(editable,0,-1);
-    update_valid(GTK_V3270HostSelectWidget(settings),(*chars ? TRUE : FALSE));
+	if(valid) {
+		update_valid(settings,valid);
+		return;
+	}
+
+	v3270_settings_set_valid(GTK_WIDGET(settings),valid);
 
 }
-*/
 
 static void oversize_changed(GtkEditable *editable, GtkWidget *settings) {
     update_valid(GTK_V3270HostSelectWidget(settings), oversize_validate(editable));
@@ -418,6 +420,8 @@ static void V3270HostSelectWidget_init(V3270HostSelectWidget *widget)
 	GtkWidget *grids[GRID_COUNT];
 
 	grids[CONNECTION] = widget->input.url = v3270_url_edit_new();
+	g_signal_connect(grids[CONNECTION],"valid",G_CALLBACK(url_valid),widget);
+
 	grids[EMULATION] = gtk_grid_new();
 
 	// Connection properties

@@ -30,7 +30,21 @@
  */
 
  #include "private.h"
+ #include "marshal.h"
  #include <v3270/settings/url.h>
+ #include <ctype.h>
+
+ enum {
+    PROP_0,
+    PROP_URL
+ };
+
+ enum {
+ 	SIGNAL_VALID,
+ 	LAST_SIGNAL
+ };
+
+ static guint signals[LAST_SIGNAL]		= { 0 };
 
  struct _V3270URLEdit {
 
@@ -46,12 +60,16 @@
 	/// @brief Current URL
 	gchar *url;
 
+	/// @brief Is the entry valid?
+	gboolean isValid;
+
  };
 
  struct _V3270URLEditClass {
 
  	GtkGridClass parent;
 
+	GParamSpec *url;
 
  };
 
@@ -73,15 +91,109 @@
 	G_OBJECT_CLASS(V3270URLEdit_parent_class)->finalize(object);
  }
 
+ static void set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec G_GNUC_UNUSED(*pspec)) {
+
+    switch(prop_id) {
+    case PROP_URL:
+    	v3270_url_edit_set_url(GTK_WIDGET(object),g_value_get_string(value));
+        break;
+    }
+ }
+
+ static void get_property(GObject *object, guint prop_id, GValue *value, GParamSpec G_GNUC_UNUSED(*pspec)) {
+    switch(prop_id) {
+    case PROP_URL:
+        g_value_set_string(value,v3270_url_edit_get_url(GTK_WIDGET(object)));
+        break;
+    }
+ }
+
  static void V3270URLEdit_class_init(V3270URLEditClass *klass) {
 
-	G_OBJECT_CLASS(klass)->finalize = finalize;
+	GObjectClass *goc = G_OBJECT_CLASS(klass);
+
+	goc->finalize = finalize;
+	goc->set_property = set_property;
+	goc->get_property = get_property;
+
+	klass->url =
+		g_param_spec_string(
+			"url", "url",
+			_( "TN3270 Host URL" ),
+			lib3270_get_default_host(NULL),
+			G_PARAM_READWRITE
+		);
+
+	g_object_class_install_property(
+		goc,
+		PROP_URL,
+		klass->url
+	);
+
+	signals[SIGNAL_VALID] =
+		g_signal_new(
+			I_("valid"),
+			G_OBJECT_CLASS_TYPE(goc),
+			G_SIGNAL_RUN_FIRST,
+			0,
+			NULL, NULL,
+			v3270_VOID__BOOLEAN,
+			G_TYPE_NONE, 1, G_TYPE_BOOLEAN, 0
+		);
+
+ }
+
+ static void entry_changed(GtkEntry *entry, V3270URLEdit *widget) {
+
+	g_object_notify_by_pspec(G_OBJECT(widget),GTK_V3270URLEdit_GET_CLASS(widget)->url);
+
+	gboolean isValid = (gtk_entry_get_text(entry)[0] != 0);
+	if(widget->isValid == isValid) {
+		return;
+	}
+
+	if(isValid) {
+
+		size_t ix;
+
+		// Verify entry-fields
+		GtkWidget *widgets[] = {
+			widget->entry.host,
+			widget->entry.service
+		};
+
+		for(ix = 0; ix < G_N_ELEMENTS(widgets); ix++) {
+
+			const gchar *str = gtk_entry_get_text(GTK_ENTRY(widgets[ix]));
+			while(*str && isspace(*str)) {
+				str++;
+			}
+
+			if(!*str) {
+				isValid = FALSE;
+				break;
+			}
+
+		}
+
+	}
+
+	if(isValid == widget->isValid) {
+		return;
+	}
+
+	debug("The URL box is %s", isValid ? "valid" : "invalid");
+
+	widget->isValid = isValid;
+	g_signal_emit(widget, signals[SIGNAL_VALID], 0, isValid);
 
  }
 
  static void V3270URLEdit_init(V3270URLEdit *widget) {
 
 	size_t ix;
+
+	widget->isValid = FALSE;
 
 	// Table of constants.
 	static const struct _labels {
@@ -122,6 +234,7 @@
 		gtk_entry_set_width_chars(GTK_ENTRY(widget->entry.host),50);
 		gtk_widget_set_tooltip_text(widget->entry.host,g_dgettext(GETTEXT_PACKAGE,labels[0].tooltip));
 		gtk_grid_attach(GTK_GRID(widget),widget->entry.host,1,0,5,1);
+		g_signal_connect(widget->entry.host,"changed",G_CALLBACK(entry_changed),widget);
 	}
 
 	// Create the service/port field.
@@ -132,6 +245,7 @@
 		gtk_entry_set_width_chars(GTK_ENTRY(widget->entry.service),7);
 		gtk_widget_set_tooltip_text(widget->entry.service,g_dgettext(GETTEXT_PACKAGE,labels[1].tooltip));
 		gtk_grid_attach(GTK_GRID(widget),widget->entry.service,1,1,1,1);
+		g_signal_connect(widget->entry.service,"changed",G_CALLBACK(entry_changed),widget);
 	}
 
 	// Create the security dropbox.
