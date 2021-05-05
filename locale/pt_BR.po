@@ -1,14 +1,14 @@
 #
-# Perry Werneck <perry.werneck@gmail.com>, 2012, 2013, 2014, 2016, 2017, 2018, 2019, 2020.
+# Perry Werneck <perry.werneck@gmail.com>, 2012, 2013, 2014, 2016, 2017, 2018, 2019, 2020, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-24 11:11-0300\n"
-"PO-Revision-Date: 2020-10-15 15:37-0300\n"
+"POT-Creation-Date: 2021-04-19 00:14-0300\n"
+"PO-Revision-Date: 2021-04-19 00:49-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
-"Language-Team: Português <>\n"
+"Language-Team: Português <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,11 +16,10 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Plural-Forms: nplurals=4; plural= (n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != "
-"11) ? 2 : 3;\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
-#: src/dialogs/settings/host.c:170
+#: src/dialogs/settings/host.c:169
 msgid "16 colors"
 msgstr "16 cores"
 
@@ -31,15 +30,15 @@ msgstr "16 cores"
 msgid "3270 File transfer"
 msgstr "Transferência de arquivos 3270"
 
-#: src/terminal/accessible.c:101
+#: src/terminal/accessible.c:100
 msgid "3270 screen"
 msgstr "Tela 3270"
 
-#: src/dialogs/settings/host.c:169
+#: src/dialogs/settings/host.c:168
 msgid "8 colors"
 msgstr "8 cores"
 
-#: src/terminal/widget.c:158
+#: src/terminal/widget.c:159
 msgid ""
 "<b>Identity not verified</b>\n"
 "Disconnected from host"
@@ -55,7 +54,7 @@ msgstr "<b>Opções de texto</b>"
 msgid "A_ppend to file"
 msgstr "_Adicionar ao arquivo"
 
-#: src/dialogs/security.c:241
+#: src/dialogs/security.c:238
 msgid "About security"
 msgstr "Sobre a segurança"
 
@@ -84,11 +83,11 @@ msgstr "Atividade já está na fila"
 msgid "Add to copy"
 msgstr "Adicionar à cópia"
 
-#: src/dialogs/settings/host.c:216
+#: src/dialogs/settings/url.c:209
 msgid "Address or name of the host to connect."
 msgstr "Endereço ou nome do host a conectar."
 
-#: src/tools/entry.c:121
+#: src/tools/entry.c:122
 msgid "All files"
 msgstr "Todos os arquivos"
 
@@ -129,7 +128,7 @@ msgstr "Adiciona conteúdo do arquivo origem ao final do arquivo destino."
 msgid "Assign it to action (<b>%s</b>)?"
 msgstr "Associar com a ação (<b>%s</b>)?"
 
-#: src/dialogs/settings/host.c:510
+#: src/dialogs/settings/host.c:463
 msgid "Auto _disconnect"
 msgstr "Desconexão automática"
 
@@ -166,7 +165,7 @@ msgstr "Azul"
 msgid "Bold"
 msgstr "Negrito"
 
-#: src/dialogs/load.c:181 src/dialogs/save/save.c:268
+#: src/dialogs/load.c:199 src/dialogs/save/save.c:276
 msgid "C_haracter Coding"
 msgstr "C_odificação de caracteres"
 
@@ -188,7 +187,7 @@ msgstr "Não encontrei uma fonte válida com o nome \"%s\""
 msgid "Can't load %s"
 msgstr "Não foi possível carregar %s"
 
-#: src/dialogs/load.c:323
+#: src/dialogs/load.c:317
 #, c-format
 msgid "Can't open %s"
 msgstr "Não foi possível abrir %s"
@@ -215,26 +214,25 @@ msgid "Can't paste text"
 msgstr "Não é possível colar texto"
 
 #: src/filetransfer/save.c:117 src/filetransfer/activitylist.c:436
-#: src/trace/trace.c:484 src/dialogs/transfer.c:91 src/dialogs/save/save.c:625
+#: src/trace/trace.c:484 src/dialogs/transfer.c:91 src/dialogs/save/save.c:608
 #, c-format
 msgid "Can't save %s"
 msgstr "Não foi possível salvar arquivo %s"
 
-#: src/filetransfer/worker.c:610 src/filetransfer/v3270ftprogress.c:773
+#: src/filetransfer/worker.c:618 src/filetransfer/v3270ftprogress.c:781
 msgid "Can't set callback table"
 msgstr "Não foi possível setar a tabela de retornos"
 
-#: src/terminal/iocallback.c:200
+#: src/terminal/iocallback.c:196
 msgid "Can't set lib3270 I/O controller"
 msgstr "Não foi possível registrar manipuladores de I/O 3270"
 
-#: src/filetransfer/worker.c:591 src/filetransfer/v3270ftprogress.c:760
+#: src/filetransfer/worker.c:599 src/filetransfer/v3270ftprogress.c:768
 msgid "Can't start file transfer session"
 msgstr "Não foi possível iniciar transferência de arquivo"
 
 #: src/filetransfer/v3270ftprogress.c:433 src/filetransfer/transfer.c:89
-#: src/dialogs/load.c:111 src/dialogs/save/save.c:117
-#: src/dialogs/settings/host.c:401 src/tools/entry.c:99
+#: src/dialogs/settings/host.c:366 src/tools/entry.c:99
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -245,18 +243,6 @@ msgstr "Cancelar transferência"
 #: src/filetransfer/tables.c:44
 msgid "Check this if the file consists of character data only."
 msgstr "Marque se o arquivo contem apenas texto."
-
-#: src/dialogs/load.c:206 src/dialogs/save/save.c:343
-msgid "Click to cancel operation"
-msgstr "Clique para cancelar operação"
-
-#: src/dialogs/load.c:211
-msgid "Click to load file"
-msgstr "Clique para carregar arquivo"
-
-#: src/dialogs/save/save.c:348
-msgid "Click to save file"
-msgstr "Clique para salvar arquivo"
 
 #: src/dialogs/settings/clipboard.c:420
 msgid "Clipboard"
@@ -286,11 +272,11 @@ msgstr "Cores"
 msgid "Comma separated list of LU names"
 msgstr "Lista de LUs separadas por vírgula"
 
-#: src/dialogs/settings/host.c:268
+#: src/dialogs/settings/host.c:241
 msgid "Comma separated list of LU names."
 msgstr "Lista de LUs separadas por vírgula."
 
-#: src/dialogs/save/save.c:55
+#: src/dialogs/save/save.c:56
 msgid "Comma-separated values (CSV)"
 msgstr "Arquivo separado por vírgulas (CSV)"
 
@@ -298,7 +284,7 @@ msgstr "Arquivo separado por vírgulas (CSV)"
 msgid "Command to execute"
 msgstr "Comando a executar"
 
-#: src/dialogs/settings/host.c:471
+#: src/dialogs/settings/host.c:430
 msgid "Connection"
 msgstr "Conexão"
 
@@ -355,7 +341,7 @@ msgstr "Cria arquivo com registros de tamanho variável."
 msgid "Cross hair cursor"
 msgstr "Cursor mira"
 
-#: src/dialogs/tools.c:182
+#: src/dialogs/tools.c:178
 #, c-format
 msgid "Current (%s)"
 msgstr "Atual (%s)"
@@ -372,7 +358,7 @@ msgstr "Posição atual da transferência"
 msgid "Current:"
 msgstr "Atual:"
 
-#: src/dialogs/settings/host.c:254
+#: src/dialogs/settings/host.c:227
 msgid "Custom Remap"
 msgstr "Mapeamento personalizado"
 
@@ -417,7 +403,7 @@ msgstr "Turquesa Escuro"
 msgid "Default"
 msgstr "Padrão"
 
-#: src/dialogs/popups.c:149
+#: src/dialogs/popups.c:155
 msgid "Don't ask again"
 msgstr "Não perguntar de novo"
 
@@ -433,7 +419,7 @@ msgstr "ETA:"
 msgid "Emit a PA Key action"
 msgstr "Emite uma ação de tecla PA"
 
-#: src/dialogs/settings/host.c:481
+#: src/dialogs/settings/host.c:440
 msgid "Emulation"
 msgstr "Emulação"
 
@@ -445,7 +431,7 @@ msgstr "Habilitado"
 msgid "Error on print operation"
 msgstr "Erro na operação de impressão"
 
-#: src/dialogs/save/save.c:579
+#: src/dialogs/save/save.c:562
 msgid "Error saving image"
 msgstr "Erro ao salvar imagem"
 
@@ -457,7 +443,7 @@ msgstr "Tempo estimado para a transferência"
 msgid "Field colors"
 msgstr "Cor dos campos"
 
-#: src/dialogs/save/save.c:282
+#: src/dialogs/save/save.c:290
 msgid "File _Format"
 msgstr "_Formato do arquivo"
 
@@ -544,27 +530,31 @@ msgstr "Verde"
 msgid "HTML options"
 msgstr "Opções HTML"
 
-#: src/dialogs/settings/host.c:664
+#: src/dialogs/settings/host.c:580
 msgid "Host"
 msgstr "Servidor"
 
-#: src/dialogs/settings/host.c:663
+#: src/dialogs/settings/host.c:579
 msgid "Host settings"
 msgstr "Configurações do servidor"
 
-#: src/dialogs/save/save.c:59
+#: src/dialogs/settings/url.c:208
+msgid "Hostname"
+msgstr "Nome do host"
+
+#: src/dialogs/save/save.c:60
 msgid "HyperText Markup Language (HTML)"
 msgstr "Documento HTML"
 
-#: src/dialogs/settings/host.c:140
+#: src/dialogs/settings/host.c:139
 msgid "IBM AS/400"
 msgstr "IBM AS/400"
 
-#: src/dialogs/settings/host.c:139
+#: src/dialogs/settings/host.c:138
 msgid "IBM S/390"
 msgstr "IBM S/390"
 
-#: src/terminal/properties/init.c:113 src/dialogs/settings/host.c:514
+#: src/terminal/properties/init.c:113 src/dialogs/settings/host.c:467
 msgid "IDLE minutes for automatic disconnection"
 msgstr "Minutos para desconexão automática"
 
@@ -608,7 +598,7 @@ msgstr "Intensificado/Protegido"
 msgid "Intensified/Unprotected"
 msgstr "Intensificado/Desprotegido"
 
-#: src/terminal/callbacks.c:440
+#: src/terminal/callbacks.c:463
 #, c-format
 msgid ""
 "Invalid callback table, the release %s of lib%s can't be used (expecting "
@@ -625,7 +615,7 @@ msgstr "Valor cgcsgid é inválido"
 msgid "Invalid remap scope"
 msgstr "Escopo de mapeamento inválido"
 
-#: src/dialogs/security.c:186
+#: src/dialogs/security.c:185
 msgid "Invalid state"
 msgstr "Estado inválido"
 
@@ -634,7 +624,7 @@ msgstr "Estado inválido"
 msgid "Keyboard accelerators"
 msgstr "Atalhos de teclado"
 
-#: src/dialogs/settings/host.c:267
+#: src/dialogs/settings/host.c:240
 msgid "L_U Names"
 msgstr "Nomes de L_U"
 
@@ -654,7 +644,7 @@ msgstr "Arquivo local:"
 msgid "Local:"
 msgstr "Local:"
 
-#: src/dialogs/settings/host.c:242
+#: src/dialogs/settings/host.c:215
 msgid "Makes the screen larger than the default for the chosen model number."
 msgstr "Usa tamanho maior do que o padrão para o modelo escolhido."
 
@@ -662,23 +652,23 @@ msgstr "Usa tamanho maior do que o padrão para o modelo escolhido."
 msgid "Misc colors"
 msgstr "Cores diversas"
 
-#: src/dialogs/settings/host.c:197
+#: src/dialogs/settings/host.c:196
 msgid "Model 2 - 80x24"
 msgstr "Modelo 2 - 80x24"
 
-#: src/dialogs/settings/host.c:198
+#: src/dialogs/settings/host.c:197
 msgid "Model 3 - 80x32"
 msgstr "Modelo 3 - 80x32"
 
-#: src/dialogs/settings/host.c:199
+#: src/dialogs/settings/host.c:198
 msgid "Model 4 - 80x43"
 msgstr "Modelo 4 - 80x43"
 
-#: src/dialogs/settings/host.c:200
+#: src/dialogs/settings/host.c:199
 msgid "Model 5 - 132x27"
 msgstr "Modelo 5 - 132x27"
 
-#: src/dialogs/settings/host.c:168
+#: src/dialogs/settings/host.c:167
 msgid "Monochrome"
 msgstr "Monocromático"
 
@@ -690,13 +680,17 @@ msgstr "Mostarda"
 msgid "Name"
 msgstr "Nome"
 
-#: src/dialogs/settings/host.c:471
+#: src/dialogs/settings/host.c:430
 msgid "Network connection settings"
 msgstr "Configuração da conexão de rede"
 
 #: src/filetransfer/v3270ftprogress.c:429
 msgid "No active transfer"
 msgstr "Nenhuma transferência ativa"
+
+#: src/dialogs/popups.c:141
+msgid "No host"
+msgstr "Nenhum servidor"
 
 #: src/terminal/properties/get.c:205
 msgid "No host defined"
@@ -710,7 +704,7 @@ msgstr "Sem etiqueta"
 msgid "No transfer"
 msgstr "Nenhuma transferência"
 
-#: src/filetransfer/worker.c:601
+#: src/filetransfer/worker.c:609
 msgid "No transfer in progress"
 msgstr "Nenhuma transferência em andamento"
 
@@ -762,10 +756,6 @@ msgstr "Estado inválido na OIA"
 msgid "OIA status ok"
 msgstr "Estado normal na OIA"
 
-#: src/dialogs/load.c:93 src/dialogs/load.c:112
-msgid "Open"
-msgstr "Abrir"
-
 #: src/dialogs/save/convenience.c:65 src/dialogs/save/convenience.c:93
 msgid "Operation has failed"
 msgstr "Operação falhou"
@@ -778,15 +768,15 @@ msgstr "Opções"
 msgid "Orange"
 msgstr "Laranja"
 
-#: src/dialogs/settings/host.c:141
+#: src/dialogs/settings/host.c:140
 msgid "Other (TSO)"
 msgstr "Outro (TSO)"
 
-#: src/dialogs/settings/host.c:142
+#: src/dialogs/settings/host.c:141
 msgid "Other (VM/CMS)"
 msgstr "Outro (VM/CMS)"
 
-#: src/dialogs/settings/host.c:241
+#: src/dialogs/settings/host.c:214
 msgid "Oversize"
 msgstr "Oversize"
 
@@ -814,7 +804,7 @@ msgstr "Colar arquivo"
 msgid "Paste formatted screen"
 msgstr "Colar tela formatada"
 
-#: src/dialogs/load.c:249
+#: src/dialogs/load.c:243
 msgid "Paste from file"
 msgstr "Colar de um arquivo"
 
@@ -834,11 +824,11 @@ msgstr "Colar tela semelhante"
 msgid "Path and name of the local file"
 msgstr "Caminho e nome do arquivo local"
 
-#: src/dialogs/settings/host.c:255
+#: src/dialogs/settings/host.c:228
 msgid "Path to XML file with custom charset mapping."
 msgstr "Caminho do arquivo XML com o mapeamento personalizado de caracteres."
 
-#: src/dialogs/security.c:138 src/dialogs/security.c:157
+#: src/dialogs/security.c:137 src/dialogs/security.c:156
 msgid "Peer certificate"
 msgstr "Certificado apresentado"
 
@@ -846,7 +836,7 @@ msgstr "Certificado apresentado"
 msgid "Pink"
 msgstr "Rosa"
 
-#: src/dialogs/save/save.c:51
+#: src/dialogs/save/save.c:52
 msgid "Plain text"
 msgstr "Texto puro"
 
@@ -854,7 +844,7 @@ msgstr "Texto puro"
 msgid "Plain text only"
 msgstr "Apenas texto puro"
 
-#: src/dialogs/settings/host.c:229
+#: src/dialogs/settings/url.c:215
 msgid "Port or service name."
 msgstr "Nº da porta ou nome do serviço."
 
@@ -890,7 +880,7 @@ msgstr "Imprimir cópia"
 msgid "Print operation failed"
 msgstr "Operação de impressão falhou"
 
-#: src/dialogs/print/convenience.c:102
+#: src/dialogs/print/convenience.c:103
 msgid "Print operation has failed"
 msgstr "Operação de impressão falhou"
 
@@ -938,7 +928,7 @@ msgstr "Receber arquivo"
 msgid "Receive text file"
 msgstr "Receber arquivo texto"
 
-#: src/filetransfer/v3270ftprogress.c:739 src/dialogs/transfer.c:124
+#: src/filetransfer/v3270ftprogress.c:747 src/dialogs/transfer.c:124
 msgid "Receiving file"
 msgstr "Recebendo arquivo"
 
@@ -1001,7 +991,7 @@ msgstr ""
 msgid "Retry"
 msgstr "Repetir"
 
-#: src/dialogs/security.c:144
+#: src/dialogs/security.c:143
 msgid "Revocation list"
 msgstr "Lista de revogados"
 
@@ -1013,7 +1003,7 @@ msgstr ""
 "SPACE can be specified in units of TRACKS, CYLINDERS, or AVBLOCK, and only "
 "one option can be used."
 
-#: src/dialogs/settings/host.c:560
+#: src/dialogs/settings/url.c:264
 msgid "SSL/TLS"
 msgstr "SSL/TLS"
 
@@ -1039,7 +1029,7 @@ msgstr "Salvar _Como"
 msgid "Save all"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:286 src/dialogs/save/save.c:377
+#: src/terminal/actions/table.c:286 src/dialogs/save/save.c:363
 msgid "Save copy"
 msgstr "Salvar cópia"
 
@@ -1059,11 +1049,11 @@ msgstr "Salvar tela ou seleção"
 msgid "Save selected"
 msgstr "Salvar seleção"
 
-#: src/terminal/actions/table.c:277 src/dialogs/save/save.c:376
+#: src/terminal/actions/table.c:277 src/dialogs/save/save.c:362
 msgid "Save selected area"
 msgstr "Salvar área selecionada"
 
-#: src/dialogs/save/save.c:375
+#: src/dialogs/save/save.c:361
 msgid "Save terminal contents"
 msgstr "Salvar conteúdo da tela"
 
@@ -1075,7 +1065,7 @@ msgstr "Salvar trace para arquivo"
 msgid "Save transfer activity to file"
 msgstr "Salvar atividade de transferência para arquivo"
 
-#: src/dialogs/transfer.c:189
+#: src/dialogs/transfer.c:187
 msgid "Save transfer information to file"
 msgstr "Salvar informações da transferência para arquivo"
 
@@ -1115,27 +1105,33 @@ msgstr ""
 msgid "Secondary space"
 msgstr "Secondary space"
 
+#: src/dialogs/settings/url.c:220
+msgid "Security"
+msgstr "Segurança"
+
+#: src/dialogs/settings/url.c:221
+msgid "Security engine"
+msgstr "Mecanismo de segurança"
+
 #: src/filetransfer/v3270ft.c:303 src/filetransfer/settings.c:209
-#: src/dialogs/save/save.c:98 src/dialogs/save/save.c:118
-#: src/dialogs/settings/host.c:402
+#: src/dialogs/settings/host.c:367
 msgid "Select"
 msgstr "Selecionar"
 
-#: src/dialogs/settings/host.c:497
+#: src/dialogs/settings/host.c:452
 msgid "Select charset remap file"
 msgstr "Selecionar arquivo com mapeamento personalizado"
 
-#: src/dialogs/settings/host.c:398
+#: src/dialogs/settings/host.c:363
 msgid "Select custom charset mapping"
 msgstr "Seleciona mapeamento de teclado personalizado"
 
-#: src/dialogs/save/save.c:97 src/dialogs/save/save.c:114
+#: src/dialogs/save/save.c:263
 msgid "Select destination file"
 msgstr "Selecionar arquivo destino"
 
 #: src/filetransfer/v3270ft.c:591 src/filetransfer/settings.c:467
-#: src/dialogs/load.c:92 src/dialogs/load.c:108 src/dialogs/load.c:171
-#: src/dialogs/save/save.c:258
+#: src/dialogs/load.c:186
 msgid "Select file"
 msgstr "Selecionar arquivo"
 
@@ -1175,9 +1171,13 @@ msgstr "Enviar arquivo"
 msgid "Send text file"
 msgstr "Enviar arquivo texto"
 
-#: src/filetransfer/v3270ftprogress.c:739 src/dialogs/transfer.c:124
+#: src/filetransfer/v3270ftprogress.c:747 src/dialogs/transfer.c:124
 msgid "Sending file"
 msgstr "Enviando arquivo"
+
+#: src/dialogs/settings/url.c:214
+msgid "Service/Port"
+msgstr "Serviço/Porta"
 
 #: src/terminal/actions/table.c:241
 msgid "Set the font to the best size for window"
@@ -1255,11 +1255,11 @@ msgstr "Iniciar transferência de arquivo"
 msgid "Start transfer"
 msgstr "Iniciar transferência"
 
-#: src/filetransfer/v3270ftprogress.c:790
+#: src/filetransfer/v3270ftprogress.c:798
 msgid "Starting"
 msgstr "Iniciando"
 
-#: src/filetransfer/worker.c:314 src/dialogs/transfer.c:142
+#: src/filetransfer/worker.c:314 src/dialogs/transfer.c:140
 msgid "Starting transfer"
 msgstr "Iniciando transferência"
 
@@ -1279,21 +1279,25 @@ msgstr "Estado do espaçamento dinâmico"
 msgid "Summary"
 msgstr "Sumário"
 
-#: src/dialogs/settings/host.c:125
+#: src/dialogs/settings/host.c:124
 msgid "System _type"
 msgstr "_Tipo de servidor"
 
-#: src/dialogs/settings/host.c:167
+#: src/dialogs/settings/host.c:166
 msgid "System default"
 msgstr "Padrão do sistema"
 
-#: src/dialogs/settings/host.c:411
+#: src/dialogs/settings/host.c:376
 msgid "TN3270 Custom charset"
 msgstr "Código de página TN3270 personalizado"
 
-#: src/dialogs/settings/host.c:481
+#: src/dialogs/settings/host.c:440
 msgid "TN3270 Emulation settings"
 msgstr "Configuração da emulação TN3270"
+
+#: src/dialogs/settings/url.c:122
+msgid "TN3270 Host URL"
+msgstr "URL do servidor TN3270"
 
 #: src/terminal/properties/init.c:97
 msgid "TN3270 Session name"
@@ -1308,6 +1312,10 @@ msgstr "Cores do terminal"
 msgid "Terminal font"
 msgstr "Fonte do terminal"
 
+#: src/dialogs/load.c:189
+msgid "Text files"
+msgstr "Arquivos de texto"
+
 #: src/filetransfer/v3270ftprogress.c:211
 msgid ""
 "The CMS disk is full, or the maximum number of files on the minidisk (3400) "
@@ -1318,7 +1326,7 @@ msgstr ""
 "has been reached, or the maximum number of data blocks per file (16060) has "
 "been reached."
 
-#: src/dialogs/settings/host.c:645
+#: src/dialogs/settings/host.c:561
 msgid "The EBCDIC host character set. "
 msgstr "A tabela de caracteres EBCDIC."
 
@@ -1330,7 +1338,7 @@ msgstr "A etiqueda da ação"
 msgid "The action tooltip"
 msgstr "Dicas sobre a ação"
 
-#: src/filetransfer/worker.c:622
+#: src/filetransfer/worker.c:630
 msgid ""
 "The callback table for file transfer was rejected, possible version mismatch "
 "on lib3270"
@@ -1338,7 +1346,7 @@ msgstr ""
 "Tabela de callbacks para transferência de arquivos inválida, possível "
 "divergência de versão na lib3270"
 
-#: src/dialogs/save/save.c:425
+#: src/dialogs/save/save.c:408
 #, c-format
 msgid "The file \"%s\" already exists. Replace it?"
 msgstr "O arquivo \"%s\" já existe, substituir?"
@@ -1366,7 +1374,7 @@ msgstr "O host detectou um erro no arquivo durante a operação de recebimento."
 msgid "The label for the action"
 msgstr "A etiqueta da ação"
 
-#: src/dialogs/settings/host.c:182
+#: src/dialogs/settings/host.c:181
 msgid "The model of 3270 display to be emulated"
 msgstr "Modelo de tela 3270 a ser emulada"
 
@@ -1430,7 +1438,7 @@ msgstr "The type of the state kept by the action"
 msgid "There is not enough space available for data on the host."
 msgstr "Não existe espaço suficiente no host para os dados."
 
-#: src/dialogs/security.c:193
+#: src/dialogs/security.c:192
 msgid "There's no security information in the session"
 msgstr "Não existe informação de segurança na sessão"
 
@@ -1462,11 +1470,11 @@ msgstr "Janela de trace"
 msgid "Tracks"
 msgstr "Trilhas"
 
-#: src/filetransfer/worker.c:568 src/filetransfer/v3270ftprogress.c:721
+#: src/filetransfer/worker.c:576 src/filetransfer/v3270ftprogress.c:729
 msgid "Transfer failed"
 msgstr "Transferência falhou"
 
-#: src/filetransfer/worker.c:554
+#: src/filetransfer/worker.c:562
 msgid "Transfer operation has timed out"
 msgstr "Operação de transferência esgotou o tempo de espera"
 
@@ -1500,7 +1508,7 @@ msgstr "Tente de novo com o mesmo arquivo."
 msgid "Turquoise"
 msgstr "Turquesa"
 
-#: src/dialogs/tools.c:171
+#: src/dialogs/tools.c:167
 msgid "UTF-8"
 msgstr "UTF-8"
 
@@ -1513,17 +1521,17 @@ msgstr "Incapaz de colar dados formatados."
 msgid "Undefined"
 msgstr "Indefinido"
 
-#: src/terminal/callbacks.c:449
+#: src/terminal/callbacks.c:472
 #, c-format
 msgid "Unexpected callback table, the release %s of lib%s is invalid"
 msgstr "Tabela de callbacks inesperada, a revisão %s da lib%s é inválida"
 
-#: src/dialogs/save/save.c:495
+#: src/dialogs/save/save.c:478
 #, c-format
 msgid "Unexpected format %d"
 msgstr "Formato inesperado %d"
 
-#: src/dialogs/save/save.c:463 src/dialogs/save/save.c:559
+#: src/dialogs/save/save.c:446 src/dialogs/save/save.c:542
 #, c-format
 msgid "Unexpected mode %d"
 msgstr "Modo inesperado %d"
@@ -1533,13 +1541,9 @@ msgstr "Modo inesperado %d"
 msgid "Unexpected status %d in print operation"
 msgstr "Estado inesperado %d na operação de impressão"
 
-#: src/dialogs/settings/host.c:559
+#: src/dialogs/settings/url.c:263
 msgid "Unsecure"
 msgstr "Insegura"
-
-#: src/dialogs/save/save.c:130
-msgid "Untitled document"
-msgstr "Documento sem título"
 
 #: src/filetransfer/tables.c:75
 msgid "Use host default record format."
@@ -1554,7 +1558,7 @@ msgstr "Usar espaço inseparável"
 msgid "Variable"
 msgstr "Variável"
 
-#: src/dialogs/tools.c:172
+#: src/dialogs/tools.c:168
 msgid "Western Europe (ISO 8859-1)"
 msgstr "Europa ocidental (ISO 8859-1)"
 
@@ -1591,52 +1595,52 @@ msgstr ""
 msgid "White"
 msgstr "Branco"
 
-#: src/dialogs/tools.c:173
+#: src/dialogs/tools.c:169
 msgid "Windows Western languages (CP1252)"
 msgstr "Windows ocidental (CP1252)"
 
-#: src/terminal/drawing/oia.c:431 src/terminal/drawing/oia.c:455
-#: src/terminal/drawing/oia.c:459
+#: src/terminal/drawing/oia.c:490 src/terminal/drawing/oia.c:514
+#: src/terminal/drawing/oia.c:518
 msgid "X"
 msgstr "X"
 
-#: src/terminal/drawing/oia.c:435
+#: src/terminal/drawing/oia.c:494
 msgid "X -f"
 msgstr "X -f"
 
-#: src/terminal/drawing/oia.c:467
+#: src/terminal/drawing/oia.c:526
 msgid "X Connecting"
 msgstr "X Conectando"
 
-#: src/terminal/drawing/oia.c:451
+#: src/terminal/drawing/oia.c:510
 msgid "X Inhibit"
 msgstr "X Inibido"
 
-#: src/terminal/drawing/oia.c:427
+#: src/terminal/drawing/oia.c:486
 msgid "X Not Connected"
 msgstr "X Desconectado"
 
-#: src/terminal/drawing/oia.c:443
+#: src/terminal/drawing/oia.c:502
 msgid "X Numeric"
 msgstr "X Numérico"
 
-#: src/terminal/drawing/oia.c:447
+#: src/terminal/drawing/oia.c:506
 msgid "X Overflow"
 msgstr "X Estouro"
 
-#: src/terminal/drawing/oia.c:439
+#: src/terminal/drawing/oia.c:498
 msgid "X Protected"
 msgstr "X Protegido"
 
-#: src/terminal/drawing/oia.c:463
+#: src/terminal/drawing/oia.c:522
 msgid "X Resolving"
 msgstr "X Resolvendo"
 
-#: src/terminal/drawing/oia.c:415
+#: src/terminal/drawing/oia.c:474
 msgid "X System"
 msgstr "X Sistema"
 
-#: src/terminal/drawing/oia.c:419
+#: src/terminal/drawing/oia.c:478
 msgid "X Wait"
 msgstr "X Aguarde"
 
@@ -1739,33 +1743,33 @@ msgstr "Reduzir"
 msgid "_ASCII text"
 msgstr "Texto _ASCII"
 
-#: src/dialogs/settings/dialog.c:232
+#: src/dialogs/settings/dialog.c:213
 msgid "_Apply"
 msgstr "_Aplicar"
 
-#: src/selection/linux/paste.c:85 src/dialogs/popups.c:173
-#: src/dialogs/load.c:205 src/dialogs/load.c:224 src/dialogs/linux/select.c:51
+#: src/selection/linux/paste.c:85 src/dialogs/popups.c:179
+#: src/dialogs/load.c:214 src/dialogs/linux/select.c:51
 #: src/dialogs/linux/select.c:77 src/dialogs/print/settingsdialog.c:410
-#: src/dialogs/print/settingsdialog.c:429 src/dialogs/save/save.c:342
-#: src/dialogs/save/save.c:361 src/dialogs/settings/dialog.c:231
+#: src/dialogs/print/settingsdialog.c:429 src/dialogs/save/save.c:341
+#: src/dialogs/settings/dialog.c:212
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: src/dialogs/settings/host.c:644
+#: src/dialogs/settings/host.c:560
 msgid "_Charset"
 msgstr "Tabela de _Caracteres"
 
-#: src/trace/tracewindow.c:125 src/dialogs/transfer.c:161
-#: src/dialogs/transfer.c:181 src/dialogs/security.c:236
-#: src/dialogs/popups.c:104
+#: src/trace/tracewindow.c:125 src/dialogs/transfer.c:159
+#: src/dialogs/transfer.c:179 src/dialogs/security.c:233
+#: src/dialogs/popups.c:101
 msgid "_Close"
 msgstr "_Close"
 
-#: src/dialogs/settings/host.c:153
+#: src/dialogs/settings/host.c:152
 msgid "_Color table"
 msgstr "_Tabela de cores"
 
-#: src/tools/entry.c:175
+#: src/tools/entry.c:172
 msgid "_Continue"
 msgstr "_Continuar"
 
@@ -1773,7 +1777,7 @@ msgstr "_Continuar"
 msgid "_File"
 msgstr "_Arquivo"
 
-#: src/dialogs/load.c:163 src/dialogs/save/save.c:250
+#: src/dialogs/load.c:168 src/dialogs/save/save.c:247
 msgid "_Filename"
 msgstr "Nome do _Arquivo"
 
@@ -1781,11 +1785,7 @@ msgstr "Nome do _Arquivo"
 msgid "_Font:"
 msgstr "_Fonte:"
 
-#: src/dialogs/settings/host.c:215
-msgid "_Host"
-msgstr "_Servidor"
-
-#: src/dialogs/load.c:210 src/dialogs/load.c:225
+#: src/dialogs/load.c:215
 msgid "_Load"
 msgstr "_Carregar"
 
@@ -1793,16 +1793,16 @@ msgstr "_Carregar"
 msgid "_Local file"
 msgstr "Arquivo _local:"
 
-#: src/dialogs/settings/host.c:181
+#: src/dialogs/settings/host.c:180
 msgid "_Model"
 msgstr "_Modelo"
 
-#: src/dialogs/popups.c:86 src/dialogs/popups.c:92 src/dialogs/popups.c:98
-#: src/dialogs/popups.c:110
+#: src/dialogs/popups.c:83 src/dialogs/popups.c:89 src/dialogs/popups.c:95
+#: src/dialogs/popups.c:107
 msgid "_Ok"
 msgstr "_Ok"
 
-#: src/tools/entry.c:167
+#: src/tools/entry.c:164
 msgid "_Open"
 msgstr "_Abrir"
 
@@ -1818,18 +1818,10 @@ msgstr "_Colar como texto"
 msgid "_Remote file"
 msgstr "Arquivo _remoto:"
 
-#: src/trace/tracewindow.c:123 src/dialogs/save/save.c:347
-#: src/dialogs/save/save.c:362 src/tools/entry.c:171
+#: src/trace/tracewindow.c:123 src/dialogs/save/save.c:342
+#: src/tools/entry.c:168
 msgid "_Save"
 msgstr "_Salvar"
-
-#: src/dialogs/settings/host.c:545
-msgid "_Security"
-msgstr "_Segurança"
-
-#: src/dialogs/settings/host.c:228
-msgid "_Service"
-msgstr "_Serviço"
 
 #: src/filetransfer/tables.c:43
 msgid "_Text file"
@@ -2366,6 +2358,15 @@ msgstr "Diminui o tamanho da fonte"
 #~ msgid "Clear AID key"
 #~ msgstr "Clear AID"
 
+#~ msgid "Click to cancel operation"
+#~ msgstr "Clique para cancelar operação"
+
+#~ msgid "Click to load file"
+#~ msgstr "Clique para carregar arquivo"
+
+#~ msgid "Click to save file"
+#~ msgstr "Clique para salvar arquivo"
+
 #~ msgid "Color setup"
 #~ msgstr "Configuração de cores"
 
@@ -2717,9 +2718,6 @@ msgstr "Diminui o tamanho da fonte"
 #~ msgid "Host to connect"
 #~ msgstr "Servidor a conectar"
 
-#~ msgid "Host type name"
-#~ msgstr "Nome do tipo de host"
-
 #~ msgid "Hostname syntax error"
 #~ msgstr "Formato inválido no nome do servidor"
 
@@ -2997,6 +2995,9 @@ msgstr "Diminui o tamanho da fonte"
 #~ msgstr ""
 #~ "Permitida apenas uma opção dentre TRACKS, CYLINDERS, AVBLOCK: "
 #~ "Transferência cancelada"
+
+#~ msgid "Open"
+#~ msgstr "Abrir"
 
 #~ msgid "Operation failed"
 #~ msgstr "Operação falhou"
@@ -3404,9 +3405,6 @@ msgstr "Diminui o tamanho da fonte"
 #~ msgid "Secure connection was successful."
 #~ msgstr "Conexão segura efetuada com sucesso."
 
-#~ msgid "Security warning"
-#~ msgstr "Alerta de segurança"
-
 #~ msgid "Select Field"
 #~ msgstr "Selecionar campo"
 
@@ -3571,9 +3569,6 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "Text file"
 #~ msgstr "Arquivo texto"
-
-#~ msgid "Text files"
-#~ msgstr "Arquivos de texto"
 
 #~ msgid "The CRL has expired."
 #~ msgstr "A lista de certificados revogados expirou."
@@ -4032,6 +4027,9 @@ msgstr "Diminui o tamanho da fonte"
 #~ msgid "Unsupported socks 4 proxy"
 #~ msgstr "Unsupported socks 4 proxy"
 
+#~ msgid "Untitled document"
+#~ msgstr "Documento sem título"
+
 #~ msgid "Uppercase only"
 #~ msgstr "Apenas maiúsculas"
 
@@ -4098,6 +4096,9 @@ msgstr "Diminui o tamanho da fonte"
 
 #~ msgid "_Edit"
 #~ msgstr "_Editar"
+
+#~ msgid "_Host"
+#~ msgstr "_Servidor"
 
 #~ msgid "_Network"
 #~ msgstr "_Rede"

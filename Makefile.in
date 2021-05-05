@@ -109,7 +109,8 @@ DEPENDS= \
 	src/filetransfer/marshal.h \
 	src/filetransfer/private.h \
 	src/terminal/marshal.h \
-	src/trace/marshal.h
+	src/trace/marshal.h \
+	src/dialogs/settings/marshal.h
 
 DATE_FMT = +%Y%m%d
 ifdef SOURCE_DATE_EPOCH
@@ -233,6 +234,14 @@ install-%: \
 
 src/terminal/marshal.h: \
 	src/terminal/marshal
+
+	@echo $@ ...
+	@$(MKDIR) $(@D)
+
+	@$(GENMARSHAL) --prefix=v3270 --header $< > $@
+
+src/dialogs/settings/marshal.h: \
+	src/dialogs/settings/marshal
 
 	@echo $@ ...
 	@$(MKDIR) $(@D)

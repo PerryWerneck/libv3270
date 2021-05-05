@@ -121,6 +121,9 @@
 		<Unit filename="src/dialogs/settings/tools.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/settings/url.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/settings/widget.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -197,6 +200,7 @@
 		<Unit filename="src/include/v3270/security.h" />
 		<Unit filename="src/include/v3270/selection.h" />
 		<Unit filename="src/include/v3270/settings.h" />
+		<Unit filename="src/include/v3270/settings/url.h" />
 		<Unit filename="src/include/v3270/toggle.h" />
 		<Unit filename="src/include/v3270/tools.h" />
 		<Unit filename="src/include/v3270/trace.h" />
