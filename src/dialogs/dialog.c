@@ -80,9 +80,9 @@
 	// Setup window
 	gtk_window_set_title(GTK_WINDOW(dialog),title);
     gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
-	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
-	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
 
+    gtk_dialog_set_toplevel(dialog,widget);
+	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
 
 	g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);
 

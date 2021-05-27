@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como tools.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -27,27 +27,31 @@
  *
  */
 
-#ifndef V3270_TOOLS_H_INCLUDED
+ /**
+  * @brief Usefull extensions for GtkDialog.
+  *
+  */
 
- #include <gtk/gtk.h>
- #include <lib3270.h>
+ #include <internals.h>
+ #include <v3270/tools.h>
+ #include <string.h>
 
- G_BEGIN_DECLS
+ LIB3270_EXPORT void gtk_dialog_set_toplevel(GtkWidget *dialog, GtkWidget *widget) {
 
-	/// @brief Bind pointer to widget; release it when widget is destroyed.
-	LIB3270_EXPORT void gtk_widget_bind_ptr(GtkWidget *widget, gpointer ptr);
+	if(widget) {
 
-	/// @brief Add style to widget.
-	LIB3270_EXPORT void gtk_widget_add_class(GtkWidget *widget, const char *className);
+		GtkWidget * toplevel = GTK_WINDOW(gtk_widget_get_toplevel(widget));
 
-	/// @brief Bind file chooser with entry field.
-	LIB3270_EXPORT void gtk_entry_bind_to_filechooser(GtkWidget *widget, GtkFileChooserAction action, const gchar *title, const gchar *icon_name, const gchar *pattern, const gchar *name);
+		gtk_window_set_transient_for(
+			GTK_WINDOW(dialog),
+			toplevel
+		);
 
-	/// @brief Bind dialog with toplevel
-	LIB3270_EXPORT void gtk_dialog_set_toplevel(GtkWidget *dialog, GtkWidget *widget);
+		gtk_window_set_icon(
+			GTK_WINDOW(dialog),
+			gtk_window_get_icon(toplevel)
+		);
 
+	}
 
- G_END_DECLS
-
-#endif // V3270_TOOLS_H_INCLUDED
-
+ }

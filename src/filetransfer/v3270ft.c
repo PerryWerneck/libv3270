@@ -37,6 +37,7 @@
 
  #include <limits.h>
  #include <internals.h>
+ #include <v3270/tools.h>
 
  #include "private.h"
 
@@ -743,7 +744,7 @@ LIB3270_EXPORT GtkWidget * v3270ft_new(GtkWidget *parent) {
 
 #endif
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(parent)));
+	gtk_dialog_set_toplevel(dialog,parent);
 
 	return dialog;
 }

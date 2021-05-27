@@ -38,6 +38,7 @@
 
  #include <config.h>
  #include <gtk/gtk.h>
+ #include <v3270/tools.h>
 
  #define ENABLE_NLS
 
@@ -89,7 +90,7 @@
  	GtkWidget 	* vbox		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
  	GtkWidget	* trace		= v3270_trace_new(widget);
 
-	gtk_window_set_transient_for(GTK_WINDOW(window),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+	gtk_dialog_set_toplevel(window,widget);
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(window),TRUE);
 
  	// Set window title and default size

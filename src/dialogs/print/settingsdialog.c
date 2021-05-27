@@ -463,7 +463,7 @@ LIB3270_EXPORT GtkWidget * v3270_ft_settings_dialog_new(GtkWidget *parent)
 
 	if(parent)
 	{
-		gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(parent)));
+		gtk_dialog_set_toplevel(dialog,parent);
 		gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 	}

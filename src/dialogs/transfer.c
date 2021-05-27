@@ -188,7 +188,7 @@ LIB3270_EXPORT gint v3270_transfer_file(GtkWidget *widget, LIB3270_FT_OPTION opt
 		g_signal_connect(save_button,"clicked",G_CALLBACK(save_activity_clicked),activity);
 	}
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+	gtk_dialog_set_toplevel(dialog,widget);
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 
