@@ -346,7 +346,8 @@
 	V3270URLEdit *edit = GTK_V3270URLEdit(widget);
 
 	if(edit->url) {
-		return edit->url;
+		g_free(edit->url);
+		edit->url = NULL;
 	}
 
 	const gchar *host = gtk_entry_get_text(GTK_ENTRY(edit->entry.host));
