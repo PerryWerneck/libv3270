@@ -78,6 +78,7 @@ static const gchar *persistent_properties[] = {
 		"auto_disconnect",
 		"colors",
 		"selection_flags",
+		"logfile",
 		NULL
 };
 

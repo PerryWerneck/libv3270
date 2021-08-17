@@ -35,6 +35,7 @@
  #include <v3270/dialogs.h>
  #include <v3270/settings.h>
  #include <v3270/selection.h>
+ #include <v3270/tools.h>
  #include <v3270/trace.h>
  #include <lib3270/log.h>
  #include <lib3270/popup.h>
@@ -48,25 +49,6 @@
  {
  	v3270_print(terminal,NULL);
  }
-
- /*
- static void host_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
- {
-	v3270_select_host(terminal);
- }
- */
-
- /*
- static void font_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
- {
-	v3270_settings_popup_dialog(
-		v3270_font_settings_new(),
-		terminal,
-		FALSE
-	);
-
- }
- */
 
  static void preferences_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
