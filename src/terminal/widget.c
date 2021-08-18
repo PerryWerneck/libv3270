@@ -79,6 +79,7 @@ static const gchar *persistent_properties[] = {
 		"colors",
 		"selection_flags",
 		"logfile",
+		"tracefile",
 		NULL
 };
 
