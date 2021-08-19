@@ -32,7 +32,7 @@ Name:			mingw64-libv3270
 Version:		5.2
 
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
-%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2 | cut -d+ -f1)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 %define _product %(x86_64-w64-mingw32-pkg-config --variable=product_name lib3270)
 
@@ -48,8 +48,12 @@ BuildRoot:		/var/tmp/%{name}-%{version}
 
 Provides:		mingw64(lib:v3270)
 
+Requires:		mingw64(libgdk_pixbuf-2.0-0.dll)
+BuildRequires:	mingw64(pkg:gdk-pixbuf-2.0)
+
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	libtool
 BuildRequires:	gettext-tools
 BuildRequires:  pkgconfig(glib-2.0)
 
@@ -129,7 +133,7 @@ make all
 
 %install
 %{_mingw64_makeinstall}
-%_mingw64_find_lang libv3270 langfiles
+%_mingw64_find_lang libv3270-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
 %clean
 rm -rf %{buildroot}
