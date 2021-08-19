@@ -31,6 +31,7 @@
  #include <terminal.h>
  #include <lib3270/actions.h>
  #include <v3270/settings.h>
+ #include <v3270/tools.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
