@@ -886,11 +886,11 @@ msgstr "Operação de impressão falhou"
 
 #: src/terminal/actions/table.c:312
 msgid "Print screen"
-msgstr "Imrpimir tela"
+msgstr "Imprimir tela"
 
 #: src/terminal/actions/table.c:302
 msgid "Print screen or selection"
-msgstr "Imrpimir tela ou seleção"
+msgstr "Imprimir tela ou seleção"
 
 #: src/terminal/actions/table.c:323
 msgid "Print selected"
@@ -906,7 +906,7 @@ msgstr "Imprimir marca de seleção"
 
 #: src/terminal/actions/table.c:313
 msgid "Print the entire screen"
-msgstr "Imrpimir toda a tela"
+msgstr "Imprimir toda a tela"
 
 #: src/filetransfer/v3270ftprogress.c:407
 msgid "Progress"
