@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-19 00:14-0300\n"
-"PO-Revision-Date: 2021-04-19 00:49-0300\n"
+"PO-Revision-Date: 2021-09-01 23:54-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
@@ -1513,7 +1513,6 @@ msgid "UTF-8"
 msgstr "UTF-8"
 
 #: src/selection/linux/paste.c:116
-#, fuzzy
 msgid "Unable to paste formatted data."
 msgstr "Incapaz de colar dados formatados."
 
