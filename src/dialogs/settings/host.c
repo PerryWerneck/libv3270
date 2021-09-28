@@ -39,6 +39,7 @@
  #include <lib3270/toggle.h>
  #include <lib3270/properties.h>
  #include <v3270/settings/url.h>
+ #include <v3270/tools.h>
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 

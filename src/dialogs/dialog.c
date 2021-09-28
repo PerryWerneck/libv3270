@@ -35,6 +35,7 @@
  #include <clipboard.h>
  #include <limits.h>
  #include <v3270/dialogs.h>
+ #include <v3270/tools.h>
 
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/

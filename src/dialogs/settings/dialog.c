@@ -32,6 +32,7 @@
  #include <v3270/settings.h>
  #include <terminal.h>
  #include <lib3270/log.h>
+ #include <v3270/tools.h>
 
  struct _V3270SettingsDialog {
   	GtkDialog		  parent;

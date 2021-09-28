@@ -40,7 +40,7 @@
 
 	if(widget) {
 
-		GtkWidget * toplevel = GTK_WINDOW(gtk_widget_get_toplevel(widget));
+		GtkWindow * toplevel = GTK_WINDOW(gtk_widget_get_toplevel(widget));
 
 		gtk_window_set_transient_for(
 			GTK_WINDOW(dialog),

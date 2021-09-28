@@ -39,6 +39,8 @@
 
  #include <internals.h>
  #include <v3270/filetransfer.h>
+ #include <v3270/tools.h>
+
  #include "private.h"
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/

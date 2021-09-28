@@ -36,6 +36,7 @@
  #include <v3270.h>
  #include <v3270/filetransfer.h>
  #include <v3270/dialogs.h>
+ #include <v3270/tools.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
