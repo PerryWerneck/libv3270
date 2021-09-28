@@ -32,7 +32,7 @@ Name:			mingw32-libv3270
 Version:		5.2
 
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
-%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2 | cut -d+ -f1)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 %define _product %(i686-w64-mingw32-pkg-config --variable=product_name lib3270)
 
@@ -48,8 +48,12 @@ BuildRoot:		/var/tmp/%{name}-%{version}
 
 Provides:		mingw32(lib:v3270)
 
+Requires:		mingw32(libgdk_pixbuf-2.0-0.dll)
+BuildRequires:	mingw32(pkg:gdk-pixbuf-2.0)
+
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	libtool
 BuildRequires:	gettext-tools
 BuildRequires:  pkgconfig(glib-2.0)
 
@@ -129,7 +133,7 @@ make all
 
 %install
 %{_mingw32_makeinstall}
-%_mingw32_find_lang libv3270 langfiles
+%_mingw32_find_lang libv3270-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
 %clean
 rm -rf %{buildroot}
@@ -141,6 +145,9 @@ rm -rf %{buildroot}
 %doc AUTHORS LICENSE README.md
 
 %{_mingw32_bindir}/*.dll
+%{_mingw32_datadir}/%{_product}/colors.conf
+%dir %{_mingw32_datadir}/%{_product}/remap
+%{_mingw32_datadir}/%{_product}/remap/*.xml
 
 %files devel
 %defattr(-,root,root)
@@ -151,11 +158,6 @@ rm -rf %{buildroot}
 %{_mingw32_libdir}/*.a
 
 %{_mingw32_datadir}/%{_product}/pot/*.pot
-%{_mingw32_datadir}/%{_product}/colors.conf
-
-%dir %{_mingw32_datadir}/%{_product}/remap
-%{_mingw32_datadir}/%{_product}/remap/*.xml
-
 %{_mingw32_datadir}/%{_product}/def/*.def
 
 %files -n mingw32-glade-catalog-v3270

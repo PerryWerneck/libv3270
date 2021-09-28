@@ -47,14 +47,19 @@
 	// https://developer.gnome.org/hig/stable/dialogs.html.en
 	// https://developer.gnome.org/hig/stable/visual-layout.html.en
 
+	// For some reason we can't pass 'null' to gtk_message_dialog_new_with_markup!!
 	g_return_val_if_fail(GTK_IS_WIDGET(widget),GTK_RESPONSE_NONE);
 
 	// Check if the dialog is enabled
-	gboolean allow_disabling = (popup->name && GTK_IS_V3270(widget));
+	gboolean allow_disabling = FALSE;
+
+	if(widget && GTK_IS_WIDGET(widget)) {
+		allow_disabling = (popup->name && GTK_IS_V3270(widget));
+	}
 
 	debug("%s: name=%s allow-disabling: %s", __FUNCTION__, popup->name, allow_disabling ? "Yes" : "No");
 
-	if(allow_disabling) {
+	if(widget && allow_disabling) {
 
 			GtkResponseType response = 0;
 
@@ -109,11 +114,19 @@
 
 	};
 
+	// Get toplevel
+	GtkDialogFlags flags = 0;
+	GtkWindow *window = NULL;
+	if(widget) {
+		flags = GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT;
+		window = GTK_WINDOW(gtk_widget_get_toplevel(widget));
+	}
+
 	// Create dialog
 	GtkWidget * dialog =
 			gtk_message_dialog_new_with_markup(
-				GTK_WINDOW(gtk_widget_get_toplevel(widget)),
-				GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+				window,
+				flags,
 				settings[popup->type].type,
 				GTK_BUTTONS_NONE,
 				(popup->body ? "<b><big>%s</big></b>" : "%s"),

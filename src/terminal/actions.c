@@ -31,6 +31,7 @@
  #include <terminal.h>
  #include <lib3270/actions.h>
  #include <v3270/settings.h>
+ #include <v3270/tools.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -71,7 +72,7 @@ void v3270_activate(GtkWidget *widget) {
 		gtk_container_add(GTK_CONTAINER(dialog), v3270_host_settings_new());
         gtk_window_set_title(GTK_WINDOW(dialog),_("Setup host properties"));
 
-        gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+		gtk_dialog_set_toplevel(dialog,widget);
 
         v3270_settings_dialog_set_terminal_widget(dialog, widget);
         g_signal_connect(dialog,"close",G_CALLBACK(gtk_widget_destroy),NULL);

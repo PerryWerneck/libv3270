@@ -344,7 +344,7 @@ void v3270_settings_popup_dialog(GtkWidget *widget, GtkWidget *terminal, gboolea
 		gtk_window_set_title(GTK_WINDOW(dialog),settings->title);
 
 	gtk_container_add(GTK_CONTAINER(dialog), widget);
-	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
+	gtk_dialog_set_toplevel(dialog,terminal);
 
 	gtk_window_set_modal(GTK_WINDOW(dialog),modal);
 
@@ -368,7 +368,7 @@ GtkWidget * v3270_settings_get_edit_dialog(GtkWidget *settings, GtkWidget *termi
 
 	gtk_container_add(GTK_CONTAINER(dialog), settings);
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(terminal)));
+	gtk_dialog_set_toplevel(dialog,terminal);
 	gtk_window_set_modal(GTK_WINDOW(dialog),modal);
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 

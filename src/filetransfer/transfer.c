@@ -30,6 +30,7 @@
 
  #include <v3270.h>
  #include "private.h"
+ #include <v3270/tools.h>
 
 
 /*--[ Statics ]--------------------------------------------------------------------------------------*/
@@ -138,8 +139,7 @@ LIB3270_EXPORT gint v3270ft_transfer(GtkWidget *dialog, H3270 *session) {
 	GtkWidget 	* progress	= v3270ftprogress_new();
 	gint		  rc		= GTK_RESPONSE_NONE;
 
-	gtk_window_set_transient_for(GTK_WINDOW(progress),GTK_WINDOW(dialog));
-//	gtk_window_set_deletable(progress,FALSE);
+	gtk_dialog_set_toplevel(progress,dialog);
 
 	v3270ft_select_first(dialog);
 	v3270ftprogress_set_session(progress,session);

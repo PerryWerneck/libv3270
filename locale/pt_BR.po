@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-19 00:14-0300\n"
-"PO-Revision-Date: 2021-04-19 00:49-0300\n"
+"PO-Revision-Date: 2021-09-01 23:54-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
@@ -886,11 +886,11 @@ msgstr "Operação de impressão falhou"
 
 #: src/terminal/actions/table.c:312
 msgid "Print screen"
-msgstr "Imrpimir tela"
+msgstr "Imprimir tela"
 
 #: src/terminal/actions/table.c:302
 msgid "Print screen or selection"
-msgstr "Imrpimir tela ou seleção"
+msgstr "Imprimir tela ou seleção"
 
 #: src/terminal/actions/table.c:323
 msgid "Print selected"
@@ -906,7 +906,7 @@ msgstr "Imprimir marca de seleção"
 
 #: src/terminal/actions/table.c:313
 msgid "Print the entire screen"
-msgstr "Imrpimir toda a tela"
+msgstr "Imprimir toda a tela"
 
 #: src/filetransfer/v3270ftprogress.c:407
 msgid "Progress"
@@ -1513,7 +1513,6 @@ msgid "UTF-8"
 msgstr "UTF-8"
 
 #: src/selection/linux/paste.c:116
-#, fuzzy
 msgid "Unable to paste formatted data."
 msgstr "Incapaz de colar dados formatados."
 

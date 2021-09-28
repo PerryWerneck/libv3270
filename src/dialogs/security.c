@@ -36,6 +36,7 @@
  #include <glib/gi18n-lib.h>
  #include <internals.h>
  #include <lib3270/ssl.h>
+ #include <v3270/tools.h>
 
  #include <v3270.h>
 
@@ -237,7 +238,7 @@
 
 	gtk_window_set_title(GTK_WINDOW(dialog),_("About security"));
 	gtk_window_set_default_size(GTK_WINDOW(dialog), 800, 500);
-	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+	gtk_dialog_set_toplevel(dialog,widget);
 	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
 
 	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),v3270_security_dialog_new(widget),TRUE,TRUE,2);

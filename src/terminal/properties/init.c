@@ -373,7 +373,7 @@
 	for(ix = 0; str_props[ix].name; ix++)
 	{
 
-//		debug("Property %u=%s (String)",(unsigned int) klass->properties.type.str + ix, str_props[ix].name);
+		// debug("Property %u=%s (String)",(unsigned int) klass->properties.type.str + ix, str_props[ix].name);
 
 		spec = g_param_spec_string(
 					str_props[ix].name,

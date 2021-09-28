@@ -246,7 +246,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	if(filename && *filename)
 		gtk_entry_set_text(GTK_ENTRY(dialog->filename),filename);
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+	gtk_dialog_set_toplevel(GTK_WIDGET(dialog),widget);
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 

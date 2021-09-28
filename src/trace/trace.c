@@ -85,8 +85,8 @@
 
 	/// @brief lib3270's saved trace handler.
 	struct {
-			void (*handler)(H3270 *session, void *userdata, const char *fmt, va_list args);
-			void *userdata;
+		LIB3270_TRACE_HANDLER handler;
+		void *userdata;
 	} trace;
 
  };
@@ -97,13 +97,11 @@
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
- static void trace_handler(H3270 *hSession, void *userdata, const char *fmt, va_list args)
+ static int trace_handler(const H3270 *hSession, void *userdata, const char *message)
  {
-	g_autofree gchar *ptr		= g_strdup_vprintf(fmt,args);
-	g_autofree gchar * utftext	= g_convert_with_fallback(ptr,-1,"UTF-8",lib3270_get_display_charset(hSession),"?",NULL,NULL,NULL);
-
+	g_autofree gchar * utftext	= g_convert_with_fallback(message,-1,"UTF-8",lib3270_get_display_charset(hSession),"?",NULL,NULL,NULL);
 	v3270_trace_append_text(GTK_WIDGET(userdata),utftext);
-
+	return 0;
  }
 
  static void set_session(V3270Trace *widget, H3270 *hSession)
@@ -153,6 +151,7 @@
 	for(ix = 0; ix < G_N_ELEMENTS(toggles); ix++)
 	{
 		// TODO: Use button "destroy" signal to cleanup.
+		lib3270_set_toggle(trace->hSession,toggles[ix],0);
 		trace->buttons.widgets[ix] = NULL;
 	}
 

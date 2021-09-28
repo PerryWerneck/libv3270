@@ -386,7 +386,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	gtk_window_set_deletable(GTK_WINDOW(dialog),FALSE);
 #endif // G_OS_UNIX
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+	gtk_dialog_set_toplevel(dialog,widget);
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(dialog), TRUE);
 

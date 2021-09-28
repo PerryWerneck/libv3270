@@ -599,7 +599,7 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 	gtk_window_set_title(GTK_WINDOW(dialog), v3270_settings_get_title(settings));
 	gtk_container_add(GTK_CONTAINER(dialog), settings);
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog),GTK_WINDOW(gtk_widget_get_toplevel(widget)));
+	gtk_dialog_set_toplevel(dialog,widget);
 	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
 
 	v3270_settings_dialog_set_terminal_widget(dialog, widget);

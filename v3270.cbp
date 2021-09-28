@@ -409,6 +409,9 @@
 		<Unit filename="src/testprogram/toolbar.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/tools/dialog.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/tools/entry.c">
 			<Option compilerVar="CC" />
 		</Unit>

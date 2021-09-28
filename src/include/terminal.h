@@ -89,7 +89,6 @@ G_BEGIN_DECLS
 			guint integer;
 			guint uint;
 			guint str;
-//			guint responses;
 		} type;
 
     } properties;

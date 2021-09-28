@@ -36,6 +36,7 @@
  #include <v3270.h>
  #include <v3270/settings.h>
  #include <v3270/actions.h>
+ #include <v3270/tools.h>
 
  #define V3270_TYPE_DIALOG_ACTION				(V3270DialogAction_get_type())
  #define V3270_DIALOG_ACTION(inst)				(G_TYPE_CHECK_INSTANCE_CAST ((inst), V3270_TYPE_DIALOG_ACTION, V3270DialogAction))
@@ -125,8 +126,9 @@
 
 		GtkWidget * window = gtk_widget_get_toplevel(terminal);
 		if(window) {
+			gtk_dialog_set_toplevel(action->dialog,window);
 			gtk_window_set_attached_to(GTK_WINDOW(action->dialog), window);
-			gtk_window_set_transient_for(GTK_WINDOW(action->dialog),GTK_WINDOW(window));
+			gtk_dialog_set_toplevel(action->dialog,window);
 		}
 
 		g_signal_connect(action->dialog,"destroy",G_CALLBACK(on_destroy),action);
