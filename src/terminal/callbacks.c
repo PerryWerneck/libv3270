@@ -85,23 +85,34 @@ static void update_toggle(H3270 *session, LIB3270_TOGGLE_ID id, unsigned char va
 	v3270_update_toggle((GtkWidget *) lib3270_get_user_data(session), id, value, name);
 }
 
-static gboolean bg_update_message(H3270 *session)
+
+struct update_message_data
 {
-	v3270 *terminal = (v3270 *) lib3270_get_user_data(session);
+	H3270 *hSession;
+	LIB3270_MESSAGE message;
+};
+
+static gboolean bg_update_message(struct update_message_data *data)
+{
+	v3270 *terminal = (v3270 *) lib3270_get_user_data(data->hSession);
 
 	v3270_signal_emit(
 		terminal,
 		V3270_SIGNAL_MESSAGE_CHANGED,
-		(gint) lib3270_get_program_message(session)
+		(gint) data->message
 	);
 
- 	//trace("-----B %s %p",__FUNCTION__, lib3270_get_user_data(session));
+	g_free(data);
  	return FALSE;
 }
 
-static void update_message(H3270 *session, G_GNUC_UNUSED LIB3270_MESSAGE id)
+static void update_message(H3270 *hSession, LIB3270_MESSAGE message)
 {
-	g_idle_add((GSourceFunc) bg_update_message, session);
+	struct update_message_data *data = g_new0(struct update_message_data,1);
+	data->hSession = hSession;
+	data->message = message;
+
+	g_idle_add((GSourceFunc) bg_update_message, data);
 }
 
 static void update_luname(H3270 *session, const char G_GNUC_UNUSED(*name))
