@@ -5,10 +5,14 @@ extraction:
   # Define settings for C/C++ analysis
   #####################################
   cpp:
+    configure:
+      command:
+        - NOCONFIGURE=1 ./autogen.sh
+        - ./configure --prefix=/usr --with-product-name="pw3270"
     prepare:
       packages: 
         - gettext
-	- git
+        - git
         - make
         - autotools-dev
         - autoconf
