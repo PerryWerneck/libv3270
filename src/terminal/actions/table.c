@@ -318,6 +318,7 @@
 		{
 			.group = LIB3270_ACTION_GROUP_NONE,
 			.name = "dialog-keyboard",
+			.icon = "preferences-desktop-keyboard-shortcuts",
 			.label = N_("Keyboard accelerators"),
 			.summary = N_("Edit keyboard accelerators"),
 			.activate = fire_accelerators_dialog
@@ -326,6 +327,7 @@
 		{
 			.group = LIB3270_ACTION_GROUP_OFFLINE,
 			.name = "dialog-host",
+			.icon = "network-server",
 			.label = N_("Host settings"),
 			.summary = N_("Edit host settings"),
 			.activate = fire_host_dialog
