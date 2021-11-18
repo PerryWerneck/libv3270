@@ -112,7 +112,7 @@
 
  static void V3270AcceleratorSettings_init(V3270AcceleratorSettings *widget)
  {
- 	size_t ix;
+ 	//size_t ix;
 
  	// Create description list
  	GtkCellRenderer * text_renderer = gtk_cell_renderer_text_new();
@@ -143,7 +143,6 @@
 
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(view),TRUE);
 	gtk_tree_view_set_search_column(GTK_TREE_VIEW(view),1);
-
 
 	g_signal_connect(G_OBJECT(widget),"realize",G_CALLBACK(realize),view);
 
@@ -180,7 +179,7 @@
 			NULL
 		);
 
-	gtk_tree_view_column_set_min_width(column, 500);
+	gtk_tree_view_column_set_min_width(column, 100);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 
 	gtk_tree_view_insert_column(
@@ -210,12 +209,13 @@
 		NULL
 	);
 
+	/*
 	for(ix = 1; ix < 3; ix++)
 	{
 		column = gtk_tree_view_get_column(GTK_TREE_VIEW(view), ix);
-		gtk_tree_view_column_set_min_width(column, 200);
 		gtk_tree_view_column_set_resizable(column, TRUE);
 	}
+	*/
 
 	// Create scroller view
 	{
@@ -223,14 +223,13 @@
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(box),GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
 		gtk_container_add(GTK_CONTAINER(box),view);
 
-		/*
-		gtk_widget_set_vexpand(view,TRUE);
-		gtk_widget_set_hexpand(view,TRUE);
-		*/
-
+		gtk_scrolled_window_set_propagate_natural_width(GTK_SCROLLED_WINDOW(box),TRUE);
+		//gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(box),TRUE);
 		gtk_widget_set_vexpand(box,TRUE);
 		gtk_widget_set_hexpand(box,TRUE);
 
+		gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(box),800);
+		//gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(box),600);
 		gtk_grid_attach(GTK_GRID(widget),box,0,0,10,10);
 	}
 

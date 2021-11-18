@@ -588,6 +588,7 @@ LIB3270_EXPORT GtkWidget * v3270_host_select_new()
 	return v3270_host_settings_new();
 }
 
+/*
 LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 {
 	g_return_if_fail(GTK_IS_V3270(widget));
@@ -633,6 +634,7 @@ LIB3270_EXPORT void v3270_select_host(GtkWidget *widget)
 	gtk_widget_destroy(dialog);
 
 }
+*/
 
 static void apply(GtkWidget *w, GtkWidget *terminal)
 {

@@ -117,6 +117,9 @@
 		<Unit filename="src/dialogs/settings/host.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/dialogs/settings/popup.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/dialogs/settings/private.h" />
 		<Unit filename="src/dialogs/settings/tools.c">
 			<Option compilerVar="CC" />

@@ -130,8 +130,6 @@
 					accelerator->arg 		= (gconstpointer) &actions[ix];
 					accelerator->activate	= G_CALLBACK(fire_lib3270_action);
 
-//					debug("%s=%s",actions[ix].name,keys[key]);
-
 					v3270_accelerator_parse(accelerator,keys[key]);
 
 					accelerators = g_slist_prepend(accelerators,accelerator);
@@ -228,61 +226,27 @@
 
 			accelerators = g_slist_prepend(accelerators,v3270_pfkey_accelerator_new(key,NULL));
 
-			if(key == 7) {
+			switch(key) {
+			case 7:
 				accelerators = g_slist_prepend(accelerators,v3270_pfkey_accelerator_new(key,"Page_Up"));
-			} else if(key == 8) {
+				break;
+
+			case 8:
 				accelerators = g_slist_prepend(accelerators,v3270_pfkey_accelerator_new(key,"Page_Down"));
+				break;
+
+			case 19:
+				accelerators = g_slist_prepend(accelerators,v3270_pfkey_accelerator_new(key,"<Shift>Page_Up"));
+				break;
+
+			case 20:
+				accelerators = g_slist_prepend(accelerators,v3270_pfkey_accelerator_new(key,"<Shift>Page_Down"));
+				break;
 			}
 
 		}
 
 	}
-	/*
-	{
-		static const struct
-		{
-			guint 				  key;
-			GdkModifierType		  mods;
-			const gchar			* name;
-			const gchar			* description;
-			unsigned short		  pfkey;
-		} accels[] =
-		{
-			{
-				.key = GDK_Page_Up,
-				.name = "page-up",
-				.description = N_( "Previous page" ),
-				.pfkey = 7
-			},
-			{
-				.key = GDK_Page_Down,
-				.name = "page-down",
-				.description = N_( "Next page" ),
-				.pfkey = 8
-			}
-		};
-
-        for(ix = 0 ; ix < G_N_ELEMENTS(accels); ix++)
-		{
-			V3270PFKeyAccelerator * accelerator = g_new0(V3270PFKeyAccelerator,1);
-
-			accelerator->keycode			= accels[ix].pfkey;
-			accelerator->name				= accels[ix].name;
-			accelerator->description		= accels[ix].description;
-			accelerator->parent.type		= V3270_ACCELERATOR_TYPE_PFKEY;
-			accelerator->parent.key			= accels[ix].key;
-			accelerator->parent.mods		= accels[ix].mods;
-			accelerator->parent.arg			= (gconstpointer) accelerator;
-			accelerator->parent.activate	= G_CALLBACK(fire_pfkey_action);
-
-			debug("%s Accelerator(%s)=%p pfkey=%d",__FUNCTION__,accelerator->name,accelerator,accelerator->keycode);
-
-			widget->accelerators = g_slist_prepend(widget->accelerators,accelerator);
-
-		}
-
-	}
-	*/
 
 	return v3270_accelerator_map_sort(accelerators);
 
