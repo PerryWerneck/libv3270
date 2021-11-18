@@ -45,21 +45,6 @@
 
 	 static const V3270_ACTION actions[] = {
 
-	 	/*
-		{
-			.name = "keypad-add",
-			.keys = "<Mod2>KP_Add",
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activate = fire_kp_add_action
-		},
-		{
-			.name = "keypad-subtract",
-			.keys = "<Mod2>KP_Subtract",
-			.group = LIB3270_ACTION_GROUP_ONLINE,
-			.activate = fire_kp_sub_action
-		},
-		*/
-
 		// Standard Clipboard actions
 		{
 			.flags = (V3270_ACTION_FLAGS) V3270_COPY_SMART,
@@ -70,6 +55,17 @@
 			.label = N_( "Copy" ),
 			.summary = N_("Copy selection to clipboard"),
 			.description = N_("Replace current clipboard contents with the selected area"),
+			.activate = fire_copy_accelerator
+		},
+
+		{
+			.name = "copy-append",
+			.keys = "<Primary><Shift>c",
+			.flags = (V3270_ACTION_FLAGS) V3270_COPY_APPEND,
+			.group = LIB3270_ACTION_GROUP_SELECTION,
+			.label = N_( "Add to copy" ),
+			.summary = N_("Append selection to clipboard"),
+			.description = N_("Append selected area to current clipboard contents"),
 			.activate = fire_copy_accelerator
 		},
 
@@ -92,19 +88,7 @@
 		},
 
 		{
-			.name = "copy-append",
-			.keys = "<Alt>c",
-			.flags = (V3270_ACTION_FLAGS) V3270_COPY_APPEND,
-			.group = LIB3270_ACTION_GROUP_SELECTION,
-			.label = N_( "Add to copy" ),
-			.summary = N_("Append selection to clipboard"),
-			.description = N_("Append selected area to current clipboard contents"),
-			.activate = fire_copy_accelerator
-		},
-
-		{
 			.name = "copy-text",
-			.keys = "<Primary><Shift>c",
 			.flags = (V3270_ACTION_FLAGS) V3270_COPY_TEXT,
 			.group = LIB3270_ACTION_GROUP_SELECTION,
 			.icon = "edit-copy",
