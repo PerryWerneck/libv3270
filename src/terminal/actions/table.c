@@ -1,43 +1,33 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como properties.c e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
  #include "private.h"
  #include <lib3270/actions.h>
  #include <v3270/actions.h>
  #include <v3270/selection.h>
+ #include <v3270/settings.h>
  #include <terminal.h>
-
-// static int fire_kp_add_action(GtkWidget *widget, const struct _v3270_action * action);
-// static int fire_kp_sub_action(GtkWidget *widget, const struct _v3270_action * action);
 
  static int fire_copy_as_html(GtkWidget *widget, const struct _v3270_action * action);
  static int fire_copy_as_pixbuff(GtkWidget *widget, const struct _v3270_action * action);
+ static int fire_accelerators_dialog(GtkWidget *widget, const struct _v3270_action * action);
+ static int fire_host_dialog(GtkWidget *widget, const struct _v3270_action * action);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -45,7 +35,9 @@
 
 	 static const V3270_ACTION actions[] = {
 
+		//
 		// Standard Clipboard actions
+		//
 		{
 			.flags = (V3270_ACTION_FLAGS) V3270_COPY_SMART,
 			.name = "copy",
@@ -320,6 +312,28 @@
 
 		},
 
+		//
+		// Dialog actions
+		//
+		{
+			.group = LIB3270_ACTION_GROUP_NONE,
+			.name = "dialog-accelerators",
+			.label = N_("Change keyboard accelerators"),
+			.activate = fire_accelerators_dialog
+
+		},
+
+		{
+			.group = LIB3270_ACTION_GROUP_OFFLINE,
+			.name = "dialog-host",
+			.label = N_("Change host settings"),
+			.activate = fire_host_dialog
+
+		},
+
+		//
+		// Terminator
+		//
 		{
 			.name = NULL
 		}
@@ -339,26 +353,71 @@
 	return 0;
  }
 
- /*
- int fire_kp_add_action(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
+ static int fire_accelerators_dialog(GtkWidget *widget, const struct _v3270_action * action) {
 
-	if(v3270_get_toggle(widget,LIB3270_TOGGLE_KP_ALTERNATIVE))
-		return lib3270_nextfield(GTK_V3270(widget)->host);
+	/*
+	v3270_settings_popup_dialog(
+		v3270_accelerator_settings_new(),
+		widget,
+		TRUE
+	);
+	*/
 
-	v3270_set_string(widget, "+");
+	return 0;
+ }
+
+ static int fire_host_dialog(GtkWidget *widget, const struct _v3270_action * action) {
+
+	gtk_widget_show_all(
+		v3270_settings_popup_dialog(
+			v3270_host_settings_new(),
+			widget,
+			TRUE
+		)
+	);
 
 	return 0;
 
+	/*
+	GtkWidget * dialog = v3270_settings_dialog_new();
+	GtkWidget * settings = v3270_host_settings_new();
+
+	v3270_settings_dialog_set_has_subtitle(dialog,FALSE);
+
+	gtk_window_set_title(GTK_WINDOW(dialog), v3270_settings_get_title(settings));
+	gtk_container_add(GTK_CONTAINER(dialog), settings);
+
+	gtk_dialog_set_toplevel(dialog,widget);
+	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
+
+	v3270_settings_dialog_set_terminal_widget(dialog, widget);
+
+	gtk_window_set_default_size(GTK_WINDOW(dialog), 700, 150);
+	gtk_widget_show_all(dialog);
+
+	gboolean again = TRUE;
+ 	while(again)
+ 	{
+ 		gtk_widget_set_sensitive(dialog,TRUE);
+		gtk_widget_set_visible(dialog,TRUE);
+
+ 		switch(gtk_dialog_run(GTK_DIALOG(dialog)))
+ 		{
+		case GTK_RESPONSE_APPLY:
+			debug("V3270HostSelectWidget::%s=%s",__FUNCTION__,"GTK_RESPONSE_APPLY");
+			v3270_settings_dialog_apply(dialog);
+			again = lib3270_reconnect(v3270_get_session(widget),0);
+			break;
+
+		case GTK_RESPONSE_CANCEL:
+			again = FALSE;
+			debug("V3270HostSelectWidget::%s=%s",__FUNCTION__,"GTK_RESPONSE_CANCEL");
+			v3270_settings_dialog_revert(dialog);
+			break;
+ 		}
+ 	}
+
+	gtk_widget_destroy(dialog);
+	*/
+
  }
-
- int fire_kp_sub_action(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
-
-	if(v3270_get_toggle(widget,LIB3270_TOGGLE_KP_ALTERNATIVE))
-		return lib3270_previousfield(GTK_V3270(widget)->host);
-
-	v3270_set_string(widget, "-");
-
-	return 0;
-
- }
-*/

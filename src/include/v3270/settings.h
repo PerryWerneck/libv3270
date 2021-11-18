@@ -102,7 +102,7 @@
  LIB3270_EXPORT const gchar * v3270_settings_get_tooltip(GtkWidget *widget);
 
  /// @brief Popup a settings dialog for the terminal.
- LIB3270_EXPORT void v3270_settings_popup_dialog(GtkWidget *settings, GtkWidget *terminal, gboolean modal);
+ LIB3270_EXPORT GtkWidget * v3270_settings_popup_dialog(GtkWidget *settings, GtkWidget *terminal, gboolean modal);
 
  /// @brief Get an edit dialog for the settings widget.
  LIB3270_EXPORT GtkWidget * v3270_settings_get_edit_dialog(GtkWidget *settings, GtkWidget *terminal, gboolean modal);

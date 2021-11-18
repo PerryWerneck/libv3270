@@ -239,7 +239,7 @@
  LIB3270_EXPORT const gchar		* v3270_get_remap_filename(GtkWidget *widget);
 
  // Auxiliary widgets
- LIB3270_EXPORT void			  v3270_select_host(GtkWidget *widget);
+ // LIB3270_EXPORT void			  v3270_select_host(GtkWidget *widget);
 
  // Print
  LIB3270_EXPORT int				  v3270_print(GtkWidget *widget, GError **error);
