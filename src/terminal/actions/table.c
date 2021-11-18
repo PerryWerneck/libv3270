@@ -317,7 +317,7 @@
 		//
 		{
 			.group = LIB3270_ACTION_GROUP_NONE,
-			.name = "dialog-accelerators",
+			.name = "dialog-keyboard",
 			.label = N_("Change keyboard accelerators"),
 			.activate = fire_accelerators_dialog
 
@@ -355,13 +355,13 @@
 
  static int fire_accelerators_dialog(GtkWidget *widget, const struct _v3270_action * action) {
 
-	/*
-	v3270_settings_popup_dialog(
-		v3270_accelerator_settings_new(),
-		widget,
-		TRUE
+	gtk_widget_show_all(
+		v3270_settings_popup_dialog(
+			v3270_accelerator_settings_new(),
+			widget,
+			TRUE
+		)
 	);
-	*/
 
 	return 0;
  }
