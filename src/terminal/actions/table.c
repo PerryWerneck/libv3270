@@ -318,17 +318,17 @@
 		{
 			.group = LIB3270_ACTION_GROUP_NONE,
 			.name = "dialog-keyboard",
-			.label = N_("Change keyboard accelerators"),
+			.label = N_("Keyboard accelerators"),
+			.summary = N_("Edit keyboard accelerators"),
 			.activate = fire_accelerators_dialog
-
 		},
 
 		{
 			.group = LIB3270_ACTION_GROUP_OFFLINE,
 			.name = "dialog-host",
-			.label = N_("Change host settings"),
+			.label = N_("Host settings"),
+			.summary = N_("Edit host settings"),
 			.activate = fire_host_dialog
-
 		},
 
 		//
@@ -355,13 +355,15 @@
 
  static int fire_accelerators_dialog(GtkWidget *widget, const struct _v3270_action * action) {
 
-	gtk_widget_show_all(
+	GtkWidget * dialog =
 		v3270_settings_popup_dialog(
 			v3270_accelerator_settings_new(),
 			widget,
 			TRUE
-		)
-	);
+		);
+
+	gtk_window_set_default_size(GTK_WINDOW(dialog),950,400);
+	gtk_widget_show_all(dialog);
 
 	return 0;
  }
