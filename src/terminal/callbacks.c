@@ -422,13 +422,20 @@ static int load(H3270 *session, const char *filename)
 
  static gboolean bg_word_selected(struct _word_selected *cfg)
  {
-	if(cfg->len > 3) {
+ 	v3270 *terminal = (v3270 *) lib3270_get_user_data(cfg->hSession);
+
+ 	debug("%s(open-url=%d)",__FUNCTION__,terminal->open_url);
+
+	if(cfg->len > 3 && terminal->open_url) {
+
 		lib3270_autoptr(char) text = lib3270_get_string_at_address(cfg->hSession,cfg->offset,cfg->len,0);
 
 		if(text && (g_str_has_prefix(text,"http://") || g_str_has_prefix(text,"https://")) ) {
 
+			debug("Emitting '%s'", text);
+
 			v3270_signal_emit(
-				lib3270_get_user_data(cfg->hSession),
+				terminal,
 				V3270_SIGNAL_OPEN_URL,
 				text
 			);
