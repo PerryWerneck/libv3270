@@ -537,6 +537,15 @@ static void finalize(GObject *object) {
 						v3270_UINT__POINTER,
 						G_TYPE_UINT, 1, G_TYPE_POINTER);
 
+	v3270_widget_signal[V3270_SIGNAL_OPEN_URL] =
+		g_signal_new(	I_("open-url"),
+						G_OBJECT_CLASS_TYPE (gobject_class),
+						G_SIGNAL_RUN_LAST,
+						0,
+						NULL, NULL,
+						v3270_VOID__POINTER,
+						G_TYPE_NONE, 1, G_TYPE_STRING);
+
 	v3270_widget_signal[V3270_SIGNAL_SAVE_POPUP_RESPONSE] =
 		g_signal_new(	I_("save-popup-response"),
 						G_OBJECT_CLASS_TYPE (gobject_class),

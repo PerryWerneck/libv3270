@@ -1,30 +1,20 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
  #include <config.h>
@@ -287,21 +277,6 @@ static void update_selection(H3270 *session, G_GNUC_UNUSED int start, G_GNUC_UNU
 
 }
 
-/*
-static void message(H3270 *session, LIB3270_NOTIFY type , const char *title, const char *message, const char *text)
-{
-	LIB3270_POPUP popup = {
-		.type = type,
-		.title = title,
-		.summary = message,
-		.body = text
-	};
-
-	v3270_popup_dialog_show(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
-
-}
-*/
-
 static int print(H3270 *session, LIB3270_CONTENT_OPTION mode)
 {
 	return v3270_print_dialog(GTK_WIDGET(lib3270_get_user_data(session)), mode, NULL);
@@ -337,27 +312,6 @@ static int load(H3270 *session, const char *filename)
 	return 0;
 }
 
-/*
-static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list args)
-{
-	LIB3270_POPUP popup = {
-		.type = type,
-		.title = title,
-		.summary = msg
-	};
-
-	g_autofree gchar * body = NULL;
-
-	if(fmt) {
-		body = g_strdup_vprintf(fmt,args);
-		popup.body = body;
-	}
-
-	v3270_popup_dialog_show(GTK_WIDGET(lib3270_get_user_data(session)),&popup,0);
-
- }
- */
-
  static gboolean bg_update_ssl(H3270 *session)
  {
  	v3270 *terminal = GTK_V3270(lib3270_get_user_data(session));
@@ -382,8 +336,6 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 
  static void update_ssl(H3270 *session, G_GNUC_UNUSED LIB3270_SSL_STATE state)
  {
- 	debug("----------------------> %d", (int) state);
-
 	g_idle_add((GSourceFunc) bg_update_ssl, session);
  }
 
@@ -461,6 +413,45 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
  	return 0;
  }
 
+ struct _word_selected
+ {
+	H3270 *hSession;
+	int offset;
+	int len;
+ };
+
+ static gboolean bg_word_selected(struct _word_selected *cfg)
+ {
+	if(cfg->len > 3) {
+		lib3270_autoptr(char) text = lib3270_get_string_at_address(cfg->hSession,cfg->offset,cfg->len,0);
+
+		if(text && (g_str_has_prefix(text,"http://") || g_str_has_prefix(text,"https://")) ) {
+
+			v3270_signal_emit(
+				lib3270_get_user_data(cfg->hSession),
+				V3270_SIGNAL_OPEN_URL,
+				text
+			);
+
+		}
+
+	}
+
+	return G_SOURCE_REMOVE;
+ }
+
+ static void word_selected(H3270 *hSession, int from, int to) {
+
+ 	struct _word_selected *cfg = g_new0(struct _word_selected, 1);
+
+ 	cfg->hSession = hSession;
+ 	cfg->offset = from;
+ 	cfg->len = (to-from)+1;
+
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_word_selected, cfg, g_free);
+
+ }
+
  void v3270_install_callbacks(v3270 *widget)
  {
 	struct lib3270_session_callbacks *cbk;
@@ -516,6 +507,7 @@ static void popup_handler(H3270 *session, LIB3270_NOTIFY type, const char *title
 	cbk->popup				= popup;
 	cbk->action				= action;
 	cbk->reconnect			= reconnect;
+	cbk->word_selected		= word_selected;
 
 }
 

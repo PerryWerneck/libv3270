@@ -121,6 +121,7 @@
  	// Misc signals
  	//
  	V3270_SIGNAL_FIRE_ACTION,			///< @brief Fire action by name.
+ 	V3270_SIGNAL_OPEN_URL,				///< @brief An URL was selected.
 
  	V3270_SIGNAL_LAST
  };

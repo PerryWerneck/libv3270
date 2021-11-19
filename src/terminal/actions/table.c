@@ -355,7 +355,7 @@
 	return 0;
  }
 
- static int fire_accelerators_dialog(GtkWidget *widget, const struct _v3270_action * action) {
+ static int fire_accelerators_dialog(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
 
 	GtkWidget * dialog =
 		v3270_settings_popup_dialog(
@@ -370,7 +370,7 @@
 	return 0;
  }
 
- static int fire_host_dialog(GtkWidget *widget, const struct _v3270_action * action) {
+ static int fire_host_dialog(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
 
 	gtk_widget_show_all(
 		v3270_settings_popup_dialog(
