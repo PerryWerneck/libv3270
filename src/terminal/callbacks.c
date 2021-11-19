@@ -434,11 +434,23 @@ static int load(H3270 *session, const char *filename)
 
 			debug("Emitting '%s'", text);
 
+			guint response = (guint) -1;
 			v3270_signal_emit(
 				terminal,
 				V3270_SIGNAL_OPEN_URL,
-				text
+				text,
+				&response
 			);
+
+			if(response == (guint) -1) {
+				// No one has changed the response, take default action.
+				gtk_show_uri_on_window(
+								GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(terminal))),
+								text,
+								GDK_CURRENT_TIME,
+								NULL
+						);
+			}
 
 		}
 
