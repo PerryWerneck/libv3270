@@ -1,30 +1,20 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
  /**
@@ -57,8 +47,8 @@
  	},
 
  	{
- 		.left = 1,
- 		.top = 2,
+ 		.left = 2,
+ 		.top = 1,
  		.width = 1,
  		.grid = COPY_SETTINGS,
  		.id = LIB3270_TOGGLE_KEEP_SELECTED,
@@ -162,8 +152,8 @@
 	{
 		.label = N_("Smart copy"),
 		.tooltip = N_("When set the first copy operation after the selection will set the clipboard contents and the next ones will append"),
-		.left = 1,
-		.top = 4,
+		.left = 2,
+		.top = 3,
 		.width = 1,
 		.height = 1,
 		.grid = COPY_SETTINGS
@@ -174,6 +164,16 @@
 		.tooltip = N_("When set allow image formats on clipboard"),
 		.left = 1,
 		.top = 3,
+		.width = 1,
+		.height = 1,
+		.grid = COPY_SETTINGS
+	},
+
+	{
+		.label = N_("Detect http:// or https://"),
+		.tooltip = N_("When set URLs selected with double click will be opened"),
+		.left = 1,
+		.top = 4,
 		.width = 1,
 		.height = 1,
 		.grid = COPY_SETTINGS
@@ -247,8 +247,8 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 	// Create grids
 	{
 		static const gchar * labels[GRID_COUNT] = {
-			N_("Copy options"),
-			N_("Paste options"),
+			N_("Select and copy actions"),
+			N_("Paste actions"),
 			N_("HTML options")
 		};
 
@@ -334,6 +334,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 
 		}
 
+/*
 		// Load color schemes
 #ifdef DEBUG
 		{
@@ -379,7 +380,7 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			}
 		}
 #endif // DEBUG
-
+*/
 		// Copy format combo
 		static const gchar * copy_formats[] = {
 			N_("Plain text only"),
@@ -416,8 +417,8 @@ GtkWidget * v3270_clipboard_settings_new() {
 
  	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(V3270ClipboardSettings_get_type(), NULL));
 
- 	settings->title = _("Clipboard properties");
- 	settings->label = _("Clipboard");
+ 	settings->title = _("Options for select, cut and paste actions");
+ 	settings->label = _("Selection");
 
  	return GTK_WIDGET(settings);
 }
@@ -484,6 +485,7 @@ static void load(GtkWidget *w, GtkWidget *t) {
 	gtk_toggle_button_set_active(widget->input.checkboxes[1],(terminal->selection.options & V3270_SELECTION_SCREEN_PASTE) != 0);
 	gtk_toggle_button_set_active(widget->input.checkboxes[2],(terminal->selection.options & V3270_SELECTION_SMART_COPY) != 0);
 	gtk_toggle_button_set_active(widget->input.checkboxes[3],(terminal->selection.options & V3270_SELECTION_PIXBUFF) != 0);
+	gtk_toggle_button_set_active(widget->input.checkboxes[4],terminal->open_url != 0);
 
 	//
 	// Set font combo-box
@@ -575,6 +577,12 @@ static void apply(GtkWidget *w, GtkWidget *t) {
 			terminal->selection.options |= V3270_SELECTION_PIXBUFF;
 		} else {
 			terminal->selection.options &= ~V3270_SELECTION_PIXBUFF;
+		}
+
+		if(gtk_toggle_button_get_active(widget->input.checkboxes[4])) {
+			terminal->open_url = 1;
+		} else {
+			terminal->open_url = 0;
 		}
 
 		// Get font settings
