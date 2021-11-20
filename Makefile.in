@@ -30,6 +30,7 @@ SONAME=@SONAME@
 LIBNAME=libv3270
 PRODUCT_NAME=@PRODUCT_NAME@
 INSTALL_PACKAGES=@INSTALL_PACKAGES@
+GETTEXT_PACKAGE=@GETTEXT_PACKAGE@
 
 SOURCES= \
 	$(wildcard src/terminal/*.c) \
@@ -203,7 +204,7 @@ $(OBJRLS)/%.o: \
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
 
-$(POTDIR)/$(LIBNAME)/%.pot: \
+$(POTDIR)/%.pot: \
 	%.c
 
 	@echo $(notdir $@) ...
@@ -217,7 +218,7 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 		$<
 	@touch $@
 
-$(POTDIR)/$(LIBNAME)/%.pot: \
+$(POTDIR)/%.pot: \
 	%.rc
 
 	@echo $< ...
@@ -309,7 +310,7 @@ $(OBJDIR)/marshal/%.o: \
 all: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a \
-	locale/$(LIBNAME).pot
+	locale/$(GETTEXT_PACKAGE).pot
 
 Release: \
 	$(BINRLS)/$(SONAME) \
@@ -347,7 +348,7 @@ $(BINRLS)/static/$(LIBNAME).a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	locale/$(LIBNAME).pot \
+	locale/$(GETTEXT_PACKAGE).pot \
 	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
 install-linux-lib: \
@@ -426,7 +427,7 @@ install-dev: \
 
 	# Install translation files
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
-	@$(INSTALL_DATA) locale/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
+	@$(INSTALL_DATA) locale/$(GETTEXT_PACKAGE).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
 
 install-linux-dev:
@@ -477,20 +478,20 @@ install-glade:
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
-$(POTDIR)/$(LIBNAME).pot: \
-	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
+$(POTDIR)/$(GETTEXT_PACKAGE).pot: \
+	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(SRC).pot)
 
 	@rm -f $@
 	@$(MKDIR) $(@D)
 	@$(MSGCAT) --sort-output $^ > $@
 
 locale: \
-	locale/$(LIBNAME).pot
+	locale/$(GETTEXT_PACKAGE).pot
 
 	@$(MAKE) -C locale all
 
-locale/$(LIBNAME).pot: \
-	$(POTDIR)/$(LIBNAME).pot
+locale/$(GETTEXT_PACKAGE).pot: \
+	$(POTDIR)/$(GETTEXT_PACKAGE).pot
 
 	@rm -f $@
 	@$(MKDIR) $(@D)
@@ -583,7 +584,7 @@ cleanRelease:
 	@rm -fr $(OBJDIR)/marshal
 	@rm -f src/terminal/marshal.h
 	@rm -f src/filetransfer/marshal.h
-	@rm -f lib$(LIBNAME).pot
+	@rm -f $(GETTEXT_PACKAGE).pot
 
 clean: \
 	cleanDebug \

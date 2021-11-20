@@ -429,7 +429,7 @@ GtkWidget * v3270_clipboard_settings_new() {
  	V3270Settings * settings = GTK_V3270_SETTINGS(g_object_new(V3270ClipboardSettings_get_type(), NULL));
 
  	settings->title = _("Options for select, cut and paste actions");
- 	settings->label = _("Selection");
+ 	settings->label = _("Clipboard");
 
  	return GTK_WIDGET(settings);
 }
