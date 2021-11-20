@@ -30,9 +30,10 @@
 /*--[ Constants ]------------------------------------------------------------------------------------*/
 
  enum {
- 	COPY_SETTINGS,
- 	PASTE_SETTINGS,
- 	HTML_SETTINGS,
+ 	SELECT_OPTIONS,
+ 	COPY_OPTIONS,
+ 	PASTE_OPTIONS,
+ 	HTML_OPTIONS,
 
  	GRID_COUNT
  };
@@ -42,15 +43,15 @@
  		.left = 1,
  		.top = 1,
  		.width = 1,
- 		.grid = COPY_SETTINGS,
+ 		.grid = SELECT_OPTIONS,
  		.id = LIB3270_TOGGLE_RECTANGLE_SELECT,
  	},
 
  	{
- 		.left = 2,
- 		.top = 1,
+ 		.left = 1,
+ 		.top = 2,
  		.width = 1,
- 		.grid = COPY_SETTINGS,
+ 		.grid = SELECT_OPTIONS,
  		.id = LIB3270_TOGGLE_KEEP_SELECTED,
  	},
 
@@ -58,7 +59,7 @@
  		.left = 0,
  		.top = 0,
  		.width = 1,
- 		.grid = PASTE_SETTINGS,
+ 		.grid = PASTE_OPTIONS,
  		.id = LIB3270_TOGGLE_MARGINED_PASTE,
  	},
 
@@ -66,7 +67,7 @@
  		.left = 0,
  		.top = 1,
  		.width = 1,
- 		.grid = PASTE_SETTINGS,
+ 		.grid = PASTE_OPTIONS,
  		.id = LIB3270_TOGGLE_SMART_PASTE,
  	}
 
@@ -75,7 +76,7 @@
  static const struct ComboBoxDefinition combos[] = {
 
 	{
-		.grid = HTML_SETTINGS,
+		.grid = HTML_OPTIONS,
 		.left = 0,
 		.top = 0,
 		.width = 1,
@@ -92,7 +93,7 @@
 	},
 
 	{
-		.grid = HTML_SETTINGS,
+		.grid = HTML_OPTIONS,
 		.left = 0,
 		.top = 1,
 		.width = 1,
@@ -109,7 +110,7 @@
 	},
 
 	{
-		.grid = COPY_SETTINGS,
+		.grid = COPY_OPTIONS,
 		.left = 0,
 		.top = 0,
 		.width = 2,
@@ -136,7 +137,7 @@
 		.top = 2,
 		.width = 1,
 		.height = 1,
-		.grid = HTML_SETTINGS
+		.grid = HTML_OPTIONS
 	},
 
 	{
@@ -146,37 +147,37 @@
 		.top = 2,
 		.width = 1,
 		.height = 1,
-		.grid = PASTE_SETTINGS
+		.grid = PASTE_OPTIONS
 	},
 
 	{
 		.label = N_("Smart copy"),
 		.tooltip = N_("When set the first copy operation after the selection will set the clipboard contents and the next ones will append"),
-		.left = 2,
-		.top = 3,
+		.left = 1,
+		.top = 1,
 		.width = 1,
 		.height = 1,
-		.grid = COPY_SETTINGS
+		.grid = COPY_OPTIONS
 	},
 
 	{
 		.label = N_("Image copy"),
 		.tooltip = N_("When set allow image formats on clipboard"),
 		.left = 1,
-		.top = 3,
+		.top = 2,
 		.width = 1,
 		.height = 1,
-		.grid = COPY_SETTINGS
+		.grid = COPY_OPTIONS
 	},
 
 	{
 		.label = N_("Detect http:// or https://"),
 		.tooltip = N_("When set URLs selected with double click will be opened"),
 		.left = 1,
-		.top = 4,
+		.top = 3,
 		.width = 1,
 		.height = 1,
-		.grid = COPY_SETTINGS
+		.grid = SELECT_OPTIONS
 	}
 
  };
@@ -247,8 +248,9 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 	// Create grids
 	{
 		static const gchar * labels[GRID_COUNT] = {
-			N_("Select and copy actions"),
-			N_("Paste actions"),
+			N_("Select options"),
+			N_("Copy options"),
+			N_("Paste options"),
 			N_("HTML options")
 		};
 
@@ -258,23 +260,32 @@ static void V3270ClipboardSettings_init(V3270ClipboardSettings *widget) {
 			int width;
 		} positions[GRID_COUNT] = {
 			{
+				// SELECT_OPTIONS
 				.left = 0,
 				.top = 0,
 				.width = 1
 			},
 
 			{
-				.left = 1,
+				// COPY_OPTIONS
+ 				.left = 1,
 				.top = 0,
 				.width = 1
 			},
 
 			{
+				// PASTE_OPTIONS
+				.left = 1,
+				.top = 1,
+				.width = 1
+			},
+
+			{
+				// HTML_OPTIONS
 				.left = 0,
 				.top = 1,
 				.width = 1
 			}
-
 		};
 
 		for(ix = 0; ix < G_N_ELEMENTS(labels); ix++) {
