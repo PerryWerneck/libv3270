@@ -26,8 +26,11 @@
 
  static int fire_copy_as_html(GtkWidget *widget, const struct _v3270_action * action);
  static int fire_copy_as_pixbuff(GtkWidget *widget, const struct _v3270_action * action);
+
+ // Dialogs
  static int fire_accelerators_dialog(GtkWidget *widget, const struct _v3270_action * action);
  static int fire_host_dialog(GtkWidget *widget, const struct _v3270_action * action);
+ static int fire_color_dialog(GtkWidget *widget, const struct _v3270_action * action);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -333,6 +336,15 @@
 			.activate = fire_host_dialog
 		},
 
+		{
+			.group = LIB3270_ACTION_GROUP_NONE,
+			.name = "dialog-colors",
+			.icon = "gtk-select-color",
+			.label = N_("Terminal colors"),
+			.summary = N_("Edit terminal colors"),
+			.activate = fire_color_dialog
+		},
+
 		//
 		// Terminator
 		//
@@ -424,4 +436,13 @@
 	gtk_widget_destroy(dialog);
 	*/
 
+ }
+
+ static int fire_color_dialog(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
+ 	v3270_settings_popup_dialog(
+		v3270_color_settings_new(),
+		widget,
+		FALSE
+	);
+	return 0;
  }

@@ -198,11 +198,6 @@
 	v3270_clipboard_set(terminal,V3270_COPY_TEXT,FALSE);
  }
 
- static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
- {
-	v3270_edit_color_table(terminal);
- }
-
  static void zoom_in_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
 	v3270_zoom_in(terminal);
@@ -242,7 +237,7 @@
 
 //		{ "network-server",				G_CALLBACK(host_clicked),			"Configure host"				},
 //		{ "preferences-desktop-font",	G_CALLBACK(font_clicked),			"Select font"					},
-		{ "gtk-select-color",			G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
+//		{ "gtk-select-color",			G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
 
 
 		{ "zoom-in",					G_CALLBACK(zoom_in_clicked),		"Zoom in"						},
