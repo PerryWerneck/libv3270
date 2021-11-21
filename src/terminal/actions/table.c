@@ -31,6 +31,8 @@
  static int fire_accelerators_dialog(GtkWidget *widget, const struct _v3270_action * action);
  static int fire_host_dialog(GtkWidget *widget, const struct _v3270_action * action);
  static int fire_color_dialog(GtkWidget *widget, const struct _v3270_action * action);
+ static int fire_clipboard_dialog(GtkWidget *widget, const struct _v3270_action * action);
+ static int fire_font_dialog(GtkWidget *widget, const struct _v3270_action * action);
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
@@ -345,6 +347,23 @@
 			.activate = fire_color_dialog
 		},
 
+		{
+			.group = LIB3270_ACTION_GROUP_NONE,
+			.name = "dialog-clipboard",
+			.label = N_("Selection settings"),
+			.summary = N_("Edit clipboard settings"),
+			.activate = fire_clipboard_dialog
+		},
+
+		{
+			.group = LIB3270_ACTION_GROUP_NONE,
+			.icon = "preferences-desktop-font",
+			.name = "dialog-font",
+			.label = N_("Font settings"),
+			.summary = N_("Select terminal font"),
+			.activate = fire_font_dialog
+		},
+
 		//
 		// Terminator
 		//
@@ -439,10 +458,38 @@
  }
 
  static int fire_color_dialog(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
- 	v3270_settings_popup_dialog(
-		v3270_color_settings_new(),
-		widget,
-		FALSE
+	gtk_widget_show_all(
+		v3270_settings_popup_dialog(
+			v3270_color_settings_new(),
+			widget,
+			FALSE
+		)
 	);
+	return 0;
+ }
+
+ static int fire_clipboard_dialog(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
+	gtk_widget_show_all(
+		v3270_settings_popup_dialog(
+			v3270_clipboard_settings_new(),
+			widget,
+			FALSE
+		)
+	);
+	return 0;
+ }
+
+ static int fire_font_dialog(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
+
+	GtkWidget * dialog =
+		v3270_settings_popup_dialog(
+			v3270_font_settings_new(),
+			widget,
+			TRUE
+		);
+
+	gtk_window_set_default_size(GTK_WINDOW(dialog),950,400);
+	gtk_widget_show_all(dialog);
+
 	return 0;
  }
