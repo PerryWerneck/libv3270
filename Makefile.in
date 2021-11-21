@@ -406,7 +406,7 @@ install-conf:
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/colors.conf
 
 install-dev: \
-	locale/$(LIBNAME).pot \
+	locale/$(GETTEXT_PACKAGE).pot \
 	install-@OSNAME@-dev
 
 	@mkdir -p $(DESTDIR)$(includedir)/v3270
