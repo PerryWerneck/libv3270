@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-21 06:42-0300\n"
-"PO-Revision-Date: 2021-11-20 14:04-0300\n"
+"PO-Revision-Date: 2021-11-22 19:59-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
@@ -79,7 +79,7 @@ msgstr "Nome da Ação"
 msgid "Activity already on the queue"
 msgstr "Atividade já está na fila"
 
-#: src/terminal/actions/table.c:61
+#: src/terminal/actions/table.c:63
 msgid "Add to copy"
 msgstr "Adicionar à cópia"
 
@@ -111,11 +111,11 @@ msgstr ""
 msgid "An invalid SEND or RECEIVE parameter was sent to the host."
 msgstr "Um parametro de ENVIO/RECEBIMENTO inválido foi enviado para o host."
 
-#: src/terminal/actions/table.c:63
+#: src/terminal/actions/table.c:65
 msgid "Append selected area to current clipboard contents"
 msgstr "Adiciona a área selecionada no conteúdo da área de transferência"
 
-#: src/terminal/actions/table.c:62
+#: src/terminal/actions/table.c:64
 msgid "Append selection to clipboard"
 msgstr "Adiciona seleção na área de transferência"
 
@@ -132,7 +132,7 @@ msgstr "Associar com a ação (<b>%s</b>)?"
 msgid "Auto _disconnect"
 msgstr "Desconexão automática"
 
-#: src/dialogs/font/chooser.c:279
+#: src/dialogs/font/chooser.c:269
 msgid "Available fonts"
 msgstr "Fontes disponíveis"
 
@@ -161,7 +161,7 @@ msgstr "Tamanho do bloco:"
 msgid "Blue"
 msgstr "Azul"
 
-#: src/dialogs/font/chooser.c:328
+#: src/dialogs/font/chooser.c:318
 msgid "Bold"
 msgstr "Negrito"
 
@@ -284,23 +284,23 @@ msgstr "Comando a executar"
 msgid "Connection"
 msgstr "Conexão"
 
-#: src/terminal/actions/table.c:50 src/terminal/actions/table.c:90
+#: src/terminal/actions/table.c:52 src/terminal/actions/table.c:92
 msgid "Copy"
 msgstr "Copiar"
 
-#: src/terminal/actions/table.c:70
+#: src/terminal/actions/table.c:72
 msgid "Copy as HTML"
 msgstr "Copiar como HTML"
 
-#: src/terminal/actions/table.c:79
+#: src/terminal/actions/table.c:81
 msgid "Copy as image"
 msgstr "Copiar como imagem"
 
-#: src/terminal/actions/table.c:91
+#: src/terminal/actions/table.c:93
 msgid "Copy as plain text"
 msgstr "Copiar como texto puro"
 
-#: src/terminal/actions/table.c:101 src/terminal/actions/table.c:102
+#: src/terminal/actions/table.c:103 src/terminal/actions/table.c:104
 msgid "Copy as table"
 msgstr "Copiar como tabela"
 
@@ -308,15 +308,15 @@ msgstr "Copiar como tabela"
 msgid "Copy options"
 msgstr "Opções da cópia"
 
-#: src/terminal/actions/table.c:71
+#: src/terminal/actions/table.c:73
 msgid "Copy selection in HTML format"
 msgstr "Copia seleção em formato HTML"
 
-#: src/terminal/actions/table.c:80
+#: src/terminal/actions/table.c:82
 msgid "Copy selection in image format"
 msgstr "Copia imagem da seleção"
 
-#: src/terminal/actions/table.c:51
+#: src/terminal/actions/table.c:53
 msgid "Copy selection to clipboard"
 msgstr "Salvar seleção para área de transferência"
 
@@ -358,20 +358,20 @@ msgstr "Atual:"
 msgid "Custom Remap"
 msgstr "Mapeamento personalizado"
 
-#: src/terminal/actions/table.c:112 src/terminal/actions/table.c:121
-#: src/terminal/actions/table.c:132
+#: src/terminal/actions/table.c:114 src/terminal/actions/table.c:123
+#: src/terminal/actions/table.c:134
 msgid "Cut"
 msgstr "Recortar"
 
-#: src/terminal/actions/table.c:122
+#: src/terminal/actions/table.c:124
 msgid "Cut and append to copy"
 msgstr "Recortar e adicionar à cópia"
 
-#: src/terminal/actions/table.c:133
+#: src/terminal/actions/table.c:135
 msgid "Cut as plain text"
 msgstr "Recortar como texto puro"
 
-#: src/terminal/actions/table.c:143 src/terminal/actions/table.c:144
+#: src/terminal/actions/table.c:145 src/terminal/actions/table.c:146
 msgid "Cut as table"
 msgstr "Recortar como tabela"
 
@@ -407,7 +407,7 @@ msgstr "Detectar http:// ou https://"
 msgid "Don't ask again"
 msgstr "Não perguntar de novo"
 
-#: src/dialogs/font/chooser.c:335
+#: src/dialogs/font/chooser.c:325
 msgid "Dynamic font spacing"
 msgstr "Espaçamento dinâmico"
 
@@ -415,18 +415,21 @@ msgstr "Espaçamento dinâmico"
 msgid "ETA:"
 msgstr "ETA:"
 
-#: src/terminal/actions/table.c:335
+#: src/terminal/actions/table.c:354
+msgid "Edit clipboard settings"
+msgstr "Altera configurações da area de transferência"
+
+#: src/terminal/actions/table.c:337
 msgid "Edit host settings"
 msgstr "Alterar configuração do servidor"
 
-#: src/terminal/actions/table.c:326
+#: src/terminal/actions/table.c:328
 msgid "Edit keyboard accelerators"
 msgstr "Alterar atalhos de teclado"
 
-#: src/terminal/actions/table.c:344
-#, fuzzy
+#: src/terminal/actions/table.c:346
 msgid "Edit terminal colors"
-msgstr "As cores do terminal"
+msgstr "Altera cores do terminal"
 
 #: src/terminal/actions/pfkey.c:105 src/terminal/actions/pakey.c:105
 msgid "Emit a PA Key action"
@@ -472,7 +475,7 @@ msgstr "_Formato do arquivo"
 msgid "Files to transfer"
 msgstr "Arquivos a transferir"
 
-#: src/terminal/actions/table.c:219
+#: src/terminal/actions/table.c:221
 msgid "Fit best"
 msgstr "Melhor tamanho"
 
@@ -501,7 +504,7 @@ msgstr ""
 "Seguindo a convenção para arquivos texto ASCII, LF é usado para terminar "
 "registros no arquivo do PC."
 
-#: src/dialogs/font/chooser.c:350 src/dialogs/settings/clipboard.c:84
+#: src/dialogs/font/chooser.c:340 src/dialogs/settings/clipboard.c:84
 msgid "Font"
 msgstr "Fonte"
 
@@ -518,6 +521,10 @@ msgstr "Fonte \"%s\" é válida"
 #: src/terminal/properties/init.c:72
 msgid "Font family for terminal contents"
 msgstr "Familia da fonte usada no terminal"
+
+#: src/terminal/actions/table.c:362
+msgid "Font settings"
+msgstr "Configurações de fonte"
 
 #: src/dialogs/settings/clipboard.c:118
 msgid "Format"
@@ -555,7 +562,7 @@ msgstr "Opções HTML"
 msgid "Host"
 msgstr "Servidor"
 
-#: src/terminal/actions/table.c:334 src/dialogs/settings/host.c:580
+#: src/terminal/actions/table.c:336 src/dialogs/settings/host.c:580
 msgid "Host settings"
 msgstr "Configurações do servidor"
 
@@ -599,11 +606,11 @@ msgstr "Ignore the fail and remove the file from queue."
 msgid "Image copy"
 msgstr "Copiar imagem"
 
-#: src/terminal/actions/table.c:199
+#: src/terminal/actions/table.c:201
 msgid "Increase the font size"
 msgstr "Aumenta o tamanho da fonte"
 
-#: src/terminal/actions/table.c:156
+#: src/terminal/actions/table.c:158
 msgid "Input current clipboard contents to screen"
 msgstr "Insere conteúdo da área de transferência"
 
@@ -640,7 +647,7 @@ msgstr "Escopo de mapeamento inválido"
 msgid "Invalid state"
 msgstr "Estado inválido"
 
-#: src/terminal/actions/table.c:325 src/dialogs/settings/accelerator.c:149
+#: src/terminal/actions/table.c:327 src/dialogs/settings/accelerator.c:149
 #: src/dialogs/settings/accelerator.c:243
 msgid "Keyboard accelerators"
 msgstr "Atalhos de teclado"
@@ -809,23 +816,23 @@ msgstr "Oversize"
 msgid "Parameter Type"
 msgstr "Tipo de parâmetro"
 
-#: src/terminal/actions/table.c:154 src/terminal/actions/table.c:166
+#: src/terminal/actions/table.c:156 src/terminal/actions/table.c:168
 msgid "Paste"
 msgstr "Colar"
 
-#: src/terminal/actions/table.c:167
+#: src/terminal/actions/table.c:169
 msgid "Paste as plain text"
 msgstr "Colar como texto puro"
 
-#: src/terminal/actions/table.c:155
+#: src/terminal/actions/table.c:157
 msgid "Paste clipboard contents"
 msgstr "Colar conteúdo da área de transferência"
 
-#: src/terminal/actions/table.c:176
+#: src/terminal/actions/table.c:178
 msgid "Paste file"
 msgstr "Colar arquivo"
 
-#: src/terminal/actions/table.c:186 src/dialogs/settings/clipboard.c:144
+#: src/terminal/actions/table.c:188 src/dialogs/settings/clipboard.c:144
 msgid "Paste formatted screen"
 msgstr "Colar tela formatada"
 
@@ -833,7 +840,7 @@ msgstr "Colar tela formatada"
 msgid "Paste from file"
 msgstr "Colar de um arquivo"
 
-#: src/terminal/actions/table.c:177
+#: src/terminal/actions/table.c:179
 msgid "Paste from text file"
 msgstr "Colar de um arquivo texto"
 
@@ -841,7 +848,7 @@ msgstr "Colar de um arquivo texto"
 msgid "Paste options"
 msgstr "Opções para colar"
 
-#: src/terminal/actions/table.c:187
+#: src/terminal/actions/table.c:189
 msgid "Paste similar screen from clipboard"
 msgstr "Colar tela semelhante"
 
@@ -893,11 +900,11 @@ msgstr ""
 msgid "Primary space"
 msgstr "Primary space"
 
-#: src/terminal/actions/table.c:280
+#: src/terminal/actions/table.c:282
 msgid "Print"
 msgstr "Imprimir"
 
-#: src/terminal/actions/table.c:313
+#: src/terminal/actions/table.c:315
 msgid "Print Copy"
 msgstr "Imprimir cópia"
 
@@ -909,19 +916,19 @@ msgstr "Operação de impressão falhou"
 msgid "Print operation has failed"
 msgstr "Operação de impressão falhou"
 
-#: src/terminal/actions/table.c:291
+#: src/terminal/actions/table.c:293
 msgid "Print screen"
 msgstr "Imprimir tela"
 
-#: src/terminal/actions/table.c:281
+#: src/terminal/actions/table.c:283
 msgid "Print screen or selection"
 msgstr "Imprimir tela ou seleção"
 
-#: src/terminal/actions/table.c:302
+#: src/terminal/actions/table.c:304
 msgid "Print selected"
 msgstr "Imprimir seleção"
 
-#: src/terminal/actions/table.c:303
+#: src/terminal/actions/table.c:305
 msgid "Print selected area"
 msgstr "Imprimir área selecionada"
 
@@ -929,7 +936,7 @@ msgstr "Imprimir área selecionada"
 msgid "Print selection box"
 msgstr "Imprimir marca de seleção"
 
-#: src/terminal/actions/table.c:292
+#: src/terminal/actions/table.c:294
 msgid "Print the entire screen"
 msgstr "Imprimir toda a tela"
 
@@ -994,18 +1001,18 @@ msgstr "Remoto:"
 msgid "Remove selected file from the transfer queue"
 msgstr "Remove arquivo selecionado da fila de transferência"
 
-#: src/terminal/actions/table.c:52
+#: src/terminal/actions/table.c:54
 msgid "Replace current clipboard contents with the selected area"
 msgstr "Substituí conteúdo da área de transferência com a seleção"
 
-#: src/terminal/actions/table.c:72
+#: src/terminal/actions/table.c:74
 msgid ""
 "Replace current clipboard contents with the selected area in HTML format"
 msgstr ""
 "Substituí conteúdo da área de transferência com o conteúdo da área "
 "selecionada em formato HTML"
 
-#: src/terminal/actions/table.c:81
+#: src/terminal/actions/table.c:83
 msgid ""
 "Replace current clipboard contents with the selected area in image format"
 msgstr ""
@@ -1036,13 +1043,13 @@ msgstr "SSL/TLS"
 msgid "Same of the screen"
 msgstr "Igual ao terminal"
 
-#: src/terminal/actions/table.c:233 src/filetransfer/v3270ft.c:216
+#: src/terminal/actions/table.c:235 src/filetransfer/v3270ft.c:216
 #: src/filetransfer/activitylist.c:451 src/trace/trace.c:498
 #: src/dialogs/transfer.c:70
 msgid "Save"
 msgstr "Salvar"
 
-#: src/terminal/actions/table.c:267
+#: src/terminal/actions/table.c:269
 msgid "Save Copy"
 msgstr "Salvar cópia"
 
@@ -1050,11 +1057,11 @@ msgstr "Salvar cópia"
 msgid "Save _As"
 msgstr "Salvar _Como"
 
-#: src/terminal/actions/table.c:243
+#: src/terminal/actions/table.c:245
 msgid "Save all"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:265 src/dialogs/save/save.c:363
+#: src/terminal/actions/table.c:267 src/dialogs/save/save.c:363
 msgid "Save copy"
 msgstr "Salvar cópia"
 
@@ -1062,19 +1069,19 @@ msgstr "Salvar cópia"
 msgid "Save queue to file"
 msgstr "Salvar a fila para um arquivo"
 
-#: src/terminal/actions/table.c:245
+#: src/terminal/actions/table.c:247
 msgid "Save screen"
 msgstr "Salvar tela"
 
-#: src/terminal/actions/table.c:234
+#: src/terminal/actions/table.c:236
 msgid "Save screen or selection"
 msgstr "Salvar tela ou seleção"
 
-#: src/terminal/actions/table.c:254
+#: src/terminal/actions/table.c:256
 msgid "Save selected"
 msgstr "Salvar seleção"
 
-#: src/terminal/actions/table.c:256 src/dialogs/save/save.c:362
+#: src/terminal/actions/table.c:258 src/dialogs/save/save.c:362
 msgid "Save selected area"
 msgstr "Salvar área selecionada"
 
@@ -1110,7 +1117,7 @@ msgstr "Salvar fila de transferências para arquivo"
 msgid "Screen with terminal attributes"
 msgstr "Completa incluindo atributos do terminal"
 
-#: src/terminal/actions/table.c:188
+#: src/terminal/actions/table.c:190
 msgid ""
 "Search clipboard for a similar screen, if found paste unprotected fields and "
 "restore cursor position"
@@ -1184,6 +1191,10 @@ msgstr "Opçoes para seleção"
 msgid "Select previous file"
 msgstr "Selecionar arquivo anterior"
 
+#: src/terminal/actions/table.c:363
+msgid "Select terminal font"
+msgstr "Seleção da fonte do terminal"
+
 #: src/dialogs/settings/colors.c:177
 msgid "Selection background"
 msgstr "Fundo da seleção"
@@ -1191,6 +1202,10 @@ msgstr "Fundo da seleção"
 #: src/dialogs/settings/colors.c:178
 msgid "Selection foreground"
 msgstr "Frente da seleção"
+
+#: src/terminal/actions/table.c:353
+msgid "Selection settings"
+msgstr "Configurar seleção"
 
 #: src/filetransfer/tables.c:130
 msgid "Send file"
@@ -1208,7 +1223,7 @@ msgstr "Enviando arquivo"
 msgid "Service/Port"
 msgstr "Serviço/Porta"
 
-#: src/terminal/actions/table.c:220
+#: src/terminal/actions/table.c:222
 msgid "Set the font to the best size for window"
 msgstr "Ajusta a fonte para o melhor tamanho"
 
@@ -1332,12 +1347,12 @@ msgstr "URL do servidor TN3270"
 msgid "TN3270 Session name"
 msgstr "Nome da sessão TN3270"
 
-#: src/terminal/actions/table.c:343 src/dialogs/settings/colors.c:148
+#: src/terminal/actions/table.c:345 src/dialogs/settings/colors.c:148
 #: src/dialogs/settings/colors.c:300 src/dialogs/settings/colors.c:379
 msgid "Terminal colors"
 msgstr "Cores do terminal"
 
-#: src/dialogs/font/chooser.c:349
+#: src/dialogs/font/chooser.c:339
 msgid "Terminal font"
 msgstr "Fonte do terminal"
 
@@ -1763,11 +1778,11 @@ msgstr ""
 msgid "You specified an option that is invalid."
 msgstr "Você especificou uma opção inválida."
 
-#: src/terminal/actions/table.c:198
+#: src/terminal/actions/table.c:200
 msgid "Zoom in"
 msgstr "Ampliar"
 
-#: src/terminal/actions/table.c:208
+#: src/terminal/actions/table.c:210
 msgid "Zoom out"
 msgstr "Reduzir"
 
@@ -1859,7 +1874,7 @@ msgstr "_Salvar"
 msgid "_Text file"
 msgstr "Arquivo _texto"
 
-#: src/terminal/actions/table.c:209
+#: src/terminal/actions/table.c:211
 msgid "decrease the font size"
 msgstr "Diminui o tamanho da fonte"
 
