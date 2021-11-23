@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-21 06:42-0300\n"
-"PO-Revision-Date: 2021-11-22 19:59-0300\n"
+"PO-Revision-Date: 2021-11-22 22:07-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
@@ -420,8 +420,8 @@ msgid "Edit clipboard settings"
 msgstr "Altera configurações da area de transferência"
 
 #: src/terminal/actions/table.c:337
-msgid "Edit host settings"
-msgstr "Alterar configuração do servidor"
+msgid "Edit host and terminal emulation settings"
+msgstr "Alterar configurações do servidor e emulação"
 
 #: src/terminal/actions/table.c:328
 msgid "Edit keyboard accelerators"
@@ -562,7 +562,11 @@ msgstr "Opções HTML"
 msgid "Host"
 msgstr "Servidor"
 
-#: src/terminal/actions/table.c:336 src/dialogs/settings/host.c:580
+#: src/terminal/actions/table.c:336
+msgid "Host and emulation settings"
+msgstr "Configuração de servidor e emulação"
+
+#: src/dialogs/settings/host.c:580
 msgid "Host settings"
 msgstr "Configurações do servidor"
 
@@ -626,7 +630,7 @@ msgstr "Intensificado/Protegido"
 msgid "Intensified/Unprotected"
 msgstr "Intensificado/Desprotegido"
 
-#: src/terminal/callbacks.c:484
+#: src/terminal/callbacks.c:489
 #, c-format
 msgid ""
 "Invalid callback table, the release %s of lib%s can't be used (expecting "
@@ -1564,7 +1568,7 @@ msgstr "Incapaz de colar dados formatados."
 msgid "Undefined"
 msgstr "Indefinido"
 
-#: src/terminal/callbacks.c:493
+#: src/terminal/callbacks.c:498
 #, c-format
 msgid "Unexpected callback table, the release %s of lib%s is invalid"
 msgstr "Tabela de callbacks inesperada, a revisão %s da lib%s é inválida"

@@ -333,8 +333,8 @@
 			.group = LIB3270_ACTION_GROUP_OFFLINE,
 			.name = "dialog-host",
 			.icon = "network-server",
-			.label = N_("Host settings"),
-			.summary = N_("Edit host settings"),
+			.label = N_("Host and emulation settings"),
+			.summary = N_("Edit host and terminal emulation settings"),
 			.activate = fire_host_dialog
 		},
 

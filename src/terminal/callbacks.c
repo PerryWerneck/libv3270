@@ -434,7 +434,7 @@ static int load(H3270 *session, const char *filename)
 
 			debug("Emitting '%s'", text);
 
-			guint response = (guint) -1;
+			guint response = 0;
 			v3270_signal_emit(
 				terminal,
 				V3270_SIGNAL_OPEN_URL,
@@ -442,14 +442,19 @@ static int load(H3270 *session, const char *filename)
 				&response
 			);
 
-			if(response == (guint) -1) {
+			debug("Response was: %d", (int) response);
+
+			if(response == 0) {
 				// No one has changed the response, take default action.
-				gtk_show_uri_on_window(
+				g_message("Opening '%s'",text);
+				if(gtk_show_uri_on_window(
 								GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(terminal))),
 								text,
 								GDK_CURRENT_TIME,
 								NULL
-						);
+						)) {
+					v3270_unselect(GTK_WIDGET(terminal));
+				}
 			}
 
 		}
