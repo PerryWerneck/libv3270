@@ -447,6 +447,16 @@ static int load(H3270 *session, const char *filename)
 			if(response == 0) {
 				// No one has changed the response, take default action.
 				g_message("Opening '%s'",text);
+#ifdef G_OS_WIN32
+				if(gtk_show_uri_on_window(
+								NULL,
+								text,
+								GDK_CURRENT_TIME,
+								NULL
+						)) {
+					v3270_unselect(GTK_WIDGET(terminal));
+				}
+#else
 				if(gtk_show_uri_on_window(
 								GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(terminal))),
 								text,
@@ -455,6 +465,7 @@ static int load(H3270 *session, const char *filename)
 						)) {
 					v3270_unselect(GTK_WIDGET(terminal));
 				}
+#endif // G_OS_WIN32
 			}
 
 		}
