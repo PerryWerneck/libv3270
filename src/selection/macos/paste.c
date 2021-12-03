@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como - possui - linhas de código.
+ * Este programa está nomeado como selection.c e possui - linhas de código.
  *
  * Contatos:
  *
@@ -28,169 +28,192 @@
  */
 
  #include <clipboard.h>
- #include <lib3270/selection.h>
  #include <lib3270/toggle.h>
+ #include <v3270/dialogs.h>
+ #include <lib3270/popup.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
 
-void v3270_clipboard_clear(G_GNUC_UNUSED GtkClipboard *clipboard, G_GNUC_UNUSED  GObject *obj)
+static void text_received(G_GNUC_UNUSED  GtkClipboard *clipboard, const gchar *text, GtkWidget *widget)
 {
-	v3270 * terminal = GTK_V3270(obj);
+	v3270_input_text(widget,text,"UTF-8");
+}
 
-	if(!lib3270_get_toggle(terminal->host,LIB3270_TOGGLE_KEEP_SELECTED))
+static gboolean has_target(const GdkAtom atom, const GdkAtom *atoms, const gint n_atoms)
+{
+	gint ix;
+
+	for(ix = 0; ix < n_atoms; ix++)
 	{
-		v3270_unselect(GTK_WIDGET(obj));
-		v3270_clear_selection(terminal);
+		if(atom == atoms[ix])
+			return TRUE;
+	}
+
+    return FALSE;
+}
+
+static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *selection_data, GtkWidget *widget)
+{
+	const struct SelectionHeader *selection = (const struct SelectionHeader *) gtk_selection_data_get_data(selection_data);
+
+	v3270 * terminal = GTK_V3270(widget);
+
+	debug(
+		"Received formatted data with %u bytes: Build=%u rows=%u cols=%u",
+			selection->length,
+			selection->build,
+			selection->rows,
+			selection->cols
+	);
+
+	if(selection->cols != lib3270_get_width(terminal->host) || selection->rows != lib3270_get_height(terminal->host))
+	{
+		GtkWidget * dialog =
+					gtk_message_dialog_new(
+						GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+						GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_INFO,
+						GTK_BUTTONS_NONE,
+						_("Not the same terminal type")
+					);
+
+
+		gtk_window_set_title(GTK_WINDOW(dialog),_("Can't paste"));
+
+		gtk_dialog_add_buttons(
+			GTK_DIALOG (dialog),
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Paste as text"), GTK_RESPONSE_APPLY,
+			NULL
+		);
+
+		gtk_dialog_set_default_response(GTK_DIALOG (dialog),GTK_RESPONSE_APPLY);
+
+		gint response = gtk_dialog_run(GTK_DIALOG(dialog));
+
+		gtk_widget_destroy(dialog);
+
+		if(response == GTK_RESPONSE_APPLY)
+		{
+			gtk_clipboard_request_text(
+						clipboard,
+						(GtkClipboardTextReceivedFunc) text_received,
+						(gpointer) widget
+			);
+		}
+
+		return;
+
+	}
+
+	if(!v3270_set_from_data_block(terminal, selection))
+	{
+		debug("%s: Can't paste data",__FUNCTION__);
+
+		LIB3270_POPUP popup = {
+			.name = "cantpaste",
+			.title = _("Can't paste"),
+			.summary = _("Unable to paste formatted data."),
+			.body = _("None of the screens in the clipboard match with the current one."),
+			.label = _("_Paste as text")
+		};
+
+		if(v3270_popup_dialog_show(widget,&popup,1) == GTK_RESPONSE_APPLY)
+		{
+			gtk_clipboard_request_text(
+				clipboard,
+				(GtkClipboardTextReceivedFunc) text_received,
+				(gpointer) widget
+			);
+		}
+
+		return;
+
 	}
 
 }
 
-void v3270_clipboard_get(G_GNUC_UNUSED  GtkClipboard *clipboard, GtkSelectionData *selection, guint target, GObject *obj)
-{
-	v3270 * terminal = GTK_V3270(obj);
+static void targets_received(GtkClipboard *clipboard, GdkAtom *atoms, gint n_atoms, GtkWidget *widget) {
 
-	if(!terminal->selection.blocks)
-	{
+	// If smart paste is enabled try to get formatted clipboard.
+	gboolean screen_paste = ((GTK_V3270(widget)->selection.options & V3270_SELECTION_SCREEN_PASTE) != 0);
+
+	debug("%s: Screen paste is %s", __FUNCTION__, screen_paste ? "enabled" : "disabled");
+
+	if(screen_paste && has_target(GTK_V3270_GET_CLASS(widget)->clipboard_formatted,atoms,n_atoms)) {
+
+		debug("Clipboard as TN3270 \"%s\" data",gdk_atom_name(GTK_V3270_GET_CLASS(widget)->clipboard_formatted));
+
+		gtk_clipboard_request_contents(
+			clipboard,
+			GTK_V3270_GET_CLASS(widget)->clipboard_formatted,
+			(GtkClipboardReceivedFunc) formatted_received,
+			(gpointer) widget
+		);
+
 		return;
 	}
 
-	switch(target)
-	{
-	case CLIPBOARD_TYPE_TEXT:   // Get clipboard contents as text
-		{
-			g_autofree gchar *text = v3270_get_copy_as_text(terminal,"UTF-8");
-			gtk_selection_data_set_text(selection,text,-1);
-		}
-		break;
+	// No smart paste or formatted data on clipboard, request as text.
+	gtk_clipboard_request_text(
+				clipboard,
+				(GtkClipboardTextReceivedFunc) text_received,
+				(gpointer) widget
+	);
 
-	case CLIPBOARD_TYPE_CSV:
-		{
-			g_autofree gchar *text = v3270_get_copy_as_table(terminal,";","UTF-8");
-			debug("Selection:\n%s",text);
-			gtk_selection_data_set(
-				selection,
-				gdk_atom_intern_static_string("text/csv"),
-				8,
-				(guchar *) text,
-				strlen(text)
-			);
-		}
-		break;
-
-	case CLIPBOARD_TYPE_HTML:
-		{
-			g_autofree gchar *text = v3270_get_copy_as_html(terminal,"UTF-8");
-			//debug("Selection:\n%s",text);
-			gtk_selection_data_set(
-				selection,
-				gdk_atom_intern_static_string("text/html"),
-				8,
-				(guchar *) text,
-				strlen(text)
-			);
-		}
-		break;
-
-	case CLIPBOARD_TYPE_V3270_FORMATTED:
-		{
-			g_autofree gchar *data = v3270_get_copy_as_data_block(terminal);
-			gtk_selection_data_set(
-				selection,
-				GTK_V3270_GET_CLASS(obj)->clipboard_formatted,
-				8,
-				(guchar *) data,
-				((struct SelectionHeader *) data)->length
-			);
-		}
-		break;
-
-	case CLIPBOARD_TYPE_PIXBUFF:
-		{
-			GdkPixbuf * pixbuff = v3270_get_selection_as_pixbuf(terminal, terminal->selection.blocks, FALSE);
-
-			debug("%s: pixbuff=%p (blocks=%p)",__FUNCTION__,pixbuff,terminal->selection.blocks);
-
-			if(pixbuff)
-			{
-				gtk_selection_data_set_pixbuf(selection,pixbuff);
-				g_object_unref(pixbuff);
-			}
-		}
-		break;
-
-	default:
-		g_warning("Unexpected clipboard type %d\n",target);
-	}
 }
 
-void v3270_update_system_clipboard(GtkWidget *widget)
+LIB3270_EXPORT void v3270_clipboard_get_from_url(GtkWidget *widget, const gchar *url)
 {
-	v3270 * terminal = GTK_V3270(widget);
+	g_return_if_fail(GTK_IS_V3270(widget));
 
-    if(!terminal->selection.blocks)
-    {
-    	// No clipboard data, return.
-    	v3270_emit_copy_state(widget);
-    	return;
-    }
+	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,GTK_V3270(widget)->selection.target);
 
-    // Has clipboard data, inform system.
-	GtkClipboard * clipboard = gtk_widget_get_clipboard(widget,terminal->selection.target);
-
-	// Create target list
-	//
-	// Reference: https://cpp.hotexamples.com/examples/-/-/g_list_insert_sorted/cpp-g_list_insert_sorted-function-examples.html
-	//
-	GtkTargetList * list = gtk_target_list_new(NULL,0);
-
-	gtk_target_list_add_text_targets(list, CLIPBOARD_TYPE_TEXT);
-
-	if((terminal->selection.options & V3270_SELECTION_PLAIN_TEXT) == 0)
+	if(!url || !*url || g_str_has_prefix(url,"clipboard://") || g_str_has_prefix(url,"tn3270://"))
 	{
-		static const GtkTargetEntry targets[] = {
-			{ "text/csv",				 		0, CLIPBOARD_TYPE_CSV				},
-			{ "text/html",						0, CLIPBOARD_TYPE_HTML				},
-			{ "application/x-v3270-formatted",	0, CLIPBOARD_TYPE_V3270_FORMATTED	},
-		};
-
-		gtk_target_list_add_table(list, targets, G_N_ELEMENTS(targets));
-
-	}
-
-	if(terminal->selection.options & V3270_SELECTION_PIXBUFF)
-	{
-		gtk_target_list_add_image_targets(list,CLIPBOARD_TYPE_PIXBUFF,TRUE);
-	}
-
-	int				  n_targets;
-	GtkTargetEntry	* targets = gtk_target_table_new_from_list(list, &n_targets);
-
-#ifdef DEBUG
-	{
-		int ix;
-		for(ix = 0; ix < n_targets; ix++) {
-			debug("target(%d)=\"%s\"",ix,targets[ix].target);
-		}
-	}
-#endif // DEBUG
-
-	if(gtk_clipboard_set_with_owner(
+		gtk_clipboard_request_targets(
 			clipboard,
-			targets,
-			n_targets,
-			(GtkClipboardGetFunc)	v3270_clipboard_get,
-			(GtkClipboardClearFunc) v3270_clipboard_clear,
-			G_OBJECT(widget)
-		))
-	{
-		gtk_clipboard_set_can_store(clipboard,targets,1);
+			(GtkClipboardTargetsReceivedFunc) targets_received,
+			(gpointer) widget
+		);
 	}
-
-	gtk_target_table_free(targets, n_targets);
-	gtk_target_list_unref(list);
-
-   	v3270_emit_copy_state(widget);
+	else if(g_str_has_prefix(url,"text://"))
+	{
+		gtk_clipboard_request_text(
+			clipboard,
+			(GtkClipboardTextReceivedFunc) text_received,
+			(gpointer) widget
+		);
+	}
+	else if(g_str_has_prefix(url,"file://"))
+	{
+		GtkWidget * dialog = v3270_load_dialog_new(widget, url+7);
+		gtk_widget_show_all(dialog);
+		v3270_load_dialog_run(dialog);
+		gtk_widget_destroy(dialog);
+	}
+	else if(g_str_has_prefix(url,"screen://"))
+	{
+		gtk_clipboard_request_contents(
+			clipboard,
+			GTK_V3270_GET_CLASS(widget)->clipboard_formatted,
+			(GtkClipboardReceivedFunc) formatted_received,
+			(gpointer) widget
+		);
+	}
 
 }
 
+
+LIB3270_EXPORT void v3270_paste(GtkWidget *widget)
+{
+	debug("%s",__FUNCTION__);
+	v3270_clipboard_get_from_url(widget,NULL);
+}
+
+LIB3270_EXPORT void v3270_paste_text(GtkWidget *widget)
+{
+	debug("%s",__FUNCTION__);
+	v3270_clipboard_get_from_url(widget,"text://");
+}
 
