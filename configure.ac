@@ -198,12 +198,12 @@ case "$host" in
 		AC_SUBST(SONAME,libv3270.dll)
 		;;
 
- 	s390x-*)
-		AC_SUBST(SONAME,libv3270.so)
+	*-apple-darwin*)
+		AC_SUBST(SONAME,libv3270.dylib.$app_vrs_major.$app_vrs_minor)
 		;;
 
  	*)
-		AC_SUBST(SONAME,libv3270.dylib.$app_vrs_major.$app_vrs_minor)
+		AC_SUBST(SONAME,libv3270.so.$app_vrs_major.$app_vrs_minor)
 
 esac
 
