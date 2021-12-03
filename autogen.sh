@@ -1,10 +1,9 @@
 #!/bin/bash
 
-test -n "$srcdir" || srcdir=`dirname "$0"`
-test -n "$srcdir" || srcdir=.
+test -n "$mydir" || mydir=$(readlink -f $(dirname "$0"))
+test -n "$mydir" || mydir=.
 
-olddir=`pwd`
-cd "$srcdir"
+cd "${mydir}"
 
 mkdir -p scripts
 mkdir -p m4
@@ -44,8 +43,7 @@ fi
 
 automake --add-missing 2> /dev/null | true
 
-cd "$olddir"
-test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
+test -n "$NOCONFIGURE" || "./configure" "$@"
 
 
 
