@@ -3,7 +3,6 @@
 test -n "$srcdir" || srcdir=`dirname "$0"`
 test -n "$srcdir" || srcdir=.
 
-olddir=`pwd`
 cd "$srcdir"
 
 mkdir -p scripts
@@ -35,7 +34,6 @@ fi
 
 automake --add-missing 2> /dev/null | true
 
-cd "$olddir"
 test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
 
 
