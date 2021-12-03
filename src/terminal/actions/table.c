@@ -27,6 +27,9 @@
  static int fire_copy_as_html(GtkWidget *widget, const struct _v3270_action * action);
  static int fire_copy_as_pixbuff(GtkWidget *widget, const struct _v3270_action * action);
 
+ static int fire_copy_accelerator(GtkWidget *widget, const V3270_ACTION *action);
+ static int fire_paste_accelerator(GtkWidget *widget, const V3270_ACTION *action);
+
  // Dialogs
  static int fire_accelerators_dialog(GtkWidget *widget, const struct _v3270_action * action);
  static int fire_host_dialog(GtkWidget *widget, const struct _v3270_action * action);
@@ -402,7 +405,6 @@
  }
 
  static int fire_host_dialog(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
-
 	gtk_widget_show_all(
 		v3270_settings_popup_dialog(
 			v3270_host_settings_new(),
@@ -410,51 +412,7 @@
 			TRUE
 		)
 	);
-
 	return 0;
-
-	/*
-	GtkWidget * dialog = v3270_settings_dialog_new();
-	GtkWidget * settings = v3270_host_settings_new();
-
-	v3270_settings_dialog_set_has_subtitle(dialog,FALSE);
-
-	gtk_window_set_title(GTK_WINDOW(dialog), v3270_settings_get_title(settings));
-	gtk_container_add(GTK_CONTAINER(dialog), settings);
-
-	gtk_dialog_set_toplevel(dialog,widget);
-	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
-
-	v3270_settings_dialog_set_terminal_widget(dialog, widget);
-
-	gtk_window_set_default_size(GTK_WINDOW(dialog), 700, 150);
-	gtk_widget_show_all(dialog);
-
-	gboolean again = TRUE;
- 	while(again)
- 	{
- 		gtk_widget_set_sensitive(dialog,TRUE);
-		gtk_widget_set_visible(dialog,TRUE);
-
- 		switch(gtk_dialog_run(GTK_DIALOG(dialog)))
- 		{
-		case GTK_RESPONSE_APPLY:
-			debug("V3270HostSelectWidget::%s=%s",__FUNCTION__,"GTK_RESPONSE_APPLY");
-			v3270_settings_dialog_apply(dialog);
-			again = lib3270_reconnect(v3270_get_session(widget),0);
-			break;
-
-		case GTK_RESPONSE_CANCEL:
-			again = FALSE;
-			debug("V3270HostSelectWidget::%s=%s",__FUNCTION__,"GTK_RESPONSE_CANCEL");
-			v3270_settings_dialog_revert(dialog);
-			break;
- 		}
- 	}
-
-	gtk_widget_destroy(dialog);
-	*/
-
  }
 
  static int fire_color_dialog(GtkWidget *widget, const struct _v3270_action G_GNUC_UNUSED(* action)) {
@@ -487,9 +445,45 @@
 			widget,
 			TRUE
 		);
-
 	gtk_window_set_default_size(GTK_WINDOW(dialog),950,400);
 	gtk_widget_show_all(dialog);
+	return 0;
+ }
+
+ static int fire_copy_accelerator(GtkWidget *widget, const V3270_ACTION * action) {
+
+	v3270_clipboard_set(
+		widget,
+		(action->flags & 0x0F),
+		(action->flags & V3270_ACTION_FLAG_CUT) != 0
+	);
+
+	return EINVAL;
+ }
+
+ static int fire_paste_accelerator(GtkWidget *widget, const V3270_ACTION * action) {
+
+	switch((int) action->flags)
+	{
+	case 0:	// Default paste.
+		v3270_clipboard_get_from_url(widget,NULL);
+		break;
+
+	case 1:	// Text paste.
+		v3270_clipboard_get_from_url(widget,"text://");
+		break;
+
+	case 2: // File paste.
+		v3270_clipboard_get_from_url(widget,"file://");
+		break;
+
+	case 3: // screen paste.
+		v3270_clipboard_get_from_url(widget,"screen://");
+		break;
+
+	default:
+		g_warning("Unexpected paste flags %u",(unsigned int) action->flags);
+	}
 
 	return 0;
  }
