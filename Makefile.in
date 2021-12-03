@@ -363,6 +363,18 @@ install-linux-lib: \
 		$(BINRLS)/$(SONAME) \
 		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
 
+install-macos-lib: \
+	$(BINRLS)/$(SONAME) \
+	install-conf \
+	install-locale
+
+	# Install library
+	@$(MKDIR) $(DESTDIR)$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(SONAME) \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
 install-windows-lib: \
 	$(BINRLS)/$(SONAME) \
 	install-conf \
@@ -431,6 +443,15 @@ install-dev: \
 
 
 install-linux-dev:
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
+install-macos-dev:
 
 	@$(MKDIR) \
 		$(DESTDIR)$(libdir)
