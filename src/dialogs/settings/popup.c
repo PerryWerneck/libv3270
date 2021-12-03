@@ -32,7 +32,7 @@
 			g_object_ref_sink(settings);
 		}
 		g_object_unref(settings);
-		return;
+		return NULL;
 	}
 
 	GtkWidget * dialog = v3270_settings_dialog_new();
