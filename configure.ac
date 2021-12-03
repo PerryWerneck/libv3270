@@ -52,6 +52,9 @@ AM_INIT_AUTOMAKE
 dnl Check for iconv
 AM_ICONV
 
+dnl Set gettext version
+AM_GNU_GETTEXT_VERSION([0.14])
+
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_SED
@@ -103,9 +106,9 @@ case "$host" in
 	*-apple-darwin*)
 		CFLAGS="$CFLAGS -pthread"
 		LDFLAGS="$LDFLAGS -pthread"
-		app_cv_osname="linux"
+		app_cv_osname="macos"
 		LOGDIR="/var/log"
-		DLLEXT=".so"
+		DLLEXT=".dylib"
 		DLL_LDFLAGS="-shared -Wl,-install_name,\$(@F)"
 
 		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"

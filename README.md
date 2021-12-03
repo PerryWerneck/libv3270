@@ -106,7 +106,7 @@ For the supported distributions get the install repositories and instructions fr
 3. Configure, build and install
 
 	```shell
-	./autogen.sh --prefix="$(brew --cellar)/libv3270/5.3"
+	./autogen.sh --prefix="$(brew --cellar)/libv3270/5.4"
 	make all && make install
 	brew link libv3270
 	```
