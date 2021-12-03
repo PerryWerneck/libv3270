@@ -53,6 +53,9 @@ glade/v3270.xml
 *test.glade*
 ValgrindOut.xml
 *.crl
+ABOUT-NLS
+intl
+po
 *.orig
 *.patch
 *.sh

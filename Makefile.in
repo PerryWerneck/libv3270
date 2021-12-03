@@ -549,7 +549,7 @@ $(BINDBG)/$(SONAME): \
 	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
+		@DLL_LDFLAGS@ \
 		-o $@ \
 		-L$(BINDBG) \
 		$(LDFLAGS) \
