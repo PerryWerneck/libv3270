@@ -38,15 +38,3 @@ extraction:
       build_command:
         - make all
 
-#        - export PRE_REQS_DIR=$(readlink -f .)/pre-reqs
-#        - git clone https://github.com/PerryWerneck/lib3270.git ./lib3270
-#        - cd lib3270
-#        - make
-#        - make DESTDIR=${PRE_REQS_DIR} install
-#        - cd ..
-#        - export LIB3270_CFLAGS="-DLIB3270_NAME=3270 -DLIB3270_REVISION=00000000 -I${PRE_REQS_DIR}/usr/include"
-#        - export LIB3270_LIBS="-L${PRE_REQS_DIR}/usr/lib -l3270"
-#        - NOCONFIGURE=1 ./autogen.sh
-#        - ./configure --prefix=/usr --with-product-name="pw3270"
-        
-
