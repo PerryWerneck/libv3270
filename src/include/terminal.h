@@ -115,15 +115,15 @@
 	GtkWidget parent;
 
 	// flags
-	int selecting		: 1;	///< @brief Selecting region
-	int moving			: 1;	///< @brief Moving selected region
-	int resizing		: 1;	///< @brief Resizing selected region
-	int scaled_fonts	: 1;	///< @brief Use scaled fonts
-	int drawing			: 1;	///< @brief Draw widget?
-	int freeze			: 1;	///< @brief Truee when the "save settings" signal is disabled.
-	int append			: 1;	///< @brief Next smart-copy operation will be append.
-	int copying			: 1;	///< @brief Copy with center mouse button
-	int open_url		: 1;	///< @brief Emit 'open-url' signal when and http:// or https:// url is selected by 'word-select' action.
+	unsigned int selecting		: 1;	///< @brief Selecting region
+	unsigned int moving			: 1;	///< @brief Moving selected region
+	unsigned int resizing		: 1;	///< @brief Resizing selected region
+	unsigned int scaled_fonts	: 1;	///< @brief Use scaled fonts
+	unsigned int drawing		: 1;	///< @brief Draw widget?
+	unsigned int freeze			: 1;	///< @brief True when the "save settings" signal is disabled.
+	unsigned int append			: 1;	///< @brief Next smart-copy operation will be append.
+	unsigned int copying		: 1;	///< @brief Copy with center mouse button
+	unsigned int open_url		: 1;	///< @brief Emit 'open-url' signal when and http:// or https:// url is selected by 'word-select' action.
 
     /// @brief Action properties.
 //   	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
@@ -203,7 +203,7 @@
 	// Blink
 	struct
 	{
-		int					  show : 1;						///< @brief Show element?
+		unsigned int		  show : 1;						///< @brief Show element?
 		GSource				* timer;						///< @brief Timer source.
 	} blink;
 
