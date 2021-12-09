@@ -43,7 +43,7 @@
  #include <lib3270/properties.h>
  #include <internals.h>
  #include <v3270/dialogs.h>
- #include "marshal.h"
+ #include <marshal/trace.h>
 
 /*--[ Globals ]--------------------------------------------------------------------------------------*/
 

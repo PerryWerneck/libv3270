@@ -1,9 +1,11 @@
 #!/bin/bash
 
-test -n "$mydir" || mydir=$(readlink -f $(dirname "$0"))
-test -n "$mydir" || mydir=.
+builddir=${PWD}
 
-cd "${mydir}"
+test -n "$srcdir" || srcdir=`dirname "$0"`
+test -n "$srcdir" || srcdir=.
+
+cd "$srcdir"
 
 mkdir -p scripts
 mkdir -p m4
@@ -45,7 +47,9 @@ automake --add-missing 2> /dev/null | true
 
 autopoint
 
-test -n "$NOCONFIGURE" || "./configure" "$@"
+cd "${builddir}"
+
+test -n "$NOCONFIGURE" || "$srcdir/configure" --srcdir=${srcdir} $@
 
 
 

@@ -34,7 +34,7 @@
  #include <v3270.h>
  #include <lib3270/log.h>
  #include <v3270/colorscheme.h>
- #include "../terminal/marshal.h"
+ #include <marshal/terminal.h>
 
  #define V3270_COLOR_BASE V3270_COLOR_GRAY+1
 
