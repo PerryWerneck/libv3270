@@ -406,7 +406,7 @@ install-conf:
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
 
 	@$(INSTALL_DATA) \
-		remap/*.xml \
+		$(srcdir)/remap/*.xml \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
 
 	# Install default configs
@@ -414,7 +414,7 @@ install-conf:
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
 
 	@$(INSTALL_DATA) \
-		conf/colors.conf \
+		$(srcdir)/conf/colors.conf \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/colors.conf
 
 install-dev: \
@@ -424,11 +424,11 @@ install-dev: \
 	@mkdir -p $(DESTDIR)$(includedir)/v3270
 
 	@$(INSTALL_DATA) \
-		src/include/v3270/*.h \
+		$(srcdir)/src/include/v3270/*.h \
 		$(DESTDIR)$(includedir)/v3270
 
 	@$(INSTALL_DATA) \
-		src/include/v3270.h \
+		$(srcdir)/src/include/v3270.h \
 		$(DESTDIR)$(includedir)/v3270.h
 
 	# Install PKG-CONFIG files
@@ -490,11 +490,11 @@ install-glade:
 		$(DESTDIR)$(datarootdir)/glade/catalogs/v3270.xml
 
 	@$(INSTALL_DATA) \
-		branding/icon-16x16.png \
+		$(srcdir)/branding/icon-16x16.png \
 		$(DESTDIR)$(datarootdir)/glade/pixmaps/hicolor/16x16/actions/widget-v3270-terminal.png
 
 	@$(INSTALL_DATA) \
-		branding/icon-22x22.png \
+		$(srcdir)/branding/icon-22x22.png \
 		$(DESTDIR)$(datarootdir)/glade/pixmaps/hicolor/22x22/actions/widget-v3270-terminal.png
 
 #---[ Misc Targets ]---------------------------------------------------------------------
