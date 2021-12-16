@@ -93,7 +93,9 @@ For the supported distributions get the install repositories and instructions fr
 	make all
 	```
 
-## Building for macOS (using homebrew)
+## Building for macOS
+
+### Using homebrew
 
 1. Build and install [lib3270](../../../lib3270)
 
@@ -111,12 +113,23 @@ For the supported distributions get the install repositories and instructions fr
 	brew link libv3270
 	```
 
-### Uninstalling
-
-1. To uninstall
+To uninstall
 
 	```shell
 	brew unlink libv3270
 	rm -fr "$(brew --cellar)/libv3270"
 	```
+
+### Using jhbuild
+
+1. Install jhbuild and GTK-OSX
+
+	https://wiki.gnome.org/Projects/GTK/OSX/Building
+	
+2. build
+
+	```shell
+	jhbuild --moduleset=https://raw.githubusercontent.com/PerryWerneck/libv3270/macos/mac/libv3270.modules build libv3270
+	```
+
 
