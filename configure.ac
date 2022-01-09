@@ -52,6 +52,9 @@ AM_INIT_AUTOMAKE
 dnl Check for iconv
 AM_ICONV
 
+dnl Set gettext version
+AM_GNU_GETTEXT_VERSION([0.14])
+
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_SED
@@ -103,9 +106,9 @@ case "$host" in
 	*-apple-darwin*)
 		CFLAGS="$CFLAGS -pthread"
 		LDFLAGS="$LDFLAGS -pthread"
-		app_cv_osname="linux"
+		app_cv_osname="macos"
 		LOGDIR="/var/log"
-		DLLEXT=".so"
+		DLLEXT=".dylib"
 		DLL_LDFLAGS="-shared -Wl,-install_name,\$(@F)"
 
 		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
@@ -195,8 +198,8 @@ case "$host" in
 		AC_SUBST(SONAME,libv3270.dll)
 		;;
 
- 	s390x-*)
-		AC_SUBST(SONAME,libv3270.so)
+	*-apple-darwin*)
+		AC_SUBST(SONAME,libv3270.dylib.$app_vrs_major.$app_vrs_minor)
 		;;
 
  	*)
@@ -358,7 +361,7 @@ dnl Directory config
 dnl ---------------------------------------------------------------------------
 
 AC_ARG_WITH([build-dir], [AS_HELP_STRING([--with-build-dir], [Setup build path])], [ app_cv_buildir="$withval" ],[ app_cv_buildir="$ac_pwd" ])
-AC_SUBST(BASEDIR,$app_cv_buildir)
+AC_SUBST(BUILDDIR,$app_cv_buildir)
 
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.

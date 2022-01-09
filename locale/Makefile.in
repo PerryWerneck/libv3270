@@ -74,6 +74,7 @@ $(DESTDIR)$(localedir)/%/LC_MESSAGES/$(GETTEXT_PACKAGE).mo: \
 #---[ Targets ]--------------------------------------------------------------------------
 
 all: \
+	$(GETTEXT_PACKAGE).pot \
 	$(foreach SRC, $(basename $(wildcard *.po)), $(BINDIR)/$(SRC)/LC_MESSAGES/$(GETTEXT_PACKAGE).mo)
 
 install: \

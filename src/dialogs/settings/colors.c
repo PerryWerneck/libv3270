@@ -381,13 +381,3 @@ static void load(GtkWidget G_GNUC_UNUSED(*w), GtkWidget *terminal)
 
  	return GTK_WIDGET(settings);
  }
-
- LIB3270_EXPORT void v3270_edit_color_table(GtkWidget *terminal)
- {
- 	v3270_settings_popup_dialog(
-		v3270_color_settings_new(),
-		terminal,
-		FALSE
-	);
-
- }

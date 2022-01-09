@@ -198,11 +198,6 @@
 	v3270_clipboard_set(terminal,V3270_COPY_TEXT,FALSE);
  }
 
- static void color_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
- {
-	v3270_edit_color_table(terminal);
- }
-
  static void zoom_in_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
 	v3270_zoom_in(terminal);
@@ -228,12 +223,12 @@
 		GCallback	  callback;
 		const gchar * tooltip;
 	} buttons[] = {
-		{ "gtk-connect",				G_CALLBACK(connect_clicked),		"Connect to host"  				},
-		{ "gtk-disconnect",				G_CALLBACK(disconnect_clicked),		"Disconnect from host"  		},
-		{ "gtk-print",					G_CALLBACK(print_clicked),			"Print screen contents"			},
-		{ "gtk-harddisk",				G_CALLBACK(ft_clicked),				"Open file transfer dialog"		},
-		{ "gtk-copy",					G_CALLBACK(copy_clicked),			"Copy data"						},
-		{ "gtk-paste",					G_CALLBACK(paste_clicked),			"Paste data"					},
+		{ "media-playback-start",		G_CALLBACK(connect_clicked),		"Connect to host"  				},
+		{ "media-playback-stop",		G_CALLBACK(disconnect_clicked),		"Disconnect from host"  		},
+		{ "document-print",				G_CALLBACK(print_clicked),			"Print screen contents"			},
+		{ "drive-harddisk",				G_CALLBACK(ft_clicked),				"Open file transfer dialog"		},
+		{ "edit-copy",					G_CALLBACK(copy_clicked),			"Copy data"						},
+		{ "edit-paste",					G_CALLBACK(paste_clicked),			"Paste data"					},
 		{ "document-save",				G_CALLBACK(save_clicked),			"Save screen or selection"		},
 		{ "document-open",				G_CALLBACK(load_clicked),			"Paste file"					},
 		{ "dialog-information",			G_CALLBACK(popup_clicked),			"Show test popup"				},
@@ -242,7 +237,7 @@
 
 //		{ "network-server",				G_CALLBACK(host_clicked),			"Configure host"				},
 //		{ "preferences-desktop-font",	G_CALLBACK(font_clicked),			"Select font"					},
-		{ "gtk-select-color",			G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
+//		{ "gtk-select-color",			G_CALLBACK(color_clicked),			"Edit or change color scheme"	},
 
 
 		{ "zoom-in",					G_CALLBACK(zoom_in_clicked),		"Zoom in"						},

@@ -30,7 +30,7 @@
  #include <internals.h>
  #include <v3270/dialogs.h>
  #include "private.h"
- #include "marshal.h"
+ #include <marshal/filetransfer.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 

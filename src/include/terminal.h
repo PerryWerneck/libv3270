@@ -1,63 +1,27 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
+ * Copyright (C) 2008 Banco do Brasil S.A.
  *
- * Copyright (C) <2008> <Banco do Brasil S.A.>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
- *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
-#include <internals.h>
-#include <v3270/selection.h>
+ #include <config.h>
+ #include <internals.h>
+ #include <v3270/selection.h>
 
-G_BEGIN_DECLS
-
-/*
- /// @brief V3270 Properties saved to the configuration file.
- typedef enum
- {
-	V3270_SETTING_URL,
-	V3270_SETTING_FONT_FAMILY,
-	V3270_SETTING_AUTO_DISCONNECT,
-	V3270_SETTING_REMAP_FILE,
-	V3270_SETTING_DYNAMIC_SPACING,
-	V3270_SETTING_LU_NAMES,
-	V3270_SETTING_MODEL_NUMBER,
-	V3270_SETTING_OVERSIZE,
-	V3270_SETTING_HOST_CHARSET,
-	V3270_SETTING_UNLOCK_DELAY,
-	V3270_SETTING_COLOR_TYPE,
-	V3270_SETTING_HOST_TYPE,
-	V3270_SETTING_CRL_PROTOCOL,
-	V3270_SETTING_TERMINAL_COLORS,
-	V3270_SETTING_SELECTION_OPTIONS,
-
- 	V3270_SETTING_COUNT					///< @brief Number of setting properties.
- } V3270_SETTING;
-
- G_GNUC_INTERNAL void v3270_notify_setting(GtkWidget *widget, V3270_SETTING id);
-*/
+ G_BEGIN_DECLS
 
  struct _v3270Class
  {
@@ -151,14 +115,15 @@ G_BEGIN_DECLS
 	GtkWidget parent;
 
 	// flags
-	int selecting		: 1;	/// @brief Selecting region
-	int moving			: 1;	/// @brief Moving selected region
-	int resizing		: 1;	/// @brief Resizing selected region
-	int scaled_fonts	: 1;	/// @brief Use scaled fonts
-	int drawing			: 1;	/// @brief Draw widget?
-	int freeze			: 1;	/// @brief Truee when the "save settings" signal is disabled.
-	int append			: 1;	/// @brief Next smart-copy operation will be append.
-	int copying			: 1;	/// @brief Copy with center mouse button
+	unsigned int selecting		: 1;	///< @brief Selecting region
+	unsigned int moving			: 1;	///< @brief Moving selected region
+	unsigned int resizing		: 1;	///< @brief Resizing selected region
+	unsigned int scaled_fonts	: 1;	///< @brief Use scaled fonts
+	unsigned int drawing		: 1;	///< @brief Draw widget?
+	unsigned int freeze			: 1;	///< @brief True when the "save settings" signal is disabled.
+	unsigned int append			: 1;	///< @brief Next smart-copy operation will be append.
+	unsigned int copying		: 1;	///< @brief Copy with center mouse button
+	unsigned int open_url		: 1;	///< @brief Emit 'open-url' signal when and http:// or https:// url is selected by 'word-select' action.
 
     /// @brief Action properties.
 //   	GtkResponseType			  responses[V3270_TOGGLEABLE_DIALOG_CUSTOM];
@@ -238,7 +203,7 @@ G_BEGIN_DECLS
 	// Blink
 	struct
 	{
-		int					  show : 1;						///< @brief Show element?
+		unsigned int		  show : 1;						///< @brief Show element?
 		GSource				* timer;						///< @brief Timer source.
 	} blink;
 
