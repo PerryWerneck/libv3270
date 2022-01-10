@@ -12,6 +12,7 @@
 		<branch repo="github.com" module="PerryWerneck/libv3270" revision="macos" />
 		<dependencies>
 			<dep package="meta-gtk-osx-bootstrap"/>
+			<dep package="librsvg"/>
 			<dep package="glib"/>
 			<dep package="gtk+-3.0"/>
 			<!-- dep package="gtk-mac-integration"/ -->
