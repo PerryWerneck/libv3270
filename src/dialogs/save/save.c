@@ -42,11 +42,11 @@
 
 /*--[ Formats ]--------------------------------------------------------------------------------------*/
 
- static const struct _formats
+ static const struct _file_types
  {
 	const gchar *name;
 	const gchar *extension;
- } formats[] =
+ } file_types[] =
  {
 	{
 		N_("Plain text"),
@@ -296,13 +296,13 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
 		gtk_grid_attach(grid,GTK_WIDGET(dialog->format),3,1,1,1);
 
-		for(ix=0;ix<G_N_ELEMENTS(formats);ix++)
+		for(ix=0;ix<G_N_ELEMENTS(file_types);ix++)
 		{
 			gtk_combo_box_text_insert(
 				GTK_COMBO_BOX_TEXT(dialog->format),
 				-1,
-				formats[ix].extension,
-				g_dgettext(GETTEXT_PACKAGE,formats[ix].name)
+				file_types[ix].extension,
+				g_dgettext(GETTEXT_PACKAGE,file_types[ix].name)
 			);
 		}
 
@@ -579,9 +579,9 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 	const gchar	* format = gtk_combo_box_get_active_id(GTK_COMBO_BOX(dialog->format));
 
 	// Check for text formats.
-	for(ix=0;ix<G_N_ELEMENTS(formats);ix++)
+	for(ix=0;ix<G_N_ELEMENTS(file_types);ix++)
 	{
-		if(!strcmp(formats[ix].extension,format))
+		if(!strcmp(file_types[ix].extension,format))
 		{
 			// Is text format, save it
 			save_as_text(dialog, ix, error);
