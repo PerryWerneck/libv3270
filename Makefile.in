@@ -24,36 +24,51 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
+#---[ Paths ]----------------------------------------------------------------------------
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+srcdir=@srcdir@
+sbindir=@sbindir@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+localedir=@localedir@
+docdir=@docdir@
+sysconfdir=@sysconfdir@
+
 #---[ Library configuration ]------------------------------------------------------------
 
 SONAME=@SONAME@
 LIBNAME=libv3270
 PRODUCT_NAME=@PRODUCT_NAME@
 INSTALL_PACKAGES=@INSTALL_PACKAGES@
+GETTEXT_PACKAGE=@GETTEXT_PACKAGE@
 
 SOURCES= \
-	$(wildcard src/terminal/*.c) \
-	$(wildcard src/terminal/@OSNAME@/*.rc) \
-	$(wildcard src/terminal/@OSNAME@/*.c) \
-	$(wildcard src/terminal/properties/*.c) \
-	$(wildcard src/terminal/drawing/*.c) \
-	$(wildcard src/terminal/font/*.c) \
-	$(wildcard src/terminal/keyboard/*.c) \
-	$(wildcard src/terminal/actions/*.c) \
-	$(wildcard src/filetransfer/*.c) \
-	$(wildcard src/selection/*.c) \
-	$(wildcard src/selection/@OSNAME@/*.c) \
-	$(wildcard src/trace/*.c) \
-	$(wildcard src/dialogs/*.c) \
-	$(wildcard src/dialogs/@OSNAME@/*.c) \
-	$(wildcard src/dialogs/print/*.c) \
-	$(wildcard src/dialogs/save/*.c) \
-	$(wildcard src/dialogs/font/*.c) \
-	$(wildcard src/dialogs/settings/*.c) \
-	$(wildcard src/tools/*.c)
+	$(wildcard $(srcdir)/src/terminal/*.c) \
+	$(wildcard $(srcdir)/src/terminal/@OSNAME@/*.rc) \
+	$(wildcard $(srcdir)/src/terminal/@OSNAME@/*.c) \
+	$(wildcard $(srcdir)/src/terminal/properties/*.c) \
+	$(wildcard $(srcdir)/src/terminal/drawing/*.c) \
+	$(wildcard $(srcdir)/src/terminal/font/*.c) \
+	$(wildcard $(srcdir)/src/terminal/keyboard/*.c) \
+	$(wildcard $(srcdir)/src/terminal/actions/*.c) \
+	$(wildcard $(srcdir)/src/filetransfer/*.c) \
+	$(wildcard $(srcdir)/src/selection/*.c) \
+	$(wildcard $(srcdir)/src/selection/@OSNAME@/*.c) \
+	$(wildcard $(srcdir)/src/trace/*.c) \
+	$(wildcard $(srcdir)/src/dialogs/*.c) \
+	$(wildcard $(srcdir)/src/dialogs/@OSNAME@/*.c) \
+	$(wildcard $(srcdir)/src/dialogs/print/*.c) \
+	$(wildcard $(srcdir)/src/dialogs/save/*.c) \
+	$(wildcard $(srcdir)/src/dialogs/font/*.c) \
+	$(wildcard $(srcdir)/src/dialogs/settings/*.c) \
+	$(wildcard $(srcdir)/src/tools/*.c)
 
 TEST_SOURCES= \
-	$(wildcard src/testprogram/*.c)
+	$(wildcard $(srcdir)/src/testprogram/*.c)
 
 #---[ Tools ]----------------------------------------------------------------------------
 
@@ -75,42 +90,28 @@ ZIP=@ZIP@
 DLLTOOL=@DLLTOOL@
 STRIP=@STRIP@
 
-#---[ Paths ]----------------------------------------------------------------------------
+#---[ Build Paths ]----------------------------------------------------------------------
 
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-bindir=@bindir@
-sbindir=@sbindir@
-libdir=@libdir@
-includedir=@includedir@
-datarootdir=@datarootdir@
-localedir=@localedir@
-docdir=@docdir@
-sysconfdir=@sysconfdir@
+BUILDDIR=@BUILDDIR@
 
-BASEDIR=@BASEDIR@
+POTDIR=$(BUILDDIR)/.pot
 
-POTDIR=$(BASEDIR)/.pot
-
-OBJDIR=$(BASEDIR)/.obj/$(LIBNAME)
+OBJDIR=$(BUILDDIR)/.obj/$(LIBNAME)
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
-BINDIR=$(BASEDIR)/.bin
+BINDIR=$(BUILDDIR)/.bin
 BINDBG=$(BINDIR)/Debug
 BINRLS=$(BINDIR)/Release
 
 #---[ Rules ]----------------------------------------------------------------------------
 
 DEPENDS= \
-	Makefile \
-	src/include/*.h \
-	src/include/v3270/*.h \
-	src/filetransfer/marshal.h \
-	src/filetransfer/private.h \
-	src/terminal/marshal.h \
-	src/trace/marshal.h \
-	src/dialogs/settings/marshal.h
+	src/include/config.h \
+	src/include/marshal/filetransfer.h \
+	src/include/marshal/terminal.h \
+	src/include/marshal/trace.h \
+	src/include/marshal/dialogs.h
 
 DATE_FMT = +%Y%m%d
 ifdef SOURCE_DATE_EPOCH
@@ -122,6 +123,7 @@ CFLAGS= \
 	@CFLAGS@ \
 	-g \
 	-Isrc/include \
+	-I$(srcdir)/src/include \
 	-DBUILD_DATE=$(BUILD_DATE) \
 	-DLOCALEDIR=$(localedir) \
 	@LIB3270_CFLAGS@ \
@@ -203,7 +205,7 @@ $(OBJRLS)/%.o: \
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
 
-$(POTDIR)/$(LIBNAME)/%.pot: \
+$(POTDIR)/%.pot: \
 	%.c
 
 	@echo $(notdir $@) ...
@@ -217,7 +219,7 @@ $(POTDIR)/$(LIBNAME)/%.pot: \
 		$<
 	@touch $@
 
-$(POTDIR)/$(LIBNAME)/%.pot: \
+$(POTDIR)/%.pot: \
 	%.rc
 
 	@echo $< ...
@@ -232,16 +234,16 @@ install-%: \
 
 #---[ Marshal Targets ]------------------------------------------------------------------
 
-src/terminal/marshal.h: \
-	src/terminal/marshal
+src/include/marshal/terminal.h: \
+	$(srcdir)/src/terminal/marshal
 
 	@echo $@ ...
 	@$(MKDIR) $(@D)
 
 	@$(GENMARSHAL) --prefix=v3270 --header $< > $@
 
-src/dialogs/settings/marshal.h: \
-	src/dialogs/settings/marshal
+src/include/marshal/dialogs.h: \
+	$(srcdir)/src/dialogs/settings/marshal
 
 	@echo $@ ...
 	@$(MKDIR) $(@D)
@@ -249,7 +251,7 @@ src/dialogs/settings/marshal.h: \
 	@$(GENMARSHAL) --prefix=v3270 --header $< > $@
 
 $(OBJDIR)/marshal/v3270.c: \
-	src/terminal/marshal
+	$(srcdir)/src/terminal/marshal
 
 	@echo $@ ...
 	@$(MKDIR) $(@D)
@@ -257,8 +259,8 @@ $(OBJDIR)/marshal/v3270.c: \
 	@$(GENMARSHAL) --prefix=v3270 --body $< > $@
 
 
-src/filetransfer/marshal.h: \
-	src/filetransfer/marshal
+src/include/marshal/filetransfer.h: \
+	$(srcdir)/src/filetransfer/marshal
 
 	@echo $@ ...
 	@$(MKDIR) $(@D)
@@ -266,15 +268,15 @@ src/filetransfer/marshal.h: \
 	@$(GENMARSHAL) --prefix=v3270ft --header $< > $@
 
 $(OBJDIR)/marshal/v3270ft.c: \
-	src/filetransfer/marshal
+	$(srcdir)/src/filetransfer/marshal
 
 	@echo $@ ...
 	@$(MKDIR) $(@D)
 
 	@$(GENMARSHAL) --prefix=v3270ft --body $< > $@
 
-src/trace/marshal.h: \
-	src/trace/marshal
+src/include/marshal/trace.h: \
+	$(srcdir)/src/trace/marshal
 
 	@echo $@ ...
 	@$(MKDIR) $(@D)
@@ -282,13 +284,12 @@ src/trace/marshal.h: \
 	@$(GENMARSHAL) --prefix=v3270trace --header $< > $@
 
 $(OBJDIR)/marshal/trace.c: \
-	src/trace/marshal
+	$(srcdir)/src/trace/marshal
 
 	@echo $@ ...
 	@$(MKDIR) $(@D)
 
 	@$(GENMARSHAL) --prefix=v3270trace --body $< > $@
-
 
 $(OBJDIR)/marshal/%.o: \
 	$(OBJDIR)/marshal/%.c \
@@ -309,7 +310,7 @@ $(OBJDIR)/marshal/%.o: \
 all: \
 	$(BINRLS)/$(SONAME) \
 	$(BINRLS)/static/$(LIBNAME).a \
-	locale/$(LIBNAME).pot
+	locale/$(GETTEXT_PACKAGE).pot
 
 Release: \
 	$(BINRLS)/$(SONAME) \
@@ -347,10 +348,22 @@ $(BINRLS)/static/$(LIBNAME).a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	locale/$(LIBNAME).pot \
+	locale/$(GETTEXT_PACKAGE).pot \
 	$(foreach PKG, $(INSTALL_PACKAGES), install-$(PKG))
 
 install-linux-lib: \
+	$(BINRLS)/$(SONAME) \
+	install-conf \
+	install-locale
+
+	# Install library
+	@$(MKDIR) $(DESTDIR)$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(SONAME) \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+install-macos-lib: \
 	$(BINRLS)/$(SONAME) \
 	install-conf \
 	install-locale
@@ -376,7 +389,7 @@ install-windows-lib: \
 
 zip: \
 	$(BINRLS)/$(SONAME)
-	@$(ZIP) -9 -j $(BASEDIR)/@PACKAGE_NAME@-@PACKAGE_VERSION@-@PACKAGE_RELEASE@-@host_cpu@.zip $(BINRLS)/$(SONAME)
+	@$(ZIP) -9 -j $(BUILDDIR)/@PACKAGE_NAME@-@PACKAGE_VERSION@-@PACKAGE_RELEASE@-@host_cpu@.zip $(BINRLS)/$(SONAME)
 
 install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
@@ -393,7 +406,7 @@ install-conf:
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
 
 	@$(INSTALL_DATA) \
-		remap/*.xml \
+		$(srcdir)/remap/*.xml \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/remap
 
 	# Install default configs
@@ -401,21 +414,21 @@ install-conf:
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
 
 	@$(INSTALL_DATA) \
-		conf/colors.conf \
+		$(srcdir)/conf/colors.conf \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/colors.conf
 
 install-dev: \
-	locale/$(LIBNAME).pot \
+	locale/$(GETTEXT_PACKAGE).pot \
 	install-@OSNAME@-dev
 
 	@mkdir -p $(DESTDIR)$(includedir)/v3270
 
 	@$(INSTALL_DATA) \
-		src/include/v3270/*.h \
+		$(srcdir)/src/include/v3270/*.h \
 		$(DESTDIR)$(includedir)/v3270
 
 	@$(INSTALL_DATA) \
-		src/include/v3270.h \
+		$(srcdir)/src/include/v3270.h \
 		$(DESTDIR)$(includedir)/v3270.h
 
 	# Install PKG-CONFIG files
@@ -426,10 +439,19 @@ install-dev: \
 
 	# Install translation files
 	@$(MKDIR) $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
-	@$(INSTALL_DATA) locale/$(LIBNAME).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
+	@$(INSTALL_DATA) locale/$(GETTEXT_PACKAGE).pot $(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
 
 install-linux-dev:
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(LN_S) \
+		$(LIBNAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)$(libdir)/$(LIBNAME)@DLLEXT@
+
+install-macos-dev:
 
 	@$(MKDIR) \
 		$(DESTDIR)$(libdir)
@@ -468,29 +490,29 @@ install-glade:
 		$(DESTDIR)$(datarootdir)/glade/catalogs/v3270.xml
 
 	@$(INSTALL_DATA) \
-		branding/icon-16x16.png \
+		$(srcdir)/branding/icon-16x16.png \
 		$(DESTDIR)$(datarootdir)/glade/pixmaps/hicolor/16x16/actions/widget-v3270-terminal.png
 
 	@$(INSTALL_DATA) \
-		branding/icon-22x22.png \
+		$(srcdir)/branding/icon-22x22.png \
 		$(DESTDIR)$(datarootdir)/glade/pixmaps/hicolor/22x22/actions/widget-v3270-terminal.png
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
-$(POTDIR)/$(LIBNAME).pot: \
-	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(LIBNAME)/$(SRC).pot)
+$(POTDIR)/$(GETTEXT_PACKAGE).pot: \
+	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(SRC).pot)
 
 	@rm -f $@
 	@$(MKDIR) $(@D)
 	@$(MSGCAT) --sort-output $^ > $@
 
 locale: \
-	locale/$(LIBNAME).pot
+	locale/$(GETTEXT_PACKAGE).pot
 
 	@$(MAKE) -C locale all
 
-locale/$(LIBNAME).pot: \
-	$(POTDIR)/$(LIBNAME).pot
+locale/$(GETTEXT_PACKAGE).pot: \
+	$(POTDIR)/$(GETTEXT_PACKAGE).pot
 
 	@rm -f $@
 	@$(MKDIR) $(@D)
@@ -548,7 +570,7 @@ $(BINDBG)/$(SONAME): \
 	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
+		@DLL_LDFLAGS@ \
 		-o $@ \
 		-L$(BINDBG) \
 		$(LDFLAGS) \
@@ -562,7 +584,7 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
-	@rm -fr $(BASEDIR)/.tmp/$(LIBNAME)
+	@rm -fr $(BUILDDIR)/.tmp/$(LIBNAME)
 	@rm -fr $(POTDIR)/$(LIBNAME)
 	@rm -fr src/include/marshal
 	@rm -fr locale/$(LIBNAME).pot
@@ -583,7 +605,7 @@ cleanRelease:
 	@rm -fr $(OBJDIR)/marshal
 	@rm -f src/terminal/marshal.h
 	@rm -f src/filetransfer/marshal.h
-	@rm -f lib$(LIBNAME).pot
+	@rm -f $(GETTEXT_PACKAGE).pot
 
 clean: \
 	cleanDebug \

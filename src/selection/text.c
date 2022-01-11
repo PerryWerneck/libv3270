@@ -124,7 +124,7 @@ gchar * v3270_convert_to_3270_charset(GtkWidget *widget, const gchar *text, cons
 
 		g_autofree gchar *string = g_strdup(text);
 
-		// FIXME (perry#1#): Is there any better way for a "sed" here?
+		// Is there any better way for a "sed" here?
 		for(f=0;f<G_N_ELEMENTS(xlat);f++)
 		{
 			gchar *ptr = g_strstr_len(string,-1,xlat[f].from);

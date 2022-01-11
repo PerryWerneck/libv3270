@@ -179,7 +179,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 
  }
 
- static void fileformat_changed(GtkComboBox *formats, GtkEntry *entry)
+ static void fileformat_changed(GtkComboBox *fmts, GtkEntry *entry)
  {
 	const gchar * text = gtk_entry_get_text(entry);
 
@@ -191,7 +191,7 @@ static void icon_press(GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_
 		return;
 
 	extension++;
-	const gchar	* format = gtk_combo_box_get_active_id(formats);
+	const gchar	* format = gtk_combo_box_get_active_id(fmts);
 	if(*format == '.')
 		format++;
 

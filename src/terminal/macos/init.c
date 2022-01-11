@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como properties.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -27,52 +27,30 @@
  *
  */
 
- #include "private.h"
- #include <v3270.h>
- #include <v3270/selection.h>
- #include <lib3270/trace.h>
+ #include <config.h>
+ #include <lib3270.h>
+ #include <locale.h>
+ #include <libintl.h>
  #include <lib3270/log.h>
 
-/*--[ Implement ]------------------------------------------------------------------------------------*/
+ int libv3270_loaded(void) __attribute__((constructor));
+ int libv3270_unloaded(void) __attribute__((destructor));
 
- int fire_copy_accelerator(GtkWidget *widget, const V3270_ACTION * action) {
+/*---[ Implement ]-----------------------------------------------------------------------------------------*/
 
-	debug("%s",__FUNCTION__);
+ int libv3270_loaded(void) {
 
-	v3270_clipboard_set(
-		widget,
-		(action->flags & 0x0F),
-		(action->flags & V3270_ACTION_FLAG_CUT) != 0
-	);
+	debug("LocaleDIR(%s)=%s",PACKAGE_NAME,LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
 
-	return EINVAL;
+	bindtextdomain(PACKAGE_NAME, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
+	bind_textdomain_codeset(PACKAGE_NAME, "UTF-8");
+
+ 	return 0;
+
  }
 
- int fire_paste_accelerator(GtkWidget *widget, const V3270_ACTION * action) {
+ int libv3270_unloaded(void) {
 
-	switch((int) action->flags)
-	{
-	case 0:	// Default paste.
-		v3270_clipboard_get_from_url(widget,NULL);
-		break;
+ 	return 0;
 
-	case 1:	// Text paste.
-		v3270_clipboard_get_from_url(widget,"text://");
-		break;
-
-	case 2: // File paste.
-		v3270_clipboard_get_from_url(widget,"file://");
-		break;
-
-	case 3: // screen paste.
-		v3270_clipboard_get_from_url(widget,"screen://");
-		break;
-
-	default:
-		g_warning("Unexpected paste flags %u",(unsigned int) action->flags);
-	}
-
-	return 0;
  }
-
-
