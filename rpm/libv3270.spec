@@ -29,15 +29,14 @@ BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils
 BuildRequires:  coreutils
+BuildRequires:  libtool
 BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
 BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:  pkgconfig(lib3270) >= 5.4
-%if 0%{?centos_version}
-# CENTOS Genmarshal doesn't depend on python!
-BuildRequires:  python
-%endif
+
+Suggests:       %{name}-config
 
 %description
 
@@ -60,6 +59,16 @@ provides a TN3270 virtual terminal widget for GTK 3.
 
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
+%package config
+Summary:    Configuration files for the 3270 Virtual Terminal library
+BuildArch:  noarch
+Requires:   %{name}-%{_libvrs} = %{version}
+Enhances:   %{_product}
+Conflicts:  libv3270-5_3
+
+%description config
+Originally designed as part of the pw3270 application, this package provides the configuration files required to %{name}.
+
 %package devel
 Summary:    Header files for the 3270 Virtual Terminal library
 Requires:   %{name}-%{_libvrs} = %{version}
@@ -78,22 +87,24 @@ widgets in Glade.
 %prep
 %setup -q
 NOCONFIGURE=1 ./autogen.sh
-%configure --with-release=%{release}
+%configure --with-release=%{release} --disable-static
 
 %build
 make all %{?_smp_mflags}
 
 %install
 %make_install
-%find_lang %{name} langfiles
+%find_lang %{name}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
 %files -n %{name}-%{_libvrs} -f langfiles
 %license LICENSE
 %doc AUTHORS README.md
 %{_libdir}/%{name}.so.*
-%{_datadir}/%{_product}/colors.conf
+
+%files config
 %dir %{_datadir}/%{_product}/remap/
-%{_datadir}/%{_product}/remap/*.xml
+%config %{_datadir}/%{_product}/colors.conf
+%config %{_datadir}/%{_product}/remap/*.xml
 
 %files devel
 %{_datadir}/pw3270/pot/*.pot

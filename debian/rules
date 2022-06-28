@@ -6,7 +6,7 @@
 export DH_VERBOSE=1
 
 # This is the debhelper compatibility version to use.
-export DH_COMPAT=9	
+export DH_COMPAT=9
 
 # Name of the package
 PACKAGE_NAME=libv3270
@@ -23,12 +23,7 @@ build-stamp:
 	dh_testdir
 
 	# Add here commands to compile the package.
-	aclocal
-	autoconf
-    
-	mkdir -p scripts
-	automake --add-missing 2> /dev/null | true
-    
+	NOCONFIGURE=1 ./autogen.sh 
 	./configure --prefix=/usr
 	make all
 	# --- end custom part for compiling
