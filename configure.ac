@@ -127,6 +127,7 @@ case "$host" in
 
 		app_cv_static='no'
 
+		AC_CONFIG_FILES(debian/control)
 esac
 
 AC_SUBST(OSNAME,$app_cv_osname)

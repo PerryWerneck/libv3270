@@ -8,7 +8,7 @@ Package: libv3270
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Provides: libv3270 (= ${binary:Version})
+Provides: libv3270 (= ${binary:Version}), libv3270 (= 5.4)
 Description: TN3270 Access library.
  3270 Virtual Terminal for GTK.
 
