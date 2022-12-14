@@ -234,6 +234,12 @@ install-%: \
 
 	@$(MAKE) -C `dirname $<` DESTDIR=$(DESTDIR) install
 
+#---[ Main Target ]----------------------------------------------------------------------
+
+all: \
+	$(BINRLS)/$(SONAME) \
+	$(BINRLS)/static/$(LIBNAME).a \
+	locale/$(GETTEXT_PACKAGE).pot
 
 #---[ Marshal Targets ]------------------------------------------------------------------
 
@@ -309,11 +315,6 @@ $(OBJDIR)/marshal/%.o: \
 
 
 #---[ Release Targets ]------------------------------------------------------------------
-
-all: \
-	$(BINRLS)/$(SONAME) \
-	$(BINRLS)/static/$(LIBNAME).a \
-	locale/$(GETTEXT_PACKAGE).pot
 
 Release: \
 	$(BINRLS)/$(SONAME) \
