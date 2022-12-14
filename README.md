@@ -129,7 +129,7 @@ To uninstall
 2. build
 
 	```shell
-	jhbuild --moduleset=https://raw.githubusercontent.com/PerryWerneck/libv3270/macos/mac/libv3270.modules build libv3270
+	jhbuild --moduleset=https://raw.githubusercontent.com/PerryWerneck/libv3270/master/mac/libv3270.modules build libv3270
 	```
 
 
