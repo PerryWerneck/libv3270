@@ -17,11 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifdef WIN32
+ #pragma once
+
+ #ifdef WIN32
 	#include <winsock2.h>
 	#include <windows.h>
 	#include <ws2tcpip.h>
-#endif // WIN32
+ #endif // WIN32
 
  #include <gtk/gtk.h>
  #include <limits.h>

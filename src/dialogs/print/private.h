@@ -27,6 +27,8 @@
  *
  */
 
+ #pragma once
+
  #include <v3270.h>
  #include <v3270/print.h>
  #include <lib3270/log.h>

@@ -27,47 +27,46 @@
  *
  */
 
-#include <gtk/gtk.h>
+ #pragma once
 
-G_BEGIN_DECLS
+ #include <gtk/gtk.h>
 
-#define GTK_TYPE_V3270_ACCESSIBLE					(v3270_accessible_get_type ())
-#define GTK_V3270_ACCESSIBLE(obj)					(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_ACCESSIBLE, v3270Accessible))
-#define GTK_V3270_ACCESSIBLE_CLASS(klass)			(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_ACCESSIBLE, v3270AccessibleClass))
-#define GTK_IS_V3270_ACCESSIBLE(obj)				(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_ACCESSIBLE))
-#define GTK_IS_V3270_ACCESSIBLE_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_ACCESSIBLE))
-#define GTK_V3270_ACCESSIBLE_GET_CLASS(obj)			(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_ACCESSIBLE, v3270AccessibleClass))
+ G_BEGIN_DECLS
 
-typedef struct _v3270Accessible      v3270Accessible;
-typedef struct _v3270AccessibleClass v3270AccessibleClass;
+ #define GTK_TYPE_V3270_ACCESSIBLE					(v3270_accessible_get_type ())
+ #define GTK_V3270_ACCESSIBLE(obj)					(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_V3270_ACCESSIBLE, v3270Accessible))
+ #define GTK_V3270_ACCESSIBLE_CLASS(klass)			(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_V3270_ACCESSIBLE, v3270AccessibleClass))
+ #define GTK_IS_V3270_ACCESSIBLE(obj)				(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_V3270_ACCESSIBLE))
+ #define GTK_IS_V3270_ACCESSIBLE_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_V3270_ACCESSIBLE))
+ #define GTK_V3270_ACCESSIBLE_GET_CLASS(obj)			(G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_V3270_ACCESSIBLE, v3270AccessibleClass))
 
-typedef enum _v3270_state
-{
+ typedef struct _v3270Accessible      v3270Accessible;
+ typedef struct _v3270AccessibleClass v3270AccessibleClass;
+
+ typedef enum _v3270_state
+ {
 	V3270_STATE_NONE			= 0x0000,
 	V3270_STATE_EDITABLE		= 0x0001,
 	V3270_STATE_BUSY			= 0x0002,
 	V3270_STATE_ENABLED			= 0x0004,
 	V3270_STATE_INVALID_ENTRY	= 0x0008,
 
-} V3270_STATE;
+ } V3270_STATE;
 
-struct _v3270Accessible
-{
+ struct _v3270Accessible
+ {
 	GtkAccessible	parent;
 	V3270_STATE		state;
 
-//	AtkLayer	layer;
-};
+ };
 
-struct _v3270AccessibleClass
-{
+ struct _v3270AccessibleClass
+ {
   GtkAccessibleClass parent_class;
+ };
 
+ GType v3270_accessible_get_type(void);
 
-};
+ void v3270_acessible_set_state(GtkAccessible *obj, LIB3270_MESSAGE id);
 
-GType v3270_accessible_get_type(void);
-
-void v3270_acessible_set_state(GtkAccessible *obj, LIB3270_MESSAGE id);
-
-G_END_DECLS
+ G_END_DECLS

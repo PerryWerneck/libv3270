@@ -27,44 +27,38 @@
  *
  */
 
-#ifndef PRIVATE_H_INCLUDED
+ #pragma once
 
-	#include <config.h>
+ #include <config.h>
 
-	#include <gtk/gtk.h>
+ #include <gtk/gtk.h>
 
+ #ifndef ENABLE_NLS
 	#define ENABLE_NLS
+ #endif // ENABLE_NLS
 
-	#include <libintl.h>
-	#include <glib/gi18n-lib.h>
+ #include <libintl.h>
+ #include <glib/gi18n-lib.h>
 
-	#include <v3270.h>
-	#include <v3270/trace.h>
+ #include <v3270.h>
+ #include <v3270/trace.h>
 
-	#include <lib3270.h>
-	#include <lib3270/log.h>
-	#include <lib3270/trace.h>
+ #include <lib3270.h>
+ #include <lib3270/log.h>
+ #include <lib3270/trace.h>
 
-	/// @brief V3270 Trace Signal list
-	enum V3270_TRACE_SIGNAL
-	{
-		V3270_TRACE_SIGNAL_COMMAND,
+ /// @brief V3270 Trace Signal list
+ enum V3270_TRACE_SIGNAL
+ {
+	V3270_TRACE_SIGNAL_COMMAND,
 
-		V3270_TRACE_SIGNAL_LAST
-	};
+	V3270_TRACE_SIGNAL_LAST
+ };
 
-	G_GNUC_INTERNAL H3270				* v3270_trace_get_session(GtkWidget *widget);
-	G_GNUC_INTERNAL GtkWidget			* v3270_trace_get_terminal(GtkWidget *widget);
-	G_GNUC_INTERNAL GtkTextBuffer		* v3270_trace_get_text_buffer(GtkWidget *widget);
-	G_GNUC_INTERNAL GtkScrolledWindow	* v3270_trace_get_scrolled_window(GtkWidget *widget);
-	G_GNUC_INTERNAL void				  v3270_trace_signal_emit(gpointer instance, enum V3270_TRACE_SIGNAL signal_id, ...);
+ G_GNUC_INTERNAL H3270				* v3270_trace_get_session(GtkWidget *widget);
+ G_GNUC_INTERNAL GtkWidget			* v3270_trace_get_terminal(GtkWidget *widget);
+ G_GNUC_INTERNAL GtkTextBuffer		* v3270_trace_get_text_buffer(GtkWidget *widget);
+ G_GNUC_INTERNAL GtkScrolledWindow	* v3270_trace_get_scrolled_window(GtkWidget *widget);
+ G_GNUC_INTERNAL void				  v3270_trace_signal_emit(gpointer instance, enum V3270_TRACE_SIGNAL signal_id, ...);
 
-	G_BEGIN_DECLS
-
-
-	G_END_DECLS
-
-
-
-#endif // PRIVATE_H_INCLUDED
 

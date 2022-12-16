@@ -27,7 +27,7 @@
  *
  */
 
-#ifndef V3270_COLOR_SCHEME_H_INCLUDED
+ #pragma once
 
  #include <gtk/gtk.h>
 
@@ -69,4 +69,3 @@
 
  G_END_DECLS
 
-#endif // V3270_COLOR_SCHEME_H_INCLUDED

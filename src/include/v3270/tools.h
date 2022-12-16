@@ -27,27 +27,25 @@
  *
  */
 
-#ifndef V3270_TOOLS_H_INCLUDED
+ #pragma once
 
  #include <gtk/gtk.h>
  #include <lib3270.h>
 
  G_BEGIN_DECLS
 
-	/// @brief Bind pointer to widget; release it when widget is destroyed.
-	LIB3270_EXPORT void gtk_widget_bind_ptr(GtkWidget *widget, gpointer ptr);
+ /// @brief Bind pointer to widget; release it when widget is destroyed.
+ LIB3270_EXPORT void gtk_widget_bind_ptr(GtkWidget *widget, gpointer ptr);
 
-	/// @brief Add style to widget.
-	LIB3270_EXPORT void gtk_widget_add_class(GtkWidget *widget, const char *className);
+ /// @brief Add style to widget.
+ LIB3270_EXPORT void gtk_widget_add_class(GtkWidget *widget, const char *className);
 
-	/// @brief Bind file chooser with entry field.
-	LIB3270_EXPORT void gtk_entry_bind_to_filechooser(GtkWidget *widget, GtkFileChooserAction action, const gchar *title, const gchar *icon_name, const gchar *pattern, const gchar *name);
+ /// @brief Bind file chooser with entry field.
+ LIB3270_EXPORT void gtk_entry_bind_to_filechooser(GtkWidget *widget, GtkFileChooserAction action, const gchar *title, const gchar *icon_name, const gchar *pattern, const gchar *name);
 
-	/// @brief Bind dialog with toplevel
-	LIB3270_EXPORT void gtk_dialog_set_toplevel(GtkWidget *dialog, GtkWidget *widget);
-
+ /// @brief Bind dialog with toplevel
+ LIB3270_EXPORT void gtk_dialog_set_toplevel(GtkWidget *dialog, GtkWidget *widget);
 
  G_END_DECLS
 
-#endif // V3270_TOOLS_H_INCLUDED
 

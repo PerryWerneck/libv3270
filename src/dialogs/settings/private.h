@@ -27,60 +27,59 @@
  *
  */
 
-#ifndef PRIVATE_H_INCLUDED
+ #pragma once
 
-	#include <internals.h>
-	#include <lib3270/log.h>
-	#include <lib3270/toggle.h>
-	#include <v3270/settings.h>
+ #include <internals.h>
+ #include <lib3270/log.h>
+ #include <lib3270/toggle.h>
+ #include <v3270/settings.h>
 
-	/// @brief Toggle button factory.
-	struct ToggleButtonDefinition {
-		gint left;
-		gint top;
-		gint width;
-		unsigned short grid;
-		LIB3270_TOGGLE_ID	id;
-	};
+ /// @brief Toggle button factory.
+ struct ToggleButtonDefinition {
+	gint left;
+	gint top;
+	gint width;
+	unsigned short grid;
+	LIB3270_TOGGLE_ID	id;
+ };
 
-	G_GNUC_INTERNAL void v3270_settings_create_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget **grids, GtkToggleButton **toggles);
-	G_GNUC_INTERNAL void v3270_settings_load_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget *terminal, GtkToggleButton **toggles);
-	G_GNUC_INTERNAL void v3270_settings_apply_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget *terminal, GtkToggleButton **toggles);
+ G_GNUC_INTERNAL void v3270_settings_create_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget **grids, GtkToggleButton **toggles);
+ G_GNUC_INTERNAL void v3270_settings_load_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget *terminal, GtkToggleButton **toggles);
+ G_GNUC_INTERNAL void v3270_settings_apply_toggle_buttons(const struct ToggleButtonDefinition * definitions, size_t length, GtkWidget *terminal, GtkToggleButton **toggles);
 
-	/// @brief Entry field factory.
-	struct EntryFieldDefinition {
+ /// @brief Entry field factory.
+ struct EntryFieldDefinition {
 
-		ENTRY_FIELD_HEAD
+	ENTRY_FIELD_HEAD
 
-		unsigned short grid;
-		gint max_length;
-		gint width_chars;
+	unsigned short grid;
+	gint max_length;
+	gint width_chars;
 
-	};
+ };
 
-	G_GNUC_INTERNAL void v3270_settings_create_entry_fields(const struct EntryFieldDefinition * definitions, size_t length, GtkWidget **grids, GtkEntry **entries);
+ G_GNUC_INTERNAL void v3270_settings_create_entry_fields(const struct EntryFieldDefinition * definitions, size_t length, GtkWidget **grids, GtkEntry **entries);
 
-	/// @brief Combo Box factory
-	struct ComboBoxDefinition {
+ /// @brief Combo Box factory
+ struct ComboBoxDefinition {
 
-		ENTRY_FIELD_HEAD
+	ENTRY_FIELD_HEAD
 
-		unsigned short grid;
+	unsigned short grid;
 
-		gint n_columns;
-		const GType *types;
+	gint n_columns;
+	const GType *types;
 
-	};
+ };
 
-	G_GNUC_INTERNAL void v3270_settings_create_combos(const struct ComboBoxDefinition * definitions, size_t length, GtkWidget **grids, GtkComboBox **combos);
+ G_GNUC_INTERNAL void v3270_settings_create_combos(const struct ComboBoxDefinition * definitions, size_t length, GtkWidget **grids, GtkComboBox **combos);
 
-	/// @brief Checkbox factory
-	struct CheckBoxDefinition {
-		ENTRY_FIELD_HEAD
+ /// @brief Checkbox factory
+ struct CheckBoxDefinition {
+	ENTRY_FIELD_HEAD
 
-		unsigned short grid;
-	};
+	unsigned short grid;
+ };
 
-	G_GNUC_INTERNAL void v3270_settings_create_checkboxes(const struct CheckBoxDefinition * definitions, size_t length, GtkWidget **grids, GtkToggleButton **buttons);
+ G_GNUC_INTERNAL void v3270_settings_create_checkboxes(const struct CheckBoxDefinition * definitions, size_t length, GtkWidget **grids, GtkToggleButton **buttons);
 
-#endif // PRIVATE_H_INCLUDED

@@ -103,16 +103,18 @@ static void transfer_type_changed(GtkComboBox *widget, v3270ft *dialog) {
 		// Tem opção seleciona
 
 		struct v3270ft_entry *entry = v3270ft_get_selected(dialog);
-		LIB3270_FT_OPTION opt = entry->options & ~(LIB3270_FT_OPTION_SEND|LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP);
+		if(entry) {
+			LIB3270_FT_OPTION opt = entry->options & ~(LIB3270_FT_OPTION_SEND|LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_CRLF|LIB3270_FT_OPTION_REMAP);
 
-		opt |= ft_type[selected].opt;
+			opt |= ft_type[selected].opt;
 
-		entry->type = selected;
-		debug("Transfer type=%d opt=%08x last=%08x",selected,opt,entry->options);
+			entry->type = selected;
+			debug("Transfer type=%d opt=%08x last=%08x",selected,opt,entry->options);
 
-		if(entry->options != opt) {
-			debug("Transfer type=%d opt=%08x",selected,opt);
-			v3270ft_set_options(GTK_WIDGET(dialog),opt);
+			if(entry->options != opt) {
+				debug("Transfer type=%d opt=%08x",selected,opt);
+				v3270ft_set_options(GTK_WIDGET(dialog),opt);
+			}
 		}
 
 	}
@@ -290,11 +292,7 @@ static gboolean spin_format(GtkSpinButton *spin, G_GNUC_UNUSED gpointer data) {
 	return TRUE;
 }
 
-//#ifdef WIN32
-//static void select_local_file(GtkButton G_GNUC_UNUSED(*button), v3270ft *dialog) {
-//#else
 static void icon_press(G_GNUC_UNUSED GtkEntry *entry, G_GNUC_UNUSED GtkEntryIconPosition icon_pos, G_GNUC_UNUSED GdkEvent *event, v3270ft *dialog) {
-//#endif // WIN32
 
 	debug("%s: action=%d",__FUNCTION__, (int) GTK_FILE_CHOOSER_ACTION_OPEN);
 

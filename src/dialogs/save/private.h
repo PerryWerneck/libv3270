@@ -27,6 +27,8 @@
  *
  */
 
+ #pragma once
+
  #include <internals.h>
 
  #include <libintl.h>
