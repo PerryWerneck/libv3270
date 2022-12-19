@@ -417,7 +417,6 @@
 	}
 
 	g_message("Can't find color scheme");
-	//gtk_combo_box_set_active(GTK_COMBO_BOX(widget),-1);
 
 	// TODO: Create an entry for this scheme as "custom" and select it.
 

@@ -91,9 +91,6 @@ static void V3270PrintSettings_init(V3270PrintSettings *widget)
  	gtk_grid_set_row_spacing(GTK_GRID(widget),6);
  	gtk_grid_set_column_spacing(GTK_GRID(widget),12);
 
-	// g_signal_connect(G_OBJECT(widget->color),"update-colors",G_CALLBACK(color_scheme_changed),widget);
-	// g_signal_connect(G_OBJECT(widget->selected),"toggled",G_CALLBACK(toggle_show_selection),widget);
-
 	for(f=0;f<G_N_ELEMENTS(text);f++)
 	{
 		GtkWidget *label = gtk_label_new_with_mnemonic(g_dgettext(GETTEXT_PACKAGE,text[f]));

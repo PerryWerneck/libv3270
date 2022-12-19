@@ -71,33 +71,11 @@
 
  gboolean v3270_accelerator_compare(const V3270Accelerator * accel, const guint keyval, const GdkModifierType mods)
  {
- 	// Problems:
-
-//	debug("%s: keys: %08x %08x",__FUNCTION__,accel->key,keyval);
-
-	// It's the same key?
-	if(accel->key != keyval)
-	{
-		g_autofree gchar * acckey = gtk_accelerator_name(accel->key,accel->mods);
-		g_autofree gchar * qkey = gtk_accelerator_name(keyval,mods);
-//		debug("%s: Rejected by key %08x %08x (%s %s)",__FUNCTION__,accel->key,keyval,acckey,qkey);
+	// It's the same key and mods?
+	if(accel->key != keyval || accel->mods != mods)
 		return FALSE;
-	}
 
 	// The same key and same mods, Found it!
- 	if(accel->mods == mods)
-		return TRUE;
-
-/*
-#ifdef DEBUG
-	{
-		g_autofree gchar * acckey = gtk_accelerator_name(accel->key,accel->mods);
-		g_autofree gchar * qkey = gtk_accelerator_name(keyval,mods);
-//		debug("%s: accel=%s (%0u/%08x) query=%s (%u/%08x) xor=%08x and=%08x",__FUNCTION__,acckey,accel->key,accel->mods,qkey,keyval,mods,(accel->mods^mods),(accel->mods & mods));
-	}
-#endif // DEBUG
-*/
-
 	return TRUE;
  }
 
