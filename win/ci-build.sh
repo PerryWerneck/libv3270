@@ -16,30 +16,31 @@ die ( ) {
 	exit -1
 }
 
-cd $(dirname $(dirname $(readlink -f ${0})))
+myDIR=$(dirname $(dirname $(readlink -f ${0})))
+echo "myDIR=${myDIR}"
 
-rm -fr .build
+cd ${myDIR}
+rm -fr ${myDIR}/.build
 
 #
 # Build LIB3270
 #
 echo "Building lib3270"
-mkdir -p .build/lib3270
-git clone https://github.com/PerryWerneck/lib3270.git ./.build/lib3270 > $LOGFILE 2>&1 || die "clone lib3270 failure"
-pushd ./.build/lib3270
+mkdir -p ${myDIR}/.build/lib3270
+git clone https://github.com/PerryWerneck/lib3270.git ${myDIR}/.build/lib3270 > $LOGFILE 2>&1 || die "clone lib3270 failure"
+pushd  ${myDIR}/.build/lib3270
 ./autogen.sh > $LOGFILE 2>&1 || die "Autogen failure"
 ./configure > $LOGFILE 2>&1 || die "Configure failure"
 make clean > $LOGFILE 2>&1 || die "Make clean failure"
 make all  > $LOGFILE 2>&1 || die "Make failure"
+make install  > $LOGFILE 2>&1 || die "Install failure"
 popd
 
-export LIB3270_CFLAGS="-I./.build/lib3270/src/include"
-export LIB3270_LIBS="-L./.build/lib3270/.bin/Release -l3270.delayed"
-
 #
-# Build LIBV3270
+# Build PW3270
 #
-echo "Building libv3270"
+echo "Building PW3270"
+cd ${myDIR}
 ./autogen.sh > $LOGFILE 2>&1 || die "Autogen failure"
 ./configure > $LOGFILE 2>&1 || die "Configure failure"
 make clean > $LOGFILE 2>&1 || die "Make clean failure"
