@@ -61,6 +61,9 @@
 	gtk_adjustment_set_value(vadj,gtk_adjustment_get_upper(vadj));
 	gtk_scrolled_window_set_vadjustment(scrolled, vadj);
 
+	// Release reference from v3270_trace_append_text.
+ 	g_object_unref(cfg->widget);
+
 	return FALSE;
 
  }
@@ -73,6 +76,9 @@
  	struct _append_text * cfg = g_malloc0(sizeof(struct _append_text)+strlen(text)+1);
  	cfg->widget = widget;
  	strcpy(cfg->text,text);
+
+ 	// Get reference to widget.
+ 	g_object_ref(cfg->widget);
 
 	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,(GSourceFunc) bg_append_text, cfg, g_free);
 
