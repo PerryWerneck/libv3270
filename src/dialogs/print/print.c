@@ -212,7 +212,7 @@
  	// Setup defaults
     widget->mode 					= LIB3270_CONTENT_ALL;
     widget->settings.show_selection	= FALSE;
-    widget->font.name				= NULL; // g_strdup(v3270_default_font);
+    widget->font.name				= NULL;
 
  }
 

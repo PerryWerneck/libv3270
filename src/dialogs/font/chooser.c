@@ -204,8 +204,6 @@
 
 	if(chooser->font.face) {
 
-//		debug("%s",__FUNCTION__);
-
 		cairo_set_font_face(cr,chooser->font.face);
 		cairo_set_font_size(cr,15);
 
