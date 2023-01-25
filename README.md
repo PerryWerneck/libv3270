@@ -1,6 +1,6 @@
 ## 3270 Virtual Terminal for GTK.
 
-Created originally as part of PW3270 application.
+Created originally as part of [PW3270](../../../pw3270) application.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![CodeQL](https://github.com/PerryWerneck/libv3270/workflows/CodeQL/badge.svg?branch=master)
