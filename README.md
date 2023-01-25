@@ -12,7 +12,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 ### Linux
 
-For the supported distributions get the install repositories and instructions from https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=libv3270
+[<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">]([https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=pw3270](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=libv3270))
 
 ### Windows
 
