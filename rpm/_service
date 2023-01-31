@@ -19,10 +19,10 @@
 		<param name="files">*/rpm/libv3270.spec</param>
 	</service -->
   
-  	<service name="extract_file">
+	<!-- service name="extract_file">
 		<param name="archive">*.tar</param>
 		<param name="files">*/arch/PKGBUILD</param>
-	</service>
+	</service -->
 
 	<service name="extract_file">
 		<param name="archive">*.tar</param>
