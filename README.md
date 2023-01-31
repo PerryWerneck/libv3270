@@ -1,18 +1,16 @@
 ## 3270 Virtual Terminal for GTK.
 
-Created originally as part of PW3270 application.
-
-See more details at https://softwarepublico.gov.br/social/pw3270/
+Created originally as part of [PW3270](../../../pw3270) application.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![CodeQL](https://github.com/PerryWerneck/libv3270/workflows/CodeQL/badge.svg?branch=master)
-![Downloads](https://img.shields.io/github/downloads/PerryWerneck/libv3270/total.svg)
+[![build result](https://build.opensuse.org/projects/home:PerryWerneck:pw3270/packages/libv3270/badge.svg?type=percent)](https://build.opensuse.org/package/show/home:PerryWerneck:pw3270/libv3270)
 
 ## Instalation
 
 ### Linux
 
-For the supported distributions get the install repositories and instructions from https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=libv3270
+[<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">]([https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=pw3270](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=libv3270))
 
 ### Windows
 
