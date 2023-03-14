@@ -46,5 +46,9 @@ cd ${myDIR}
 make clean > $LOGFILE 2>&1 || die "Make clean failure"
 make all  > $LOGFILE 2>&1 || die "Make failure"
 
+make DESTDIR=.bin/package install || die "Install failure"
+tar --create --xz --file=mingw-libv3270.tar.xz --directory=.bin/package --verbose . || die "Tar failure"
+
+
 echo "Build complete"
 
