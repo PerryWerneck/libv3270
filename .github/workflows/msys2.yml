@@ -30,13 +30,10 @@ jobs:
       - name: CI-Build
         run: |
           ./win/ci-build.sh
-      - name: pack
-        run: |
-          7z a mingw-libv3270.zip .bin\package\mingw64\*
       - uses: ncipollo/release-action@v1
         with:
           tag: 5.4
-          artifacts: "*.zip,*.xz"
+          artifacts: "*.xz"
           allowUpdates: true
           draft: false
           makeLatest: true
