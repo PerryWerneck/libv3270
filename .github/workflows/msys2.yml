@@ -22,6 +22,11 @@ jobs:
           msystem: mingw64
           update: true
           install: xz mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool mingw-w64-x86_64-gtk3
+      - uses: robinraju/release-downloader@v1.7
+        with:
+          repository: "PerryWerneck/lib3270"
+          latest: true
+          fileName: "mingw-lib3270.tar.xz"      
       - name: CI-Build
         run: |
           ./win/ci-build.sh
