@@ -42,6 +42,7 @@ sysconfdir=@sysconfdir@
 
 SONAME=@SONAME@
 LIBNAME=libv3270
+PACKAGE_NAME=@PACKAGE_NAME@
 PRODUCT_NAME=@PRODUCT_NAME@
 INSTALL_PACKAGES=@INSTALL_PACKAGES@
 GETTEXT_PACKAGE=@GETTEXT_PACKAGE@
@@ -481,6 +482,10 @@ install-windows-dev: \
 	@$(INSTALL_DATA) \
 		$(BINRLS)/$(LIBNAME).def \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		CHANGELOG \
+		$(DESTDIR)$(datarootdir)/$(PACKAGE_NAME).changes
 
 
 install-glade:

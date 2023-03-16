@@ -145,6 +145,9 @@ rm -rf %{buildroot}
 %doc AUTHORS LICENSE README.md
 
 %{_mingw64_bindir}/*.dll
+%{_mingw64_datadir}/%{_product}/colors.conf
+%dir %{_mingw64_datadir}/%{_product}/remap
+%{_mingw64_datadir}/%{_product}/remap/*.xml
 
 %files devel
 %defattr(-,root,root)
@@ -155,10 +158,6 @@ rm -rf %{buildroot}
 %{_mingw64_libdir}/*.a
 
 %{_mingw64_datadir}/%{_product}/pot/*.pot
-%{_mingw64_datadir}/%{_product}/colors.conf
-
-%dir %{_mingw64_datadir}/%{_product}/remap
-%{_mingw64_datadir}/%{_product}/remap/*.xml
 
 %{_mingw64_datadir}/%{_product}/def/*.def
 
