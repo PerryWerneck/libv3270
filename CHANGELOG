@@ -1,4 +1,15 @@
 -------------------------------------------------------------------
+Tue Mar 14 03:15:06 UTC 2023 - perry.werneck@gmail.com
+
+- Update to version 5.4:
+  * Update README.md
+  * Adding obs badge.
+  * Scheduling msys2 rebuilds.
+  * Fixing segfault on exit with trace enabled.
+  * msys workflow runs only in master branch pull requests.
+  * Debugging msys workflow.
+
+-------------------------------------------------------------------
 Thu Apr 07 22:44:11 UTC 2022 - perry.werneck@gmail.com
 
 - Update to version 5.4:
