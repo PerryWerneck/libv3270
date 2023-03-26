@@ -6,7 +6,7 @@ PROJECT_NAME=$(grep AC_INIT configure.ac | cut -d[ -f2 | cut -d] -f1)
 VERSION=$(grep AC_INIT configure.ac | cut -d[ -f3 | cut -d] -f1)
 
 echo "Unpacking lib3270"
-tar -C $(brew --cellar) -Jxvf mingw-lib3270.tar.xz 
+tar -C $(brew --cellar) -Jxvf macos-lib3270.tar.xz 
 if [ "$?" != "0" ]; then
 	exit -1
 fi
