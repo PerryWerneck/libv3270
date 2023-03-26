@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - master
+      - develop
   schedule:
     - cron:  '30 13 2 2,4,6,8,10,12 *'
 
@@ -17,7 +18,7 @@ jobs:
       - uses: oprypin/find-latest-tag@v1
         id: gettag
         with:
-          repository: PerryWerneck/lib3270
+          repository: PerryWerneck/libv3270
           releases-only: true
       - uses: msys2/setup-msys2@v2
         with:
@@ -36,6 +37,39 @@ jobs:
         with:
           tag: ${{ steps.gettag.outputs.tag }}
           artifacts: "mingw-libv3270.tar.xz"
+          allowUpdates: true
+          draft: false
+          makeLatest: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
+  macos:
+    name: Build for mac
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: oprypin/find-latest-tag@v1
+        id: gettag
+        with:
+          repository: PerryWerneck/lib3270
+          releases-only: true
+      - name: Install Pre reqs
+        run: |
+          brew update
+          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig gtk+3
+          brew upgrade
+      - uses: robinraju/release-downloader@v1.7
+        with:
+          repository: "PerryWerneck/libv3270"
+          latest: true
+          fileName: "macos-lib3270.tar.xz"      
+      - name: build
+        run: ./mac/ci-build.sh
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.gettag.outputs.tag }}
+          artifacts: "macos-libv3270.tar.xz"
           allowUpdates: true
           draft: false
           makeLatest: true
