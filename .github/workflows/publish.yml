@@ -49,7 +49,7 @@ jobs:
       - uses: oprypin/find-latest-tag@v1
         id: gettag
         with:
-          repository: PerryWerneck/lib3270
+          repository: PerryWerneck/libv3270
           releases-only: true
       - name: Install Pre reqs
         run: |
@@ -58,7 +58,7 @@ jobs:
           brew upgrade
       - uses: robinraju/release-downloader@v1.7
         with:
-          repository: "PerryWerneck/libv3270"
+          repository: "PerryWerneck/lib3270"
           latest: true
           fileName: "macos-lib3270.tar.xz"      
       - name: build
