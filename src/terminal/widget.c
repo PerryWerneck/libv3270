@@ -362,7 +362,7 @@ static void finalize(GObject *object) {
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (v3270Class, toggle_changed),
 						NULL, NULL,
-						v3270_VOID__VOID_ENUM_BOOLEAN_POINTER,
+						v3270_VOID__VOID_ENUM_BOOLEAN_STRING,
 						G_TYPE_NONE, 3, G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_MESSAGE_CHANGED] =
@@ -389,7 +389,7 @@ static void finalize(GObject *object) {
 						G_SIGNAL_RUN_FIRST,
 						0,
 						NULL, NULL,
-						v3270_VOID__POINTER,
+						v3270_VOID__STRING,
 						G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_DISCONNECTED] =
@@ -416,7 +416,7 @@ static void finalize(GObject *object) {
 						G_SIGNAL_RUN_FIRST,
 						0,
 						NULL, NULL,
-						v3270_VOID__VOID_UINT_POINTER,
+						v3270_VOID__VOID_UINT_STRING,
 						G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_SELECTING] =
@@ -516,8 +516,8 @@ static void finalize(GObject *object) {
 						G_SIGNAL_RUN_LAST,
 						0,
 						NULL, NULL,
-						v3270_UINT__POINTER,
-						G_TYPE_UINT, 1, G_TYPE_POINTER);
+						v3270_UINT__STRING,
+						G_TYPE_UINT, 1, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_FIRE_ACTION] =
 		g_signal_new(	I_("fire-action"),
@@ -525,8 +525,8 @@ static void finalize(GObject *object) {
 						G_SIGNAL_RUN_LAST,
 						0,
 						NULL, NULL,
-						v3270_UINT__POINTER,
-						G_TYPE_UINT, 1, G_TYPE_POINTER);
+						v3270_UINT__STRING,
+						G_TYPE_UINT, 1, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_OPEN_URL] =
 		g_signal_new(	I_("open-url"),
@@ -534,7 +534,7 @@ static void finalize(GObject *object) {
 						G_SIGNAL_RUN_LAST,
 						0,
 						NULL, NULL,
-						v3270_UINT__POINTER,
+						v3270_UINT__STRING,
 						G_TYPE_UINT, 1, G_TYPE_STRING);
 
 	v3270_widget_signal[V3270_SIGNAL_SAVE_POPUP_RESPONSE] =
