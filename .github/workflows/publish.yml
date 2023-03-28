@@ -6,6 +6,7 @@ on:
       - develop      
 jobs:
   msys2-mingw:
+    name: Publish Windows 64
     runs-on: windows-latest
     defaults:
       run:
@@ -41,7 +42,7 @@ jobs:
           omitPrereleaseDuringUpdate: true
           replacesArtifacts: true
   macos:
-    name: Build for mac
+    name: Publish macos
     runs-on: macos-latest
     steps:
       - name: Checkout
