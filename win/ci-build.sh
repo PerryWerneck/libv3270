@@ -23,27 +23,13 @@ cd ${myDIR}
 rm -fr ${myDIR}/.build
 
 #
-# Build LIB3270
+# Unpack lib3270
 #
-if [ -e mingw-lib3270.tar.xz ]; then
-
-	echo "Unpacking lib3270"
-	tar -C / -Jxvf mingw-lib3270.tar.xz 
-
-else
-	echo "Building lib3270"
-	git clone https://github.com/PerryWerneck/lib3270.git ./.build/lib3270 || die "clone lib3270 failure"
-	cd ./.build/lib3270
-	./autogen.sh || die "Lib3270 autogen failure"
-	./configure || die "Lib3270 Configure failure"
-	make clean || die "Lib3270 Make clean failure"
-	make all || die "Lib3270 Make failure"
-	make install || die "Lib3270 Install failure"
-	cd ../..
-fi
+echo "Unpacking lib3270"
+tar -C / -Jxf mingw-lib3270.${MSYSTEM_CARCH}.tar.xz > $LOGFILE 2>&1 || die "lib3270 unpack failure"
 
 #
-# Build PW3270
+# Build libv3270
 #
 echo "Building libv3270"
 cd ${myDIR}
@@ -53,7 +39,7 @@ make clean > $LOGFILE 2>&1 || die "Make clean failure"
 make all  > $LOGFILE 2>&1 || die "Make failure"
 
 make DESTDIR=.bin/package install || die "Install failure"
-tar --create --xz --file=mingw-libv3270.tar.xz --directory=.bin/package --verbose . || die "Tar failure"
+tar --create --xz --file=mingw-libv3270.${MSYSTEM_CARCH}.tar.xz --directory=.bin/package --verbose . || die "Tar failure"
 
 
 echo "Build complete"
