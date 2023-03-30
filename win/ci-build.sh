@@ -7,8 +7,6 @@
 #
 echo "Running ${0}"
 
-TARGET_ARCH="x86_64"
-
 LOGFILE=build.log
 rm -f ${LOGFILE}
 
@@ -28,7 +26,7 @@ rm -fr ${myDIR}/.build
 # Unpack lib3270
 #
 echo "Unpacking lib3270"
-tar -C / -Jxf mingw-lib3270.${TARGET_ARCH}.tar.xz > $LOGFILE 2>&1 || die "lib3270 unpack failure"
+tar -C / -Jxf mingw-lib3270.${MSYSTEM_CARCH}.tar.xz > $LOGFILE 2>&1 || die "lib3270 unpack failure"
 
 #
 # Build libv3270
@@ -41,7 +39,7 @@ make clean > $LOGFILE 2>&1 || die "Make clean failure"
 make all  > $LOGFILE 2>&1 || die "Make failure"
 
 make DESTDIR=.bin/package install || die "Install failure"
-tar --create --xz --file=mingw-libv3270.${TARGET_ARCH}.tar.xz --directory=.bin/package --verbose . || die "Tar failure"
+tar --create --xz --file=mingw-libv3270.${MSYSTEM_CARCH}.tar.xz --directory=.bin/package --verbose . || die "Tar failure"
 
 
 echo "Build complete"
