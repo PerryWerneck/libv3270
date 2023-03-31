@@ -27,14 +27,14 @@ jobs:
         with:
           repository: "PerryWerneck/lib3270"
           latest: true
-          fileName: "mingw-lib3270.x86_64.tar.xz"      
+          fileName: "mingw-w64-x86_64-lib3270.tar.xz"      
       - name: CI-Build
         run: |
           ./win/ci-build.sh
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "mingw-libv3270.x86_64.tar.xz"
+          artifacts: "*-libv3270.tar.xz"
           allowUpdates: true
           draft: false
           makeLatest: true

@@ -26,7 +26,7 @@ rm -fr ${myDIR}/.build
 # Unpack lib3270
 #
 echo "Unpacking lib3270"
-tar -C / -Jxf mingw-lib3270.${MSYSTEM_CARCH}.tar.xz > $LOGFILE 2>&1 || die "lib3270 unpack failure"
+tar -C / -Jxf ${MINGW_PACKAGE_PREFIX}-lib3270.tar.xz > $LOGFILE 2>&1 || die "lib3270 unpack failure"
 
 #
 # Build libv3270
@@ -39,7 +39,7 @@ make clean > $LOGFILE 2>&1 || die "Make clean failure"
 make all  > $LOGFILE 2>&1 || die "Make failure"
 
 make DESTDIR=.bin/package install || die "Install failure"
-tar --create --xz --file=mingw-libv3270.${MSYSTEM_CARCH}.tar.xz --directory=.bin/package --verbose . || die "Tar failure"
+tar --create --xz --file=${MINGW_PACKAGE_PREFIX}-libv3270.tar.xz --directory=.bin/package --verbose . || die "Tar failure"
 
 
 echo "Build complete"
