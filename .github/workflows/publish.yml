@@ -4,9 +4,6 @@ on:
     branches:
       - master
       - develop      
-  push:
-    branches:
-      - develop      
 jobs:
   msys2-mingw:
     name: Publish Windows 64
