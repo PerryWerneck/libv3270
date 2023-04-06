@@ -400,6 +400,9 @@ install-static: \
 	$(BINRLS)/static/$(LIBNAME).a
 
 	# Install static library
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
 	@$(INSTALL_DATA) \
 		$(BINRLS)/static/$(LIBNAME).a \
 		$(DESTDIR)$(libdir)/$(LIBNAME)-static.a

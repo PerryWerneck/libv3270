@@ -22,19 +22,19 @@ jobs:
         with:
           msystem: mingw64
           update: true
-          install: xz mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool mingw-w64-x86_64-gtk3
+          install: dos2unix mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool mingw-w64-x86_64-gtk3
       - uses: robinraju/release-downloader@v1.7
         with:
           repository: "PerryWerneck/lib3270"
           latest: true
-          fileName: "mingw-w64-x86_64-lib3270.tar.xz"      
+          fileName: "mingw-w64-x86_64-lib3270-5.4-0-x86_64.pkg.tar.zst"      
       - name: CI-Build
         run: |
           ./win/ci-build.sh
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*-libv3270.tar.xz"
+          artifacts: "*-libv3270-*.pkg.tar.zst"
           allowUpdates: true
           draft: false
           makeLatest: true
