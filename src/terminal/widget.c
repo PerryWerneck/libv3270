@@ -609,6 +609,10 @@ static void v3270_init(v3270 *widget)
 	// Init accelerators
 	widget->accelerators = v3270_accelerator_map_load_default(NULL);
 
+#ifdef DEBUG
+	lib3270_testpattern(widget->host);
+#endif // DEBUG
+
 }
 
 LIB3270_EXPORT GtkWidget * v3270_new(void)
