@@ -217,6 +217,7 @@
 	}
 	*/
 
+	/*
 #ifdef DEBUG
 	{
 		g_autofree gchar * keyname = gtk_accelerator_name(accel->key,accel->mods);
@@ -245,7 +246,7 @@
 
 	}
 #endif // DEBUG
-
+	*/
  }
 
  const gchar * v3270_accelerator_get_name(const V3270Accelerator * accel)

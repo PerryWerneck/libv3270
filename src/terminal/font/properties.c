@@ -136,7 +136,7 @@ static guint check_font_family(const gchar *family_name)
 	if(rc)
 		g_warning(invalid_font_messages[rc],family_name);
 	else
-		g_message(invalid_font_messages[rc],family_name);
+		g_message(invalid_font_messages[0],family_name);
 
 	return rc;
 }
