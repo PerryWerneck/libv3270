@@ -55,6 +55,7 @@ jobs:
         id: gettag
         with:
           repository: PerryWerneck/libv3270
+          sort-tags: true
           releases-only: true
       - name: Install Pre reqs
         run: |
@@ -73,7 +74,7 @@ jobs:
           tag: ${{ steps.gettag.outputs.tag }}
           artifacts: "macos-libv3270.tar.xz"
           allowUpdates: true
-          draft: false
+          draft: true
           makeLatest: true
           omitBody: true
           omitPrereleaseDuringUpdate: true
