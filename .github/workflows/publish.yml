@@ -40,7 +40,7 @@ jobs:
           tag: ${{ steps.gettag.outputs.tag }}
           artifacts: "*-libv3270-*.pkg.tar.zst"
           allowUpdates: true
-          draft: false
+          draft: true
           makeLatest: true
           omitBody: true
           omitPrereleaseDuringUpdate: true
