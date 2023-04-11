@@ -17,6 +17,7 @@ jobs:
         id: gettag
         with:
           repository: PerryWerneck/libv3270
+          sort-tags: true
           releases-only: true
       - uses: msys2/setup-msys2@v2
         with:
