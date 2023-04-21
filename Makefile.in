@@ -512,7 +512,16 @@ install-glade:
 #---[ Misc Targets ]---------------------------------------------------------------------
 
 $(POTDIR)/$(GETTEXT_PACKAGE).pot: \
-	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(SRC).pot)
+	$(foreach SRC, $(basename $(COMMON_SOURCES)), $(POTDIR)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/terminal/linux/*.c)), $(POTDIR)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/selection/linux/*.c)), $(POTDIR)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/dialogs/linux/*.c)), $(POTDIR)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/terminal/windows/*.c)), $(POTDIR)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/selection/windows/*.c)), $(POTDIR)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/dialogs/windows/*.c)), $(POTDIR)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/terminal/macos/*.c)), $(POTDIR)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/selection/macos/*.c)), $(POTDIR)/$(SRC).pot) \
+	$(foreach SRC, $(basename $(wildcard $(srcdir)/src/dialogs/macos/*.c)), $(POTDIR)/$(SRC).pot)
 
 	@rm -f $@
 	@$(MKDIR) $(@D)
