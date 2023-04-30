@@ -16,15 +16,6 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-
-%define __strip %{_mingw64_strip}
-%define __objdump %{_mingw64_objdump}
-%define _use_internal_dependency_generator 0
-%define __find_requires %{_mingw64_findrequires}
-%define __find_provides %{_mingw64_findprovides}
-%define __os_install_post %{_mingw64_debug_install_post} \
-                          %{_mingw64_install_post}
-
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
 Summary:		3270 Virtual Terminal for GTK
@@ -69,6 +60,10 @@ BuildRequires:	mingw64(lib:intl)
 
 BuildRequires:	mingw64(pkg:lib3270)
 
+%_mingw64_package_header_debug
+
+BuildArch: noarch
+
 %description
 
 TN3270 GTK Virtual terminal Widget originally designed as part of the pw3270 application.
@@ -112,6 +107,7 @@ widgets in Glade.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
+%_mingw64_debug_package
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
@@ -148,6 +144,8 @@ rm -rf %{buildroot}
 %{_mingw64_datadir}/%{_product}/colors.conf
 %dir %{_mingw64_datadir}/%{_product}/remap
 %{_mingw64_datadir}/%{_product}/remap/*.xml
+
+%exclude %{_mingw64_datadir}/*.changes
 
 %files devel
 %defattr(-,root,root)

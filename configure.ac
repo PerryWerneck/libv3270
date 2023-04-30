@@ -40,6 +40,9 @@ AC_CONFIG_AUX_DIR([scripts])
 dnl Recommended for gtk-doc (https://developer.gnome.org/gtk-doc-manual/stable/settingup_autoconf.html.en)
 AC_CONFIG_MACRO_DIR(m4)
 
+dnl Initialize libtool.
+LT_INIT
+
 dnl Compute the canonical host-system type
 AC_CANONICAL_HOST
 
@@ -111,7 +114,7 @@ case "$host" in
 		DLLEXT=".dylib"
 		DLL_LDFLAGS="-shared -Wl,-install_name,\$(@F)"
 
-		INSTALL_PACKAGES="linux-lib ${INSTALL_PACKAGES}"
+		INSTALL_PACKAGES="macos-lib ${INSTALL_PACKAGES}"
 
 		app_cv_static='no'
 		;;
