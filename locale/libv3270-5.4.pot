@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-21 08:47-0300\n"
+"POT-Creation-Date: 2023-05-02 06:55-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "16 colors"
 msgstr ""
 
-#: src/filetransfer/v3270ftprogress.c:386 src/filetransfer/v3270ft.c:352
+#: src/filetransfer/v3270ft.c:352 src/filetransfer/v3270ftprogress.c:386
 #: src/dialogs/print/settingsdialog.c:286
 #: src/dialogs/print/settingsdialog.c:288
 #: src/dialogs/print/settingsdialog.c:290
@@ -209,13 +209,13 @@ msgstr ""
 msgid "Can't paste text"
 msgstr ""
 
-#: src/filetransfer/save.c:117 src/filetransfer/activitylist.c:436
+#: src/filetransfer/activitylist.c:436 src/filetransfer/save.c:117
 #: src/trace/trace.c:483 src/dialogs/transfer.c:92 src/dialogs/save/save.c:608
 #, c-format
 msgid "Can't save %s"
 msgstr ""
 
-#: src/filetransfer/worker.c:618 src/filetransfer/v3270ftprogress.c:781
+#: src/filetransfer/v3270ftprogress.c:781 src/filetransfer/worker.c:618
 msgid "Can't set callback table"
 msgstr ""
 
@@ -223,11 +223,11 @@ msgstr ""
 msgid "Can't set lib3270 I/O controller"
 msgstr ""
 
-#: src/filetransfer/worker.c:599 src/filetransfer/v3270ftprogress.c:768
+#: src/filetransfer/v3270ftprogress.c:768 src/filetransfer/worker.c:599
 msgid "Can't start file transfer session"
 msgstr ""
 
-#: src/filetransfer/v3270ftprogress.c:433 src/filetransfer/transfer.c:90
+#: src/filetransfer/transfer.c:90 src/filetransfer/v3270ftprogress.c:433
 #: src/dialogs/settings/host.c:367 src/tools/entry.c:99
 msgid "Cancel"
 msgstr ""
@@ -426,7 +426,7 @@ msgstr ""
 msgid "Edit terminal colors"
 msgstr ""
 
-#: src/terminal/actions/pfkey.c:105 src/terminal/actions/pakey.c:105
+#: src/terminal/actions/pakey.c:105 src/terminal/actions/pfkey.c:105
 msgid "Emit a PA Key action"
 msgstr ""
 
@@ -646,11 +646,11 @@ msgstr ""
 msgid "L_U Names"
 msgstr ""
 
-#: src/filetransfer/v3270ft.c:201 src/filetransfer/activitylist.c:384
+#: src/filetransfer/activitylist.c:384 src/filetransfer/v3270ft.c:201
 msgid "Load"
 msgstr ""
 
-#: src/filetransfer/v3270ft.c:200 src/filetransfer/activitylist.c:383
+#: src/filetransfer/activitylist.c:383 src/filetransfer/v3270ft.c:200
 msgid "Load queue from file"
 msgstr ""
 
@@ -957,7 +957,7 @@ msgstr ""
 msgid "Record Length"
 msgstr ""
 
-#: src/filetransfer/v3270ft.c:339 src/filetransfer/settings.c:519
+#: src/filetransfer/settings.c:519 src/filetransfer/v3270ft.c:339
 msgid "Record format"
 msgstr ""
 
@@ -1023,8 +1023,8 @@ msgstr ""
 msgid "Same of the screen"
 msgstr ""
 
-#: src/terminal/actions/table.c:238 src/filetransfer/v3270ft.c:218
-#: src/filetransfer/activitylist.c:451 src/trace/trace.c:498
+#: src/terminal/actions/table.c:238 src/filetransfer/activitylist.c:451
+#: src/filetransfer/v3270ft.c:218 src/trace/trace.c:498
 #: src/dialogs/transfer.c:70
 msgid "Save"
 msgstr ""
@@ -1045,7 +1045,7 @@ msgstr ""
 msgid "Save copy"
 msgstr ""
 
-#: src/filetransfer/v3270ft.c:217 src/filetransfer/activitylist.c:450
+#: src/filetransfer/activitylist.c:450 src/filetransfer/v3270ft.c:217
 msgid "Save queue to file"
 msgstr ""
 
@@ -1121,7 +1121,7 @@ msgstr ""
 msgid "Security engine"
 msgstr ""
 
-#: src/filetransfer/v3270ft.c:302 src/filetransfer/settings.c:209
+#: src/filetransfer/settings.c:209 src/filetransfer/v3270ft.c:302
 #: src/dialogs/settings/host.c:368
 msgid "Select"
 msgstr ""
@@ -1138,7 +1138,7 @@ msgstr ""
 msgid "Select destination file"
 msgstr ""
 
-#: src/filetransfer/v3270ft.c:590 src/filetransfer/settings.c:467
+#: src/filetransfer/settings.c:467 src/filetransfer/v3270ft.c:590
 #: src/dialogs/load.c:176
 msgid "Select file"
 msgstr ""
@@ -1151,7 +1151,7 @@ msgstr ""
 msgid "Select last file"
 msgstr ""
 
-#: src/filetransfer/v3270ft.c:301 src/filetransfer/settings.c:208
+#: src/filetransfer/settings.c:208 src/filetransfer/v3270ft.c:301
 msgid "Select local file"
 msgstr ""
 
@@ -1219,7 +1219,7 @@ msgstr ""
 msgid "Smart copy"
 msgstr ""
 
-#: src/filetransfer/v3270ft.c:340 src/filetransfer/settings.c:544
+#: src/filetransfer/settings.c:544 src/filetransfer/v3270ft.c:340
 msgid "Space allocation units"
 msgstr ""
 
@@ -1472,7 +1472,7 @@ msgstr ""
 msgid "Tracks"
 msgstr ""
 
-#: src/filetransfer/worker.c:576 src/filetransfer/v3270ftprogress.c:729
+#: src/filetransfer/v3270ftprogress.c:729 src/filetransfer/worker.c:576
 msgid "Transfer failed"
 msgstr ""
 
@@ -1480,7 +1480,7 @@ msgstr ""
 msgid "Transfer operation has timed out"
 msgstr ""
 
-#: src/filetransfer/v3270ft.c:338 src/filetransfer/settings.c:492
+#: src/filetransfer/settings.c:492 src/filetransfer/v3270ft.c:338
 msgid "Transfer options"
 msgstr ""
 
@@ -1734,7 +1734,7 @@ msgstr ""
 msgid "_Apply"
 msgstr ""
 
-#: src/dialogs/popups.c:192 src/dialogs/load.c:204
+#: src/dialogs/load.c:204 src/dialogs/popups.c:192
 #: src/dialogs/print/settingsdialog.c:412
 #: src/dialogs/print/settingsdialog.c:431 src/dialogs/save/save.c:341
 #: src/dialogs/settings/dialog.c:203 src/selection/linux/paste.c:85
@@ -1749,9 +1749,9 @@ msgstr ""
 msgid "_Charset"
 msgstr ""
 
-#: src/trace/tracewindow.c:126 src/dialogs/transfer.c:160
-#: src/dialogs/transfer.c:180 src/dialogs/security.c:234
-#: src/dialogs/popups.c:106
+#: src/trace/tracewindow.c:126 src/dialogs/popups.c:106
+#: src/dialogs/security.c:234 src/dialogs/transfer.c:160
+#: src/dialogs/transfer.c:180
 msgid "_Close"
 msgstr ""
 
