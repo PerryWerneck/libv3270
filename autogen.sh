@@ -2,27 +2,18 @@
 
 builddir=${PWD}
 
-test -n "$srcdir" || srcdir=`dirname "$0"`
-test -n "$srcdir" || srcdir=.
+test -n "$srcdir" || srcdir=$(readlink -f $(dirname "$0"))
+test -n "$srcdir" || srcdir=$(readlink -f .)
 
-cd "$srcdir"
+cd ${srcdir}
 
-mkdir -p scripts
+mkdir -p ./scripts
 mkdir -p m4
 
-LIBTOOLIZE=$(which libtoolize)
-if [ -z ${LIBTOOLIZE} ]; then
-	LIBTOOLIZE=$(which glibtoolize)
-fi
-if [ -z ${LIBTOOLIZE} ]; then
-	echo "Can't find libtoolize"
-	exit -1
-fi
-
-${LIBTOOLIZE} --force
+libtoolize --force
 if test $? != 0 ; then
-	echo "libtoolize failed."
-	exit -1
+        echo "libtoolize failed."
+        exit -1
 fi
 
 aclocal
@@ -31,11 +22,11 @@ if test $? != 0 ; then
 	exit -1
 fi
 
-#autoheader --force
-#if test $? != 0 ; then
-#	echo "autoheader failed."
-#	exit -1
-#fi
+autoheader --force
+if test $? != 0 ; then
+       echo "autoheader failed."
+       exit -1
+fi
 
 autoconf --force
 if test $? != 0 ; then
@@ -47,10 +38,9 @@ automake --add-missing 2> /dev/null | true
 
 autopoint
 
-cd "${builddir}"
+cd ${builddir}
 
-test -n "$NOCONFIGURE" || "$srcdir/configure" --srcdir=${srcdir} $@
-
+test -n "$NOCONFIGURE" || "./configure" "$@"
 
 
 
