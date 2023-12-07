@@ -48,10 +48,14 @@
 		<Unit filename="src/dialogs/settings/private.h" />
 		<Unit filename="src/filetransfer/marshal.h" />
 		<Unit filename="src/filetransfer/private.h" />
+		<Unit filename="src/gobjects/v3270.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/include/clipboard.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/hostselect.h" />
 		<Unit filename="src/include/internals.h" />
+		<Unit filename="src/include/private/v3270.h" />
 		<Unit filename="src/include/save.h" />
 		<Unit filename="src/include/terminal.h" />
 		<Unit filename="src/include/v3270.h" />
