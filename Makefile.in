@@ -48,28 +48,10 @@ INSTALL_PACKAGES=@INSTALL_PACKAGES@
 GETTEXT_PACKAGE=@GETTEXT_PACKAGE@
 
 COMMON_SOURCES= \
-	$(wildcard $(srcdir)/src/terminal/*.c) \
-	$(wildcard $(srcdir)/src/terminal/properties/*.c) \
-	$(wildcard $(srcdir)/src/terminal/drawing/*.c) \
-	$(wildcard $(srcdir)/src/terminal/font/*.c) \
-	$(wildcard $(srcdir)/src/terminal/keyboard/*.c) \
-	$(wildcard $(srcdir)/src/terminal/actions/*.c) \
-	$(wildcard $(srcdir)/src/filetransfer/*.c) \
-	$(wildcard $(srcdir)/src/selection/*.c) \
-	$(wildcard $(srcdir)/src/trace/*.c) \
-	$(wildcard $(srcdir)/src/dialogs/*.c) \
-	$(wildcard $(srcdir)/src/dialogs/print/*.c) \
-	$(wildcard $(srcdir)/src/dialogs/save/*.c) \
-	$(wildcard $(srcdir)/src/dialogs/font/*.c) \
-	$(wildcard $(srcdir)/src/dialogs/settings/*.c) \
-	$(wildcard $(srcdir)/src/tools/*.c)
+	$(wildcard $(srcdir)/src/gobjects/*.c)
 
 SOURCES= \
-	$(COMMON_SOURCES) \
-	$(wildcard $(srcdir)/src/terminal/@OSNAME@/*.rc) \
-	$(wildcard $(srcdir)/src/terminal/@OSNAME@/*.c) \
-	$(wildcard $(srcdir)/src/selection/@OSNAME@/*.c) \
-	$(wildcard $(srcdir)/src/dialogs/@OSNAME@/*.c) \
+	$(COMMON_SOURCES)
 
 TEST_SOURCES= \
 	$(wildcard $(srcdir)/src/testprogram/*.c)
@@ -131,15 +113,12 @@ CFLAGS= \
 	-DBUILD_DATE=$(BUILD_DATE) \
 	-DLOCALEDIR=$(localedir) \
 	@LIB3270_CFLAGS@ \
-	@GTK_CFLAGS@ \
-	@GLIB_CFLAGS@
+	@GTK_CFLAGS@
 
 LIBS= \
 	@LIBS@ \
 	@GTK_LIBS@ \
-	@GLIB_LIBS@ \
 	@LIBICONV@ \
-	@INTL_LIBS@ \
 	@LIB3270_LIBS@
 
 LDFLAGS= \

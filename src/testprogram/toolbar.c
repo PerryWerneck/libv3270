@@ -28,6 +28,7 @@
  *
  */
 
+ /*
  #include <v3270.h>
  #include <v3270/filetransfer.h>
  #include <v3270/ftprogress.h>
@@ -42,8 +43,6 @@
  #include <stdlib.h>
 
  #pragma GCC diagnostic ignored "-Wunused-parameter"
-
- /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  static void print_clicked(GtkButton G_GNUC_UNUSED(*button), GtkWidget *terminal)
  {
@@ -108,7 +107,6 @@
  {
  	// v3270_error_popup(terminal,"title","summary","body");
 
- 	/*
  	{
 		GtkWidget * dialog = v3270_dialog_new_with_buttons("Testing dialog", terminal, "Ok", GTK_RESPONSE_OK, "Cancel", GTK_RESPONSE_CANCEL, NULL);
 
@@ -118,10 +116,8 @@
 		gtk_widget_show_all(dialog);
 
  	}
- 	*/
 
 
-	/*
 	//
 	// Test transfer dialog.
 	//
@@ -136,9 +132,7 @@
 		0,
 		4096
 	);
-	*/
 
-	/*
 	//
 	// Test activity
 	//
@@ -147,10 +141,8 @@
 	v3270_ft_activity_set_local_filename(activity,"/tmp/test.txt");
 	v3270_ft_activity_set_remote_filename(activity,"remote_file");
 	v3270_ft_activity_set_options(activity,LIB3270_FT_OPTION_RECEIVE|LIB3270_FT_OPTION_ASCII|LIB3270_FT_OPTION_REMAP);
-	*/
 
 
-	/*
 	{
 		//
 		// Test V3270 FT Dialog
@@ -168,7 +160,6 @@
 		gtk_widget_show_all(dialog);
 
 	}
-	*/
 
 
  }
@@ -265,5 +256,6 @@
 	return toolbar;
 
  }
+ */
 
 

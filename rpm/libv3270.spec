@@ -18,7 +18,7 @@
 
 
 Name:           libv3270
-Version:        5.4
+Version:        5.5
 Release:        0
 Summary:        3270 Virtual Terminal for GTK
 License:        LGPL-3.0-only
@@ -33,7 +33,7 @@ BuildRequires:  libtool
 BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
-BuildRequires:  pkgconfig(gtk+-3.0)
+BuildRequires:  pkgconfig(gtk+-4.0)
 BuildRequires:  pkgconfig(lib3270) >= 5.4
 
 Suggests:       %{name}-config
@@ -41,7 +41,7 @@ Suggests:       %{name}-config
 %description
 
 Originally designed as part of the pw3270 application, this library
-provides a TN3270 virtual terminal widget for GTK 3.
+provides a TN3270 virtual terminal widget for GTK 4.
 
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
