@@ -21,9 +21,22 @@
   * @brief Declares v3270 private methods.
   */
 
+ // Reference:
+ // https://developer-old.gnome.org/gobject/stable/howto-gobject-code.html
+
  #pragma once
- #include <config.h>
  #include <gtk/gtk.h>
+ #include <v3270-terminal.h>
+
+ // Private structure definition.
+ typedef struct {
+	int dunno;
+ } V3270TerminalPrivate;
+
+ struct _V3270Terminal {
+	GtkWidget parent_instance;
+
+ };
 
  // Signals
  enum {
@@ -34,22 +47,5 @@
  enum {
   PROP_0,
  };
-
- typedef struct _V3270Private V3270Private;
-
- struct _V3270Private {
-	int dunno;
- };
-
- // GObject methods.
- void v3270_editable_init(GtkEditableInterface *iface);
- void v3270_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
- void v3270_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
- void v3270_finalize(GObject *object);
- void v3270_dispose(GObject *object);
-
- // Acessible
- void v3270_accessible_interface_init(GtkAccessibleInterface *iface);
-
 
 

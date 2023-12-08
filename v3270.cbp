@@ -48,17 +48,22 @@
 		<Unit filename="src/dialogs/settings/private.h" />
 		<Unit filename="src/filetransfer/marshal.h" />
 		<Unit filename="src/filetransfer/private.h" />
-		<Unit filename="src/gobjects/v3270.c">
+		<Unit filename="src/gobjects/v3270-terminal.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/include/clipboard.h" />
+		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/hostselect.h" />
 		<Unit filename="src/include/internals.h" />
-		<Unit filename="src/include/private/v3270.h" />
+		<Unit filename="src/include/marshal/dialogs.h" />
+		<Unit filename="src/include/marshal/filetransfer.h" />
+		<Unit filename="src/include/marshal/terminal.h" />
+		<Unit filename="src/include/marshal/trace.h" />
+		<Unit filename="src/include/private/v3270-terminal.h" />
 		<Unit filename="src/include/save.h" />
 		<Unit filename="src/include/terminal.h" />
-		<Unit filename="src/include/v3270.h" />
+		<Unit filename="src/include/v3270-terminal.h" />
 		<Unit filename="src/include/v3270/accessible.h" />
 		<Unit filename="src/include/v3270/actions.h" />
 		<Unit filename="src/include/v3270/colorscheme.h" />

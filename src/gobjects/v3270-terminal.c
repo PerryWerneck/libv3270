@@ -30,14 +30,14 @@
 
  // Reference:
  // https://gitlab.gnome.org/GNOME/gtk/-/blob/main/gtk/gtkentry.c
+ // https://blog.gtk.org/2020/04/23/custom-widgets-in-gtk-4-introduction/
+ // https://docs.gtk.org/gtk4/migrating-3to4.html
 
  #include <config.h>
  #include <gtk/gtk.h>
  #include <private/v3270>
 
- G_DEFINE_TYPE_WITH_CODE (V3270, v3270, GTK_TYPE_WIDGET,
-                         G_ADD_PRIVATE (V3270)
+ G_DEFINE_TYPE_WITH_CODE (V3270Terminal, v3270_terminal, GTK_TYPE_WIDGET,
+                         G_ADD_PRIVATE (V3270_terminal)
                          G_IMPLEMENT_INTERFACE (GTK_TYPE_ACCESSIBLE,
-                                                v3270_accessible_interface_init)
-                         G_IMPLEMENT_INTERFACE (GTK_TYPE_EDITABLE,
-                                                v3270_editable_init))
+                                                v3270_terminal_accessible_interface_init))
