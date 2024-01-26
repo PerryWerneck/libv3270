@@ -1,0 +1,29 @@
+name: MacOS Test
+on:
+  push:
+    branches:
+      - macos
+jobs:
+  build:
+    name: Build for macos
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Pre reqs
+        run: |
+          brew update
+          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig gtk+3
+          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          rm -f /usr/local/bin/go || true
+          rm -f /usr/local/bin/gofmt || true
+          brew upgrade
+      - uses: robinraju/release-downloader@v1.7
+        with:
+          repository: "PerryWerneck/lib3270"
+          latest: true
+          fileName: "macos-lib3270.tar.xz"      
+      - name: build
+        run: ./mac/ci-build.sh
+          
+
