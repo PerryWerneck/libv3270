@@ -35,7 +35,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*3270*.pkg.tar.zst"
+          artifacts: "*v3270*.pkg.tar.zst"
           allowUpdates: true
           draft: false
           makeLatest: true
@@ -72,7 +72,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*.tar.xz"
+          artifacts: "*v3270.tar.xz"
           allowUpdates: true
           draft: false
           makeLatest: true
