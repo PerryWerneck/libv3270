@@ -14,7 +14,7 @@ jobs:
       - name: Install Pre reqs
         run: |
           brew update
-          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig
+          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig gtk+3
           find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
           find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
           find /usr/local/lib/node_modules/npm -delete
