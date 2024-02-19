@@ -1,15 +1,11 @@
 name: Publish
 on:
   push:
-    branches:
-      - develop  
-  pull_request:
-    branches:
-      - master
-      - develop      
+    branches: [ "macos" ]
+    tags: [ "*" ]
+  
 jobs:
-  msys2-mingw:
-    name: Publish Windows 64
+  publish-mingw:
     runs-on: windows-latest
     defaults:
       run:
@@ -20,7 +16,6 @@ jobs:
         id: gettag
         with:
           repository: PerryWerneck/libv3270
-          sort-tags: true
           releases-only: true
       - uses: msys2/setup-msys2@v2
         with:
@@ -31,22 +26,23 @@ jobs:
         with:
           repository: "PerryWerneck/lib3270"
           latest: true
-          fileName: "mingw-w64-x86_64-lib3270-5.4-0-x86_64.pkg.tar.zst"      
+          fileName: "mingw-w64-x86_64-lib3270-5.4-0-x86_64.pkg.tar.zst"
       - name: CI-Build
         run: |
-          ./win/ci-build.sh
+          pacman -U --noconfirm *.pkg.tar.zst
+          dos2unix PKGBUILD.mingw
+          makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*-libv3270-*.pkg.tar.zst"
+          artifacts: "*3270*.pkg.tar.zst"
           allowUpdates: true
-          draft: true
+          draft: false
           makeLatest: true
           omitBody: true
           omitPrereleaseDuringUpdate: true
           replacesArtifacts: true
-  macos:
-    name: Publish macos
+  publish-macos:
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -54,14 +50,15 @@ jobs:
       - uses: oprypin/find-latest-tag@v1
         id: gettag
         with:
-          repository: PerryWerneck/libv3270
-          sort-tags: true
+          repository: PerryWerneck/lib3270
           releases-only: true
       - name: Install Pre reqs
         run: |
           brew update
-          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig gtk+3
+          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig gtk+3	
           find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+          find /usr/local/lib/node_modules/npm -delete
           rm -f /usr/local/bin/go || true
           rm -f /usr/local/bin/gofmt || true
           brew upgrade
@@ -75,11 +72,12 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "macos-libv3270.tar.xz"
+          artifacts: "*.tar.xz"
           allowUpdates: true
-          draft: true
+          draft: false
           makeLatest: true
           omitBody: true
           omitPrereleaseDuringUpdate: true
           replacesArtifacts: true
+          
 
