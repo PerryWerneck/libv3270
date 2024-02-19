@@ -29,6 +29,7 @@ jobs:
           fileName: "mingw-w64-x86_64-lib3270-5.4-0-x86_64.pkg.tar.zst"
       - name: CI-Build
         run: |
+          pacman -U --noconfirm *.pkg.tar.zst
           dos2unix PKGBUILD.mingw
           makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
       - uses: ncipollo/release-action@v1
@@ -61,6 +62,11 @@ jobs:
           rm -f /usr/local/bin/go || true
           rm -f /usr/local/bin/gofmt || true
           brew upgrade
+      - uses: robinraju/release-downloader@v1.7
+        with:
+          repository: "PerryWerneck/lib3270"
+          latest: true
+          fileName: "macos-lib3270.tar.xz"      
       - name: build
         run: ./mac/ci-build.sh
       - uses: ncipollo/release-action@v1
