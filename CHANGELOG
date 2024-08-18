@@ -1,4 +1,63 @@
 -------------------------------------------------------------------
+Sun Aug 18 15:24:29 UTC 2024 - perry.werneck@gmail.com
+
+- Update to version 5.4+git20240219:
+  * Debugging publish script.
+  * Debugging publish action.
+  * Adjusting publish action.
+  * Debugging macos build.
+  * Debugging msys2 action.
+  * Debugging workflows.
+  * Updating workflows.
+  * Debugging macos action.
+  * Debugging macos package.
+  * Update codeql.yml
+  * Better macos library name.
+  * Fixing macos library name.
+  * Fixing macos lib name.
+  * Updating translation.
+  * Update publish.yml
+  * Update publish.yml
+  * Update publish.yml
+  * Update publish.yml
+  * Creating publish badge.
+  * Less debug messsages.
+  * Showing testpattern on debug startup.
+  * Publish only no PRs.
+  * Fixing win32 package build.
+  * Fixing gtk3 package name.
+  * Using mingw packages instead of .tar.xz
+  * Using mingw standard prefix for artifacts.
+  * Update publish.yml
+  * Update publish.yml
+  * Using MSYSTEM_CARCH to identify architecture.
+  * Updating ci-build, removing unused scripts.
+  * Updating obs service file.
+  * Update publish.yml
+  * Fixing marshals.
+  * Update publish.yml
+  * Publish only runs on 'master' pushes.
+  * Debugging publish action.
+  * Debugging publish action.
+  * Fixing publish action.
+  * New action to publish macos and windows builds.
+  * Working on macos build.
+  * Working on macos action.
+  * Closing release 5.4
+  * Update msys2.yml
+  * Update msys2.yml
+  * Update msys2.yml
+  * Update msys2.yml
+  * Using pre-build lib3270 artifact.
+  * Update msys2.yml
+  * Update msys2.yml
+  * Creating binary package.
+  * Adding 'changes' on windows package.
+  * Updating mingw package control files.
+  * Updating arch package control file.
+  * Removing old lgtm workflow.
+
+-------------------------------------------------------------------
 Tue Mar 14 03:15:06 UTC 2023 - perry.werneck@gmail.com
 
 - Update to version 5.4:
