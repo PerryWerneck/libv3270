@@ -82,12 +82,20 @@ subdir('po')
 #
 # Dependencies
 #
+lib3270 = dependency('lib3270', required:true)
+
 lib_deps = [
-  dependency('lib3270'),
+  lib3270,
   dependency('glib-2.0'),
   dependency('gtk+-3.0'),
   dependency('gmodule-2.0'),
   dependency('gdk-3.0'),
+]
+
+m_dep = cc.find_library('m', required:false)
+
+extra_deps = [ 
+	m_dep 
 ]
 
 #
@@ -95,13 +103,17 @@ lib_deps = [
 #
 app_conf = configuration_data()
 app_conf.set_quoted('PACKAGE_NAME', meson.project_name())
+app_conf.set('PRODUCT_NAME', lib3270.get_variable('product_name'))
 app_conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 app_conf.set_quoted('PACKAGE_DESCRIPTION', project_description)
 app_conf.set('PACKAGE_VERSION_MAJOR', pkg_major_version)
 app_conf.set('PACKAGE_VERSION_MINOR', pkg_minor_version)
 app_conf.set('PACKAGE_VERSION_MICRO', pkg_micro_version)
 
-app_conf.set('HAVE_LIBM', 1)
+if m_dep.found()
+	app_conf.set('HAVE_LIBM', 1)
+endif
+
 app_conf.set('HAVE_LIBINTL', 1)
 app_conf.set('HAVE_GNUC_VISIBILITY', 1)
 
@@ -394,7 +406,7 @@ if host_machine.system() == 'windows'
     config_src + lib_src + resources,
     install: true,
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
+    dependencies: lib_deps + extra_deps,
     include_directories: includes_dir,
   )
 
@@ -407,7 +419,7 @@ else
     version : libversion,
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
+    dependencies: lib_deps + extra_deps,
     include_directories: includes_dir
   )
 
@@ -417,16 +429,19 @@ static_library(
   'v3270', 
   config_src + lib_src,
   install: true,
-  dependencies: lib_deps,
+  dependencies: lib_deps + extra_deps,
   include_directories: includes_dir
 )
 
 executable(
   meson.project_name(),
-  config_src + [ 'src/testprogram/testprogram.c' ],
+  config_src + [ 
+	'src/testprogram/testprogram.c',
+	'src/testprogram/toolbar.c',
+  ],
   install: false,
   link_with : [ dynamic ],
-  dependencies: lib_deps,
+  dependencies: lib_deps + extra_deps,
   include_directories: includes_dir
 )
 
