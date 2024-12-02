@@ -404,7 +404,7 @@ if host_machine.system() == 'windows'
   windows = import('windows')
   resources = windows.compile_resources(
     configure_file(
-      input : 'src/library/windows/resources.rc.in',
+      input : 'libv3270/src/terminal/windows/resources.rc.in',
       output : 'resources.rc',
       configuration : app_conf
     )
