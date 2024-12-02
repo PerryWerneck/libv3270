@@ -454,4 +454,26 @@ executable(
   include_directories: includes_dir
 )
 
+install_headers(
+	'src/include/v3270.h',
+)
+
+install_headers(
+	'src/include/v3270/settings/url.h',
+	'src/include/v3270/accessible.h',
+	'src/include/v3270/actions.h',
+	'src/include/v3270/colorscheme.h',
+	'src/include/v3270/dialogs.h',
+	'src/include/v3270/filetransfer.h',
+	'src/include/v3270/ftprogress.h',
+	'src/include/v3270/print.h',
+	'src/include/v3270/security.h',
+	'src/include/v3270/selection.h',
+	'src/include/v3270/settings.h',
+	'src/include/v3270/toggle.h',
+	'src/include/v3270/tools.h',
+	'src/include/v3270/trace.h',
+	subdir: 'v3270'  
+)
+
 
