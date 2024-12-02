@@ -19,7 +19,7 @@
 
  #include <config.h>
  #include <terminal.h>
- #include <marshal/terminal.h>
+ #include <v3270_marshalers.h>
 
  #include <lib3270.h>
  #include <lib3270/log.h>

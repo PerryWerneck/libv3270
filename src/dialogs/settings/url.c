@@ -30,7 +30,7 @@
  */
 
  #include "private.h"
- #include <marshal/dialogs.h>
+ #include <v3270dlg_marshalers.h>
  #include <v3270/settings/url.h>
  #include <ctype.h>
 

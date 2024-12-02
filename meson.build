@@ -303,10 +303,19 @@ v3270tr_marshalers = gnome.genmarshal('v3270tr_marshalers',
   valist_marshallers: true,
 )
 
+v3270dlg_marshalers = gnome.genmarshal('v3270dlg_marshalers',
+  sources: [
+	'src/dialogs/settings/marshal',
+  ],
+  prefix: 'v3270',
+  valist_marshallers: true,
+)
+
 lib_src += [ 
 	v3270_marshalers[0],
 	v3270ft_marshalers[0],
 	v3270tr_marshalers[0],
+	v3270dlg_marshalers[0]
 ]
 
 #
