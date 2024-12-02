@@ -130,7 +130,6 @@ lib_src = [
 	'src/dialogs/font/model.c',
 	'src/dialogs/font/select.c',
 	'src/dialogs/load.c',
-	'src/dialogs/macos/select.c',
 	'src/dialogs/popups.c',
 	'src/dialogs/print/begin.c',
 	'src/dialogs/print/convenience.c',
@@ -256,10 +255,47 @@ if host_machine.system() == 'darwin'
   lib_src += [
 	'src/terminal/macos/init.c',
 	'src/terminal/macos/iosource.c',
+	'src/dialogs/macos/select.c',
 	'src/selection/macos/copy.c',
 	'src/selection/macos/paste.c',
   ]
 endif
+
+#
+# Gnome
+#
+gnome = import('gnome')
+
+v3270_marshalers = gnome.genmarshal('v3270_marshalers',
+  sources: [
+	'src/dialogs/settings/marshal',
+	'src/terminal/marshal',
+  ],
+  prefix: 'v3270',
+  valist_marshallers: true,
+)
+
+v3270ft_marshalers = gnome.genmarshal('v3270ft_marshalers',
+  sources: [
+	'src/filetransfer/marshal',
+  ],
+  prefix: 'v3270ft',
+  valist_marshallers: true,
+)
+
+v3270tr_marshalers = gnome.genmarshal('v3270tr_marshalers',
+  sources: [
+	'src/trace/marshal',
+  ],
+  prefix: 'v3270trace',
+  valist_marshallers: true,
+)
+
+lib_src += [ 
+	v3270_marshalers[0],
+	v3270ft_marshalers[0],
+	v3270tr_marshalers[0],
+]
 
 #
 # SDK
