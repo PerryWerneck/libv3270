@@ -476,4 +476,12 @@ install_headers(
 	subdir: 'v3270'  
 )
 
+install_data(
+	'remap/bracket.xml',
+	install_dir: get_option('datadir') + '/' + lib3270.get_variable('product_name') + '/remap'
+)
 
+install_data(
+	'conf/colors.conf',
+	install_dir: get_option('datadir') + '/' + lib3270.get_variable('product_name')
+)
