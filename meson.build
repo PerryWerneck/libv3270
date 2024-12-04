@@ -362,6 +362,7 @@ else
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
+    requires: [ 'lib3270' ],
     libraries: [ '-lv3270' ]
   )
 
