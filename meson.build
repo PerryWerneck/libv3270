@@ -349,7 +349,11 @@ if host_machine.system() == 'windows'
     description: project_description,
     variables: pkg_variables,
     requires: [
-      lib_deps
+		'lib3270-static',
+		'glib-2.0',
+		'gtk+-3.0',
+		'gmodule-2.0',
+		'gdk-3.0',
     ],
     libraries: [ 
       '-lv3270',
@@ -371,7 +375,11 @@ else
     description: project_description,
     variables: pkg_variables,
     requires: [
-      lib_deps
+		'lib3270-static',
+		'glib-2.0',
+		'gtk+-3.0',
+		'gmodule-2.0',
+		'gdk-3.0',
     ],
     libraries: [ '-l:libv3270.a' ]
   )
