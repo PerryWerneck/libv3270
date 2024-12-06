@@ -29,7 +29,7 @@
 
 Summary:		3270 Virtual Terminal for GTK
 Name:			mingw32-libv3270
-Version:		5.2
+Version: 5.5.0
 
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2 | cut -d+ -f1)

@@ -63,3 +63,4 @@ po
 *.pdf
 marshal
 libtool
+.vscode

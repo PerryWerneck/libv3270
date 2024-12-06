@@ -36,7 +36,7 @@
  */
 
  #include "private.h"
- #include <marshal/filetransfer.h>
+ #include <v3270ft_marshalers.h>
  #include <internals.h>
  #include <lib3270/filetransfer.h>
 

@@ -28,7 +28,7 @@
  */
 
  #include "../private.h"
- #include <marshal/terminal.h>
+ #include <v3270_marshalers.h>
  #include <internals.h>
  #include <v3270/settings.h>
  #include <lib3270/log.h>
