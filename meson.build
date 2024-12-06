@@ -275,6 +275,7 @@ endif
 
 #
 # Gnome
+# https://mesonbuild.com/Gnome-module.html#gnomegenmarshal
 #
 gnome = import('gnome')
 
