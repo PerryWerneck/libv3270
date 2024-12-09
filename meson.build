@@ -504,5 +504,6 @@ glade_file = configure_file(
 
 install_data(
 	glade_file,
-	install_dir: get_option('datadir') + '/glade/v3270.xml'
+	install_tag: 'glade',
+	install_dir: get_option('datadir') + '/glade'
 )
