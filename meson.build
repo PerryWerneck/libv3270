@@ -495,3 +495,14 @@ install_data(
 	'conf/colors.conf',
 	install_dir: get_option('datadir') + '/' + lib3270.get_variable('product_name')
 )
+
+glade_file = configure_file(
+  input : 'glade/v3270.xml.in',
+  output : 'v3270.xml',
+  configuration : app_conf
+)
+
+install_data(
+	glade_file,
+	install_dir: get_option('datadir') + '/glade/v3270.xml'
+)
