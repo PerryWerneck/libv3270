@@ -345,21 +345,21 @@ if host_machine.system() == 'windows'
     libraries: [ '-lv3270.dll' ]
   )
 
-  pkg.generate(
-    name: meson.project_name() + '-static',
-    description: project_description,
-    variables: pkg_variables,
-    requires: [
-		'lib3270-static',
-		'glib-2.0',
-		'gtk+-3.0',
-		'gmodule-2.0',
-		'gdk-3.0',
-    ],
-    libraries: [ 
-      '-lv3270',
-    ]
-  )
+#  pkg.generate(
+#    name: meson.project_name() + '-static',
+#    description: project_description,
+#    variables: pkg_variables,
+#    requires: [
+#		'lib3270-static',
+#		'glib-2.0',
+#		'gtk+-3.0',
+#		'gmodule-2.0',
+#		'gdk-3.0',
+#    ],
+#    libraries: [ 
+#      '-lv3270',
+#    ]
+#  )
 
 else
 
@@ -371,19 +371,19 @@ else
     libraries: [ '-lv3270' ]
   )
 
-  pkg.generate(
-    name: meson.project_name() + '-static',
-    description: project_description,
-    variables: pkg_variables,
-    requires: [
-		'lib3270-static',
-		'glib-2.0',
-		'gtk+-3.0',
-		'gmodule-2.0',
-		'gdk-3.0',
-    ],
-    libraries: [ '-l:libv3270.a' ]
-  )
+#  pkg.generate(
+#    name: meson.project_name() + '-static',
+#    description: project_description,
+#    variables: pkg_variables,
+#    requires: [
+#		'lib3270-static',
+#		'glib-2.0',
+#		'gtk+-3.0',
+#		'gmodule-2.0',
+#		'gdk-3.0',
+#   ],
+#    libraries: [ '-l:libv3270.a' ]
+#  )
 
 endif
 
@@ -444,13 +444,13 @@ else
 
 endif
 
-static_library(
-  'v3270', 
-  config_src + lib_src,
-  install: true,
-  dependencies: lib_deps + extra_deps,
-  include_directories: includes_dir
-)
+#static_library(
+#  'v3270', 
+#  config_src + lib_src,
+#  install: true,
+#  dependencies: lib_deps + extra_deps,
+#  include_directories: includes_dir
+#)
 
 executable(
   meson.project_name(),

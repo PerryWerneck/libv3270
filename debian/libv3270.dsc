@@ -4,7 +4,7 @@ Version: 5.4-0
 Binary: libv3270
 Maintainer: Perry Werneck <perry.werneck@gmail.com>
 Architecture: any
-Build-Depends: debhelper (>= 7), autotools-dev, autoconf, automake, pkg-config, gettext, libssl-dev, lib3270-dev, libgtk-3-dev, imagemagick
+Build-Depends: debhelper (>= 7), meson, pkg-config, gettext, lib3270-dev, libgtk-3-dev, imagemagick
 Standards-Version: 3.9.1.0
 DEBTRANSFORM-RELEASE: 1
 Files: 
