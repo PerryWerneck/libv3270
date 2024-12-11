@@ -414,7 +414,7 @@ if host_machine.system() == 'windows'
   windows = import('windows')
   resources = windows.compile_resources(
     configure_file(
-      input : 'libv3270/src/terminal/windows/resources.rc.in',
+      input : 'src/terminal/windows/resources.rc.in',
       output : 'resources.rc',
       configuration : app_conf
     )
@@ -426,6 +426,11 @@ if host_machine.system() == 'windows'
     install: true,
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps + extra_deps,
+	link_args: [
+		'-lws2_32',
+		'-lwtsapi32',
+		'-lcomdlg32',
+	],
     include_directories: includes_dir,
   )
 
