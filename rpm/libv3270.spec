@@ -25,16 +25,18 @@ License:        LGPL-3.0-only
 URL:            https://github.com/PerryWerneck/libv3270
 Group:          Development/Languages/C and C++
 Source:         libv3270-%{version}.tar.xz
-BuildRequires:  autoconf >= 2.61
-BuildRequires:  automake
-BuildRequires:  binutils
-BuildRequires:  coreutils
 BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  libtool
 BuildRequires:  m4
 BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:  pkgconfig(lib3270) >= 5.4
+
+%if 0%{?suse_version} == 01500
+BuildRequires:  meson >= 0.61.4
+%else
+BuildRequires:  meson
+%endif
 
 Suggests:       %{name}-config
 
@@ -85,16 +87,15 @@ This package provides a catalog for Glade to allow the use of V3270
 widgets in Glade.
 
 %prep
-%setup -q
-NOCONFIGURE=1 ./autogen.sh
-%configure --with-release=%{release} --disable-static
+%autosetup
+%meson
 
 %build
-make all %{?_smp_mflags}
+%meson_build
 
 %install
-%make_install
-%find_lang %{name}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
+%meson_install
+%find_lang libv3270-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
 %files -n %{name}-%{_libvrs} -f langfiles
 %license LICENSE
@@ -102,19 +103,20 @@ make all %{?_smp_mflags}
 %{_libdir}/%{name}.so.*
 
 %files config
+%dir %{_datadir}/%{_product}
 %dir %{_datadir}/%{_product}/remap/
-%config %{_datadir}/%{_product}/colors.conf
-%config %{_datadir}/%{_product}/remap/*.xml
+%config(noreplace) %{_datadir}/%{_product}/colors.conf
+%config(noreplace) %{_datadir}/%{_product}/remap/*.xml
 
 %files devel
-%{_datadir}/pw3270/pot/*.pot
 %{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/*.pc
 %{_includedir}/v3270.h
 %{_includedir}/v3270
 
 %files -n glade-catalog-v3270
-%{_datadir}/glade/
+%dir %{_datadir}/glade/
+%{_datadir}/glade/*
 
 %post -n %{name}-%{_libvrs} -p /sbin/ldconfig
 %postun -n %{name}-%{_libvrs} -p /sbin/ldconfig

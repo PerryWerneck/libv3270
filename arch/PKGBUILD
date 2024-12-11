@@ -2,14 +2,14 @@
 
 pkgname=libv3270
 
-pkgver=5.4
+pkgver=5.5.0
 pkgrel=0
 pkgdesc="3270 Virtual Terminal for GTK"
-url="https://portal.softwarepublico.gov.br/social/pw3270/"
+url="https://github.com/PerryWerneck/libv3270"
 arch=(i686 x86_64)
 license=(GPL)
 depends=(lib3270 gtk3)
-makedepends=(autoconf automake make openssl lib3270 gtk3 python3 libtool gzip glib2-devel)
+makedepends=(meson openssl lib3270 gtk3 python3 gzip glib2-devel)
 checkdepends=()
 
 #groups=(gnome)
@@ -22,19 +22,20 @@ conflicts=($pkgname)
 
 prepare() {
   cd $pkgname-$pkgver
-  mkdir -p scripts
-  touch scripts/config.rpath
-  NOCONFIGURE=1 ./autogen.sh
-  ./configure --prefix=/usr --disable-static
+  meson \
+    setup \
+      --reconfigure \
+      --wipe \
+      ".build"
 }
 
 build() {
   cd $pkgname-$pkgver
-  make all
+  meson compile -C ".build"
 }
 
 package() {
   cd $pkgname-$pkgver
-  DESTDIR="$pkgdir" make install
+  DESTDIR="${pkgdir}" meson install -C ".build"
 }
 
