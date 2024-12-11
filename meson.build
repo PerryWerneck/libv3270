@@ -447,6 +447,18 @@ else
     include_directories: includes_dir
   )
 
+  glade_file = configure_file(
+	input : 'glade/v3270.xml.in',
+	output : 'v3270.xml',
+	configuration : app_conf
+  )
+
+  install_data(
+	glade_file,
+	install_tag: 'glade',
+	install_dir: get_option('datadir') + '/glade'
+  )
+ 
 endif
 
 #static_library(
@@ -501,14 +513,3 @@ install_data(
 	install_dir: get_option('datadir') + '/' + lib3270.get_variable('product_name')
 )
 
-glade_file = configure_file(
-  input : 'glade/v3270.xml.in',
-  output : 'v3270.xml',
-  configuration : app_conf
-)
-
-install_data(
-	glade_file,
-	install_tag: 'glade',
-	install_dir: get_option('datadir') + '/glade'
-)
