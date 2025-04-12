@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-_realname=$(grep AC_INIT "${startdir}/configure.ac" | cut -d[ -f2 | cut -d] -f1)
-
+_realname="libv3270"
 pkgname=${MINGW_PACKAGE_PREFIX}-${_realname}
+
 source=()
 
 pkgver=$(grep AC_INIT "${startdir}/configure.ac" | cut -d[ -f3 | cut -d] -f1)
