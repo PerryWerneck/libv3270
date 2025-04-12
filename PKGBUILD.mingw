@@ -38,25 +38,22 @@ conflicts=($pkgname)
 
 prepare() {
   rm -fr "$srcdir/$pkgname"
-  ln -snf "$startdir" "$srcdir/$pkgname"
+  mkdir -p "$srcdir/$pkgname"
+  cd ${startdir}
+  meson \
+    setup \
+      --prefix=/c/${MINGW_PREFIX} \
+      --reconfigure \
+      --wipe \
+      "$srcdir/$pkgname"
 }
 
 build() {
-  cd $pkgname
-  ./autogen.sh \
-    --prefix=${MINGW_PREFIX} \
-    --build=${MINGW_CHOST} \
-    --host=${MINGW_CHOST} \
-    --target=${MINGW_CHOST}
- 
-  make all
+  cd ${startdir}  
+  meson compile -C "$srcdir/$pkgname"
 }
 
 package() {
-  cd $pkgname
-  make DESTDIR="${pkgdir}" install
-  install \
-    -Dm644 \
-    "LICENSE" \
-    "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE"
+  cd ${startdir} 
+  DESTDIR="${pkgdir}" meson install -C "$srcdir/$pkgname"
 }
