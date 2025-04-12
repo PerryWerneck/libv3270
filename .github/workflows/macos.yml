@@ -14,12 +14,7 @@ jobs:
       - name: Install Pre reqs
         run: |
           brew update
-          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig gtk+3
-          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
-          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
-          find /usr/local/lib/node_modules/npm -delete
-          rm -f /usr/local/bin/go || true
-          rm -f /usr/local/bin/gofmt || true
+          brew install xz meson ninja curl gettext openssl pkgconfig
           brew upgrade
       - uses: robinraju/release-downloader@v1.7
         with:
@@ -27,6 +22,8 @@ jobs:
           latest: true
           fileName: "macos-lib3270.tar.xz"      
       - name: build
-        run: ./mac/ci-build.sh
-          
+        run: |
+          meson setup --reconfigure --wipe .build          
+          meson compile -C .build
+            
 
