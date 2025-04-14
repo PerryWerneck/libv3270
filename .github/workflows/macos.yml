@@ -28,7 +28,7 @@ jobs:
           fileName: "macos-lib3270.tar.xz"      
       - name: build
         run: |
-          tar -Jxvf --directory=$(brew --cellar) macos-lib3270.tar.xz
+          tar --xz --extract --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
           brew link lib3270
           meson setup --prefix=/libv3270/${{ steps.gettag.outputs.tag }} .build       
           meson compile -C .build
