@@ -19,7 +19,7 @@ jobs:
       - name: Install Pre reqs
         run: |
           brew update
-          brew install xz meson ninja curl gettext openssl pkgconfig
+          brew install xz meson ninja curl gettext openssl pkgconfig gtk+3
           brew upgrade
       - uses: robinraju/release-downloader@v1.7
         with:
@@ -28,7 +28,7 @@ jobs:
           fileName: "macos-lib3270.tar.xz"      
       - name: build
         run: |
-          tar --xz --extract --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
+          tar --extract --xz --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
           brew link lib3270
           meson setup --prefix=/libv3270/${{ steps.gettag.outputs.tag }} .build       
           meson compile -C .build
