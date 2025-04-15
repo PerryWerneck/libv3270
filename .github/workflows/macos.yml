@@ -2,6 +2,7 @@ name: check-macos
 on:
   push:
     branches: [ "macos" ]
+    tags: [ "*" ]
   pull_request:
     branches: [ "master" ]
 
@@ -31,12 +32,12 @@ jobs:
           tar --extract --verbose --xz --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
           brew link lib3270
           pkg-config --cflags lib3270
-          meson setup --prefix=/libv3270/${{ steps.gettag.outputs.tag }} .build       
+          meson setup --prefix=$(brew --prefix)/libv3270/${{ steps.gettag.outputs.tag }} .build       
           meson compile -C .build
       - name: package
         run: |
           DESTDIR=${PWD}/.bin/package meson install -C .build
-          tar --create --xz --file=macos-libv3270.tar.xz --directory=${PWD}/.bin/package --verbose .
+          tar --create --verbose --xz --file=macos-libv3270.tar.xz --directory=${PWD}/.bin/package/$(brew --prefix) --verbose .
       - name: upload
         uses: ncipollo/release-action@v1
         with:
