@@ -30,9 +30,7 @@ jobs:
       - name: build
         run: |
           tar --extract --verbose --xz --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
-          set | grep -i homebrew
           brew link lib3270
-          find ${HOMEBREW_PREFIX} -iname '*3270*'
           export LDFLAGS=-Wl,-L${HOMEBREW_PREFIX}/lib
           meson setup --prefix=$(brew --prefix)/libv3270/${{ steps.gettag.outputs.tag }} .build       
           meson compile -C .build
