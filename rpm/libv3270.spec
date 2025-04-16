@@ -18,7 +18,7 @@
 
 
 Name:           libv3270
-Version:        5.5.0+git20241211
+Version: 5.5.0
 Release:        0
 Summary:        3270 Virtual Terminal for GTK
 License:        LGPL-3.0-only

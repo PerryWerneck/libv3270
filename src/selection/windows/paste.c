@@ -112,7 +112,7 @@ static void formatted_received(GtkClipboard *clipboard, GtkSelectionData *select
 						GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_MESSAGE_INFO,
 						GTK_BUTTONS_NONE,
-						_("Unable to paste formatted data")
+						_("Unable to paste formatted data.")
 					);
 
 
