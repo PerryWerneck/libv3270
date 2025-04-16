@@ -32,7 +32,8 @@ jobs:
           tar --extract --verbose --xz --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
           brew link lib3270
           pkg-config --cflags lib3270
-          find $(brew --cellar) -name 'lib3270.h'
+          ls -l /usr/local/lib/lib3270*
+          export LDFLAGS=-Wl,-L/usr/local/lib
           meson setup --prefix=$(brew --prefix)/libv3270/${{ steps.gettag.outputs.tag }} .build       
           meson compile -C .build
       - name: package
