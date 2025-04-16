@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<glade-catalog version="0.50.2" supports="gtkbuilder" name="v3270-@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@" library="v3270" domain="v3270-@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@" depends="gtk+" book="v3270">
+<glade-catalog version="0.50.2" supports="gtkbuilder" name="v3270-@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@" library="v3270" domain="v3270-@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@" depends="gtk+" book="v3270">
   <glade-widget-classes>
     <glade-widget-class title="v3270 Terminal" name="v3270" generic-name="TN3270 Terminal">
       <properties>

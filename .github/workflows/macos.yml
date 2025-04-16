@@ -2,6 +2,7 @@ name: check-macos
 on:
   push:
     branches: [ "macos" ]
+    tags: [ "*" ]
   pull_request:
     branches: [ "master" ]
 
@@ -11,15 +12,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - uses: oprypin/find-latest-tag@v1
+        id: gettag
+        with:
+          repository: PerryWerneck/libv3270
+          releases-only: true
       - name: Install Pre reqs
         run: |
           brew update
-          brew install xz automake binutils coreutils curl gettext libtool openssl pkgconfig gtk+3
-          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
-          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
-          find /usr/local/lib/node_modules/npm -delete
-          rm -f /usr/local/bin/go || true
-          rm -f /usr/local/bin/gofmt || true
+          brew install xz meson ninja curl gettext openssl pkgconfig gtk+3
           brew upgrade
       - uses: robinraju/release-downloader@v1.7
         with:
@@ -27,6 +28,26 @@ jobs:
           latest: true
           fileName: "macos-lib3270.tar.xz"      
       - name: build
-        run: ./mac/ci-build.sh
-          
+        run: |
+          tar --extract --verbose --xz --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
+          brew link lib3270
+          export LDFLAGS=-Wl,-L${HOMEBREW_PREFIX}/lib
+          meson setup --prefix=$(brew --prefix)/libv3270/${{ steps.gettag.outputs.tag }} .build       
+          meson compile -C .build
+      - name: package
+        run: |
+          DESTDIR=${PWD}/.bin/package meson install -C .build
+          tar --create --verbose --xz --file=macos-libv3270.tar.xz --directory=${PWD}/.bin/package/$(brew --prefix) --verbose .
+      - name: upload
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.gettag.outputs.tag }}
+          artifacts: "macos-libv3270.tar.xz"
+          allowUpdates: true
+          draft: false
+          makeLatest: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
+              
 

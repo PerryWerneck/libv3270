@@ -1,6 +1,6 @@
 /*
  * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+ * (Paul Mattes paul.mattes@case.edu), de emulação de terminal 3270 para acesso a
  * aplicativos mainframe. Registro no INPI sob o nome G3270.
  *
  * Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -30,7 +30,7 @@
  #include <string.h>
  #include <internals.h>
  #include "private.h"
- #include <marshal/filetransfer.h>
+ #include <v3270ft_marshalers.h>
  #include <v3270/filetransfer.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/

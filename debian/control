@@ -2,7 +2,7 @@ Source: libv3270
 Section: unknown
 Priority: optional
 Maintainer: Perry Werneck <perry.werneck@gmail.com>
-Build-Depends: debhelper (>= 7), autotools-dev, autoconf, gettext, libssl-dev, libssl-dev, lib3270-dev, libgtk-3-dev, imagemagick
+Build-Depends: debhelper (>= 7), meson, gettext, pkg-config, lib3270-dev, libgtk-3-dev, imagemagick
 
 Package: libv3270
 Architecture: any

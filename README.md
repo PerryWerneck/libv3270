@@ -101,14 +101,24 @@ Created originally as part of [PW3270](../../../pw3270) application.
 2. Install additional dependencies
 
 	```shell
-	brew install gtk+3
+	brew update
+	brew install xz meson ninja curl gettext openssl pkgconfig gtk+3
+	brew upgrade
 	```
 
-3. Configure, build and install
+3. Get libv3270 sources from git
 
 	```shell
-	./autogen.sh --prefix="$(brew --cellar)/libv3270/5.4"
-	make all && make install
+	git clone https://github.com/PerryWerneck/lib3270.git ./libv3270
+	cd libv3270
+	```
+
+4. Configure, build and install
+
+	```shell
+	meson setup --prefix=$(brew --prefix)/Cellar/libv3270/$(grep 'version:' meson.build | cut -d: -f2 | cut -d\' -f2) --reconfigure --wipe .build
+	meson compile -C .build
+	meson install -C .build
 	brew link libv3270
 	```
 
