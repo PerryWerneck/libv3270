@@ -2,6 +2,7 @@ name: check-macos
 on:
   push:
     branches: [ "macos" ]
+    tags: [ "*" ]
   pull_request:
     branches: [ "master" ]
 
@@ -19,7 +20,7 @@ jobs:
       - name: Install Pre reqs
         run: |
           brew update
-          brew install xz meson ninja curl gettext openssl pkgconfig
+          brew install xz meson ninja curl gettext openssl pkgconfig gtk+3
           brew upgrade
       - uses: robinraju/release-downloader@v1.7
         with:
@@ -28,14 +29,15 @@ jobs:
           fileName: "macos-lib3270.tar.xz"      
       - name: build
         run: |
-          tar --xz --extract --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
+          tar --extract --verbose --xz --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
           brew link lib3270
-          meson setup --prefix=/libv3270/${{ steps.gettag.outputs.tag }} .build       
+          export LDFLAGS=-Wl,-L${HOMEBREW_PREFIX}/lib
+          meson setup --prefix=$(brew --prefix)/libv3270/${{ steps.gettag.outputs.tag }} .build       
           meson compile -C .build
       - name: package
         run: |
           DESTDIR=${PWD}/.bin/package meson install -C .build
-          tar --create --xz --file=macos-libv3270.tar.xz --directory=${PWD}/.bin/package --verbose .
+          tar --create --verbose --xz --file=macos-libv3270.tar.xz --directory=${PWD}/.bin/package/$(brew --prefix) --verbose .
       - name: upload
         uses: ncipollo/release-action@v1
         with:
