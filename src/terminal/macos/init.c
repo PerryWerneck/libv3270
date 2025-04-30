@@ -32,7 +32,9 @@
  #include <locale.h>
  #include <libintl.h>
  #include <lib3270/log.h>
-
+ #include <CoreFoundation/CFBundle.h>
+ #include <CoreFoundation/CFURL.h>
+ 
  int libv3270_loaded(void) __attribute__((constructor));
  int libv3270_unloaded(void) __attribute__((destructor));
 
@@ -40,9 +42,11 @@
 
  int libv3270_loaded(void) {
 
-	debug("LocaleDIR(%s)=%s",PACKAGE_NAME,LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
+	lib3270_autoptr(char) localedir = lib3270_build_data_filename("locale",NULL);
 
-	bindtextdomain(PACKAGE_NAME, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
+	debug("LocaleDIR(%s)=%s",PACKAGE_NAME,localedir);
+
+	bindtextdomain(PACKAGE_NAME, localedir);
 	bind_textdomain_codeset(PACKAGE_NAME, "UTF-8");
 
  	return 0;
