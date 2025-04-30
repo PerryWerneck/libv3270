@@ -43,9 +43,7 @@
  int libv3270_loaded(void) {
 
 	lib3270_autoptr(char) localedir = lib3270_build_data_filename("locale",NULL);
-
 	debug("LocaleDIR(%s)=%s",PACKAGE_NAME,localedir);
-
 	bindtextdomain(PACKAGE_NAME, localedir);
 	bind_textdomain_codeset(PACKAGE_NAME, "UTF-8");
 
