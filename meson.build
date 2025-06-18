@@ -461,6 +461,11 @@ else
  
 endif
 
+libv3270_dep = declare_dependency(
+  link_with : dynamic,
+  include_directories : includes_dir,
+) 
+
 #static_library(
 #  'v3270', 
 #  config_src + lib_src,
