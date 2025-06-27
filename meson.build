@@ -43,7 +43,6 @@ endif
 
 compiler_flags = [
   '-ggdb3',
-  '-ffat-lto-objects',
   '-fvisibility=hidden',
   '-pthread',
   '-fPIC',
@@ -434,6 +433,19 @@ if host_machine.system() == 'windows'
     include_directories: includes_dir,
   )
 
+elif host_machine.system() == 'darwin'
+
+  dynamic = shared_library(
+    'v3270', 
+    config_src + lib_src,
+    install: true,
+    version : libversion,
+    soversion : libversion,
+    gnu_symbol_visibility: 'hidden',
+    dependencies: lib_deps + extra_deps,
+    include_directories: includes_dir
+  )
+
 else
 
   dynamic = shared_library(
@@ -441,6 +453,7 @@ else
     config_src + lib_src,
     install: true,
     version : libversion,
+    c_args: [ '-ffat-lto-objects' ],
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps + extra_deps,
@@ -461,18 +474,22 @@ else
  
 endif
 
-libv3270_dep = declare_dependency(
+dynamic_library = declare_dependency(
   link_with : dynamic,
   include_directories : includes_dir,
 ) 
 
-#static_library(
-#  'v3270', 
-#  config_src + lib_src,
-#  install: true,
-#  dependencies: lib_deps + extra_deps,
-#  include_directories: includes_dir
-#)
+dynamic_library = declare_dependency(
+	link_with: static_library(
+	'v3270', 
+	config_src + lib_src,
+	install: true,
+    c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+	dependencies: lib_deps + extra_deps,
+	include_directories: includes_dir
+	),
+  include_directories : includes_dir,
+)
 
 executable(
   meson.project_name(),
