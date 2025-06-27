@@ -408,11 +408,7 @@ elif host_machine.system() == 'darwin'
     version : libversion,
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
-<<<<<<< HEAD
     dependencies: lib_deps,
-=======
-    dependencies: lib_deps + extra_deps,
->>>>>>> 2a608dba5bfc484ff54153ee18e7b00c8ffb8f90
     include_directories: includes_dir
   )
 
