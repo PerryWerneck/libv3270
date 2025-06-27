@@ -1,7 +1,7 @@
 #
 # spec file for package libv3270
 #
-# Copyright (c) 2024 SUSE LLC
+# Copyright (c) 2025 SUSE LLC
 # Copyright (c) 2008 Banco do Brasil S.A.
 #
 # All modifications and additions to the file contributed by third parties
@@ -18,7 +18,7 @@
 
 
 Name:           libv3270
-Version: 5.5.0
+Version:        5.5.0+git20241211
 Release:        0
 Summary:        3270 Virtual Terminal for GTK
 License:        LGPL-3.0-only
@@ -29,14 +29,9 @@ BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  libtool
 BuildRequires:  m4
-BuildRequires:  pkgconfig(gtk+-3.0)
-BuildRequires:  pkgconfig(lib3270) >= 5.4
-
-%if 0%{?suse_version} == 01500
-BuildRequires:  meson >= 0.61.4
-%else
 BuildRequires:  meson
-%endif
+BuildRequires:  pkgconfig(gtk+-3.0)
+BuildRequires:  pkgconfig(lib3270) >= 5.5.0
 
 Suggests:       %{name}-config
 
