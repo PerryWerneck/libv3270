@@ -81,7 +81,7 @@ subdir('po')
 #
 # Dependencies
 #
-lib3270 = dependency('lib3270', required:true)
+lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'dynamic_library' ])
 m_dep = cc.find_library('m', required: false)
 
 lib_deps = [
