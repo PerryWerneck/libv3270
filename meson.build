@@ -43,7 +43,6 @@ endif
 
 compiler_flags = [
   '-ggdb3',
-  '-ffat-lto-objects',
   '-fvisibility=hidden',
   '-pthread',
   '-fPIC',
@@ -82,20 +81,16 @@ subdir('po')
 #
 # Dependencies
 #
-lib3270 = dependency('lib3270', required:true)
+lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'dynamic_library' ])
+m_dep = cc.find_library('m', required: false)
 
 lib_deps = [
-  lib3270,
-  dependency('glib-2.0'),
-  dependency('gtk+-3.0'),
-  dependency('gmodule-2.0'),
-  dependency('gdk-3.0'),
-]
-
-m_dep = cc.find_library('m', required:false)
-
-extra_deps = [ 
-	m_dep 
+	lib3270,
+	dependency('glib-2.0'),
+	dependency('gtk+-3.0'),
+	dependency('gmodule-2.0'),
+	dependency('gdk-3.0'),
+	m_dep,
 ]
 
 #
@@ -345,22 +340,6 @@ if host_machine.system() == 'windows'
     libraries: [ '-lv3270.dll' ]
   )
 
-#  pkg.generate(
-#    name: meson.project_name() + '-static',
-#    description: project_description,
-#    variables: pkg_variables,
-#    requires: [
-#		'lib3270-static',
-#		'glib-2.0',
-#		'gtk+-3.0',
-#		'gmodule-2.0',
-#		'gdk-3.0',
-#    ],
-#    libraries: [ 
-#      '-lv3270',
-#    ]
-#  )
-
 else
 
   pkg.generate(
@@ -370,20 +349,6 @@ else
     requires: [ 'lib3270' ],
     libraries: [ '-lv3270' ]
   )
-
-#  pkg.generate(
-#    name: meson.project_name() + '-static',
-#    description: project_description,
-#    variables: pkg_variables,
-#    requires: [
-#		'lib3270-static',
-#		'glib-2.0',
-#		'gtk+-3.0',
-#		'gmodule-2.0',
-#		'gdk-3.0',
-#   ],
-#    libraries: [ '-l:libv3270.a' ]
-#  )
 
 endif
 
@@ -425,13 +390,26 @@ if host_machine.system() == 'windows'
     config_src + lib_src + resources,
     install: true,
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps + extra_deps,
+    dependencies: lib_deps,
 	link_args: [
 		'-lws2_32',
 		'-lwtsapi32',
 		'-lcomdlg32',
 	],
     include_directories: includes_dir,
+  )
+
+elif host_machine.system() == 'darwin'
+
+  dynamic = shared_library(
+    'v3270', 
+    config_src + lib_src,
+    install: true,
+    version : libversion,
+    soversion : libversion,
+    gnu_symbol_visibility: 'hidden',
+    dependencies: lib_deps,
+    include_directories: includes_dir
   )
 
 else
@@ -441,9 +419,10 @@ else
     config_src + lib_src,
     install: true,
     version : libversion,
+    c_args: [ '-ffat-lto-objects' ],
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps + extra_deps,
+    dependencies: lib_deps,
     include_directories: includes_dir
   )
 
@@ -461,18 +440,23 @@ else
  
 endif
 
-libv3270_dep = declare_dependency(
-  link_with : dynamic,
-  include_directories : includes_dir,
+dynamic_library = declare_dependency(
+	link_with : dynamic,
+	include_directories : includes_dir,
 ) 
 
-#static_library(
-#  'v3270', 
-#  config_src + lib_src,
-#  install: true,
-#  dependencies: lib_deps + extra_deps,
-#  include_directories: includes_dir
-#)
+static_library = declare_dependency(
+	link_with : static_library(
+		'v3270', 
+	    config_src + lib_src,
+		pic: true,
+		c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+		install: true,
+		include_directories: includes_dir,
+		dependencies: lib_deps,
+	),
+	include_directories : includes_dir,
+)
 
 executable(
   meson.project_name(),
@@ -482,7 +466,7 @@ executable(
   ],
   install: false,
   link_with : [ dynamic ],
-  dependencies: lib_deps + extra_deps,
+  dependencies: lib_deps,
   include_directories: includes_dir
 )
 
