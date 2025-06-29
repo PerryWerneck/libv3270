@@ -100,7 +100,7 @@ extra_deps = [
 
 if not lib3270.found()
 	message('lib3270 not found, using fallback.')
-	lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'static_library' ])
+	lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'dynamic_library' ])
 	extra_deps += [
 		lib3270
 	]
