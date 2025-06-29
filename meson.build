@@ -82,7 +82,7 @@ subdir('po')
 #
 # Dependencies
 #
-lib3270 = dependency('lib3270', required:true)
+lib3270 = dependency('lib3270', required:false)
 
 lib_deps = [
   lib3270,
@@ -97,6 +97,14 @@ m_dep = cc.find_library('m', required:false)
 extra_deps = [ 
 	m_dep 
 ]
+
+if not lib3270.found()
+	message('lib3270 not found, using fallback.')
+	lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'static_library' ])
+	extra_deps += [
+		lib3270
+	]
+endif
 
 #
 # Configuration
