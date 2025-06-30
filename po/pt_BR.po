@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-16 00:21-0300\n"
-"PO-Revision-Date: 2025-04-16 00:24-0300\n"
+"PO-Revision-Date: 2025-06-29 21:46-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 #: src/dialogs/font/chooser.c:267
 msgid "Available fonts"
@@ -695,7 +695,7 @@ msgstr "Tabela de _Caracteres"
 
 #: src/dialogs/settings/host.c:562
 msgid "The EBCDIC host character set. "
-msgstr "A tabela de caracteres EBCDIC."
+msgstr "Tabela de caracteres EBCDIC definida."
 
 #: src/dialogs/settings/host.c:580
 msgid "Host settings"
@@ -1444,7 +1444,6 @@ msgid "_Paste as text"
 msgstr "_Colar como texto"
 
 #: src/selection/linux/paste.c:116 src/selection/macos/paste.c:116
-#, fuzzy
 msgid "Unable to paste formatted data."
 msgstr "Incapaz de colar dados formatados."
 
