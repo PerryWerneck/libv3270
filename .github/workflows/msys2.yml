@@ -2,6 +2,7 @@ name: check-msys2
 on:
   push:
     branches: [ "win" ]
+    tags: [ "*" ]
   pull_request:
     branches: [ "master" ]
 
