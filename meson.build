@@ -82,17 +82,31 @@ subdir('po')
 #
 # Dependencies
 #
-lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'dynamic_library' ])
-m_dep = cc.find_library('m', required: false)
+lib3270 = dependency(
+	'lib3270', 
+	required:false)
 
 lib_deps = [
-	lib3270,
-	dependency('glib-2.0'),
-	dependency('gtk+-3.0'),
-	dependency('gmodule-2.0'),
-	dependency('gdk-3.0'),
-	m_dep,
+  lib3270,
+  dependency('glib-2.0'),
+  dependency('gtk+-3.0'),
+  dependency('gmodule-2.0'),
+  dependency('gdk-3.0'),
 ]
+
+m_dep = cc.find_library('m', required:false)
+
+extra_deps = [ 
+	m_dep 
+]
+
+if not lib3270.found()
+	message('lib3270 not found, using fallback.')
+	lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'dynamic_library' ])
+	extra_deps += [
+		lib3270
+	]
+endif
 
 #
 # Configuration
@@ -485,11 +499,6 @@ else
   )
  
 endif
-
-dynamic_library = declare_dependency(
-	link_with : dynamic,
-	include_directories : includes_dir,
-) 
 
 executable(
   meson.project_name(),

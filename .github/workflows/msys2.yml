@@ -2,6 +2,7 @@ name: check-msys2
 on:
   push:
     branches: [ "win" ]
+    tags: [ "*" ]
   pull_request:
     branches: [ "master" ]
 
@@ -23,14 +24,8 @@ jobs:
           msystem: mingw64
           update: true
           install: dos2unix mingw-w64-x86_64-meson mingw-w64-x86_64-gcc git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl mingw-w64-x86_64-gtk3
-      - uses: robinraju/release-downloader@v1.7
-        with:
-          repository: "PerryWerneck/lib3270"
-          latest: true
-          fileName: "mingw-w64-x86_64-lib3270-5.5.0-0-x86_64.pkg.tar.zst"
       - name: CI-Build
         run: |
-          pacman -U --noconfirm *.pkg.tar.zst
-          dos2unix PKGBUILD.mingw
-          makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
+          meson setup --prefix=/usr .build
+          meson compile -C .build
 

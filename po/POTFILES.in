@@ -99,8 +99,8 @@ src/terminal/keyboard/map.c
 src/terminal/keyfile.c
 src/terminal/linux/init.c
 src/terminal/linux/iosource.c
-src/terminal/macos/init.c
 src/terminal/macos/iosource.c
+src/terminal/macos/init.c
 src/terminal/mouse.c
 src/terminal/properties/get.c
 src/terminal/properties/init.c
