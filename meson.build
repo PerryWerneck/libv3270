@@ -47,6 +47,7 @@ compiler_flags = [
   '-pthread',
   '-fPIC',
   '-DHAVE_CONFIG_H=1',
+  '-Wno-deprecated-declarations',
   '-DBUILD_DATE='+time_epoch,
 ]
 
@@ -375,42 +376,73 @@ config_src = [
 
 if host_machine.system() == 'windows'
 
-  # https://mesonbuild.com/Windows-module.html
-  windows = import('windows')
-  resources = windows.compile_resources(
-    configure_file(
-      input : 'src/terminal/windows/resources.rc.in',
-      output : 'resources.rc',
-      configuration : app_conf
-    )
-  )
+	# https://mesonbuild.com/Windows-module.html
+	windows = import('windows')
+	resources = windows.compile_resources(
+		configure_file(
+			input : 'src/terminal/windows/resources.rc.in',
+			output : 'resources.rc',
+			configuration : app_conf
+		)
+	)
 
-  dynamic = shared_library(
-    'v3270', 
-    config_src + lib_src + resources,
-    install: true,
-    gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
-	link_args: [
-		'-lws2_32',
-		'-lwtsapi32',
-		'-lcomdlg32',
-	],
-    include_directories: includes_dir,
-  )
+	dynamic = shared_library(
+		'v3270', 
+		config_src + lib_src + resources,
+		install: true,
+		gnu_symbol_visibility: 'hidden',
+		dependencies: lib_deps,
+		link_args: [
+			'-lws2_32',
+			'-lwtsapi32',
+			'-lcomdlg32',
+		],
+		include_directories: includes_dir,
+	)
+
+	static_library = declare_dependency(
+		link_with : static_library(
+			'v3270', 
+			config_src + lib_src,
+			pic: true,
+			c_args: [ '-DSTATIC_LIBRARY' ],
+			install: true,
+			include_directories: includes_dir,
+			dependencies: lib_deps,
+		),
+		link_args: [
+			'-lws2_32',
+			'-lwtsapi32',
+			'-lcomdlg32',
+		],
+		include_directories : includes_dir,
+	)
 
 elif host_machine.system() == 'darwin'
 
-  dynamic = shared_library(
-    'v3270', 
-    config_src + lib_src,
-    install: true,
-    version : libversion,
-    soversion : libversion,
-    gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
-    include_directories: includes_dir
-  )
+	dynamic = shared_library(
+		'v3270', 
+		config_src + lib_src,
+		install: true,
+		version : libversion,
+		soversion : libversion,
+		gnu_symbol_visibility: 'hidden',
+		dependencies: lib_deps,
+		include_directories: includes_dir
+	)
+
+	static_library = declare_dependency(
+		link_with : static_library(
+			'v3270', 
+			config_src + lib_src,
+			pic: true,
+			c_args: [ '-DSTATIC_LIBRARY' ],
+			install: true,
+			include_directories: includes_dir,
+			dependencies: lib_deps,
+		),
+		include_directories : includes_dir,
+	)
 
 else
 
@@ -425,6 +457,20 @@ else
     dependencies: lib_deps,
     include_directories: includes_dir
   )
+
+  static_library = declare_dependency(
+	link_with : static_library(
+		'v3270', 
+	    config_src + lib_src,
+		pic: true,
+		c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+		install: true,
+		include_directories: includes_dir,
+		dependencies: lib_deps,
+	),
+	include_directories : includes_dir,
+  )
+
 
   glade_file = configure_file(
 	input : 'glade/v3270.xml.in',
@@ -444,19 +490,6 @@ dynamic_library = declare_dependency(
 	link_with : dynamic,
 	include_directories : includes_dir,
 ) 
-
-static_library = declare_dependency(
-	link_with : static_library(
-		'v3270', 
-	    config_src + lib_src,
-		pic: true,
-		c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-		install: true,
-		include_directories: includes_dir,
-		dependencies: lib_deps,
-	),
-	include_directories : includes_dir,
-)
 
 executable(
   meson.project_name(),
