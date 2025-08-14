@@ -43,11 +43,11 @@ endif
 
 compiler_flags = [
   '-ggdb3',
-  '-ffat-lto-objects',
   '-fvisibility=hidden',
   '-pthread',
   '-fPIC',
   '-DHAVE_CONFIG_H=1',
+  '-Wno-deprecated-declarations',
   '-DBUILD_DATE='+time_epoch,
 ]
 
@@ -82,31 +82,17 @@ subdir('po')
 #
 # Dependencies
 #
-lib3270 = dependency(
-	'lib3270', 
-	required:false)
+lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'dynamic_library' ])
+m_dep = cc.find_library('m', required: false)
+gtk = dependency('gtk+-3.0')
+gmodule = dependency('gmodule-2.0')
 
 lib_deps = [
-  lib3270,
-  dependency('glib-2.0'),
-  dependency('gtk+-3.0'),
-  dependency('gmodule-2.0'),
-  dependency('gdk-3.0'),
+	lib3270,
+	gtk,
+	gmodule,
+	m_dep,
 ]
-
-m_dep = cc.find_library('m', required:false)
-
-extra_deps = [ 
-	m_dep 
-]
-
-if not lib3270.found()
-	message('lib3270 not found, using fallback.')
-	lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'dynamic_library' ])
-	extra_deps += [
-		lib3270
-	]
-endif
 
 #
 # Configuration
@@ -250,38 +236,19 @@ lib_src = [
 	'src/trace/text.c',
 	'src/trace/trace.c',
 	'src/trace/tracewindow.c',
+	'src/dialogs/' + host_machine.system() + '/select.c',
+	'src/selection/' + host_machine.system() + '/copy.c',
+	'src/selection/' + host_machine.system() + '/paste.c',
+	'src/terminal/' + host_machine.system() + '/init.c',
+	'src/terminal/' + host_machine.system() + '/iosource.c',
 ]
 
 if host_machine.system() == 'windows'
   lib_src += [
-	'src/dialogs/windows/select.c',
-	'src/selection/windows/copy.c',
-	'src/selection/windows/paste.c',
-	'src/terminal/windows/init.c',
-	'src/terminal/windows/iosource.c',
 	'src/terminal/windows/registry.c',
   ]
 endif
 
-if host_machine.system() == 'linux'
-  lib_src += [
-	'src/dialogs/linux/select.c',
-	'src/terminal/linux/init.c',
-	'src/terminal/linux/iosource.c',
-	'src/selection/linux/copy.c',
-	'src/selection/linux/paste.c',
-  ]
-endif
-
-if host_machine.system() == 'darwin'
-  lib_src += [
-	'src/terminal/macos/init.c',
-	'src/terminal/macos/iosource.c',
-	'src/dialogs/macos/select.c',
-	'src/selection/macos/copy.c',
-	'src/selection/macos/paste.c',
-  ]
-endif
 
 #
 # Gnome
@@ -351,7 +318,7 @@ if host_machine.system() == 'windows'
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    requires: [ 'lib3270' ],
+    requires: [ 'lib3270', gtk, gmodule ],
     libraries: [ '-lv3270.dll' ]
   )
 
@@ -361,7 +328,7 @@ else
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    requires: [ 'lib3270' ],
+    requires: [ 'lib3270', gtk, gmodule ],
     libraries: [ '-lv3270' ]
   )
 
@@ -390,29 +357,73 @@ config_src = [
 
 if host_machine.system() == 'windows'
 
-  # https://mesonbuild.com/Windows-module.html
-  windows = import('windows')
-  resources = windows.compile_resources(
-    configure_file(
-      input : 'src/terminal/windows/resources.rc.in',
-      output : 'resources.rc',
-      configuration : app_conf
-    )
-  )
+	# https://mesonbuild.com/Windows-module.html
+	windows = import('windows')
+	resources = windows.compile_resources(
+		configure_file(
+			input : 'src/terminal/windows/resources.rc.in',
+			output : 'resources.rc',
+			configuration : app_conf
+		)
+	)
 
-  dynamic = shared_library(
-    'v3270', 
-    config_src + lib_src + resources,
-    install: true,
-    gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps + extra_deps,
-	link_args: [
-		'-lws2_32',
-		'-lwtsapi32',
-		'-lcomdlg32',
-	],
-    include_directories: includes_dir,
-  )
+	dynamic = shared_library(
+		'v3270', 
+		config_src + lib_src + resources,
+		install: true,
+		gnu_symbol_visibility: 'hidden',
+		dependencies: lib_deps,
+		link_args: [
+			'-lws2_32',
+			'-lwtsapi32',
+			'-lcomdlg32',
+		],
+		include_directories: includes_dir,
+	)
+
+	static_library = declare_dependency(
+		link_with : static_library(
+			'v3270', 
+			config_src + lib_src,
+			pic: true,
+			c_args: [ '-DSTATIC_LIBRARY' ],
+			install: true,
+			include_directories: includes_dir,
+			dependencies: lib_deps,
+		),
+		link_args: [
+			'-lws2_32',
+			'-lwtsapi32',
+			'-lcomdlg32',
+		],
+		include_directories : includes_dir,
+	)
+
+elif host_machine.system() == 'darwin'
+
+	dynamic = shared_library(
+		'v3270', 
+		config_src + lib_src,
+		install: true,
+		version : libversion,
+		soversion : libversion,
+		gnu_symbol_visibility: 'hidden',
+		dependencies: lib_deps,
+		include_directories: includes_dir
+	)
+
+	static_library = declare_dependency(
+		link_with : static_library(
+			'v3270', 
+			config_src + lib_src,
+			pic: true,
+			c_args: [ '-DSTATIC_LIBRARY' ],
+			install: true,
+			include_directories: includes_dir,
+			dependencies: lib_deps,
+		),
+		include_directories : includes_dir,
+	)
 
 else
 
@@ -421,11 +432,26 @@ else
     config_src + lib_src,
     install: true,
     version : libversion,
+    c_args: [ '-ffat-lto-objects' ],
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps + extra_deps,
+    dependencies: lib_deps,
     include_directories: includes_dir
   )
+
+  static_library = declare_dependency(
+	link_with : static_library(
+		'v3270', 
+	    config_src + lib_src,
+		pic: true,
+		c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+		install: true,
+		include_directories: includes_dir,
+		dependencies: lib_deps,
+	),
+	include_directories : includes_dir,
+  )
+
 
   glade_file = configure_file(
 	input : 'glade/v3270.xml.in',
@@ -441,6 +467,11 @@ else
  
 endif
 
+dynamic_library = declare_dependency(
+	link_with : dynamic,
+	include_directories : includes_dir,
+) 
+
 executable(
   meson.project_name(),
   config_src + [ 
@@ -449,7 +480,7 @@ executable(
   ],
   install: false,
   link_with : [ dynamic ],
-  dependencies: lib_deps + extra_deps,
+  dependencies: lib_deps,
   include_directories: includes_dir
 )
 
