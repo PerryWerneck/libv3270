@@ -24,11 +24,6 @@ Created originally as part of [PW3270](../../../pw3270) application.
  * [GTK3](https://www.gtk.org/)
  * [lib3270](../../../lib3270)
 
-### Building
-
- * TODO
-
-
 ## Building for windows
 
 ### Cross-compiling on SuSE Linux (Native or WSL)
@@ -48,48 +43,71 @@ Created originally as part of [PW3270](../../../pw3270) application.
 	git clone https://github.com/PerryWerneck/libv3270.git ./v3270
 	```
 
-3. Install 64 bits cross compilers
+3. Install cross compilers
 
-	```
-	./v3270/win/install-cross.sh --64
+	```shell
+	sudo zypper in \
+		pkgconfig \
+		gettext-devel \
+		mingw64-libcurl-devel \
+		mingw64-cross-meson \
+		mingw64-libopenssl-devel \
+		mingw64-cross-gcc-c++ \
+		'mingw64(pkg:gtk+-win32-3.0)' \
+		'mingw64(lib:iconv)' \ 
+		'mingw64(lib:intl)' 
 	```
 
-4. Configure 64 bits build environment
+3. Configure and build
 
-	```
-	./v3270/win/win-configure.sh --64
-	```
-
-5. Build
-
-	```
-	cd v3270
-	make clean
-	make all
+	```shell
+	meson setup --cross-file /usr/lib/rpm/macros.d/meson-mingw64-cross-file.txt .build
+	meson compile -C .build
 	```
 
 ### Windows native with MSYS2
 
-1. Build and install [lib3270](../../../lib3270)
+1. Install and update MSYS2 
 
-2. Install the required libraries
-
+	* Download and install [msys2](https://www.msys2.org/)
+	* Update msys:
+	
+	```shell
+	pacman -Syu
 	```
-	pacman -S mingw-w64-x86_64-gtk3
+	Afther this close and reopen mingw shell.
+
+2. Update system path
+
+	* Add c:\msys64\usr\bin and c:\msys64\mingw64\bin to system path
+
+3. Install devel packages using pacman on mingw shell
+
+	```shell
+	pacman -S \
+		dos2unix \
+		mingw-w64-x86_64-gcc \
+		mingw-w64-x86_64-meson \
+		mingw-w64-x86_64-iconv \
+		pkgconf \
+		mingw-w64-x86_64-gettext \
+		gettext-devel \
+		mingw-w64-x86_64-openssl \
+		mingw-w64-x86_64-gtk3
 	```
 
-2. Get libv3270 sources from git
+	Afther this close and reopen mingw shell.
+
+4. Get libv3270 sources from git
 
 	```
 	git clone https://github.com/PerryWerneck/libv3270.git ./libv3270
 	```
 
-4. Build library using the mingw shell
+5. Build with packman
 
-	```
-	cd libv3270
-	./autogen.sh
-	make all
+	```shell
+	makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
 	```
 
 ## Building for macOS
@@ -127,18 +145,6 @@ To uninstall
 	```shell
 	brew unlink libv3270
 	rm -fr "$(brew --cellar)/libv3270"
-	```
-
-### Using jhbuild
-
-1. Install jhbuild and GTK-OSX
-
-	https://wiki.gnome.org/Projects/GTK/OSX/Building
-	
-2. build
-
-	```shell
-	jhbuild --moduleset=https://raw.githubusercontent.com/PerryWerneck/libv3270/master/mac/libv3270.modules build libv3270
 	```
 
 
