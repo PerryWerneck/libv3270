@@ -5,7 +5,7 @@
 
 		<param name="url">https://github.com/PerryWerneck/libv3270.git</param>
 
-		<param name="changesgenerate">enable</param>
+		<!-- param name="changesgenerate">enable</param -->
 		<param name="changesauthor">perry.werneck@gmail.com</param>
 		<param name="revision">develop</param>
       
