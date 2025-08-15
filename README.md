@@ -3,7 +3,7 @@
 Created originally as part of [PW3270](../../../pw3270) application.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-![CodeQL](https://github.com/PerryWerneck/libv3270/workflows/CodeQL/badge.svg?branch=master)
+[![CodeQL Advanced](https://github.com/PerryWerneck/libv3270/actions/workflows/codeql.yml/badge.svg)](https://github.com/PerryWerneck/libv3270/actions/workflows/codeql.yml)
 [![build result](https://build.opensuse.org/projects/home:PerryWerneck:pw3270/packages/libv3270/badge.svg?type=percent)](https://build.opensuse.org/package/show/home:PerryWerneck:pw3270/libv3270)
 [![Publish](https://github.com/PerryWerneck/libv3270/actions/workflows/publish.yml/badge.svg)](https://github.com/PerryWerneck/libv3270/actions/workflows/publish.yml)
 
@@ -12,10 +12,6 @@ Created originally as part of [PW3270](../../../pw3270) application.
 ### Linux
 
 [<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">]([https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=pw3270](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=libv3270))
-
-### Windows
-
- * TODO
 
 ## Building for Linux
 
@@ -33,7 +29,6 @@ Created originally as part of [PW3270](../../../pw3270) application.
 	```
 	sudo zypper ar obs://windows:mingw:win32 mingw32
 	sudo zypper ar obs://windows:mingw:win64 mingw64
-	sudo zypper ar obs://home:PerryWerneck:pw3270 pw3270
 	sudo zypper ref
 	```
 
@@ -104,7 +99,7 @@ Created originally as part of [PW3270](../../../pw3270) application.
 	git clone https://github.com/PerryWerneck/libv3270.git ./libv3270
 	```
 
-5. Build with packman
+5. Build using makepkg
 
 	```shell
 	makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
