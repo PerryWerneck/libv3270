@@ -166,10 +166,12 @@ int main (int argc, char **argv) {
 	bind_textdomain_codeset("libv3270", "UTF-8");
 	textdomain("libv3270");
 
-	app = gtk_application_new ("br.com.bb.libv3270",G_APPLICATION_DEFAULT_FLAGS);
+	g_message("Creating application...");
+	app = gtk_application_new ("br.app.pw3270.v3270",G_APPLICATION_DEFAULT_FLAGS);
 
 	g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
 
+	g_message("Running application...");
 	status = g_application_run (G_APPLICATION (app), argc, argv);
 	g_object_unref (app);
 
