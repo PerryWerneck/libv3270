@@ -22,6 +22,7 @@ project(
 	['c'],
 	version: '5.5.0',
 	license: 'GPL-3.0-or-later',
+	 default_options : [ 'buildtype=release' ],
 )
 
 project_description = '3270 Virtual Terminal for GTK'
@@ -47,6 +48,7 @@ compiler_flags = [
   '-pthread',
   '-fPIC',
   '-DHAVE_CONFIG_H=1',
+  '-Wno-deprecated-declarations',
   '-Wno-deprecated-declarations',
   '-DBUILD_DATE='+time_epoch,
 ]
@@ -84,13 +86,13 @@ subdir('po')
 #
 lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'dynamic_library' ])
 m_dep = cc.find_library('m', required: false)
+gtk = dependency('gtk+-3.0')
+gmodule = dependency('gmodule-2.0')
 
 lib_deps = [
 	lib3270,
-	dependency('glib-2.0'),
-	dependency('gtk+-3.0'),
-	dependency('gmodule-2.0'),
-	dependency('gdk-3.0'),
+	gtk,
+	gmodule,
 	m_dep,
 ]
 
@@ -236,38 +238,19 @@ lib_src = [
 	'src/trace/text.c',
 	'src/trace/trace.c',
 	'src/trace/tracewindow.c',
+	'src/dialogs/' + host_machine.system() + '/select.c',
+	'src/selection/' + host_machine.system() + '/copy.c',
+	'src/selection/' + host_machine.system() + '/paste.c',
+	'src/terminal/' + host_machine.system() + '/init.c',
+	'src/terminal/' + host_machine.system() + '/iosource.c',
 ]
 
 if host_machine.system() == 'windows'
   lib_src += [
-	'src/dialogs/windows/select.c',
-	'src/selection/windows/copy.c',
-	'src/selection/windows/paste.c',
-	'src/terminal/windows/init.c',
-	'src/terminal/windows/iosource.c',
 	'src/terminal/windows/registry.c',
   ]
 endif
 
-if host_machine.system() == 'linux'
-  lib_src += [
-	'src/dialogs/linux/select.c',
-	'src/terminal/linux/init.c',
-	'src/terminal/linux/iosource.c',
-	'src/selection/linux/copy.c',
-	'src/selection/linux/paste.c',
-  ]
-endif
-
-if host_machine.system() == 'darwin'
-  lib_src += [
-	'src/terminal/macos/init.c',
-	'src/terminal/macos/iosource.c',
-	'src/dialogs/macos/select.c',
-	'src/selection/macos/copy.c',
-	'src/selection/macos/paste.c',
-  ]
-endif
 
 #
 # Gnome
@@ -337,7 +320,7 @@ if host_machine.system() == 'windows'
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    requires: [ 'lib3270' ],
+    requires: [ 'lib3270', gtk, gmodule ],
     libraries: [ '-lv3270.dll' ]
   )
 
@@ -347,7 +330,7 @@ else
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    requires: [ 'lib3270' ],
+    requires: [ 'lib3270', gtk, gmodule ],
     libraries: [ '-lv3270' ]
   )
 

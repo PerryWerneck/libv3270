@@ -48,6 +48,10 @@
  #include <libintl.h>
  #include <v3270/selection.h>
 
+ #if !GTK_CHECK_VERSION(2,74,0)
+ 	#define G_APPLICATION_DEFAULT_FLAGS 0
+ #endif 
+
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  static void session_changed(GtkWidget *terminal, GtkWidget *window) {

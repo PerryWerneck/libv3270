@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-16 00:21-0300\n"
+"POT-Creation-Date: 2025-08-14 21:48-0300\n"
 "PO-Revision-Date: 2025-06-29 21:46-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -38,15 +38,65 @@ msgid "Font"
 msgstr "Fonte"
 
 #: src/dialogs/linux/select.c:51 src/dialogs/linux/select.c:77
-#: src/dialogs/macos/select.c:51 src/dialogs/macos/select.c:77
+#: src/dialogs/load.c:204 src/dialogs/popups.c:192
 #: src/dialogs/print/settingsdialog.c:412
 #: src/dialogs/print/settingsdialog.c:431 src/dialogs/save/save.c:341
 #: src/dialogs/settings/dialog.c:203 src/dialogs/windows/select.c:158
-#: src/dialogs/load.c:204 src/dialogs/popups.c:192
+#: src/dialogs/darwin/select.c:51 src/dialogs/darwin/select.c:77
 #: src/selection/linux/paste.c:85 src/selection/macos/paste.c:85
 #: src/selection/windows/paste.c:83 src/selection/windows/paste.c:123
 msgid "_Cancel"
 msgstr "_Cancelar"
+
+#: src/dialogs/load.c:165 src/dialogs/save/save.c:247
+msgid "_Filename"
+msgstr "Nome do _Arquivo"
+
+#: src/dialogs/load.c:176 src/filetransfer/settings.c:467
+#: src/filetransfer/v3270ft.c:590
+msgid "Select file"
+msgstr "Selecionar arquivo"
+
+#: src/dialogs/load.c:179
+msgid "Text files"
+msgstr "Arquivos de texto"
+
+#: src/dialogs/load.c:189 src/dialogs/save/save.c:276
+msgid "C_haracter Coding"
+msgstr "C_odificação de caracteres"
+
+#: src/dialogs/load.c:205
+msgid "_Load"
+msgstr "_Carregar"
+
+#: src/dialogs/load.c:233
+msgid "Paste from file"
+msgstr "Colar de um arquivo"
+
+#: src/dialogs/load.c:307
+#, c-format
+msgid "Can't open %s"
+msgstr "Não foi possível abrir %s"
+
+#: src/dialogs/popups.c:88 src/dialogs/popups.c:94 src/dialogs/popups.c:100
+#: src/dialogs/popups.c:112
+msgid "_Ok"
+msgstr "_Ok"
+
+#: src/dialogs/popups.c:106 src/dialogs/security.c:234
+#: src/dialogs/transfer.c:160 src/dialogs/transfer.c:180
+#: src/trace/tracewindow.c:126
+msgid "_Close"
+msgstr "_Close"
+
+#: src/dialogs/popups.c:154
+msgid "No host"
+msgstr "Nenhum servidor"
+
+#. Set check button
+#: src/dialogs/popups.c:168
+msgid "Don't ask again"
+msgstr "Não perguntar de novo"
 
 #: src/dialogs/print/convenience.c:103
 msgid "Print operation has failed"
@@ -170,17 +220,9 @@ msgstr "Arquivo separado por vírgulas (CSV)"
 msgid "HyperText Markup Language (HTML)"
 msgstr "Documento HTML"
 
-#: src/dialogs/save/save.c:247 src/dialogs/load.c:165
-msgid "_Filename"
-msgstr "Nome do _Arquivo"
-
 #: src/dialogs/save/save.c:263
 msgid "Select destination file"
 msgstr "Selecionar arquivo destino"
-
-#: src/dialogs/save/save.c:276 src/dialogs/load.c:189
-msgid "C_haracter Coding"
-msgstr "C_odificação de caracteres"
 
 #: src/dialogs/save/save.c:290
 msgid "File _Format"
@@ -224,11 +266,74 @@ msgid "Error saving image"
 msgstr "Erro ao salvar imagem"
 
 #: src/dialogs/save/save.c:608 src/dialogs/transfer.c:92
-#: src/filetransfer/save.c:117 src/filetransfer/activitylist.c:436
+#: src/filetransfer/activitylist.c:436 src/filetransfer/save.c:117
 #: src/trace/trace.c:483
 #, c-format
 msgid "Can't save %s"
 msgstr "Não foi possível salvar arquivo %s"
+
+#: src/dialogs/security.c:138 src/dialogs/security.c:157
+msgid "Peer certificate"
+msgstr "Certificado apresentado"
+
+#: src/dialogs/security.c:144
+msgid "Revocation list"
+msgstr "Lista de revogados"
+
+#: src/dialogs/security.c:186
+msgid "Invalid state"
+msgstr "Estado inválido"
+
+#: src/dialogs/security.c:193
+msgid "There's no security information in the session"
+msgstr "Não existe informação de segurança na sessão"
+
+#: src/dialogs/security.c:239
+msgid "About security"
+msgstr "Sobre a segurança"
+
+#: src/dialogs/settings/accelerator.c:149
+#: src/dialogs/settings/accelerator.c:243 src/terminal/actions/table.c:330
+msgid "Keyboard accelerators"
+msgstr "Atalhos de teclado"
+
+#: src/dialogs/settings/accelerator.c:157
+msgid "Name"
+msgstr "Nome"
+
+#: src/dialogs/settings/accelerator.c:175
+msgid "Summary"
+msgstr "Sumário"
+
+#: src/dialogs/settings/accelerator.c:195
+msgid "Accelerator"
+msgstr "Atalho"
+
+#: src/dialogs/settings/accelerator.c:205
+msgid "Alternative"
+msgstr "Alternativa"
+
+#: src/dialogs/settings/accelerator.c:244
+msgid "Accelerators"
+msgstr "Atalhos"
+
+#: src/dialogs/settings/accelerator.c:308
+#, c-format
+msgid "The selected accelerator is in use by action <b>%s</b> (<b>%s</b>)"
+msgstr "O atalho selecionado está em uso pela ação <b>%s</b> (<b>%s</b>)"
+
+#: src/dialogs/settings/accelerator.c:315
+#, c-format
+msgid "Assign it to action (<b>%s</b>)?"
+msgstr "Associar com a ação (<b>%s</b>)?"
+
+#: src/dialogs/settings/accelerator.c:328
+msgid "The selected accelerator is in use by the same action"
+msgstr "O atalho selecionado está em uso na mesma ação"
+
+#: src/dialogs/settings/accelerator.c:333
+msgid "Accelerator is in use"
+msgstr "Atalho está em uso"
 
 #: src/dialogs/settings/clipboard.c:101
 msgid "Color theme"
@@ -335,53 +440,6 @@ msgstr "Área de transferência"
 #: src/dialogs/settings/clipboard.c:449
 msgid "None (Don't export font name)"
 msgstr "Nenhuma (Não exporta fontes)"
-
-#: src/dialogs/settings/dialog.c:204
-msgid "_Apply"
-msgstr "_Aplicar"
-
-#: src/dialogs/settings/accelerator.c:149
-#: src/dialogs/settings/accelerator.c:243 src/terminal/actions/table.c:330
-msgid "Keyboard accelerators"
-msgstr "Atalhos de teclado"
-
-#: src/dialogs/settings/accelerator.c:157
-msgid "Name"
-msgstr "Nome"
-
-#: src/dialogs/settings/accelerator.c:175
-msgid "Summary"
-msgstr "Sumário"
-
-#: src/dialogs/settings/accelerator.c:195
-msgid "Accelerator"
-msgstr "Atalho"
-
-#: src/dialogs/settings/accelerator.c:205
-msgid "Alternative"
-msgstr "Alternativa"
-
-#: src/dialogs/settings/accelerator.c:244
-msgid "Accelerators"
-msgstr "Atalhos"
-
-#: src/dialogs/settings/accelerator.c:308
-#, c-format
-msgid "The selected accelerator is in use by action <b>%s</b> (<b>%s</b>)"
-msgstr "O atalho selecionado está em uso pela ação <b>%s</b> (<b>%s</b>)"
-
-#: src/dialogs/settings/accelerator.c:315
-#, c-format
-msgid "Assign it to action (<b>%s</b>)?"
-msgstr "Associar com a ação (<b>%s</b>)?"
-
-#: src/dialogs/settings/accelerator.c:328
-msgid "The selected accelerator is in use by the same action"
-msgstr "O atalho selecionado está em uso na mesma ação"
-
-#: src/dialogs/settings/accelerator.c:333
-msgid "Accelerator is in use"
-msgstr "Atalho está em uso"
 
 #: src/dialogs/settings/colors.c:148 src/dialogs/settings/colors.c:300
 #: src/dialogs/settings/colors.c:379 src/terminal/actions/table.c:348
@@ -554,6 +612,10 @@ msgstr "Esquemas de cor pré-definido"
 msgid "Colors"
 msgstr "Cores"
 
+#: src/dialogs/settings/dialog.c:204
+msgid "_Apply"
+msgstr "_Aplicar"
+
 #: src/dialogs/settings/host.c:125
 msgid "System _type"
 msgstr "_Tipo de servidor"
@@ -652,8 +714,8 @@ msgstr "Seleciona mapeamento de teclado personalizado"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/dialogs/settings/host.c:368 src/filetransfer/v3270ft.c:302
-#: src/filetransfer/settings.c:209
+#: src/dialogs/settings/host.c:368 src/filetransfer/settings.c:209
+#: src/filetransfer/v3270ft.c:302
 msgid "Select"
 msgstr "Selecionar"
 
@@ -741,72 +803,6 @@ msgstr "Insegura"
 msgid "SSL/TLS"
 msgstr "SSL/TLS"
 
-#: src/dialogs/windows/select.c:169
-msgid "Untitled document"
-msgstr "Documento sem título"
-
-#: src/dialogs/load.c:176 src/filetransfer/v3270ft.c:590
-#: src/filetransfer/settings.c:467
-msgid "Select file"
-msgstr "Selecionar arquivo"
-
-#: src/dialogs/load.c:179
-msgid "Text files"
-msgstr "Arquivos de texto"
-
-#: src/dialogs/load.c:205
-msgid "_Load"
-msgstr "_Carregar"
-
-#: src/dialogs/load.c:233
-msgid "Paste from file"
-msgstr "Colar de um arquivo"
-
-#: src/dialogs/load.c:307
-#, c-format
-msgid "Can't open %s"
-msgstr "Não foi possível abrir %s"
-
-#: src/dialogs/popups.c:88 src/dialogs/popups.c:94 src/dialogs/popups.c:100
-#: src/dialogs/popups.c:112
-msgid "_Ok"
-msgstr "_Ok"
-
-#: src/dialogs/popups.c:106 src/dialogs/security.c:234
-#: src/dialogs/transfer.c:160 src/dialogs/transfer.c:180
-#: src/trace/tracewindow.c:126
-msgid "_Close"
-msgstr "_Close"
-
-#: src/dialogs/popups.c:154
-msgid "No host"
-msgstr "Nenhum servidor"
-
-#. Set check button
-#: src/dialogs/popups.c:168
-msgid "Don't ask again"
-msgstr "Não perguntar de novo"
-
-#: src/dialogs/security.c:138 src/dialogs/security.c:157
-msgid "Peer certificate"
-msgstr "Certificado apresentado"
-
-#: src/dialogs/security.c:144
-msgid "Revocation list"
-msgstr "Lista de revogados"
-
-#: src/dialogs/security.c:186
-msgid "Invalid state"
-msgstr "Estado inválido"
-
-#: src/dialogs/security.c:193
-msgid "There's no security information in the session"
-msgstr "Não existe informação de segurança na sessão"
-
-#: src/dialogs/security.c:239
-msgid "About security"
-msgstr "Sobre a segurança"
-
 #. http://en.wikipedia.org/wiki/Character_encoding
 #: src/dialogs/tools.c:167
 msgid "UTF-8"
@@ -829,8 +825,8 @@ msgstr "Atual (%s)"
 msgid "Save transfer activity to file"
 msgstr "Salvar atividade de transferência para arquivo"
 
-#: src/dialogs/transfer.c:70 src/filetransfer/v3270ft.c:218
-#: src/filetransfer/activitylist.c:451 src/terminal/actions/table.c:238
+#: src/dialogs/transfer.c:70 src/filetransfer/activitylist.c:451
+#: src/filetransfer/v3270ft.c:218 src/terminal/actions/table.c:238
 #: src/trace/trace.c:498
 msgid "Save"
 msgstr "Salvar"
@@ -852,6 +848,10 @@ msgstr "Iniciando transferência"
 msgid "Save transfer information to file"
 msgstr "Salvar informações da transferência para arquivo"
 
+#: src/dialogs/windows/select.c:169
+msgid "Untitled document"
+msgstr "Documento sem título"
+
 #: src/filetransfer/activity.c:135
 msgid "Full path of local file"
 msgstr "Caminho completo do arquivo local"
@@ -859,6 +859,26 @@ msgstr "Caminho completo do arquivo local"
 #: src/filetransfer/activity.c:142
 msgid "Full path of remote file"
 msgstr "Caminho completo do arquivo remoto"
+
+#: src/filetransfer/activitylist.c:252
+msgid "Local file"
+msgstr "Arquivo local"
+
+#: src/filetransfer/activitylist.c:261
+msgid "Remote file"
+msgstr "Arquivo remoto"
+
+#: src/filetransfer/activitylist.c:383 src/filetransfer/v3270ft.c:200
+msgid "Load queue from file"
+msgstr "Ler a fila de um arquivo"
+
+#: src/filetransfer/activitylist.c:384 src/filetransfer/v3270ft.c:201
+msgid "Load"
+msgstr "Load"
+
+#: src/filetransfer/activitylist.c:450 src/filetransfer/v3270ft.c:217
+msgid "Save queue to file"
+msgstr "Salvar a fila para um arquivo"
 
 #: src/filetransfer/load.c:269
 #, c-format
@@ -868,6 +888,32 @@ msgstr "Não foi possível carregar %s"
 #: src/filetransfer/set.c:176
 msgid "Preparing"
 msgstr "Preparando"
+
+#: src/filetransfer/settings.c:208 src/filetransfer/v3270ft.c:301
+msgid "Select local file"
+msgstr "Selecionar arquivo local"
+
+#: src/filetransfer/settings.c:492 src/filetransfer/v3270ft.c:338
+msgid "Transfer options"
+msgstr "Opções de transferência"
+
+#: src/filetransfer/settings.c:519 src/filetransfer/v3270ft.c:339
+msgid "Record format"
+msgstr "Formato de registro"
+
+#: src/filetransfer/settings.c:520
+msgid "Specifies the record format of the data set."
+msgstr "Controla o formato de registro do data set."
+
+#: src/filetransfer/settings.c:544 src/filetransfer/v3270ft.c:340
+msgid "Space allocation units"
+msgstr "Unidades de alocação de espaço"
+
+#: src/filetransfer/settings.c:545
+msgid ""
+"Specifies the units for the TSO host primary and secondary space options."
+msgstr ""
+"Define a unidade para os campos que definem o espaço primário e secundário."
 
 #: src/filetransfer/tables.c:43
 msgid "_Text file"
@@ -1122,22 +1168,6 @@ msgstr "Skip this transfer, keep the file on queue."
 msgid "Cancel transfer operation."
 msgstr "Cancelar transferência."
 
-#: src/filetransfer/v3270ft.c:200 src/filetransfer/activitylist.c:383
-msgid "Load queue from file"
-msgstr "Ler a fila de um arquivo"
-
-#: src/filetransfer/v3270ft.c:201 src/filetransfer/activitylist.c:384
-msgid "Load"
-msgstr "Load"
-
-#: src/filetransfer/v3270ft.c:217 src/filetransfer/activitylist.c:450
-msgid "Save queue to file"
-msgstr "Salvar a fila para um arquivo"
-
-#: src/filetransfer/v3270ft.c:301 src/filetransfer/settings.c:208
-msgid "Select local file"
-msgstr "Selecionar arquivo local"
-
 #: src/filetransfer/v3270ft.c:332
 msgid "_Operation"
 msgstr "_Operação"
@@ -1149,18 +1179,6 @@ msgstr "Arquivo _local"
 #: src/filetransfer/v3270ft.c:334
 msgid "_Remote file"
 msgstr "Arquivo _remoto"
-
-#: src/filetransfer/v3270ft.c:338 src/filetransfer/settings.c:492
-msgid "Transfer options"
-msgstr "Opções de transferência"
-
-#: src/filetransfer/v3270ft.c:339 src/filetransfer/settings.c:519
-msgid "Record format"
-msgstr "Formato de registro"
-
-#: src/filetransfer/v3270ft.c:340 src/filetransfer/settings.c:544
-msgid "Space allocation units"
-msgstr "Unidades de alocação de espaço"
 
 #: src/filetransfer/v3270ft.c:370
 msgid "Get transfer queue from an external XML file"
@@ -1197,24 +1215,6 @@ msgstr "Selecionar arquivo anterior"
 #: src/filetransfer/v3270ft.c:435 src/filetransfer/v3270ft.c:444
 msgid "Select first file"
 msgstr "Selecionar primeiro arquivo"
-
-#: src/filetransfer/activitylist.c:252
-msgid "Local file"
-msgstr "Arquivo local"
-
-#: src/filetransfer/activitylist.c:261
-msgid "Remote file"
-msgstr "Arquivo remoto"
-
-#: src/filetransfer/settings.c:520
-msgid "Specifies the record format of the data set."
-msgstr "Controla o formato de registro do data set."
-
-#: src/filetransfer/settings.c:545
-msgid ""
-"Specifies the units for the TSO host primary and secondary space options."
-msgstr ""
-"Define a unidade para os campos que definem o espaço primário e secundário."
 
 #. - Error in file transfer: file transfer canceled
 #: src/filetransfer/v3270ftprogress.c:65
@@ -1444,6 +1444,7 @@ msgid "_Paste as text"
 msgstr "_Colar como texto"
 
 #: src/selection/linux/paste.c:116 src/selection/macos/paste.c:116
+#: src/selection/windows/paste.c:115
 msgid "Unable to paste formatted data."
 msgstr "Incapaz de colar dados formatados."
 
@@ -1451,13 +1452,89 @@ msgstr "Incapaz de colar dados formatados."
 msgid "None of the screens in the clipboard match with the current one."
 msgstr "Nenhuma das telas da área de transferência corresponde à atual."
 
-#: src/selection/windows/paste.c:115
-msgid "Unable to paste formatted data"
-msgstr "Incapaz de colar dados formatados"
-
 #: src/selection/text.c:186
 msgid "Can't paste text"
 msgstr "Não é possível colar texto"
+
+#: src/terminal/accessible.c:100
+msgid "3270 screen"
+msgstr "Tela 3270"
+
+#: src/terminal/actions.c:73
+msgid "Setup host properties"
+msgstr "Configurar host"
+
+#: src/terminal/actions/action.c:110
+msgid "Action Name"
+msgstr "Nome da Ação"
+
+#: src/terminal/actions/action.c:111
+msgid "The name used to invoke the action"
+msgstr "Nome que é usado para invocar a ação"
+
+#: src/terminal/actions/action.c:118
+msgid "Icon Name"
+msgstr "Nome do ícone"
+
+#: src/terminal/actions/action.c:119
+msgid "The name of the icon associated with the action"
+msgstr "Nome do ícone associado à ação"
+
+#: src/terminal/actions/action.c:126
+msgid "The action label"
+msgstr "A etiqueda da ação"
+
+#: src/terminal/actions/action.c:127
+msgid "The label for the action"
+msgstr "A etiqueta da ação"
+
+#: src/terminal/actions/action.c:134
+msgid "The action tooltip"
+msgstr "Dicas sobre a ação"
+
+#: src/terminal/actions/action.c:135
+msgid "The tooltip for the action"
+msgstr "A dica para a ação"
+
+#: src/terminal/actions/action.c:141
+msgid "Parameter Type"
+msgstr "Tipo de parâmetro"
+
+#: src/terminal/actions/action.c:142
+msgid "The type of GVariant passed to activate()"
+msgstr "The type of GVariant passed to activate()"
+
+#: src/terminal/actions/action.c:148
+msgid "State Type"
+msgstr "Tipo de situação"
+
+#: src/terminal/actions/action.c:149
+msgid "The type of the state kept by the action"
+msgstr "The type of the state kept by the action"
+
+#: src/terminal/actions/action.c:157
+msgid "Enabled"
+msgstr "Habilitado"
+
+#: src/terminal/actions/action.c:158
+msgid "If the action can be activated"
+msgstr "Se a ação pode ser ativada"
+
+#: src/terminal/actions/action.c:169
+msgid "State"
+msgstr "Situação"
+
+#: src/terminal/actions/action.c:170
+msgid "The state the action is in"
+msgstr "A situação da ação está em"
+
+#: src/terminal/actions/pakey.c:105 src/terminal/actions/pfkey.c:105
+msgid "Emit a PA Key action"
+msgstr "Emite uma ação de tecla PA"
+
+#: src/terminal/actions/simple.c:100
+msgid "No label"
+msgstr "Sem etiqueta"
 
 #: src/terminal/actions/table.c:55 src/terminal/actions/table.c:95
 msgid "Copy"
@@ -1678,78 +1755,6 @@ msgstr "Configurações de fonte"
 msgid "Select terminal font"
 msgstr "Seleção da fonte do terminal"
 
-#: src/terminal/actions/action.c:110
-msgid "Action Name"
-msgstr "Nome da Ação"
-
-#: src/terminal/actions/action.c:111
-msgid "The name used to invoke the action"
-msgstr "Nome que é usado para invocar a ação"
-
-#: src/terminal/actions/action.c:118
-msgid "Icon Name"
-msgstr "Nome do ícone"
-
-#: src/terminal/actions/action.c:119
-msgid "The name of the icon associated with the action"
-msgstr "Nome do ícone associado à ação"
-
-#: src/terminal/actions/action.c:126
-msgid "The action label"
-msgstr "A etiqueda da ação"
-
-#: src/terminal/actions/action.c:127
-msgid "The label for the action"
-msgstr "A etiqueta da ação"
-
-#: src/terminal/actions/action.c:134
-msgid "The action tooltip"
-msgstr "Dicas sobre a ação"
-
-#: src/terminal/actions/action.c:135
-msgid "The tooltip for the action"
-msgstr "A dica para a ação"
-
-#: src/terminal/actions/action.c:141
-msgid "Parameter Type"
-msgstr "Tipo de parâmetro"
-
-#: src/terminal/actions/action.c:142
-msgid "The type of GVariant passed to activate()"
-msgstr "The type of GVariant passed to activate()"
-
-#: src/terminal/actions/action.c:148
-msgid "State Type"
-msgstr "Tipo de situação"
-
-#: src/terminal/actions/action.c:149
-msgid "The type of the state kept by the action"
-msgstr "The type of the state kept by the action"
-
-#: src/terminal/actions/action.c:157
-msgid "Enabled"
-msgstr "Habilitado"
-
-#: src/terminal/actions/action.c:158
-msgid "If the action can be activated"
-msgstr "Se a ação pode ser ativada"
-
-#: src/terminal/actions/action.c:169
-msgid "State"
-msgstr "Situação"
-
-#: src/terminal/actions/action.c:170
-msgid "The state the action is in"
-msgstr "A situação da ação está em"
-
-#: src/terminal/actions/pakey.c:105 src/terminal/actions/pfkey.c:105
-msgid "Emit a PA Key action"
-msgstr "Emite uma ação de tecla PA"
-
-#: src/terminal/actions/simple.c:100
-msgid "No label"
-msgstr "Sem etiqueta"
-
 #: src/terminal/callbacks.c:500
 #, c-format
 msgid ""
@@ -1763,6 +1768,35 @@ msgstr ""
 #, c-format
 msgid "Unexpected callback table, the release %s of lib%s is invalid"
 msgstr "Tabela de callbacks inesperada, a revisão %s da lib%s é inválida"
+
+#: src/terminal/charset.c:74
+msgid "Can't parse character value"
+msgstr "Erro ao analisar valor de caractere"
+
+#: src/terminal/charset.c:93
+msgid "Invalid remap scope"
+msgstr "Escopo de mapeamento inválido"
+
+#: src/terminal/charset.c:133
+msgid "Invalid cgcsgid value"
+msgstr "Valor cgcsgid é inválido"
+
+#: src/terminal/charset.c:138
+msgid "Can't parse cgcsgid value"
+msgstr "Erro ao converter valor do cgcsid"
+
+#: src/terminal/charset.c:148
+msgid "Too many remaps"
+msgstr "Muitos remapeamentos"
+
+#: src/terminal/charset.c:321
+msgid "Remap Failed"
+msgstr "Remapeamento falhou"
+
+#: src/terminal/charset.c:322
+#, c-format
+msgid "Can't parse %s"
+msgstr "Erro ao analisar %s"
 
 #: src/terminal/drawing/oia.c:474
 msgid "X System"
@@ -1824,6 +1858,10 @@ msgstr "Fonte \"%s\" não é mono espaçada"
 msgid "Can't find a valid font with the name \"%s\""
 msgstr "Não encontrei uma fonte válida com o nome \"%s\""
 
+#: src/terminal/iocallback.c:196
+msgid "Can't set lib3270 I/O controller"
+msgstr "Não foi possível registrar manipuladores de I/O 3270"
+
 #: src/terminal/properties/get.c:193
 msgid "No host defined"
 msgstr "Nenhum servidor definido"
@@ -1880,47 +1918,6 @@ msgstr "Verdadeiro se o terminal tiver blocos copiados"
 msgid "True if the timer indicator is active"
 msgstr "Verdadeiro se indicador de tempo estiver ativo"
 
-#: src/terminal/accessible.c:100
-msgid "3270 screen"
-msgstr "Tela 3270"
-
-#: src/terminal/actions.c:73
-msgid "Setup host properties"
-msgstr "Configurar host"
-
-#: src/terminal/charset.c:74
-msgid "Can't parse character value"
-msgstr "Erro ao analisar valor de caractere"
-
-#: src/terminal/charset.c:93
-msgid "Invalid remap scope"
-msgstr "Escopo de mapeamento inválido"
-
-#: src/terminal/charset.c:133
-msgid "Invalid cgcsgid value"
-msgstr "Valor cgcsgid é inválido"
-
-#: src/terminal/charset.c:138
-msgid "Can't parse cgcsgid value"
-msgstr "Erro ao converter valor do cgcsid"
-
-#: src/terminal/charset.c:148
-msgid "Too many remaps"
-msgstr "Muitos remapeamentos"
-
-#: src/terminal/charset.c:321
-msgid "Remap Failed"
-msgstr "Remapeamento falhou"
-
-#: src/terminal/charset.c:322
-#, c-format
-msgid "Can't parse %s"
-msgstr "Erro ao analisar %s"
-
-#: src/terminal/iocallback.c:196
-msgid "Can't set lib3270 I/O controller"
-msgstr "Não foi possível registrar manipuladores de I/O 3270"
-
 #: src/terminal/widget.c:152
 msgid ""
 "<b>Identity not verified</b>\n"
@@ -1945,6 +1942,14 @@ msgstr "_Continuar"
 msgid "Trace"
 msgstr "Trace"
 
+#: src/trace/trace.c:357
+msgid "Command to execute"
+msgstr "Comando a executar"
+
+#: src/trace/trace.c:497
+msgid "Save trace to file"
+msgstr "Salvar trace para arquivo"
+
 #. File menu
 #: src/trace/tracewindow.c:118
 msgid "_File"
@@ -1954,13 +1959,8 @@ msgstr "_Arquivo"
 msgid "Save _As"
 msgstr "Salvar _Como"
 
-#: src/trace/trace.c:357
-msgid "Command to execute"
-msgstr "Comando a executar"
-
-#: src/trace/trace.c:497
-msgid "Save trace to file"
-msgstr "Salvar trace para arquivo"
+#~ msgid "Unable to paste formatted data"
+#~ msgstr "Incapaz de colar dados formatados"
 
 #~ msgid " and <b>%s</b> for %s."
 #~ msgstr " e <b>%s</b> para %s."
