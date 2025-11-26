@@ -22,32 +22,10 @@ jobs:
           brew update
           brew install xz meson ninja curl gettext openssl pkgconfig gtk+3
           brew upgrade
-      - uses: robinraju/release-downloader@v1.7
-        with:
-          repository: "PerryWerneck/lib3270"
-          latest: true
-          fileName: "macos-lib3270.tar.xz"      
       - name: build
         run: |
-          tar --extract --verbose --xz --directory=$(brew --cellar) --file=macos-lib3270.tar.xz
-          brew link lib3270
           export LDFLAGS=-Wl,-L${HOMEBREW_PREFIX}/lib
           meson setup --prefix=$(brew --prefix)/libv3270/${{ steps.gettag.outputs.tag }} .build       
           meson compile -C .build
-      - name: package
-        run: |
-          DESTDIR=${PWD}/.bin/package meson install -C .build
-          tar --create --verbose --xz --file=macos-libv3270.tar.xz --directory=${PWD}/.bin/package/$(brew --prefix) --verbose .
-      - name: upload
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "macos-libv3270.tar.xz"
-          allowUpdates: true
-          draft: false
-          makeLatest: true
-          omitBody: true
-          omitPrereleaseDuringUpdate: true
-          replacesArtifacts: true
               
 
