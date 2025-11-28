@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-14 21:48-0300\n"
+"POT-Creation-Date: 2025-11-28 09:18-0300\n"
 "PO-Revision-Date: 2025-06-29 21:46-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -43,8 +43,8 @@ msgstr "Fonte"
 #: src/dialogs/print/settingsdialog.c:431 src/dialogs/save/save.c:341
 #: src/dialogs/settings/dialog.c:203 src/dialogs/windows/select.c:158
 #: src/dialogs/darwin/select.c:51 src/dialogs/darwin/select.c:77
-#: src/selection/linux/paste.c:85 src/selection/macos/paste.c:85
-#: src/selection/windows/paste.c:83 src/selection/windows/paste.c:123
+#: src/selection/linux/paste.c:85 src/selection/windows/paste.c:83
+#: src/selection/windows/paste.c:123 src/selection/darwin/paste.c:85
 msgid "_Cancel"
 msgstr "_Cancelar"
 
@@ -1426,29 +1426,29 @@ msgstr ""
 "Tabela de callbacks para transferência de arquivos inválida, possível "
 "divergência de versão na lib3270"
 
-#: src/selection/linux/paste.c:77 src/selection/macos/paste.c:77
-#: src/selection/windows/paste.c:75
+#: src/selection/linux/paste.c:77 src/selection/windows/paste.c:75
+#: src/selection/darwin/paste.c:77
 msgid "Not the same terminal type"
 msgstr "O tipo de terminal é diferente"
 
 #: src/selection/linux/paste.c:81 src/selection/linux/paste.c:115
-#: src/selection/macos/paste.c:81 src/selection/macos/paste.c:115
 #: src/selection/windows/paste.c:79 src/selection/windows/paste.c:119
+#: src/selection/darwin/paste.c:81 src/selection/darwin/paste.c:115
 msgid "Can't paste"
 msgstr "Não é possivel colar"
 
 #: src/selection/linux/paste.c:86 src/selection/linux/paste.c:118
-#: src/selection/macos/paste.c:86 src/selection/macos/paste.c:118
 #: src/selection/windows/paste.c:84 src/selection/windows/paste.c:124
+#: src/selection/darwin/paste.c:86 src/selection/darwin/paste.c:118
 msgid "_Paste as text"
 msgstr "_Colar como texto"
 
-#: src/selection/linux/paste.c:116 src/selection/macos/paste.c:116
-#: src/selection/windows/paste.c:115
+#: src/selection/linux/paste.c:116 src/selection/windows/paste.c:115
+#: src/selection/darwin/paste.c:116
 msgid "Unable to paste formatted data."
 msgstr "Incapaz de colar dados formatados."
 
-#: src/selection/linux/paste.c:117 src/selection/macos/paste.c:117
+#: src/selection/linux/paste.c:117 src/selection/darwin/paste.c:117
 msgid "None of the screens in the clipboard match with the current one."
 msgstr "Nenhuma das telas da área de transferência corresponde à atual."
 
@@ -3808,13 +3808,13 @@ msgstr "Salvar _Como"
 #~ msgid ""
 #~ "The current candidate issuer certificate was rejected because its issuer "
 #~ "name and serial number was present and did not match the authority key "
-#~ "identifier of the current certificate. Only displayed when the -"
-#~ "issuer_checks option is set."
+#~ "identifier of the current certificate. Only displayed when the "
+#~ "-issuer_checks option is set."
 #~ msgstr ""
 #~ "The current candidate issuer certificate was rejected because its issuer "
 #~ "name and serial number was present and did not match the authority key "
-#~ "identifier of the current certificate. Only displayed when the -"
-#~ "issuer_checks option is set."
+#~ "identifier of the current certificate. Only displayed when the "
+#~ "-issuer_checks option is set."
 
 #~ msgid ""
 #~ "The current candidate issuer certificate was rejected because its "

@@ -51,14 +51,14 @@ src/selection/get.c
 src/selection/html.c
 src/selection/linux/copy.c
 src/selection/linux/paste.c
-src/selection/macos/copy.c
-src/selection/macos/paste.c
 src/selection/pixbuf.c
 src/selection/selection.c
 src/selection/table.c
 src/selection/text.c
 src/selection/windows/copy.c
 src/selection/windows/paste.c
+src/selection/darwin/copy.c
+src/selection/darwin/paste.c
 src/terminal/accessible.c
 src/terminal/actions.c
 src/terminal/actions/action.c
@@ -99,8 +99,6 @@ src/terminal/keyboard/map.c
 src/terminal/keyfile.c
 src/terminal/linux/init.c
 src/terminal/linux/iosource.c
-src/terminal/macos/iosource.c
-src/terminal/macos/init.c
 src/terminal/mouse.c
 src/terminal/properties/get.c
 src/terminal/properties/init.c
@@ -111,6 +109,8 @@ src/terminal/widget.c
 src/terminal/windows/init.c
 src/terminal/windows/iosource.c
 src/terminal/windows/registry.c
+src/terminal/darwin/init.c
+src/terminal/darwin/iosource.c
 src/tools/dialog.c
 src/tools/entry.c
 src/tools/widget.c
