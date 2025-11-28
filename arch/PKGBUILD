@@ -2,7 +2,7 @@
 
 pkgname=libv3270
 
-pkgver=5.5.0+git20241211
+pkgver=5.5.0+git20250814
 pkgrel=0
 pkgdesc="3270 Virtual Terminal for GTK"
 url="https://github.com/PerryWerneck/libv3270"

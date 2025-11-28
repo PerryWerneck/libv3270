@@ -1,4 +1,19 @@
 -------------------------------------------------------------------
+Fri Aug 15 00:49:50 UTC 2025 - perry.werneck@gmail.com
+
+- Update to version 5.5.0+git20250814:
+  * Updating translation & package control files.
+  * Updating build instructions.
+  * Updating meson.build.
+  * Working on issue #52
+  * Using lib3270 as subproject.
+  * Fixing macos locale path.
+  * Fixing codeql workflow.
+  * Updating macos build instructions.
+  * Fixing lib3270 version.
+  * Fixing warning.
+
+-------------------------------------------------------------------
 Thu Feb 27 16:32:03 UTC 2025 - Perry Werneck <perry.werneck@gmail.com>
 
 - Removing fixed meson version. 

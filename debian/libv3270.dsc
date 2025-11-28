@@ -1,6 +1,6 @@
 Format: 1.0
 Source: libv3270
-Version: 5.5.0+git20241211-0
+Version: 5.5.0+git20250814-0
 Binary: libv3270
 Maintainer: Perry Werneck <perry.werneck@gmail.com>
 Architecture: any

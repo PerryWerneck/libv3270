@@ -18,7 +18,7 @@
 
 
 Name:           libv3270
-Version: 5.5.0
+Version:        5.5.0+git20250814
 Release:        0
 Summary:        3270 Virtual Terminal for GTK
 License:        LGPL-3.0-only
@@ -105,6 +105,7 @@ widgets in Glade.
 
 %files devel
 %{_libdir}/%{name}.so
+%exclude %{_libdir}/%{name}.a
 %{_libdir}/pkgconfig/*.pc
 %{_includedir}/v3270.h
 %{_includedir}/v3270
