@@ -45,6 +45,9 @@
  {
 	unsigned int rows, cols;
 	cairo_font_extents_t extents;
+#ifdef _WIN32
+	cairo_text_extents_t text_extents;
+#endif // _WIN32
 
 	lib3270_get_screen_size(terminal->host,&rows,&cols);
 
@@ -79,6 +82,7 @@
 		{
 			cairo_set_font_size(cr,font_size[ix]);
 			cairo_font_extents(cr,&extents);
+			cairo_text_extents(cr, "W", &text_extents);
 
 			/*
 			debug("size=%d width=%d height=%d",
@@ -88,7 +92,7 @@
 					);
 			*/
 
-			if( (VIEW_WIDTH_FROM_FONT(extents.max_x_advance)) > width || VIEW_HEIGTH_FROM_FONT((extents.height+extents.descent))  > height) {
+			if( (VIEW_WIDTH_FROM_FONT(text_extents.x_advance)) > width || VIEW_HEIGTH_FROM_FONT((extents.height+extents.descent))  > height) {
 				break;
 			}
 

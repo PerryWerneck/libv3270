@@ -45,14 +45,24 @@ void v3270_update_font_metrics(v3270 *terminal, unsigned int width, unsigned int
 {
 	unsigned int rows, cols, size;
 	cairo_font_extents_t extents;
+#ifdef _WIN32
+	cairo_text_extents_t text_extents;
+#endif // _WIN32
 
 	lib3270_get_screen_size(terminal->host,&rows,&cols);
 
 	cairo_scaled_font_extents(terminal->font.scaled,&extents);
+#ifdef _WIN32
+	cairo_scaled_font_text_extents(terminal->font.scaled, "W", &text_extents);
+#endif // _WIN32
 
 	// Update margins.
 
+#ifdef _WIN32
+	terminal->font.width    		= (int) text_extents.x_advance;
+#else
 	terminal->font.width    		= (int) extents.max_x_advance;
+#endif // _WIN32
 	terminal->font.height   		= (int) extents.height;
 	terminal->font.ascent   		= (int) extents.ascent;
 	terminal->font.descent  		= (int) extents.descent;
